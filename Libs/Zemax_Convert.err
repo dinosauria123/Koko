@@ -1,0 +1,18 @@
+ THE FOLLOWING ZEMAX DID NOT TRANSLATE:
+ Example 1 of 4                                                                
+ NOTE 1  j R   A   V   A d   K   A         A   i L                             
+ NOTE 2    J  08-254652                                                        
+ NOTE 3    e   Z   A f B X g [ V       A       A365                            
+ PUPD 3001.18 739.786                                                          
+ GFAC 0 0                                                                      
+ GCAT schott                                                                   
+ RAIM 1.0E-8 1 1 1 0 0                                                         
+ PUSH 0 0 0 0                                                                  
+ SDMA 0 1                                                                      
+ ROPD 2                                                                        
+ PICB 1                                                                        
+ FWGT 1 1 1                                                                    
+ POLS 1 0 1 0 0                                                                
+ GLRS 1                                                                        
+ BLNK                                                                          
+ MNUM 1                                                                        

@@ -1,0 +1,3216 @@
+C///////////////////////////////////////////////////////////////////////
+C/
+C/ Copyright (C) 2020 The Koko Project Developers
+C/
+C/ See the file COPYRIGHT.md in the top-level directory of this
+C/ distribution
+C/
+C/ This file is part of Koko.
+C/
+C/ Koko is free software: you can redistribute it and/or modify it
+C/ under the terms of the GNU General Public License as published by
+C/ the Free Software Foundation, either version 3 of the License, or
+C/ (at your option) any later version.
+C/
+C/ Koko is distributed in the hope that it will be useful, but
+C/ WITHOUT ANY WARRANTY; without even the implied warranty of
+C/ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C/ GNU General Public License for more details.
+C/
+C/ You should have received a copy of the GNU General Public License
+C/ along with Koko; see the file COPYING.  If not, see
+C/ <https://www.gnu.org/licenses/>.
+C/
+C///////////////////////////////////////////////////////////////////////
+
+C       FIRST COLLECTION OF NSS FILES
+C
+      SUBROUTINE GETOANGLES
+          USE NSSMOD
+          IMPLICIT NONE
+
+          REAL*8 D31,D32,D33,COSB,SINB,ALPHA,BETA
+C
+          INCLUDE 'datmai.inc'
+C
+C     OBJL,OBJM AND OBJN ARE THE L,M AND N-DIRECTION COSINES OF THE
+C     ROTATED COORDINATE SYSTEM. 0.0, 0.0 AND 1.0 ARE THE DIRECTION
+C     COSINES OF THE UNROTATED SYSTEM. ONLY AN ALPHA AND A BETA ROTATION
+C     RELATE THE TWO SYSTEMS. GAMMA IS ALWAYS ZERO.
+          D31=OBJL
+          D32=OBJM
+          D33=OBJN
+C
+C     NOW CALCULATE ALPHA,BETA
+C     CALCULATE BETA
+          BETA=DASIN(-D31)
+          COSB=DCOS(BETA)
+          IF(COSB.NE.0.0D0) THEN
+C     COSINE OF BETA IS NOT ZERO
+C     COSINE OF BETA IS NOT ZERO
+              IF((D32/COSB).EQ.0.0D0.AND.(D33/COSB).NE.0.0D0) ALPHA=0.0D0
+              IF((D32/COSB).EQ.0.0D0.AND.(D33/COSB).EQ.0.0D0) ALPHA=0.0D0
+              IF((D32/COSB).NE.0.0D0.AND.(D33/COSB).EQ.0.0D0) ALPHA=PII/2.0D0
+              IF((D32/COSB).NE.0.0D0.AND.(D33/COSB).NE.0.0D0)
+     1        ALPHA=DATAN2((D32/COSB),(D33/COSB))
+          END IF
+          IF(COSB.EQ.0.0D0) THEN
+C     COSINE OF BETA IS ZERO
+              IF(D31.EQ.-1.0D0) SINB=1
+              IF(D31.EQ.1.0D0) SINB=-1
+              IF(SINB.EQ.1) BETA=PII/2.0D0
+              IF(SINB.EQ.-1) BETA=-PII/2.0D0
+              IF(SINB.EQ.1) THEN
+                  IF((D32).EQ.0.0D0.AND.(D33).NE.0.0D0) ALPHA=0.0D0
+                  IF((D32).EQ.0.0D0.AND.(D33).EQ.0.0D0) ALPHA=0.0D0
+                  IF((D32).NE.0.0D0.AND.(D33).EQ.0.0D0) ALPHA=PII/2.0D0
+                  IF((D32).NE.0.0D0.AND.(D33).NE.0.0D0)
+     1            ALPHA=DATAN2((D32),(D33))
+              END IF
+              IF(SINB.EQ.-1) THEN
+                  IF((D32).EQ.0.0D0.AND.(D33).NE.0.0D0) ALPHA=0.0D0
+                  IF((D32).EQ.0.0D0.AND.(D33).EQ.0.0D0) ALPHA=0.0D0
+                  IF((D32).NE.0.0D0.AND.(D33).EQ.0.0D0) ALPHA=PII/2.0D0
+                  IF((D32).NE.0.0D0.AND.(D33).NE.0.0D0)
+     1            ALPHA=DATAN2((-D32),(-D33))
+              END IF
+          END IF
+C     CONVERT TO DEGREES
+          OALPHA=(180.0D0/PII)*ALPHA
+          OBETA=(180.0D0/PII)*BETA
+          OGAMMA=0.0D0
+          RETURN
+      END
+
+
+      SUBROUTINE NSSUSER()
+          USE NSSMOD
+          IMPLICIT NONE
+!        INTEGER J
+          INCLUDE 'datmai.inc'
+          NSS_INTERSECT=.FALSE.
+          RETURN
+      END
+
+
+      SUBROUTINE NSSTRACE
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER NREF,NOBJ,I,J,K,L,M
+          REAL*8 ODEL,RDEL,OCENX,OCENY,OCENZ,MAG,XSTART,YSTART,ZSTART
+          REAL*8 OX,OY,OZ,RX,RY,RZ,LSTART,MSTART,NSTART,GOX,GOY,GRX,GRY
+          REAL*8 OGRID_SPAN,RGRID_SPAN,XANG,YANG,RSHAPE,GRZ,GOZ,SSHAPE
+          REAL*8 OOX,OOY,ORX,ORY,FRX,FRY,RCENX,RCENY,RCENZ
+          LOGICAL TESTSHAPES,TESTSHAPER
+          INCLUDE 'datmai.inc'
+C       THIS CONTROLS THE NSS DATABASE RAY TRACE
+C       CALCULATE THE STARTING RAY LOCATION AND DIRECTION COSINES
+C       IN GLOBAL COORDINATES
+C
+          RHISTN=0
+C       OBJECT GRID SPACING IS ODEL
+          ODEL=NSSSYSTEM(37)
+C       DIMENSION OF THE OBJECT GRID IS NOBJ
+          NOBJ=INT(NSSSYSTEM(32))
+C       CENTER OF OBJECT GRID IS LOCATED AT OCENX,OCENY,OCENZ
+          OCENX=NSSSYSTEM(29)
+          OCENY=NSSSYSTEM(30)
+          OCENZ=NSSSYSTEM(31)
+C       CENTER OF REFERENCE GRID IS LOCATED AT RCENX,RCENY,RCENZ
+          RCENX=NSSSYSTEM(40)
+          RCENY=NSSSYSTEM(41)
+          RCENZ=NSSSYSTEM(42)
+C       THE DIRECTION COSINES OF THE LINE CONNECTING THE CENTER OF THE OBJECT GRID
+C       WITH THE CENTER OF THEREFERENCE GRID ARE: OBJL, OBJM AND OBJN
+          OMAG=DSQRT(((RCENX-OCENX)**2)+((RCENY-OCENY)**2)+
+     1    ((RCENZ-OCENZ)**2))
+          IF(OMAG.EQ.0.0D0) THEN
+              WRITE(OUTLYNE,*) 'OBJECT AND REFERENCE GRIDS ARE CO-LOCATED'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'NO RAYS MAY BE TRACED'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+C
+          OBJL=(RCENX-OCENX)/OMAG
+          OBJM=(RCENY-OCENY)/OMAG
+          OBJN=(RCENZ-OCENZ)/OMAG
+C       DETERMINE THE ALPHA,BETA AND GAMMA ROTATION ANGLES WHICH CAN PRODUCE THESE
+C       DIRECTION COSINES.
+          CALL GETOANGLES
+C       OALPHA,OBETA AND OGAMMA ARE THE EULER ROTATION ANGLES IN CODE-V SIGN CONVENTION
+C       WHICH ROTATE THE 0,0,1 INTO OBJL,OBJM AND OBJN. THESE WILL BE USED TO CONVERT OX,OY AND OZ
+C       FROM THE LOCAL OBJECT AND REFERENCE GRIDS INTO GLOBAL COORDINATES IN ORDER TO GET GLOBAL
+C       RAY STARTING POSITIONS AND DIRECTION COSINES.
+C
+C       REFERENCE GRID SPACING IS RDEL
+          RDEL=NSSSYSTEM(38)
+C       DIMENSION OF THE OBJECT GRID IS NOBJ
+          NREF=INT(NSSSYSTEM(36))
+C       CENTER OF REFERENCE GRID IS LOCATED AT RCENX,RCENY AND RCENZ
+C       DO A RAY'S STARTING DATA,IN GLOBAL COORDINATES THEN TRACE THE RAY
+C       THE OBJECT GRID POINTS SPAN A SEMI-DISTANCE OF DBLE(NOBJ-1)*ODEL/2
+C       IN GLOBAL COORDINATES, THE LOCATION OF THE STARTING POINTS ARE:
+          IF(DABS(DBLE(NOBJ/2)-(DBLE(NOBJ)/2.0D0)).EQ.0.0D0) THEN
+              OBJODD=.FALSE.
+          ELSE
+              OBJODD=.TRUE.
+          END IF
+          IF(DABS(DBLE(NREF/2)-(DBLE(NREF)/2.0D0)).NE.0.0D0) THEN
+              REFODD=.FALSE.
+          ELSE
+              REFODD=.TRUE.
+          END IF
+C     IN THE LOCAL COORDINATE SYSTEM OF THE OBJECT PLANE WHICH
+C     IS PERPENDICULAR TO THE LINE CONNECTING THE CENTERS OF THE OBJECT AND REFERENCE GRID
+C     THE X AND Y NEGATIVE LIMITA ARE OOX AND OOY
+          IF(OBJODD) THEN
+C       ODD GRID
+              OGRID_SPAN=DBLE(NOBJ-1)*ODEL/2.0D0
+              OOX=-OGRID_SPAN
+              OOY=-OGRID_SPAN
+              OZ=OCENZ
+              GOZ=OCENZ
+          ELSE
+C       EVEN GRID
+              OGRID_SPAN=DBLE(NOBJ-1)*ODEL/2.0D0
+              OOX=-OGRID_SPAN
+              OOY=-OGRID_SPAN
+              OZ=OCENZ
+              GOZ=OCENZ
+          END IF
+          TESTSHAPES=.FALSE.
+          IF(NSSSYSTEM(33).EQ.0.0D0) TESTSHAPES=.TRUE.
+          IF(TESTSHAPES) THEN
+              SSHAPE=DABS(OOX)
+              IF(DABS(OOY).GT.DABS(OOX)) SSHAPE=DABS(OOY)
+          END IF
+C       THE REFERENCE GRID POINTS SPAN A SEMIDISTANCE OF DBLE(NREF-1)*RDEL/2
+C     IN THE LOCAL COORDINATE SYSTEM OF THE REFERENCE PLANE WHICH
+C     IS PERPENDICULAR TO THE LINE CONNECTING THE CENTERS OF THE OBJECT AND REFERENCE GRID
+C     THE X AND Y NEGATIVE LIMITA ARE OOX AND OOY
+          IF(REFODD) THEN
+C       ODD GRID
+              RGRID_SPAN=DBLE(NREF-1)*RDEL/2.0D0
+              ORX=-RGRID_SPAN
+              ORY=-RGRID_SPAN
+              RZ=RCENZ
+              GRZ=RCENZ
+          ELSE
+C       EVEN GRID
+              RGRID_SPAN=DBLE(NREF-1)*RDEL/2.0D0
+              ORX=-RGRID_SPAN
+              ORY=-RGRID_SPAN
+              RZ=RCENZ
+              GRZ=RCENZ
+          END IF
+          TESTSHAPER=.FALSE.
+          IF(NSSSYSTEM(22).EQ.0.0D0) TESTSHAPER=.TRUE.
+          IF(TESTSHAPER) THEN
+              RSHAPE=DABS(ORX)
+              IF(DABS(ORY).GT.DABS(ORX)) RSHAPE=DABS(ORY)
+          END IF
+C       INITIALIZE THE RAY HISTORY FILES
+          OPEN(UNIT=48,FILE=trim(HOME)//'NSSRHIST.DAT')
+          OPEN(UNIT=91,FILE=trim(HOME)//'NSSHIST.DAT')
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT')
+          CALL CLOSE_FILE(48,0)
+          CALL CLOSE_FILE(91,0)
+          CALL CLOSE_FILE(92,0)
+          OPEN(UNIT=48,FILE=trim(HOME)//'NSSRHIST.DAT')
+          OPEN(UNIT=91,FILE=trim(HOME)//'NSSHIST.DAT')
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT')
+C
+C       THE OUTER MOST LOOP, LOOPS THROUGH THE ACTIVE WAVELEGTNS
+          DO M=1,10
+              IF(NSSSYSTEM(M).NE.0.0D0.AND.NSSSYSTEM(M+10).NE.0.0D0) THEN
+                  NSSWAVL=NSSSYSTEM(M)
+                  CURWAVELENGTH=NSSWAVL
+                  NSSWVWT=NSSSYSTEM(M+10)
+                  NSSWAVNUM=M
+C       TRACE THAT WAVELENGTH
+                  DO I=1,NOBJ
+                      OX=OOX+(DBLE(I-1)*ODEL)
+                      OY=OOY
+                      DO J=1,NOBJ
+                          OY=OOY+(DBLE(J-1)*ODEL)
+                          IF(TESTSHAPES) THEN
+                              IF(DSQRT((OX**2)+(OY**2)).GT.SSHAPE) THEN
+C       SKIP TRACING THIS RAY. IT DOES NOT GO INTO THE RAY HISTORY
+                                  CYCLE
+                              END IF
+                          END IF
+                          DO K=1,NREF
+                              RX=ORX+(DBLE(K-1)*RDEL)
+                              RY=ORY
+                              DO L=1,NREF
+                                  RY=ORY+(DBLE(L-1)*RDEL)
+                                  IF(TESTSHAPER) THEN
+                                      IF(DSQRT((RX**2)+(RY**2)).GT.RSHAPE) THEN
+C       SKIP TRACING THIS RAY. IT DOES NOT GO INTO THE RAY HISTORY
+                                          CYCLE
+                                      END IF
+                                  END IF
+C       STARTING RAY COORDINATES ARE XSTART,YSTART,ZSTART
+C
+C       NOW CONVERT THE OX, OY AND RX AND RY FROM THE LOCAL COORDINATES OF THEIR
+C       RESPECTIVE GRID PLANES INTO GLOBAL COORDINATES
+C
+                                  CALL OXOYRXRY_LOCAL_TO_GLOBAL(OX,OY,RX,RY,GOX,GOY,GRX,GRY)
+C
+C       NOW ADD THE GLOBAL OBJECT AND REFERENCE GRID CENTERS
+                                  GOX=GOX+OCENX
+                                  GOY=GOY+OCENY
+                                  GRX=GRX+RCENX
+                                  GRY=GRY+RCENY
+C       WE ALREADY HAD OZ AND RZ
+C
+C       PROCEED WITH THE RAY TRACE
+C
+                                  XSTART=GOX
+                                  YSTART=GOY
+                                  ZSTART=GOZ
+C       STARTING RAY DIRECTION COSINES ARE:
+                                  LSTART=(GRX-GOX)
+                                  MSTART=(GRY-GOY)
+                                  NSTART=(GRZ-GOZ)
+                                  MAG=DSQRT((LSTART**2)+(MSTART**2)+(NSTART**2))
+                                  LSTART=(GRX-GOX)/MAG
+                                  MSTART=(GRY-GOY)/MAG
+                                  NSTART=(GRZ-GOZ)/MAG
+C       FRACTIONAL REFERENCE GRID COORDINATES ARE FRX,FRY
+                                  FRX=GRX/ORX
+                                  FRY=GRY/ORY
+                                  IF(ORX.EQ.0.0D0) FRX=0.0D0
+                                  IF(ORY.EQ.0.0D0) FRY=1.0D0
+C       WE NOW HAVE THE STARTING RAY COORDINATES AND DIRECTION COSINES
+C       IN GLOBAL COORDINATES FOR A RAY.
+C       CALCULATE THE PERPENDICULARS TO THIS STARTING RAY BECAUSE
+C       THESE MUST BE TRACKED FOR POLARIZATION.
+C       THEN CALL NSSRAY INORDER TO ACTUALLY PERFOM
+C       THE NSS RAY TRACE FOR THE SPECIFIC RAY.
+C       WE START AT THE OBJECT SURFACE WITH THESE STARTING VALUES AND TRACE
+C       THE RAY THROUGH THE SYSTEM. tHE STARTING RAY DATA IN THE GLOBAL COORDINATE
+C       SYSTEM IS KEPT IN THE START ARRAY, THE CORRESPONDING RAY DATA AT A SURFACE
+C       IN THE SURFACE COORDINATE SYSTEM ID KEPT IN STARTP, BOTH PASSED IN NSSMOD MODULE
+                                  START(1)=XSTART
+                                  START(2)=YSTART
+                                  START(3)=ZSTART
+                                  START(4)=LSTART
+                                  START(5)=MSTART
+                                  START(6)=NSTART
+                                  IF(NSSSYSTEM(34).EQ.-1.0D0) THEN
+C       THE OBJECT IS VIRTUAL AND THE RAY REALLY STARTS AT THE REFERENCE GRID LOCATION
+C       RX,RY,RZ (ADDED 4/13/2004)
+                                      START(1)=GRX
+                                      START(2)=GRY
+                                      START(3)=GRZ
+                                      START(4)=LSTART
+                                      START(5)=MSTART
+                                      START(6)=NSTART
+                                  END IF
+                                  IF(START(6).EQ.0.0D0) THEN
+                                      YANG=PII/2.0D0
+                                      XANG=PII/2.0D0
+                                  ELSE
+                                      IF(DABS(START(5)).LE.1.0D-15.AND.DABS(START(6)).LE.1.0D-15) THEN
+                                          YANG=0.0D0
+                                      ELSE
+                                          YANG=DATAN2(START(5),START(6))
+                                      END IF
+                                      IF(DABS(START(4)).LE.1.0D-15.AND.DABS(START(6)).LE.1.0D-15) THEN
+                                          XANG=0.0D0
+                                      ELSE
+                                          XANG=DATAN2(START(4),START(6))
+                                      END IF
+                                  END IF
+                                  START(7)=(1.0D0*DCOS(XANG))
+                                  START(8)=0.0D0
+                                  START(9)=-(1.0D0*DSIN(XANG))
+                                  START(10)=0.0D0
+                                  START(11)=(1.0D0*DCOS(XANG))
+                                  START(12)=-(1.0D0*DSIN(YANG))
+                                  START(13)=0.0D0
+                                  START(14)=0.0D0
+                                  START(15)=1.0D0
+C
+C       1. INITIALIZE ALL STARTING RAY DAYA
+                                  CALL INITIALIZE_RAY(FRX,FRY)
+                                  CURINDEXR=CURINDEX(M)
+                                  PREVINDEXR=CURINDEX(M)
+                                  CURINDEXI=CURINDEX(M+10)
+                                  PREVINDEXI=CURINDEX(M+10)
+C       CURINDEX() AND PREVINDEXR AND I AND CURINDEXR AND I
+C       WILL BE UPDATED AFTER THE COMPLETION OF EACH SURFACE INTERACTION.
+C       TRACE THE NON-SEQUENTIAL RAY
+                                  RHISTN=RHISTN+1
+                                  CALL NSSRAY
+                              END DO
+                          END DO
+                      END DO
+                  END DO
+              ELSE
+C       SKIP AND GO TO NEXT WAVELENGTH
+              END IF
+C       DO THE NEXT WAVELENGTH
+          END DO
+          CALL CLOSE_FILE(48,1)
+          CALL CLOSE_FILE(91,1)
+          CALL CLOSE_FILE(92,1)
+C                       RETURN
+      END
+      SUBROUTINE INITIALIZE_RAY(FRX,FRY)
+          USE NSSMOD
+          IMPLICIT NONE
+!        INTEGER I
+          REAL*8 FRX,FRY,APX,APR
+          INCLUDE 'datmai.inc'
+          NSSRAYFAIL=.FALSE.
+          NSSRAYFAILCODE(1)=0
+          NSSRAYFAILCODE(2)=0
+C       THE RAY IS AT THE CORRECT LOCATION AT THE REFERENCE GRID LOCATION.
+          OLD_LTEST=0.0D0
+C       SNUM IS THE SURFACE NUMBER FOR THE NEXT SURFACE INTERACTION
+C       AFTER OPTIMAL RAY INTERSECTION
+          SNUM=-1
+C       RAY ENERGY INCLUDING GAUSSIAN RAY APODIZATION TERM
+C       ADDED 4/1/2004
+          NSSRAY_ENERGY=1.0D0
+          APX=-DLOG(10.0D0**(-DABS(NSSSYSTEM(23))/10.0D0))
+          APR=(FRX**2)+(FRY**2)
+          NSSRAY_ENERGY=NSSRAY_ENERGY*DEXP(-APX*APR)
+          START(16)=NSSRAY_ENERGY
+
+          NSSRAY_HITS=0
+C       RAY POLARIZATION DATA
+          NSSRAY_RPOL(1:20)=0.0D0
+          NSSRAY_IPOL(1:20)=0.0D0
+C       RAY EXISTENCE STATUS (ASSUME IT EXISTS)
+          NSSRAY_EXIST=.TRUE.
+C       CURRENT RAY DATA IS AT SURFACE 0 AT STARTING SOURCE LOCATION
+          NSS_GRAY(1:50)=START(1:50)
+          NSS_GRAYP(1:50)=START(1:50)
+          NSS_LRAY(1:50)=START(1:50)
+          NSS_LRAYP(1:50)=START(1:50)
+          CURGLASS(1)=NSSOGLASS(1)
+          CURGLASS(2)=NSSOGLASS(2)
+          CURINDEX(1:20)=OBJINDEX(1:20)
+          RETURN
+      END
+      SUBROUTINE NSSHIST(J)
+C       ANNOTATED RAY HISTORY FILE
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER J,K
+          INCLUDE 'datmai.inc'
+C       WRITE OBJECT,SURFACE,FAILURE CODES
+          WRITE(91,*) 'SURF#     FAILURE CODE'
+          WRITE(91,1) J,NSSRAYFAILCODE(2)
+ 1        FORMAT(I5,5X,I3)
+          IF(J.EQ.0) THEN
+          END IF
+C       WRITE RAY GLOBAL POSITION
+          WRITE(91,*) 'RAY GLOBAL POSITIONS'
+          WRITE(91,7)
+ 7        FORMAT(10X,'X',12X,2X,10X,'Y',12X,2X,'Z')
+ 8        FORMAT(10X,'L',12X,2X,10X,'M',12X,2X,'N')
+ 9        FORMAT(10X,'XL',11X,2X,10X,'XM',11X,2X,'XN')
+ 10       FORMAT(10X,'YL',11X,2X,10X,'YM',11X,2X,'YN')
+ 11       FORMAT(10X,'LN',11X,2X,10X,'MN',11X,2X,'NN')
+ 12       FORMAT(10X,' N',11X,2X,10X,'NP')
+          WRITE(91,2) NSS_GRAY(1),NSS_GRAY(2),NSS_GRAY(3)
+C       WRITE RAY LOCAL POSITION
+          WRITE(91,*) 'RAY LOCAL POSITIONS'
+          WRITE(91,7)
+          WRITE(91,2) NSS_LRAY(1),NSS_LRAY(2),NSS_LRAY(3)
+ 2        FORMAT(D23.15,2X,D23.15,2X,D23.15)
+ 13       FORMAT(D23.15,2X,D23.15)
+C       WRITE RAY GLOBAL DIR COSINES
+          WRITE(91,*) 'BEFORE SURFACE INTERACTION'
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS'
+          WRITE(91,8)
+          WRITE(91,2) NSS_GRAY(4),NSS_GRAY(5),NSS_GRAY(6)
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS, X-VECTOR'
+          WRITE(91,9)
+          WRITE(91,2) NSS_GRAY(7),NSS_GRAY(8),NSS_GRAY(9)
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS, Y-VECTOR'
+          WRITE(91,10)
+          WRITE(91,2) NSS_GRAY(10),NSS_GRAY(11),NSS_GRAY(12)
+C       WRITE RAY LOCAL DIR COSINES
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS'
+          WRITE(91,8)
+          WRITE(91,2) NSS_LRAY(4),NSS_LRAY(5),NSS_LRAY(6)
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS, X-VECTOR'
+          WRITE(91,9)
+          WRITE(91,2) NSS_LRAY(7),NSS_LRAY(8),NSS_LRAY(9)
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS, Y-VECTOR'
+          WRITE(91,10)
+          WRITE(91,2) NSS_LRAY(10),NSS_LRAY(11),NSS_LRAY(12)
+C       WRITE RAY GLOBALP DIR COSINES
+          WRITE(91,*) 'AFTER SURFACE INTERACTION'
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS'
+          WRITE(91,8)
+          WRITE(91,2) NSS_GRAYP(4),NSS_GRAYP(5),NSS_GRAYP(6)
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS, X-VECTOR'
+          WRITE(91,9)
+          WRITE(91,2) NSS_GRAYP(7),NSS_GRAYP(8),NSS_GRAYP(9)
+          WRITE(91,*) 'RAY GLOBAL DIRECTIONS, Y-VECTOR'
+          WRITE(91,10)
+          WRITE(91,2) NSS_GRAYP(10),NSS_GRAYP(11),NSS_GRAYP(12)
+C       WRITE RAY LOCALP  DIR COSINES
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS'
+          WRITE(91,8)
+          WRITE(91,2) NSS_LRAYP(4),NSS_LRAYP(5),NSS_LRAYP(6)
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS, X-VECTOR'
+          WRITE(91,9)
+          WRITE(91,2) NSS_LRAYP(7),NSS_LRAYP(8),NSS_LRAYP(9)
+          WRITE(91,*) 'RAY LOCAL DIRECTIONS, Y-VECTOR'
+          WRITE(91,10)
+          WRITE(91,2) NSS_LRAYP(10),NSS_LRAYP(11),NSS_LRAYP(12)
+C       WRITE SURFACE NORMAL LOCAL DIR COSINES AT RAY INTERSECTION POINT
+          WRITE(91,*) 'LOCAL SURFACE NORMALS'
+          WRITE(91,11)
+          WRITE(91,2) NSSLN,NSSMN,NSSNN
+          WRITE(91,*) 'REFRACTIVE INDEX VALUES'
+          WRITE(91,12)
+          WRITE(91,13) NSS_GRAY(17),NSS_GRAYP(17)
+C       WRITE RAY ENERGY AND NUMBER OF HITS
+          WRITE(91,*) 'RELATIVE RAY ENERGY       RAY HITS'
+          WRITE(91,3) NSSRAY_ENERGY,NSSRAY_HITS
+ 3        FORMAT(D23.15,'  ',I10)
+C       WRITE RAY LENGTH AND OPL FROM LAST INTERSECTION TO THIS
+          WRITE(91,*) 'OPL AND PHYSICAL RAY LENGTH FROM LAST SURFACE'
+          WRITE(91,13) NSS_OPL,NSS_RAYLENGTH
+C       WRITE RAY POLARIZATION DATA
+          WRITE(91,*) 'POLARIZATION ARRAY DATA'
+          DO K=1,20
+              WRITE(91,4) NSSRAY_RPOL(K),NSSRAY_IPOL(K)
+          END DO
+ 4        FORMAT(D23.15,','D23.15)
+C       WRITE CURRENT WAVELENGTH VALUE
+          WRITE(91,*) 'CURRENT WAVELENGTH IN MICRONS:'
+C       WRITE PREVIOUS AND CURRENT INDEX VALUES
+          WRITE(91,5) CURWAVELENGTH
+          WRITE(91,*) 'PREVIOUS REAL AND IMAGINARY INDEX VALUES:'
+          WRITE(91,6) PREVINDEXR,PREVINDEXI
+          WRITE(91,*) 'CURRENT REAL AND IMAGINARY INDEX VALUES:'
+          WRITE(91,6) CURINDEXR,CURINDEXI
+ 5        FORMAT(D23.15)
+ 6        FORMAT(D23.15,','D23.15)
+          WRITE(91,*) '*************************************************'
+          RETURN
+      END
+      SUBROUTINE NSSHT(J)
+C       SHORT RAY HISTORY FILE
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER J
+C       J IS RAY NUMBER
+          INCLUDE 'datmai.inc'
+C       WRITE(OUTLYNE,*) J
+C       CALL SHOWIT(1)
+C       WRITE(OUTLYNE,*)
+C    1  NSS_GRAY(1),NSS_GRAY(2),NSS_GRAY(3)
+C       CALL SHOWIT(1)
+          WRITE(92,1) J,
+     1    NSS_GRAY(1),NSS_GRAY(2),NSS_GRAY(3),NSS_GRAY(4),NSS_GRAY(5)
+     2    ,NSS_GRAY(6),NSSWAVNUM,NSSRAY_HITS
+ 1        FORMAT(I5,D23.15,D23.15,D23.15,D23.15,D23.15,D23.15,I2,I8)
+          RETURN
+      END
+      SUBROUTINE NSSRHIST(J)
+C       NON ANNOTATED RAY HISTORY FILE
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER J,K
+!        LOGICAL ERR
+          INCLUDE 'datmai.inc'
+C       WRITE OBJECT,SURFACE,FAILURE CODES
+          WRITE(48,*) J,NSSRAYFAILCODE(1),
+     1    NSSRAYFAILCODE(2)
+C       WRITE RAYDATA
+          WRITE(48,*)
+     1    (NSS_LRAY(K),K=1,17)
+          WRITE(48,*)
+     1    (NSS_LRAYP(K),K=1,17)
+          WRITE(48,*)
+     1    (NSS_GRAY(K),K=1,17)
+          WRITE(48,*)
+     1    (NSS_GRAYP(K),K=1,17)
+C       WRITE RAY ENERGY AND NUMBER OF HITS
+          WRITE(48,*) NSSRAY_ENERGY,NSSRAY_HITS
+C       WRITE RAY POLARIZATION DATA
+          WRITE(48,*) (NSSRAY_RPOL(K),K=1,20)
+          WRITE(48,*) (NSSRAY_IPOL(K),K=1,20)
+C       WRITE CURRENT WAVELENGTH VALUE
+C       WRITE PREVIOUS AND CURRENT INDEX VALUES
+          WRITE(48,*) CURWAVELENGTH
+          WRITE(48,*) PREVINDEXR,PREVINDEXI
+          WRITE(48,*) CURINDEXR,CURINDEXI
+          RETURN
+      END
+      SUBROUTINE TAG_RHIST(K)
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER K
+          INCLUDE 'datmai.inc'
+C       WRITE RAY NUMBER TO BOTH HISTORY FILES
+          WRITE(48,1) K
+          WRITE(91,1) K
+ 1        FORMAT(I10)
+          RETURN
+      END
+      SUBROUTINE NSSRAY
+          USE NSSMOD
+          IMPLICIT NONE
+          INTEGER JJ,I
+          INCLUDE 'datmai.inc'
+
+C       THIS IS AN INDIVIDUAL RAY TRACE LOOP WHICH GOES UNTIL THE RAY
+C       RUNS OUT OF ENERGY OR HITS THE DETECTOR SURFACE.
+C       A RAY RUNS OUT OF ENERGY WHEN IT HAS INTERSECTED
+C       NSSSYSTEM(27) SURFACES OR WHEN ITS ENERGY DROPS BELOW OF THE VALUE NSSSYSTEM(26)
+C       THE VARIABLE NSSRAY_HITS TRACKS THE NUMBER OF SURFACE HITS, THE VARIABLE NSS_ENERGY TRACKS
+C       THE FRACTIONAL RAY ENERGY. DETSNUM TRACKS THE DETECTOR SURFACE AND AT
+C       THE DETECTOR SURFACE, NSSSYSTEM(49)
+C       OUTPUT RAY HISTORY FOR THE OBJECT SURFACE (SOURCE)
+          CALL TAG_RHIST(RHISTN)
+          CALL NSSRHIST(0)
+          CALL NSSHIST(0)
+          CALL NSSHT(0)
+C       INITIALIZE OPL AND RAY LENGTHS TO ZERO
+          NSS_OPL=0.0D0
+          NSS_RAYLENGTH=0.0D0
+          GO TO 11
+C       FIRST TIME IN, WE DON'T RUN THE FOLLOWING TEST
+ 10       CONTINUE
+C       STATEMENT 10 IS THE RETURN POINT FOR THE NEXT ATTEMPTED RAY/SURFACE INTERSECTION
+C       AND INTERACTION. CHECK TO SEE THAT THE RAY HAS ENOUGH ENERGY LEFT TO PROCEED.
+          IF(NSSRAY_HITS.GE.INT(NSSSYSTEM(27)).OR.
+     1    NSSRAY_ENERGY.LE.NSSSYSTEM(26).OR.JJ.EQ.MAXS+1) RETURN
+C       RAY HAS DIED, RETURN TO NSSTRACE TO TRACE THE NEXT RAY
+ 11       CONTINUE
+C
+C       WE HAVE THE STARTING RAY COORDINATES AND DIRECTION
+C       COSINES IN GLOBAL AND LOCAL COORDINATES PLUS STARTING ENERGY, POLARIZATION
+C       AND EXISTENCE FLAGS HAVE BEEN SET ALL IN NSSTRACE FOR A SPECIFIC RAY. WE KNOW
+C       EVERYTHING ABOUT THE RAY AT THE SOURCE.
+C
+C       1. FIND OUT WHICH SURFACE NUMBER THE RAY STRIKES
+C       WITH LEAST POSITIVE, NON ZERO OPTICAL PATH LENGTH.
+C       THE RAY MUST FALL INSIDE THE SURFACE
+C       BOUNDARY AND INSIDE THE ASSIGNED CLAP AND NOT INSIDE AN ASSIGED HOLE.
+C       THAT OBJECT AND SURFACE NUMBER IS RETURNED VIA JJ
+C
+C       NOTE:
+C       IN THIS SEARCH PROCESS, THE PERMANENT RAY DATA IS NOT CHANGED!
+C
+          I=LASTSUR
+          LVECTOR(1:I)=0.0D0
+          VECTORL(1:I)=0.0D0
+          VECTORM(1:I)=0.0D0
+          VECTORN(1:I)=0.0D0
+          CALL NSS_FIND_SURFACE(JJ)
+C
+C       NOW INTERSECT SURFACE JJ
+          IF(JJ.EQ.MAXS+1) THEN
+C       SAVE PREVIOUS RAYS DATA
+C       WE ARE GOING TO INTERSECT TRAVEL THE "TERMINAL RAY DISTANCE"
+C       SAVED IN NSSSYSTEM(25)
+C LOCAL
+              RRX=NSS_LRAY(1)
+              RRY=NSS_LRAY(2)
+              RRZ=NSS_LRAY(3)
+              RRX=RRX+(NSSSYSTEM(25)*RRL)
+              RRY=RRY+(NSSSYSTEM(25)*RRM)
+              RRZ=RRZ+(NSSSYSTEM(25)*RRN)
+              NSS_LRAY(1)=RRX
+              NSS_LRAY(2)=RRY
+              NSS_LRAY(3)=RRZ
+              NSS_LRAY(4)=RRL
+              NSS_LRAY(5)=RRM
+              NSS_LRAY(6)=RRN
+              NSS_LRAY(7)=XRRL
+              NSS_LRAY(8)=XRRM
+              NSS_LRAY(9)=XRRN
+              NSS_LRAY(10)=YRRL
+              NSS_LRAY(11)=YRRM
+              NSS_LRAY(12)=YRRN
+C GLOBAL
+              RRX=NSS_GRAY(1)
+              RRY=NSS_GRAY(2)
+              RRZ=NSS_GRAY(3)
+              RRL=NSS_GRAY(4)
+              RRM=NSS_GRAY(5)
+              RRN=NSS_GRAY(6)
+              XRRN=NSS_GRAY(7)
+              XRRN=NSS_GRAY(8)
+              XRRN=NSS_GRAY(9)
+              YRRN=NSS_GRAY(10)
+              YRRN=NSS_GRAY(11)
+              YRRN=NSS_GRAY(12)
+              RRX=RRX+(NSSSYSTEM(25)*RRL)
+              RRY=RRY+(NSSSYSTEM(25)*RRM)
+              RRZ=RRZ+(NSSSYSTEM(25)*RRN)
+              NSS_GRAY(1)=RRX
+              NSS_GRAY(2)=RRY
+              NSS_GRAY(3)=RRZ
+              NSS_GRAY(4)=RRL
+              NSS_GRAY(5)=RRM
+              NSS_GRAY(6)=RRN
+              NSS_GRAY(7)=XRRN
+              NSS_GRAY(8)=XRRN
+              NSS_GRAY(9)=XRRN
+              NSS_GRAY(10)=YRRN
+              NSS_GRAY(11)=YRRN
+              NSS_GRAY(12)=YRRN
+C
+              NSS_LRAYP(1:50)=NSS_LRAY(1:50)
+              NSS_GRAYP(1:50)=NSS_GRAY(1:50)
+          ELSE
+C       SAVE PREVIOUS RAYS DATA
+C       NOT JJ=0
+C
+C       CONVERT GLOBAL RAY DATA TO LOCAL RAY DATA
+              CALL NSS_TRANSF(JJ)
+              CALL NSS_TRANSFP(JJ)
+              CALL NSS_HIT_SURFACE(JJ)
+C
+C       2. WE ARE NOW AT JJ, INTERACT THE RAY WITH THE SURFACE.
+C       SET THE NSS ENERGYS FOR THE BEFORE INTERACTION RAYS
+              NSS_GRAY(16)=NSSRAY_ENERGY
+              NSS_LRAY(16)=NSSRAY_ENERGY
+              CALL NSS_SURFACE_INTERACT(JJ)
+              NSS_GRAY(17)=NSS_N
+              NSS_LRAY(17)=NSS_N
+              NSS_GRAYP(17)=NSS_NP
+              NSS_LRAYP(17)=NSS_NP
+              CALL NSS_TRANSF_BACK(JJ)
+              CALL NSS_TRANSFP_BACK(JJ)
+          END IF
+
+C                       IF RAY FAILURE HAPPENED OR WE HIT UNIVERSE SPHERE
+          IF(NSSRAYFAIL.AND.JJ.NE.MAXS+1) THEN
+              NSSRAY_ENERGY=0.0D0
+          END IF
+C
+C       3. WRITE THE RAY DATA IN THE RAY HISTORY FILE AND THEN RETURN TO STATEMENT 10
+C       TO PROCEED WITH THE NEXT RAY/SURFACE INTERSECTION/INTERACTION
+C
+          NSSRAYFAILCODE(1)=JJ
+          NSSRAY_HITS=NSSRAY_HITS+1
+          CALL TAG_RHIST(RHISTN)
+          CALL NSSRHIST(JJ)
+          CALL NSSHIST(JJ)
+          CALL NSSHT(JJ)
+C       NOW THE "P" RAY DATA BECOMES THE UN"P" DATA FOR THE NEXT SURFACE
+          NSS_GRAY(1)=NSS_GRAYP(1)
+          NSS_GRAY(2)=NSS_GRAYP(2)
+          NSS_GRAY(3)=NSS_GRAYP(3)
+          NSS_GRAY(4)=NSS_GRAYP(4)
+          NSS_GRAY(5)=NSS_GRAYP(5)
+          NSS_GRAY(6)=NSS_GRAYP(6)
+          NSS_GRAY(7)=NSS_GRAYP(7)
+          NSS_GRAY(8)=NSS_GRAYP(8)
+          NSS_GRAY(9)=NSS_GRAYP(9)
+          NSS_GRAY(10)=NSS_GRAYP(10)
+          NSS_GRAY(11)=NSS_GRAYP(11)
+          NSS_GRAY(12)=NSS_GRAYP(12)
+          NSS_GRAY(13)=NSS_GRAYP(13)
+          NSS_GRAY(14)=NSS_GRAYP(14)
+          NSS_GRAY(15)=NSS_GRAYP(15)
+          NSS_LRAY(1)=NSS_LRAYP(1)
+          NSS_LRAY(2)=NSS_LRAYP(2)
+          NSS_LRAY(3)=NSS_LRAYP(3)
+          NSS_LRAY(4)=NSS_LRAYP(4)
+          NSS_LRAY(5)=NSS_LRAYP(5)
+          NSS_LRAY(6)=NSS_LRAYP(6)
+          NSS_LRAY(7)=NSS_LRAYP(7)
+          NSS_LRAY(8)=NSS_LRAYP(8)
+          NSS_LRAY(9)=NSS_LRAYP(9)
+          NSS_LRAY(10)=NSS_LRAYP(10)
+          NSS_LRAY(11)=NSS_LRAYP(11)
+          NSS_LRAY(12)=NSS_LRAYP(12)
+          NSS_LRAY(13)=NSS_LRAYP(13)
+          NSS_LRAY(14)=NSS_LRAYP(14)
+          NSS_LRAY(15)=NSS_LRAYP(15)
+C
+C       SET AFTER INTERACTION ENERGY LEVELS
+          NSS_LRAYP(16)=NSSRAY_ENERGY
+          NSS_GRAYP(16)=NSSRAY_ENERGY
+          GO TO 10
+      END
+      SUBROUTINE NSS_HIT_SURFACE(J)
+          USE NSSMOD
+          INTEGER J
+!        REAL*8 URAD
+          INCLUDE 'datmai.inc'
+C       WE ARE NOW AT J
+C       THE REFRACTIVE INDEX VALUES ARE:
+C       WHERE 1 AND 2 REFER TO THE SPACES ON EACH SIDE OF THE SURFACE
+          REALINDEX1=NSSALENS(100+NSSWAVNUM,J)
+          REALINDEX2=NSSALENS(120+NSSWAVNUM,J)
+          IMAGINDEX1=NSSALENS(110+NSSWAVNUM,J)
+          IMAGINDEX2=NSSALENS(130+NSSWAVNUM,J)
+C       SET SIMPLE LOCAL RAY DATA VALUES
+          RRX=NSS_LRAY(1)
+          RRY=NSS_LRAY(2)
+          RRZ=NSS_LRAY(3)
+          RRL=NSS_LRAY(4)
+          RRM=NSS_LRAY(5)
+          RRN=NSS_LRAY(6)
+          XRRL=NSS_LRAY(7)
+          XRRM=NSS_LRAY(8)
+          XRRN=NSS_LRAY(9)
+          YRRL=NSS_LRAY(10)
+          YRRM=NSS_LRAY(11)
+          YRRN=NSS_LRAY(12)
+C       THE SURFACE DIR COSINES AT THE SURFACE VERTEX ARE:
+          NSSLN=0.0D0
+          NSSMN=0.0D0
+          NSSNN=1.0D0
+          IF(INT(NSSALENS(1,J)).EQ.1)  CALL NSSFLA(J)
+          IF(INT(NSSALENS(1,J)).EQ.2)  CALL NSSASP(J)
+          IF(INT(NSSALENS(1,J)).EQ.3)  CALL NSSANA(J)
+          IF(INT(NSSALENS(1,J)).EQ.4) CALL NSSUSER()
+          IF(INT(NSSALENS(1,J)).EQ.5)  CALL NSSMEM(J)
+          IF(INT(NSSALENS(1,J)).EQ.6) CALL NSSTUB(J)
+C        THE SINGLE INTERSECTION POINT IS, BY DEFINITION, CORRECT
+C        NOW LOAD THE RAY DATA INTO THE LOCAL ARRAY
+          NSS_LRAY(1)=RRX
+          NSS_LRAY(2)=RRY
+          NSS_LRAY(3)=RRZ
+          NSS_LRAY(4)=RRL
+          NSS_LRAY(5)=RRM
+          NSS_LRAY(6)=RRN
+          NSS_LRAY(7)=XRRL
+          NSS_LRAY(8)=XRRM
+          NSS_LRAY(9)=XRRN
+          NSS_LRAY(10)=YRRL
+          NSS_LRAY(11)=YRRM
+          NSS_LRAY(12)=YRRN
+          NSS_LRAY(13)=NSSLN
+          NSS_LRAY(14)=NSSMN
+          NSS_LRAY(15)=NSSNN
+          RETURN
+      END
+
+
+      SUBROUTINE NSSCLP(JJ,SFI)
+          USE NSSMOD
+          USE GLOBALS
+C
+          IMPLICIT NONE
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y
+     1    ,ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,Z1,ANGLE,AN2
+     3    ,X00,Y00,Z0,LX0,LY0,LZ0,SFI
+     4    ,X1,Y1,MX0,MY0,MZ0,NX0,NY0,NZ0,XID,YID
+C
+          INTEGER J,IK,JJ,ALLOERR
+C
+          INTEGER IX,IY,I,IPST
+C
+!      INTEGER SURFACEI
+C
+          INTEGER COLPAS
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+          REAL*8 CLPDAT
+          DIMENSION CLPDAT(:,:)
+          ALLOCATABLE :: CLPDAT
+C
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          ALLOCATE(CLPDAT(0:360,3),STAT=ALLOERR)
+C
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C
+          CLPDAT(0:360,1:3)=0.0
+C
+          X=0.0D0
+          Y=0.0D0
+          XID=0.0D0
+          YID=0.0D0
+C
+C       ALL INPUT IS OK, KEEP GOING
+C     THE ARRAY CONTAINING SURFACE CLAP DATA IS:
+C     CLPDAT(0:360,1:3)
+C
+C     THE FIRST DIMENSION IS FOR THE DATA POINT NUMBER
+C     THE SECOND DIMENSION IS FOR THE X,Y AND Z COORDINATES OR THE POINT
+C     THE THIRD IS THE SURFACE NUMBER
+C
+C     WE NEED TO LOAD THE ARRAY BEFORE PLOTTING
+C
+C     THE PROCEDURE IS:
+C
+C     CYCLE THROUGH ALL THE SURFACES
+C
+C     1. WE WILL CLOCK AROUND THE CLEAR APERTURE FROM THE LOCAL +X
+C     TOWARD THE LOCAL +Y AXIS,
+C     4.0 DEGREE INCREMENTS AS MEASURED
+C     BY AN OBSERVER AT THE SURFACE VERTEX, IN THE LOCAL COORDINATE
+C     SYSTEM OF THE SURFACE, WITH THE OBSERVER FACING THE -Z AXIS
+C     DIRECTION
+C
+          DO J=0,360
+              ANGLE=(DBLE(J)*PII)/180.0D0
+              AN2=(DBLE(J+1)*PII)/180.0D0
+C     NOW ALONG THIS ANGLED LINE, WHAT ARE THE X AND Y COORDINATES
+C     OF THE CLEAR APERTURE
+C
+              CALL NSSCAO1(JJ,X,Y,ANGLE,AN2)
+              X=X*SFI
+              Y=Y*SFI
+C
+C     THE RETURNED X AND Y ARE WHERE THE SAG IS TO BE CALCULATED
+C
+C     2. USE APPROPRIATE CALLS TO THE NSSSAG ROUTINE
+C
+              CALL NSSSAG(JJ,X,Y,Z)
+C
+C     ASSIGN ARRAY VALUES BASED ON J VALUE
+              CLPDAT(J,1)=X
+              CLPDAT(J,2)=Y
+              CLPDAT(J,3)=Z
+          END DO
+C
+C     3. THE ARRAYS NOW HAVE LOCAL X,Y AND Z VALUES STORED IN THEM
+C     CONVERT THE LOCAL X ANY Y CLAPS TO GLOBAL NUMBERS
+C     GLOBAL VERTEX DATA IS
+          DO I=0,360
+              X00=NSSVERTEX(1,JJ)
+              Y00=NSSVERTEX(2,JJ)
+              Z0 =NSSVERTEX(3,JJ)
+              LX0=NSSVERTEX(4,JJ)
+              MX0=NSSVERTEX(5,JJ)
+              NX0=NSSVERTEX(6,JJ)
+              LY0=NSSVERTEX(7,JJ)
+              MY0=NSSVERTEX(8,JJ)
+              NY0=NSSVERTEX(9,JJ)
+              LZ0=NSSVERTEX(10,JJ)
+              MZ0=NSSVERTEX(11,JJ)
+              NZ0=NSSVERTEX(12,JJ)
+              X=CLPDAT(I,1)
+              Y=CLPDAT(I,2)
+              Z=CLPDAT(I,3)
+C
+              X1=X00+((LX0*(X))+(LY0*(Y))
+     1        +(LZ0*(Z)))
+              Y1=Y00+((MX0*(X))+(MY0*(Y))
+     1        +(MZ0*(Z)))
+              Z1=Z0+((NX0*(X))+(NY0*(Y))
+     1        +(NZ0*(Z)))
+              CLPDAT(I,1)=X1
+              CLPDAT(I,2)=Y1
+              CLPDAT(I,3)=Z1
+          END DO
+C
+C     4. NOW DETERMINE THE BEST PLACE FOR THE ROTATION POINT FOR
+C               PLOT LOOK/VIEW
+C
+          CALL NSSROT
+C
+C     5.  CONVERT THE GLOBAL X AND Y CLAP VALUES
+C               USING THE LOOK/VIEW VALUES
+          DO I=0,360
+              X=CLPDAT(I,1)
+              Y=CLPDAT(I,2)
+              Z=CLPDAT(I,3)
+              X=X-XROT
+              Y=Y-YROT
+              Z=Z-ZROT
+              XN=ROT1X(X,Z,VIEPH)
+              YN=Y
+              ZN=ROT1Z(X,Z,VIEPH)
+              X=XN
+              Y=YN
+              Z=ZN
+C
+              ZN=ROT2Z(Z,Y,VIEAL)
+              YN=ROT2Y(Z,Y,VIEAL)
+              XN=X
+              CLPDAT(I,1)=XN
+              CLPDAT(I,2)=YN
+              CLPDAT(I,3)=ZN
+          END DO
+          XMAXI=XN                  !Add by ENDO
+          XMINI=XN                  !Add by ENDO
+
+C
+C     THE ARRAYS NOW HAVE GLOBAL SURFACE CLAP DATA IN THEM
+C
+C     6.IF NEEDED, DETERMINE SCALE FACTORS AND PLOT RANGE
+C
+          CALL NSSPLTSC
+C
+C     7.CYCLE THROUGH THE THE ARRAYS, APPLY SCALE FACTORS
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+          DO I=0,360
+              CLPDAT(I,1)=(CLPDAT(I,1)/NSSSCFA)*1000.0D0
+              CLPDAT(I,2)=(CLPDAT(I,2)/NSSSCFA)*1000.0D0
+          END DO
+C
+C     8. APPLY THE XSHIFT AND YSHIFT VALUES
+          DO I=0,360
+              IF(LORIENT) CALL ORSHIFT
+              CLPDAT(I,1)=CLPDAT(I,1)+DBLE(PXSHFT)
+              CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0+DBLE(PYSHFT)
+          END DO
+C
+C     9. SET THE PLOT JUSTIFICATION IF NEEDED
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+C     NOW
+          IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+              JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+              RCL=-1
+          ELSE
+          END IF
+          IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+              RCL=-2
+              JUSOFF=5000.0D0
+          ELSE
+          END IF
+          IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+              JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+              RCL=-3
+          ELSE
+          END IF
+C
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)+JUSOFF
+          END DO
+C     9. PLOT GAMMA
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)-5000.0D0
+              CLPDAT(I,2)=CLPDAT(I,2)-3500.0D0
+          END DO
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+          IF(DBLE(PGAMMA).NE.0.0D0) THEN
+              LKG=(PII/180.0D0)*DBLE(PGAMMA)
+
+              DO I=0,360
+                  X=CLPDAT(I,1)
+                  Y=CLPDAT(I,2)
+                  XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                  YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                  CLPDAT(I,1)=XNEW
+                  CLPDAT(I,2)=YNEW
+              END DO
+          ELSE
+          END IF
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)+5000.0D0
+              CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0
+          END DO
+C
+C     NOW DRAW THE CLAP
+C     WITH THE PEN UP, GO TO THE STARTING PLOT POSITION
+          IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          DO J=0,360
+C     PUT INSTRUCTIONS IN P1ARAY TO DROP PEN AND DRAW
+              IF(J.EQ.0.or.J.eq.360) IPST=0
+              IF(J.NE.0) IPST=1
+              IF(CLPDAT(J,1).GT.1.0D6) CLPDAT(J,1)=1.0D6
+              IF(CLPDAT(J,2).GT.1.0D6) CLPDAT(J,2)=1.0D6
+              IF(CLPDAT(J,1).LT.-1.0D6) CLPDAT(J,1)=-1.0D6
+              IF(CLPDAT(J,2).LT.-1.0D6) CLPDAT(J,2)=-1.0D6
+              IX=INT(CLPDAT(J,1))
+              IY=INT(CLPDAT(J,2))
+              P1ARAY(J,1,1)=IX
+              P1ARAY(J,2,1)=IY
+              P1ARAY(J,3,1)=IPST
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          END DO
+C     FINISHED WITH THAT CLAP, LIFT PEN
+          IPST=0
+C     NOW ISSUE THE PLOTTING COMMANDS STORED IN THE P1ARAY ARRAY
+C
+C     LINE TYPE SETTING
+          COLPAS=COLCLP
+          CALL MY_COLTYP(COLPAS)
+          OLLNTP=LNTYPE
+          LNTYPE=0
+          FIXUP=.FALSE.
+          DO IK=0,360
+!      CALL PENMV2(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1))
+              call datacolorssave(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1)
+     &        ,3)
+          END DO
+          LNTYPE=OLLNTP
+C
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          RETURN
+      END
+
+
+      SUBROUTINE NSSHOL(JJ)
+          USE NSSMOD
+          USE GLOBALS
+C
+          IMPLICIT NONE
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y
+     1    ,ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,Z1,ANGLE,AN2
+     3    ,X00,Y00,Z0,LX0,LY0,LZ0
+     4    ,X1,Y1,MX0,MY0,MZ0,NX0,NY0,NZ0,XID,YID
+C
+          INTEGER J,IK,JJ,ALLOERR
+C
+          INTEGER IX,IY,I,IPST
+C
+!      INTEGER SURFACEI
+C
+          INTEGER COLPAS
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+          REAL*8 CLPDAT
+          DIMENSION CLPDAT(:,:)
+          ALLOCATABLE :: CLPDAT
+C
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          ALLOCATE(CLPDAT(0:360,3),STAT=ALLOERR)
+C
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C
+          CLPDAT(0:360,1:3)=0.0
+C
+          X=0.0D0
+          Y=0.0D0
+          XID=0.0D0
+          YID=0.0D0
+C
+C       ALL INPUT IS OK, KEEP GOING
+C     THE ARRAY CONTAINING SURFACE CLAP DATA IS:
+C     CLPDAT(0:360,1:3)
+C
+C     THE FIRST DIMENSION IS FOR THE DATA POINT NUMBER
+C     THE SECOND DIMENSION IS FOR THE X,Y AND Z COORDINATES OR THE POINT
+C     THE THIRD IS THE SURFACE NUMBER
+C
+C     WE NEED TO LOAD THE ARRAY BEFORE PLOTTING
+C
+C     THE PROCEDURE IS:
+C
+C     CYCLE THROUGH ALL THE SURFACES
+C
+C     1. WE WILL CLOCK AROUND THE CLEAR APERTURE FROM THE LOCAL +X
+C     TOWARD THE LOCAL +Y AXIS,
+C     4.0 DEGREE INCREMENTS AS MEASURED
+C     BY AN OBSERVER AT THE SURFACE VERTEX, IN THE LOCAL COORDINATE
+C     SYSTEM OF THE SURFACE, WITH THE OBSERVER FACING THE -Z AXIS
+C     DIRECTION
+C
+          DO J=0,360
+              ANGLE=(DBLE(J)*PII)/180.0D0
+              AN2=(DBLE(J+1)*PII)/180.0D0
+C     NOW ALONG THIS ANGLED LINE, WHAT ARE THE X AND Y COORDINATES
+C     OF THE CLEAR APERTURE
+C
+              CALL NSSCAO2(JJ,X,Y,ANGLE,AN2)
+C
+C     THE RETURNED X AND Y ARE WHERE THE SAG IS TO BE CALCULATED
+C
+C     2. USE APPROPRIATE CALLS TO THE NSSSAG ROUTINE
+C
+              CALL NSSSAG(JJ,X,Y,Z)
+C
+C     ASSIGN ARRAY VALUES BASED ON J VALUE
+              CLPDAT(J,1)=X
+              CLPDAT(J,2)=Y
+              CLPDAT(J,3)=Z
+          END DO
+C
+C     3. THE ARRAYS NOW HAVE LOCAL X,Y AND Z VALUES STORED IN THEM
+C     CONVERT THE LOCAL X ANY Y CLAPS TO GLOBAL NUMBERS
+C     GLOBAL VERTEX DATA IS
+          DO I=0,360
+              X00=NSSVERTEX(1,JJ)
+              Y00=NSSVERTEX(2,JJ)
+              Z0 =NSSVERTEX(3,JJ)
+              LX0=NSSVERTEX(4,JJ)
+              MX0=NSSVERTEX(5,JJ)
+              NX0=NSSVERTEX(6,JJ)
+              LY0=NSSVERTEX(7,JJ)
+              MY0=NSSVERTEX(8,JJ)
+              NY0=NSSVERTEX(9,JJ)
+              LZ0=NSSVERTEX(10,JJ)
+              MZ0=NSSVERTEX(11,JJ)
+              NZ0=NSSVERTEX(12,JJ)
+              X=CLPDAT(I,1)
+              Y=CLPDAT(I,2)
+              Z=CLPDAT(I,3)
+C
+              X1=X00+((LX0*(X))+(LY0*(Y))
+     1        +(LZ0*(Z)))
+              Y1=Y00+((MX0*(X))+(MY0*(Y))
+     1        +(MZ0*(Z)))
+              Z1=Z0+((NX0*(X))+(NY0*(Y))
+     1        +(NZ0*(Z)))
+              CLPDAT(I,1)=X1
+              CLPDAT(I,2)=Y1
+              CLPDAT(I,3)=Z1
+          END DO
+C
+C     4. NOW DETERMINE THE BEST PLACE FOR THE ROTATION POINT FOR
+C               PLOT LOOK/VIEW
+C
+          CALL NSSROT
+C
+C     5.  CONVERT THE GLOBAL X AND Y CLAP VALUES
+C               USING THE LOOK/VIEW VALUES
+          DO I=0,360
+              X=CLPDAT(I,1)
+              Y=CLPDAT(I,2)
+              Z=CLPDAT(I,3)
+              X=X-XROT
+              Y=Y-YROT
+              Z=Z-ZROT
+              XN=ROT1X(X,Z,VIEPH)
+              YN=Y
+              ZN=ROT1Z(X,Z,VIEPH)
+              X=XN
+              Y=YN
+              Z=ZN
+C
+              ZN=ROT2Z(Z,Y,VIEAL)
+              YN=ROT2Y(Z,Y,VIEAL)
+              XN=X
+              CLPDAT(I,1)=XN
+              CLPDAT(I,2)=YN
+              CLPDAT(I,3)=ZN
+          END DO
+          XMAXI=XN                  !Add by ENDO
+          XMINI=XN                  !Add by ENDO
+
+C
+C     THE ARRAYS NOW HAVE GLOBAL SURFACE CLAP DATA IN THEM
+C
+C     6.IF NEEDED, DETERMINE SCALE FACTORS AND PLOT RANGE
+C
+          CALL NSSPLTSC
+C
+C     7.CYCLE THROUGH THE THE ARRAYS, APPLY SCALE FACTORS
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+          DO I=0,360
+              CLPDAT(I,1)=(CLPDAT(I,1)/NSSSCFA)*1000.0D0
+              CLPDAT(I,2)=(CLPDAT(I,2)/NSSSCFA)*1000.0D0
+          END DO
+C
+C     8. APPLY THE XSHIFT AND YSHIFT VALUES
+          DO I=0,360
+              IF(LORIENT) CALL ORSHIFT
+              CLPDAT(I,1)=CLPDAT(I,1)+DBLE(PXSHFT)
+              CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0+DBLE(PYSHFT)
+          END DO
+C
+C     9. SET THE PLOT JUSTIFICATION IF NEEDED
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+C     NOW
+          IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+              JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+              RCL=-1
+          ELSE
+          END IF
+          IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+              RCL=-2
+              JUSOFF=5000.0D0
+          ELSE
+          END IF
+          IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+              JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+              RCL=-3
+          ELSE
+          END IF
+C
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)+JUSOFF
+          END DO
+C     9. PLOT GAMMA
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)-5000.0D0
+              CLPDAT(I,2)=CLPDAT(I,2)-3500.0D0
+          END DO
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+          IF(DBLE(PGAMMA).NE.0.0D0) THEN
+              LKG=(PII/180.0D0)*DBLE(PGAMMA)
+
+              DO I=0,360
+                  X=CLPDAT(I,1)
+                  Y=CLPDAT(I,2)
+                  XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                  YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                  CLPDAT(I,1)=XNEW
+                  CLPDAT(I,2)=YNEW
+              END DO
+          ELSE
+          END IF
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+          DO I=0,360
+              CLPDAT(I,1)=CLPDAT(I,1)+5000.0D0
+              CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0
+          END DO
+C
+C     NOW DRAW THE CLAP
+C     WITH THE PEN UP, GO TO THE STARTING PLOT POSITION
+          IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          DO J=0,360
+C     PUT INSTRUCTIONS IN P1ARAY TO DROP PEN AND DRAW
+              IF(J.EQ.0) IPST=0
+              IF(J.NE.0) IPST=1
+              IF(CLPDAT(J,1).GT.1.0D6) CLPDAT(J,1)=1.0D6
+              IF(CLPDAT(J,2).GT.1.0D6) CLPDAT(J,2)=1.0D6
+              IF(CLPDAT(J,1).LT.-1.0D6) CLPDAT(J,1)=-1.0D6
+              IF(CLPDAT(J,2).LT.-1.0D6) CLPDAT(J,2)=-1.0D6
+              IX=INT(CLPDAT(J,1))
+              IY=INT(CLPDAT(J,2))
+              P1ARAY(J,1,1)=IX
+              P1ARAY(J,2,1)=IY
+              P1ARAY(J,3,1)=IPST
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          END DO
+C     FINISHED WITH THAT CLAP, LIFT PEN
+          IPST=0
+C     NOW ISSUE THE PLOTTING COMMANDS STORED IN THE P1ARAY ARRAY
+C
+C     LINE TYPE SETTING
+          COLPAS=COLCLP
+          CALL MY_COLTYP(COLPAS)
+          OLLNTP=LNTYPE
+          LNTYPE=0
+          FIXUP=.FALSE.
+          DO IK=0,360
+              CALL PENMV2(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1))
+          END DO
+          LNTYPE=OLLNTP
+C
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          RETURN
+      END
+
+
+      SUBROUTINE NSSPRO(JJ,V3)
+          USE NSSMOD
+          USE GLOBALS
+C
+          IMPLICIT NONE
+C
+C       THIS ROUTINE DOES THE PLOTTING OF SURFACE PROFILES FOR THE NSS DATABASE
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y,XX1,XX2,YY1,V3,
+     1    ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,Z1,YY2,AX1,AX2,AY1,AY2,ZDELZ
+     3    ,X00,Y00,Z0,LX0,LY0,LZ0,ACALL1,ACALL2,XM,YM,ZDELZ1
+     4    ,X1,X2,Y1,Y2,SLOPE,DELXX,DELYY,MX0,MY0,MZ0,NX0,NY0,NZ0
+
+          real*8 V31
+C
+          LOGICAL ALT,VERT,INSIT,YESONE1,YESONE2,YESONE3,YESONE4
+     1    ,YESONE5,YESONE6,NSSINSIDEIT
+C
+          COMMON/YESSIR/YESONE1,YESONE2,YESONE3,YESONE4,YESONE5,YESONE6
+C
+          EXTERNAL NSSINSIDEIT
+C
+          INTEGER M1,M2,CAFLG,COFLG,J,IK,III,ALLOERR
+     1    ,COLPAS,JJ
+C
+          REAL*8 XMIN,YMIN,XMAX,YMAX,FRACRAD,
+     1    XMINO,YMINO,XMAXO,YMAXO,DRAPRO,THETA
+     2    ,YMIN2,XMIN2,YMAX2,XMAX2
+C
+          INTEGER IX,IY,I,II,IPST
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+          REAL*8 PRO
+C
+          DIMENSION PRO(:,:)
+          ALLOCATABLE :: PRO
+C     LOOK.VIEW TRANSFORMS
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+          M1=360
+          M2=4
+          DEALLOCATE (PRO,STAT=ALLOERR)
+          ALLOCATE (PRO(M1,M2),STAT=ALLOERR)
+          PRO(1:360,1:4)=0.0D0
+C
+          X=0.0D0
+          Y=0.0D0
+C
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C
+C       USES GLOBAL NSSVERTEX ARRAY
+C
+C     CONVERT THETA TO RADIAN MEASURE
+
+          IF(V3.GE.89.95D0.AND.V3.LE.90.05D0) V31=90.001D0
+
+          IF(V3.GE.269.95D0.AND.V3.LE.270.05D0) V31=270.001D0
+
+
+!        THETA=V3*PII/180.0D0
+          THETA=V31*PII/180.0D0
+
+C     THE ARRAY CONTAINING SURFACE PROFILE DATA ARE:
+C
+C     PRO(1:360,1:3)
+C
+C     THE FIRST DIMENSION IS FOR THE DATA POINT NUMBER
+C     THE SECOND DIMENSION IS FOR THE X,Y AND Z COORDINATES OR THE POINT
+C
+C     WE NEED TO LOAD THE ARRAY BEFORE PLOTTING
+C
+C     THE PROCEDURE IS:
+C     1. DETERMINE THE MAXIMUM AND MINIMUM LOCAL X AND Y
+c               COORDINATES FOR A SURFACE FOR WHICH THE PROFILE
+C               IS TO BE CALCULATED.
+C
+C     CYCLE THROUGH ALL THE SURFACES BUT SKIP SURFACES WITH MULTIPLE
+C     APERTURE DEFS ON IT
+C
+
+          II=JJ
+          YESONE1=.FALSE.
+          YESONE2=.FALSE.
+          YESONE3=.FALSE.
+          YESONE4=.FALSE.
+          YESONE5=.FALSE.
+          YESONE6=.FALSE.
+          X1=0.0D0
+          X2=0.0D0
+          Y1=0.0D0
+          Y2=0.0D0
+          AX1=0.0D0
+          AX2=0.0D0
+          AY1=0.0D0
+          AY2=0.0D0
+          XX1=0.0D0
+          XX2=0.0D0
+          YY1=0.0D0
+          YY2=0.0D0
+          XMIN=0.0D0
+          YMIN=0.0D0
+          XMAX=0.0D0
+          YMAX=0.0D0
+          XMIN2=0.0D0
+          YMIN2=0.0D0
+          XMAX2=0.0D0
+          YMAX2=0.0D0
+          XMINO=0.0D0
+          YMINO=0.0D0
+          XMAXO=0.0D0
+          YMAXO=0.0D0
+          CAFLG=0
+          COFLG=0
+          III=II
+C
+C     NOW FOR THE II SURFACE WE CALCULATE ALL THE END POINTS
+C
+          ZDELZ=0.0D0
+
+          CALL NSSCAOJK(YMIN,XMIN,YMAX,XMAX,
+     1    YMINO,XMINO,YMAXO,XMAXO,CAFLG,
+     2    COFLG,III,
+     3    YMIN2,XMIN2,YMAX2,XMAX2,THETA,ZDELZ)
+C
+C     NOW WE HAVE THE END POINTS, CYCLE THROUGH ALL FOUR PAIRS
+C
+C     2. USE APPROPRIATE CALLS TO THE NSSSAG ROUTINE
+C               TO CALCULATE THE SAG AND MAKE
+C               CERTAIN THE SIGN IS CORRECT FOR A LOCAL Z COORDINATE
+C
+          X1=XMIN
+          Y1=YMIN
+          X2=XMAX
+          Y2=YMAX
+          AX1=XMIN2
+          AY1=YMIN2
+          AX2=XMAX2
+          AY2=YMAX2
+          XX1=XMINO
+          YY1=YMINO
+          XX2=XMAXO
+          YY2=YMAXO
+C     SET UP THE LINE SLOPE AND THE INITIAL DELXX VALUE
+          IF((X2-X1).NE.0.0D0)SLOPE=(Y2-Y1)/(X2-X1)
+          VERT=.FALSE.
+          IF((X2-X1).EQ.0.0D0) VERT=.TRUE.
+C
+          DELXX=(X2-X1)/(360.0D0-1.0D0)
+          DELYY=(Y2-Y1)/(360.0D0-1.0D0)
+C     NOW WE HAVE THE END POINTS, CYCLE THROUGH ALL THE PAIRS AND LOAD
+C     ALL THE ARRAYS WITH SURFACE LOCAL X,Y AND Z DATA
+C
+          DO J=1,360
+              IF(J.EQ.1) THEN
+                  X=X1
+              ELSE
+                  X=X+DELXX
+              END IF
+              IF(.NOT.VERT) Y=(SLOPE*(X-X1))+Y1
+              IF(VERT) THEN
+                  IF(J.EQ.1) THEN
+                      Y=Y1
+                  ELSE
+                      Y=Y+DELYY
+                  END IF
+              ELSE
+              END IF
+C
+              III=II
+              ACALL1=X
+              ACALL2=Y
+              ALT=.FALSE.
+              ALT=.FALSE.
+              IF(X.LT.AX1) THEN
+                  ACALL1=AX1
+                  ALT=.TRUE.
+              END IF
+              IF(X.GT.AX2) THEN
+                  ACALL1=AX2
+                  ALT=.TRUE.
+              END IF
+              IF(Y.LT.AY1) THEN
+                  ACALL2=AY1
+                  ALT=.TRUE.
+              END IF
+              IF(Y.GT.AY2) THEN
+                  ACALL2=AY2
+                  ALT=.TRUE.
+              END IF
+              IF(NSSALENS(19,III).EQ.1.0D0) THEN
+C     CIRCULAR CLEAR APERTURE
+                  ALT=.FALSE.
+                  IF(X.LT.AX1) THEN
+                      ACALL1=AX1
+                      ALT=.TRUE.
+                  END IF
+                  IF(X.GT.AX2) THEN
+                      ACALL1=AX2
+                      ALT=.TRUE.
+                  END IF
+                  IF(Y.LT.AY1) THEN
+                      ACALL2=AY1
+                      ALT=.TRUE.
+                  END IF
+                  IF(Y.GT.AY2) THEN
+                      ACALL2=AY2
+                      ALT=.TRUE.
+                  END IF
+              END IF
+              CALL NSSSAG(III,ACALL1,ACALL2,Z)
+              IF(NSSALENS(19,III).NE.1.0D0.OR.NSSALENS(19,III).EQ.1.0D0
+     1        .AND.NSSALENS(23,III).NE.0.0D0.OR.ALENS(19,III).EQ.1.0D0.AND.
+     2        NSSALENS(24,III).NE.0.0D0) THEN
+                  FRACRAD=0.0D0
+              ELSE
+                  IF(NSSALENS(20,III).NE.NSSALENS(21,III)) THEN
+                      FRACRAD=((DSQRT((X**2)+(Y**2))-NSSALENS(21,III))/
+     1                (NSSALENS(20,III)-NSSALENS(21,III)))
+                      IF(FRACRAD.LE.0.0D0) FRACRAD=0.0D0
+                  ELSE
+                      FRACRAD=0.0D0
+                  END IF
+              END IF
+              ZDELZ1=ZDELZ*FRACRAD
+              Z=Z+ZDELZ1
+C
+C     ASSIGN ARRAY VALUES
+              PRO(J,1)=X
+              PRO(J,2)=Y
+              IF(J.GT.1) THEN
+                  XM=PRO(J-1,1)
+                  YM=PRO(J-1,2)
+              ELSE
+                  XM=PRO(J,1)
+                  YM=PRO(J,2)
+              END IF
+C     DO WE HAVE TO DO A FIX FOR A HOLE
+C
+C IF XM,YM AND X,Y ARE INSIDE A HOLE DRAPRO=0.0D0
+C                  OTHERWISE
+C                  DRAPRO=1.0D0
+
+              INSIT=.FALSE.
+              INSIT=NSSINSIDEIT(II,X,Y,XM,YM)
+              IF(INSIT) DRAPRO=0.0D0
+              IF(.NOT.INSIT)DRAPRO=1.0D0
+              PRO(J,3)=Z
+              PRO(J,4)=DRAPRO
+C
+C               CYCLE THROUGH THE NEXT DATA PAIR
+          END DO
+C
+C     3. THE ARRAYS NOW HAVE LOCAL X,Y AND Z VALUES STORED IN THEM
+C     CONVERT THE LOCAL X ANY Y PROFILES TO GLOBAL NUMBERS
+C     GLOBAL VERTEX DATA IS
+          II=JJ
+          DO I=1,360
+              X00=NSSVERTEX(1,II)
+              Y00=NSSVERTEX(2,II)
+              Z0= NSSVERTEX(3,II)
+              LX0=NSSVERTEX(4,II)
+              MX0=NSSVERTEX(5,II)
+              NX0=NSSVERTEX(6,II)
+              LY0=NSSVERTEX(7,II)
+              MY0=NSSVERTEX(8,II)
+              NY0=NSSVERTEX(9,II)
+              LZ0=NSSVERTEX(10,II)
+              MZ0=NSSVERTEX(11,II)
+              NZ0=NSSVERTEX(12,II)
+              X=PRO(I,1)
+              Y=PRO(I,2)
+              Z=PRO(I,3)
+C
+              X1=X00+((LX0*(X))+(LY0*(Y))
+     1        +(LZ0*(Z)))
+              Y1=Y00+((MX0*(X))+(MY0*(Y))
+     1        +(MZ0*(Z)))
+              Z1=Z0+((NX0*(X))+(NY0*(Y))
+     1        +(NZ0*(Z)))
+              PRO(I,1)=X1
+              PRO(I,2)=Y1
+              PRO(I,3)=Z1
+          END DO
+C
+C     4. NOW DETERMINE THE BEST PLACE FOR THE ROTATION POINT FOR
+C               PLOT LOOK/VIEW
+C
+          CALL NSSROT
+C
+C     5.  CONVERT THE GLOBAL X ANY Y PROFILES
+C               USING THE LOOK/VIEW VALUES
+          II=JJ
+          DO I=1,360
+              X=PRO(I,1)
+              Y=PRO(I,2)
+              Z=PRO(I,3)
+              X=X-XROT
+              Y=Y-YROT
+              Z=Z-ZROT
+              XN=ROT1X(X,Z,VIEPH)
+              YN=Y
+              ZN=ROT1Z(X,Z,VIEPH)
+              X=XN
+              Y=YN
+              Z=ZN
+C
+              ZN=ROT2Z(Z,Y,VIEAL)
+              YN=ROT2Y(Z,Y,VIEAL)
+              XN=X
+              PRO(I,1)=XN
+              PRO(I,2)=YN
+              PRO(I,3)=ZN
+          END DO
+          XMAXI=XN                  !Add by ENDO
+          XMINI=XN                  !Add by ENDO
+
+C
+C     THE ARRAYS NOW HAVE GLOBAL SURFACE PROFILE DATA IN THEM
+C
+C     6.IF NEEDED, DETERMINE SCALE FACTORS AND PLOT RANGE
+C
+          CALL NSSPLTSC
+C
+C     7.CYCLE THROUGH THE THE ARRAYS, APPLY SCALE FACTORS
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+          II=JJ
+          DO I=1,360
+              PRO(I,1)=(PRO(I,1)/NSSSCFA)*1000.0D0
+              PRO(I,2)=(PRO(I,2)/NSSSCFA)*1000.0D0
+          END DO
+C
+C     8. APPLY THE PLOT XSHIFT AND YSHIFT VALUES
+          DO I=1,360
+              II=JJ
+              IF(LORIENT) CALL ORSHIFT
+              PRO(I,1)=PRO(I,1)+DBLE(PXSHFT)
+              PRO(I,2)=PRO(I,2)+3500.0D0+DBLE(PYSHFT)
+          END DO
+C
+C     9. SET THE PLOT JUSTIFICATION IF NEEDED
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+C     NOW
+          IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+              JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+              RCL=-1
+          ELSE
+          END IF
+          IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+              RCL=-2
+              JUSOFF=5000.0D0
+          ELSE
+          END IF
+          IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+              JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+              RCL=-3
+          ELSE
+          END IF
+C
+          DO I=1,360
+              II=JJ
+              PRO(I,1)=PRO(I,1)+JUSOFF
+          END DO
+C     9. PLOT GAMMA
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+          DO I=1,360
+              II=JJ
+              PRO(I,1)=PRO(I,1)-5000.0D0
+              PRO(I,2)=PRO(I,2)-3500.0D0
+          END DO
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+          IF(DBLE(PGAMMA).NE.0.0D0) THEN
+              LKG=(PII/180.0D0)*DBLE(PGAMMA)
+
+              DO I=1,360
+                  II=JJ
+                  X=PRO(I,1)
+                  Y=PRO(I,2)
+                  XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                  YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                  PRO(I,1)=XNEW
+                  PRO(I,2)=YNEW
+              END DO
+          END IF
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+          DO I=1,360
+              II=JJ
+              PRO(I,1)=PRO(I,1)+5000.0D0
+              PRO(I,2)=PRO(I,2)+3500.0D0
+          END DO
+C
+          I=JJ
+C     NOW DRAW THE X PROFILE OF THE CLAP AT SURFACE I
+C     WITH THE PEN UP, GO TO THE STARTING PLOT POSITION
+          IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+C     FIRST CLAP PROFILE
+          DO J=2,360
+C     PUT INSTRUCTIONS IN P1ARAY TO DROP PEN AND DRAW
+              DRAPRO=PRO(J,4)
+
+              IF(J.GT.1.AND.DRAPRO.EQ.1.0D0.AND.PRO((J-1),4).EQ.0.0D0) IPST=0
+              IF(J.GT.1.AND.DRAPRO.EQ.1.0D0.AND.PRO((J-1),4).EQ.1.0D0) IPST=1
+              IF(J.GT.1.AND.DRAPRO.EQ.0.0D0) IPST=0
+              IF(J.EQ.360.OR.J.EQ.0) IPST=0
+              IF(PRO(J,1).GT.1.0D6) PRO(J,1)=1.0D6
+              IF(PRO(J,2).GT.1.0D6) PRO(J,2)=1.0D6
+              IF(PRO(J,1).LT.-1.0D6) PRO(J,1)=-1.0D6
+              IF(PRO(J,2).LT.-1.0D6) PRO(J,2)=-1.0D6
+              IX=INT(PRO(J,1))
+              IY=INT(PRO(J,2))
+              P1ARAY(J,1,1)=IX
+              P1ARAY(J,2,1)=IY
+              P1ARAY(J,3,1)=IPST
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          END DO
+C
+C     LINE TYPE SETTING
+          COLPAS=COLPRO
+          CALL MY_COLTYP(COLPAS)
+          OLLNTP=LNTYPE
+          LNTYPE=0
+          FIXUP=.FALSE.
+          DO IK=1,360
+!      CALL PENMV2(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1))
+              call datacolorssave(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1)
+     &        ,1)
+          END DO
+C     FINISHED WITH THAT PROFILE, LIFT PEN
+          IPST=0
+          LNTYPE=OLLNTP
+          DEALLOCATE (PRO,STAT=ALLOERR)
+          RETURN
+      END
+
+
+      FUNCTION NSSINSIDEIT(I,XONE,YONE,XTWO,YTWO)
+          USE NSSMOD
+C
+          IMPLICIT NONE
+C
+          EXTERNAL INSID1,INSID2
+C
+          INTEGER I,COFLG,ITIIT
+C
+          REAL*8 X,Y,XONE,YONE,XTWO,YTWO,
+     +    XR,YR,LS,RS,XRD,YRD,X1,X2,X3,X4,Y1,Y2,Y3,Y4,A22
+
+          LOGICAL NSSINSIDEIT,INS,INSID1,INSID2,INITIT(1:2)
+C
+          INTEGER CAERAS,COERAS
+C
+          COMMON/CACO/CAERAS,COERAS,LS
+C
+C     VARIABLES FOR SPOT TRACING
+C
+          LOGICAL SPDTRA
+C
+          COMMON/SPRA1/SPDTRA
+          INCLUDE 'datlen.inc'
+          INCLUDE 'datmai.inc'
+C
+C       I IS THE CURRENT SURFACE NUMBER
+C
+C       THIS ROUTINE SETS THE FLAGS
+C       CAERAS AND COERAS ARE
+C       FLAGS SET IF THE NEXT CURRENT SURFACE HAS A COBS OR
+C       CLAP ERASE.
+C
+          COFLG=INT(NSSALENS(25,I))
+C       THERE IS COBS, PROCEED CHECKING
+C
+          NSSINSIDEIT=.FALSE.
+C
+          DO ITIIT=1,2
+              INITIT(ITIIT)=.FALSE.
+              IF(ITIIT.EQ.1) THEN
+                  X=XONE
+                  Y=YONE
+              ELSE
+                  X=XTWO
+                  Y=YTWO
+              END IF
+C
+C******************************************************************
+C       COFLG NON-ZERO, RESOLVE ALL COBS BLOCKAGES NOW
+C******************************************************************
+C
+C       COFLG=1 CIRCULAR COBS, DOES IT STOP THE RAY
+              IF(COFLG.EQ.1) THEN
+C
+                  LS=0.0D0
+C       CIRCULAR COBS EQUATION IS:
+C
+C       (X)**2 + (Y)**2 = R**2
+C
+C       SUB X AND Y IN THE LEFT SIDE. IF THE LEFT SIDE IS
+C       LESS THAN OR EQUAL TO THE RIGHT SIDE, THE RAY IS BLOCKED
+C       ELSE IT IS NOT BLOCKED.
+C
+C       IF NON-ZERO COBS DECENTRATIONS EXISTS, THEY MUST BE CONSIDERED
+C       IN COBS CHECKING. WE CONVERT THE RAY COORDINATES X AND Y
+C       TO XR AND YR IN THE COORDINATE SYSTEM OF THE DECENTERED
+C       OBSCURATION. REMEMBER.
+C
+                  XR=X-ALENS(28,I)
+                  YR=Y-ALENS(29,I)
+C
+                  LS=DSQRT((XR**2)+(YR**2))
+C
+                  RS=DSQRT(ALENS(26,I)**2)-AIMTOL
+                  IF(REAL(LS).LT.REAL(RS)) THEN
+C       RAY IS BLOCKED BY COBS ON SURFACE I
+                      LS=10.0D0
+                      INITIT(ITIIT)=.TRUE.
+                  ELSE
+                      LS=0.0D0
+                      INITIT(ITIIT)=.FALSE.
+                  END IF
+C       COFLG NOT 1
+              END IF
+C
+C       COFLG=2 RECTANGULAR OBSCURATION, DOES IT STOP THE RAY
+              IF(COFLG.EQ.2) THEN
+C
+                  LS=0.0D0
+                  INITIT(ITIIT)=.FALSE.
+C
+C       IN THE COORDINATE SYSTEM OF THE RECTANGLE, THE CORNER
+C       COORDINATES ARE:
+                  X1=-NSSALENS(26,I)-AIMTOL
+                  Y1=NSSALENS(27,I)+AIMTOL
+                  X2=-NSSALENS(26,I)-AIMTOL
+                  Y2=-NSSALENS(27,I)-AIMTOL
+                  X3=NSSALENS(26,I)+AIMTOL
+                  Y3=-NSSALENS(27,I)-AIMTOL
+                  X4=NSSALENS(26,I)+AIMTOL
+                  Y4=NSSALENS(27,I)+AIMTOL
+C
+                  XRD=X
+                  YRD=Y
+
+C       IF NON-ZERO COBS DECENTRATIONS EXISTS, THEY MUST BE CONSIDERED
+C       IN COBS CHECKING. WE CONVERT THE RAY COORDINATES X AND Y
+C       TO XRD AND YRD IN THE COORDINATE SYSTEM OF THE DECENTERED
+C       OBSCURATION. REMEMBER.
+C
+                  XRD=XRD-NSSALENS(28,I)
+                  YRD=YRD-NSSALENS(29,I)
+C
+C       IF A NON-ZERO COBS TILT EXISTS, IT MUST BE CONSIDERED
+C       IN COBS CHECKING. WE CONVERT THE RAY COORDINATES XRD AND YRD
+C       TO XR AND YR IN THE COORDINATE SYSTEM OF THE ROTATED
+C       OBSCURATION. REMEMBER. GAMMA ROTATION OF A CLAP OR
+C       COBS HAS THE SAME SIGN AS IN A SURFACE ROTATION
+
+                  A22=NSSALENS(30,I)*PII/180.0D0
+                  XR=(XRD*DCOS(A22))+(YRD*DSIN(A22))
+                  YR=(YRD*DCOS(A22))-(XRD*DSIN(A22))
+C
+C
+C
+C       ARE THE POINTS XR AND YR ON THE RECTANGLE OR OUTSIDE
+C       IF YES, SET LS=10.0D0
+C       IF NO SET LS=0.0D0
+                  XT(1)=X1
+                  YT(1)=Y1
+                  XT(2)=X2
+                  YT(2)=Y2
+                  XT(3)=X3
+                  YT(3)=Y3
+                  XT(4)=X4
+                  YT(4)=Y4
+                  NP=4
+                  X0=XR
+                  Y0=YR
+                  INS=INSID2()
+                  IF(INS) THEN
+C       RAY  BLOCKED
+                      LS=10.0D0
+                      INITIT(ITIIT)=.TRUE.
+                  ELSE
+                      LS=0.0D0
+                      INITIT(ITIIT)=.FALSE.
+C       RAY NOT BLOCKED
+                  END IF
+C
+C       COFLG NOT 2
+              END IF
+C
+C       COFLG=3 ELLIPTICAL COBS, DOES IT STOP THE RAY
+              IF(COFLG.EQ.3) THEN
+C
+                  LS=0.0D0
+C       ELLIPTICAL COBS EQUATION IS:
+C
+C       (X)**2/A**2  + (Y)**2/B**2 = 1
+C
+C       SUB X AND Y IN THE LEFT SIDE. IF THE LEFT SIDE IS
+C       LESS THAN 1.0D0, THE RAY IS BLOCKED
+C       ELSE IT IS NOT BLOCKED.
+C
+                  XRD=X
+                  YRD=Y
+
+C       IF NON-ZERO COBS DECENTRATIONS EXISTS, THEY MUST BE CONSIDERED
+C       IN COBS CHECKING. WE CONVERT THE RAY COORDINATES X AND Y
+C       TO XRD AND YRD IN THE COORDINATE SYSTEM OF THE DECENTERED
+C       OBSCURATION. REMEMBER.
+C
+                  XRD=XRD-NSSALENS(28,I)
+                  YRD=YRD-NSSALENS(29,I)
+C
+C       IF A NON-ZERO COBS TILT EXISTS, IT MUST BE CONSIDERED
+C       IN COBS CHECKING. WE CONVERT THE RAY COORDINATES XRD AND YRD
+C       TO XR AND YR IN THE COORDINATE SYSTEM OF THE ROTATED
+C       OBSCURATION. REMEMBER. GAMMA ROTATION OF A CLAP OR
+C       COBS HAS THE SAME SIGN AS IN A SURFACE ROTATION
+
+                  A22=NSSALENS(30,I)*PII/180.0D0
+                  XR=(XRD*DCOS(A22))+(YRD*DSIN(A22))
+                  YR=(YRD*DCOS(A22))-(XRD*DSIN(A22))
+C
+C
+                  LS=((XR**2)/(NSSALENS(26,I)**2))+
+     1               ((YR**2)/(NSSALENS(27,I)**2))
+C
+                  IF(REAL(LS).LT.(1.0-(AIMTOL**2))) THEN
+C       RAY IS BLOCKED BY COBS ON SURFACE I
+                      LS=10.0D0
+                      INITIT(ITIIT)=.TRUE.
+                  ELSE
+                      LS=0.0D0
+                      INITIT(ITIIT)=.FALSE.
+                  END IF
+C       COFLG NOT 3
+              END IF
+          END DO
+          NSSINSIDEIT=.FALSE.
+          IF(INITIT(1).AND.INITIT(2))NSSINSIDEIT=.TRUE.
+C
+          RETURN
+      END
+
+
+      SUBROUTINE PLTNSSSFS
+          USE NSSMOD
+          INCLUDE 'datmai.inc'
+          INTEGER I
+          REAL*8 SFI
+          IF(.NOT.NEXISTN) THEN
+              WRITE(OUTLYNE,*) 'NO NSS DATABASE EXISTS'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'NO NSS SURFACES CAN BE DRAWN'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          CALL NSS_VERTEX_SILENT
+C       NOW VERTEX DATA EXISTS IN GLOBAL COORDINATES
+          DO I=1,MAXS
+C       PLOT THE CLAP FOR ACTIVE SURFACES ONLY
+              IF(NSSALENS(19,I).NE.0.0D0) THEN
+                  SFI=1.0D0
+                  IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1            NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1            CALL NSSCLP(I,SFI)
+              END IF
+          END DO
+          DO I=1,MAXS
+C       PLOT THE HOLES FOR ACTIVE SURFACES ONLY
+              IF(NSSALENS(25,I).NE.0.0D0) THEN
+                  IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1            NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1            CALL NSSHOL(I)
+              END IF
+          END DO
+
+          DO I=1,MAXS
+C       PLOT THE PROFX FOR ACTIVE SURFACES ONLY
+              IF(NSSALENS(19,I).NE.0.0D0) THEN
+                  IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1            NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1            CALL NSSPRO(I,0.0D0)
+              END IF
+          END DO
+
+          DO I=1,MAXS
+C       PLOT THE PROFY FOR ACTIVE SURFACES ONLY
+              IF(NSSALENS(19,I).NE.0.0D0) THEN
+
+                  IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1            NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1            CALL NSSPRO(I,90.0D0)
+              END IF
+          END DO
+
+          DO I=1,MAXS
+C       PLOT THE INDIVIDUAL CLAPS OF ALL MEM PIXELS FOR A MEM SURFACE
+              IF(NSSALENS(1,I).EQ.5.0D0) THEN
+                  CALL NSSMEMPLT(I)
+              END IF
+          END DO
+
+          DO I=1,MAXS
+C       PLOT THE TUBE CLAPS
+              IF(NSSALENS(1,I).EQ.6.0D0) THEN
+                  CALL NSSCLPTUB(I)
+              END IF
+          END DO
+
+          DO I=1,MAXS
+C       PLOT THE TUBE PROFILES
+              IF(NSSALENS(1,I).EQ.6.0D0) THEN
+                  CALL NSSPROTUB(I,0.0D0)
+                  CALL NSSPROTUB(I,45.0D0)
+                  CALL NSSPROTUB(I,90.0D0)
+                  CALL NSSPROTUB(I,135.0D0)
+                  CALL NSSPROTUB(I,180.0D0)
+                  CALL NSSPROTUB(I,225.0D0)
+                  CALL NSSPROTUB(I,270.0D0)
+                  CALL NSSPROTUB(I,315.0D0)
+              END IF
+          END DO
+
+          RETURN
+      END
+
+
+      SUBROUTINE PLTNSSSF
+          USE NSSMOD
+          INCLUDE 'datmai.inc'
+          INTEGER I
+          REAL*8 SFI
+          IF(.NOT.NEXISTN) THEN
+              WRITE(OUTLYNE,*) 'NO NSS DATABASE EXISTS'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'NO NSS SURFACE CAN BE DRAWN'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          I=INT(W1)
+          IF(S1.EQ.0) THEN
+              WRITE(OUTLYNE,*)
+     1        '"PLOT NSSSURF" REQUIRES EXPLICIT NUMERIC WORD #1 INPUT'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'RE-ENTER COMMAND'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1) THEN
+              WRITE(OUTLYNE,*)
+     1        '"PLOT NSSSURF" ONLY TAKES NUMERIC WORD #1 INPUT'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'RE-ENTER COMMAND'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          IF(I.LT.1.OR.I.GT.MAXS) THEN
+              WRITE(OUTLYNE,*)
+     1        'SURFACE NUMBER BEYOND LEGAL BOUNDS'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'RE-ENTER COMMAND'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          IF(SST.EQ.1) THEN
+              WRITE(OUTLYNE,*)
+     1        '"PLOT NSSSURF" TAKES NO STRING INPUT'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'RE-ENTER COMMAND'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          CALL NSS_VERTEX_SILENT
+C       NOW VERTEX DATA EXISTS IN GLOBAL COORDINATES
+C       PLOT THE CLAP FOR ACTIVE SURFACES ONLY
+          IF(NSSALENS(19,I).NE.0.0D0) THEN
+              SFI=1.0D0
+              IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1        NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1        CALL NSSCLP(I,SFI)
+          END IF
+C       PLOT THE HOLES FOR ACTIVE SURFACES ONLY
+          IF(NSSALENS(25,I).NE.0.0D0) THEN
+              IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1        NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1        CALL NSSHOL(I)
+          END IF
+C       PLOT THE PROFX FOR ACTIVE SURFACES ONLY
+          IF(NSSALENS(19,I).NE.0.0D0) THEN
+              IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1        NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1        CALL NSSPRO(I,0.0D0)
+          END IF
+C       PLOT THE PROFY FOR ACTIVE SURFACES ONLY
+          IF(NSSALENS(19,I).NE.0.0D0) THEN
+              IF(NSSALENS(1,I).EQ.1.0D0.OR.NSSALENS(1,I).EQ.2.0D0.OR.
+     1        NSSALENS(1,I).EQ.3.0D0.OR.NSSALENS(1,I).EQ.4.0D0)
+     1        CALL NSSPRO(I,90.0D0)
+          END IF
+C       PLOT THE INDIVIDUAL CLAPS OF ALL MEM PIXELS FOR A MEM SURFACE
+          IF(NSSALENS(1,I).EQ.5.0D0) CALL NSSMEMPLT(I)
+C       PLOT THE TUBE CLAPS
+          IF(NSSALENS(1,I).EQ.6.0D0) THEN
+              CALL NSSCLPTUB(I)
+          END IF
+C       PLOT THE TUBE PROFILES
+          IF(NSSALENS(1,I).EQ.6.0D0) THEN
+              CALL NSSPROTUB(I,0.0D0)
+              CALL NSSPROTUB(I,45.0D0)
+              CALL NSSPROTUB(I,90.0D0)
+              CALL NSSPROTUB(I,135.0D0)
+              CALL NSSPROTUB(I,180.0D0)
+              CALL NSSPROTUB(I,225.0D0)
+              CALL NSSPROTUB(I,270.0D0)
+              CALL NSSPROTUB(I,315.0D0)
+          END IF
+          RETURN
+      END
+
+
+      SUBROUTINE PLTNSSRY
+          USE NSSMOD
+C
+          IMPLICIT NONE
+C
+C       THIS ROUTINE DOES THE PLOT RAY COMMAND AT THE CMD LEVEL
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y,
+     1    ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,L,M,N
+C
+          INTEGER CN
+C
+          LOGICAL LONG
+C
+          INTEGER IX,IY,I,II,COLPAS
+          INTEGER NSSP1ARRAY,ALLOERR,ICOUNT,IINEXT
+          DIMENSION NSSP1ARRAY(:,:)
+          ALLOCATABLE :: NSSP1ARRAY
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+          IF(.NOT.NEXISTN) THEN
+              WRITE(OUTLYNE,*) 'NO NSS DATABASE EXISTS'
+              CALL SHOWIT(1)
+              WRITE(OUTLYNE,*) 'NO NSS RAY CAN BE DRAWN'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+C
+          CALL NSS_VERTEX_SILENT
+C
+          DEALLOCATE(NSSP1ARRAY,STAT=ALLOERR)
+          X=0.0D0
+          Y=0.0D0
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C       NOW WE HAVE THE REAL WORLD COORDINATES OF THE RAY TO BE PLOTTED
+C       THEY ARE STORED IN THE FILE NSSRHIST.DAT
+C
+C     HERE IS WHERE REAL WORK BEGINS. FIRST PROJECT THE 3D WORLD COORDINATES
+C     OF THE VERTICIES ONTO THE 2D PLANE INDICATED BY THE PLOT LOOK/ PLOT VIEW
+C     DATA. THE DIRECTION COSINES OF THE LOOK VECTOR ARE LOOKX, LOOKY AND
+C     LOOKZ. THE TRANSFORMATIONS ARE:
+C
+          CALL NSSROT
+C
+C     AFTER THIS TRANSFORMATION, THE WORLD X COORDINATE IS PLOTTED IN THE
+C     HORIZONTAL X-AXIS OF THE DISPLAY AND THE Y WORLD COORDINATE IS PLOTTED
+C     IN THE VERTICAL Y-AXIS OF THE DISPLAY AFTER A CONVERSION TO
+C     DEVICE INDEPENDENT COORDINATES ARE MADE.
+C
+          CALL NSSPLTSC
+C
+          ICOUNT=0
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT',STATUS='UNKNOWN')
+          REWIND(UNIT=92)
+ 5        CONTINUE
+          CN=NSSWAVNUM
+          READ(UNIT=92,FMT=*,END=6) I,X,Y,Z,L,M,N,CN
+          ICOUNT=ICOUNT+1
+          GO TO 5
+ 6        CONTINUE
+          CALL CLOSE_FILE(92,1)
+          IF(ICOUNT.EQ.0) THEN
+              WRITE(OUTLYNE,*) 'NO RAYS EXIST TO BE PLOTTED'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
+          ALLOCATE(NSSP1ARRAY(1:ICOUNT,1:3),STAT=ALLOERR)
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT',STATUS='UNKNOWN')
+C     HERE IS THE LOOP WHICH PLOTS THE RAYS USING CALLS TO
+C     PENMV2(IX,IY,IPST)
+          REWIND(UNIT=92)
+
+          DO II=1,ICOUNT
+              READ(UNIT=92,FMT=*) I,X,Y,Z,L,M,N,CN
+              IF(I.EQ.0) THEN
+                  IF(DABS(X).GT.1.0D10.OR.DABS(Y).GT.1.0D10.OR.
+     1            DABS(Z).GT.1.0D10) THEN
+                      IINEXT=2
+                  ELSE
+                      IINEXT=1
+                  END IF
+              END IF
+              X=X-XROT
+              Y=Y-YROT
+              Z=Z-ZROT
+              XN=ROT1X(X,Z,VIEPH)
+              YN=Y
+              ZN=ROT1Z(X,Z,VIEPH)
+              X=XN
+              Y=YN
+              Z=ZN
+C
+              ZN=ROT2Z(Z,Y,VIEAL)
+              YN=ROT2Y(Z,Y,VIEAL)
+              XN=X
+              X=XN
+              Y=YN
+              Z=ZN
+              XMAXI=XN                  !Add by ENDO
+              XMINI=XN                  !Add by ENDO
+
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+              Y=(Y/NSSSCFA)*1000.0D0
+C
+              X=(X/NSSSCFA)*1000.0D0
+C
+C     STEP 2: APPLY THE SCREEN Y-OFFSET AND SCREEN GAMMA ROTATION
+C
+C     APPLY THE PLOT LOOK/VIEW Y-OFFSET VALUE
+C
+              IF(LORIENT) CALL ORSHIFT
+              Y=Y+3500.0D0+DBLE(PYSHFT)
+              X=X+DBLE(PXSHFT)
+C
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+              IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+                  JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+                  RCL=-1
+              ELSE
+              END IF
+              IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+                  RCL=-2
+                  JUSOFF=5000.0D0
+              ELSE
+              END IF
+              IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+                  JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+                  RCL=-3
+              ELSE
+              END IF
+C
+              X=X+JUSOFF
+C
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+              X=X-5000.0D0
+              Y=Y-3500.0D0
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+              IF(DBLE(PGAMMA).NE.0.0D0) THEN
+                  LKG=(PII/180.0D0)*DBLE(PGAMMA)
+                  XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                  YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                  X=XNEW
+                  Y=YNEW
+              ELSE
+              END IF
+
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+              X=X+5000.0D0
+              Y=Y+3500.0D0
+C
+C     PUT INSTRUCTIONS IN NSSP1ARRAY TO DROP PEN AND DRAW
+!      IPST=1
+              LONG=.FALSE.
+              IF(DABS(X).GT.2.0D9.OR.DABS(Y).GT.2.0D9) LONG=.TRUE.
+
+              IF(X.LT.-2.0D9) X=-2.0D9
+              IF(Y.LT.-2.0D9) Y=-2.0D9
+              IF(X.GT.2.0D9) X=2.0D9
+              IF(Y.GT.2.0D9) Y=2.0D9
+
+              IX=INT(X)
+              IY=INT(Y)
+
+C     MOVE TO NEW POSITION WITH LOWERED PEN
+              NSSP1ARRAY(II,1)=IX
+              NSSP1ARRAY(II,2)=IY
+
+!      IF(I.EQ.0.OR.I.EQ.1.AND.IINEXT.EQ.2) THEN
+!      IF(IINEXT.EQ.2.AND.I.EQ.1) IINEXT=1
+              if (IINEXT.EQ.2) then
+                  IINEXT=1
+                  NSSP1ARRAY(II,3)=0
+              ELSE
+                  NSSP1ARRAY(II,3)=1
+              END IF
+
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+              CONTINUE
+          END DO
+          CALL CLOSE_FILE(92,1)
+C
+C     NOW ISSUE THE PLOTTING COMMANDS STORED IN THE P1ARRAY ARRAY
+C
+          COLPAS=COLRAY
+          CALL MY_COLTYP(COLPAS)
+          NSSP1ARRAY(1,3)=1
+          FIXUP=.FALSE.
+          DO I=1,ICOUNT
+!      CALL PENMV2(NSSP1ARRAY(I,1),NSSP1ARRAY(I,2),NSSP1ARRAY(I,3))
+              call datacolorssave(NSSP1ARRAY(I,1),NSSP1ARRAY(I,2)
+     &        ,NSSP1ARRAY(I,3),2)
+
+          END DO
+          COLPAS=COLLBL
+          CALL MY_COLTYP(COLPAS)
+          DEALLOCATE(NSSP1ARRAY,STAT=ALLOERR)
+          RETURN
+      END
+
+
+      SUBROUTINE PLTNSSSPOTS(V1,V2)
+          USE NSSMOD
+C
+          IMPLICIT NONE
+C
+C       THIS ROUTINE DOES THE PLOT NSSSPOTS COMMAND AT THE CMD LEVEL ON SURFACE V1
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y,
+     1    ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,V1,L,M,N,V2
+C
+!      LOGICAL GGO
+C
+          INTEGER IX,IY,I,II,IPST,COLPAS
+          INTEGER ICOUNT,BAR,CN
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+          BAR=INT(DABS(V2))
+C
+          CALL NSS_VERTEX_SILENT
+C
+          X=0.0D0
+          Y=0.0D0
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C       NOW WE HAVE THE REAL WORLD COORDINATES OF THE RAY TO BE PLOTTED
+C       THEY ARE STORED IN THE FILE NSSRHIST.DAT
+C
+C     HERE IS WHERE REAL WORK BEGINS. FIRST PROJECT THE 3D WORLD COORDINATES
+C     OF THE VERTICIES ONTO THE 2D PLANE INDICATED BY THE PLOT LOOK/ PLOT VIEW
+C     DATA. THE DIRECTION COSINES OF THE LOOK VECTOR ARE LOOKX, LOOKY AND
+C     LOOKZ. THE TRANSFORMATIONS ARE:
+C
+          CALL NSSROT
+C
+C     AFTER THIS TRANSFORMATION, THE WORLD X COORDINATE IS PLOTTED IN THE
+C     HORIZONTAL X-AXIS OF THE DISPLAY AND THE Y WORLD COORDINATE IS PLOTTED
+C     IN THE VERTICAL Y-AXIS OF THE DISPLAY AFTER A CONVERSION TO
+C     DEVICE INDEPENDENT COORDINATES ARE MADE.
+C
+          CALL NSSPLTSC
+C
+          ICOUNT=0
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT',STATUS='UNKNOWN')
+          REWIND(UNIT=92)
+ 5        CONTINUE
+          READ(UNIT=92,FMT=*,END=6) I,X,Y,Z,L,M,N,CN
+          ICOUNT=ICOUNT+1
+          GO TO 5
+ 6        CONTINUE
+          CALL CLOSE_FILE(92,1)
+          OPEN(UNIT=92,FILE=trim(HOME)//'NSSHT.DAT',STATUS='UNKNOWN')
+! 1    FORMAT(I5,D23.15,D23.15,D23.15,D23.15,D23.15,D23.15)
+C     HERE IS THE LOOP WHICH PLOTS THE RAYS USING CALLS TO
+C     PENMV2(IX,IY,IPST)
+          REWIND(UNIT=92)
+          DO II=1,ICOUNT
+C     THE RAY IS A RAY AT THE SURFACE OF INTEREST
+              READ(UNIT=92,FMT=*) I,X,Y,Z,L,M,N,CN
+              IF(I.EQ.INT(V1)) THEN
+                  X=X-XROT
+                  Y=Y-YROT
+                  Z=Z-ZROT
+                  XN=ROT1X(X,Z,VIEPH)
+                  YN=Y
+                  ZN=ROT1Z(X,Z,VIEPH)
+                  X=XN
+                  Y=YN
+                  Z=ZN
+C
+                  ZN=ROT2Z(Z,Y,VIEAL)
+                  YN=ROT2Y(Z,Y,VIEAL)
+                  XN=X
+                  X=XN
+                  Y=YN
+                  Z=ZN
+                  XMAXI=XN                  !Add by ENDO
+                  XMINI=XN                  !Add by ENDO
+
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+                  Y=(Y/NSSSCFA)*1000.0D0
+C
+                  X=(X/NSSSCFA)*1000.0D0
+C
+C     STEP 2: APPLY THE SCREEN Y-OFFSET AND SCREEN GAMMA ROTATION
+C
+C     APPLY THE PLOT LOOK/VIEW Y-OFFSET VALUE
+C
+                  IF(LORIENT) CALL ORSHIFT
+                  Y=Y+3500.0D0+DBLE(PYSHFT)
+                  X=X+DBLE(PXSHFT)
+C
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+                  IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+                      JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+                      RCL=-1
+                  ELSE
+                  END IF
+                  IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+                      RCL=-2
+                      JUSOFF=5000.0D0
+                  ELSE
+                  END IF
+                  IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+                      JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+                      RCL=-3
+                  ELSE
+                  END IF
+C
+                  X=X+JUSOFF
+C
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+                  X=X-5000.0D0
+                  Y=Y-3500.0D0
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+                  IF(DBLE(PGAMMA).NE.0.0D0) THEN
+                      LKG=(PII/180.0D0)*DBLE(PGAMMA)
+                      XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                      YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                      X=XNEW
+                      Y=YNEW
+                  ELSE
+                  END IF
+
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+                  X=X+5000.0D0
+                  Y=Y+3500.0D0
+C
+C       PLOT THE SPOT
+C       X AND Y ARE THE LOCATIONS OF THE RAY IN DEVICE DEPENDENT COORDINATES
+                  IPST=0
+                  IX=INT(X)
+                  IY=INT(Y)
+C     MOVE TO NEW POSITION WITH RAISED PEN
+C       PLOT SPOT HERE
+C     NOW ISSUE THE PLOTTING COMMANDS STORED IN THE P1ARRAY ARRAY
+C
+                  IF(CN.EQ.1)  COLPAS=(COLR1)
+                  IF(CN.EQ.2)  COLPAS=(COLR2)
+                  IF(CN.EQ.3)  COLPAS=(COLR3)
+                  IF(CN.EQ.4)  COLPAS=(COLR4)
+                  IF(CN.EQ.5)  COLPAS=(COLR5)
+                  IF(CN.EQ.6)  COLPAS=(COLR6)
+                  IF(CN.EQ.7)  COLPAS=(COLR7)
+                  IF(CN.EQ.8)  COLPAS=(COLR8)
+                  IF(CN.EQ.9)  COLPAS=(COLR9)
+                  IF(CN.EQ.10) COLPAS=(COLR10)
+                  CALL MY_COLTYP(COLPAS)
+                  CALL PENMV2(IX,IY,0)
+                  CALL PENMV2(IX+BAR,IY,1)
+                  CALL PENMV2(IX-BAR,IY,1)
+                  CALL PENMV2(IX,IY,0)
+                  CALL PENMV2(IX,IY+BAR,1)
+                  CALL PENMV2(IX,IY-BAR,1)
+                  CALL PENMV2(IX,IY,0)
+                  COLPAS=COLLBL
+                  CALL MY_COLTYP(COLPAS)
+                  IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+              ELSE
+C       RAY WAS NOT AT THE SURFACE OF INTEREST
+              END IF
+          END DO
+          CALL CLOSE_FILE(92,1)
+C
+          RETURN
+      END
+
+
+      SUBROUTINE NSSCLPTUB(JJ)
+          USE NSSMOD
+          USE GLOBALS
+C
+          IMPLICIT NONE
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y
+     1    ,ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,Z1,ANGLE,AN2
+     3    ,X00,Y00,Z0,LX0,LY0,LZ0
+     4    ,X1,Y1,MX0,MY0,MZ0,NX0,NY0,NZ0,XID,YID
+C
+          INTEGER J,IK,JJ,ALLOERR
+C
+          INTEGER IX,IY,I,IPST,N
+C
+!      INTEGER SURFACEI
+C
+          INTEGER COLPAS
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+          REAL*8 CLPDAT
+          DIMENSION CLPDAT(:,:)
+          ALLOCATABLE :: CLPDAT
+C
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+C
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          ALLOCATE(CLPDAT(0:360,3),STAT=ALLOERR)
+C
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+C
+          CLPDAT(0:360,1:3)=0.0
+C
+          X=0.0D0
+          Y=0.0D0
+          XID=0.0D0
+          YID=0.0D0
+C
+C       ALL INPUT IS OK, KEEP GOING
+C     THE ARRAY CONTAINING SURFACE CLAP DATA IS:
+C     CLPDAT(0:360,1:3)
+C
+C     THE FIRST DIMENSION IS FOR THE DATA POINT NUMBER
+C     THE SECOND DIMENSION IS FOR THE X,Y AND Z COORDINATES OR THE POINT
+C     THE THIRD IS THE SURFACE NUMBER
+C
+C     WE NEED TO LOAD THE ARRAY BEFORE PLOTTING
+C
+C     THE PROCEDURE IS:
+C
+C     CYCLE THROUGH ALL THE SURFACES
+C
+C     1. WE WILL CLOCK AROUND THE CLEAR APERTURE FROM THE LOCAL +X
+C     TOWARD THE LOCAL +Y AXIS,
+C     4.0 DEGREE INCREMENTS AS MEASURED
+C     BY AN OBSERVER AT THE SURFACE VERTEX, IN THE LOCAL COORDINATE
+C     SYSTEM OF THE SURFACE, WITH THE OBSERVER FACING THE -Z AXIS
+C     DIRECTION
+          DO N=1,2
+C       N=1 IS START OF TUBE
+C       N=2 IS END OF TUBE
+              DO J=0,360
+                  ANGLE=(DBLE(J)*PII)/180.0D0
+                  AN2=(DBLE(J+1)*PII)/180.0D0
+C     NOW ALONG THIS ANGLED LINE, WHAT ARE THE X AND Y COORDINATES
+C     OF THE CLEAR APERTURE
+C
+                  CALL NSSCAO3(JJ,X,Y,ANGLE)
+C
+C     THE RETURNED X AND Y ARE WHERE THE SAG IS TO BE CALCULATED
+C
+C     2. ASSIGN SAG BASED ON N
+                  IF(N.EQ.1) Z=0.0D0
+                  IF(N.EQ.2) Z=DABS(NSSALENS(11,JJ))
+C
+C
+C     ASSIGN ARRAY VALUES BASED ON J VALUE
+                  CLPDAT(J,1)=X
+                  CLPDAT(J,2)=Y
+                  CLPDAT(J,3)=Z
+              END DO
+C
+C     3. THE ARRAYS NOW HAVE LOCAL X,Y AND Z VALUES STORED IN THEM
+C     CONVERT THE LOCAL X ANY Y CLAPS TO GLOBAL NUMBERS
+C     GLOBAL VERTEX DATA IS
+              DO I=0,360
+                  X00=NSSVERTEX(1,JJ)
+                  Y00=NSSVERTEX(2,JJ)
+                  Z0 =NSSVERTEX(3,JJ)
+                  LX0=NSSVERTEX(4,JJ)
+                  MX0=NSSVERTEX(5,JJ)
+                  NX0=NSSVERTEX(6,JJ)
+                  LY0=NSSVERTEX(7,JJ)
+                  MY0=NSSVERTEX(8,JJ)
+                  NY0=NSSVERTEX(9,JJ)
+                  LZ0=NSSVERTEX(10,JJ)
+                  MZ0=NSSVERTEX(11,JJ)
+                  NZ0=NSSVERTEX(12,JJ)
+                  X=CLPDAT(I,1)
+                  Y=CLPDAT(I,2)
+                  Z=CLPDAT(I,3)
+C
+                  X1=X00+((LX0*(X))+(LY0*(Y))
+     1            +(LZ0*(Z)))
+                  Y1=Y00+((MX0*(X))+(MY0*(Y))
+     1            +(MZ0*(Z)))
+                  Z1=Z0+((NX0*(X))+(NY0*(Y))
+     1            +(NZ0*(Z)))
+                  CLPDAT(I,1)=X1
+                  CLPDAT(I,2)=Y1
+                  CLPDAT(I,3)=Z1
+              END DO
+C
+C     4. NOW DETERMINE THE BEST PLACE FOR THE ROTATION POINT FOR
+C               PLOT LOOK/VIEW
+C
+              CALL NSSROT
+C
+C     5.  CONVERT THE GLOBAL X AND Y CLAP VALUES
+C               USING THE LOOK/VIEW VALUES
+              DO I=0,360
+                  X=CLPDAT(I,1)
+                  Y=CLPDAT(I,2)
+                  Z=CLPDAT(I,3)
+                  X=X-XROT
+                  Y=Y-YROT
+                  Z=Z-ZROT
+                  XN=ROT1X(X,Z,VIEPH)
+                  YN=Y
+                  ZN=ROT1Z(X,Z,VIEPH)
+                  X=XN
+                  Y=YN
+                  Z=ZN
+C
+                  ZN=ROT2Z(Z,Y,VIEAL)
+                  YN=ROT2Y(Z,Y,VIEAL)
+                  XN=X
+                  CLPDAT(I,1)=XN
+                  CLPDAT(I,2)=YN
+                  CLPDAT(I,3)=ZN
+              END DO
+              XMAXI=XN                  !Add by ENDO
+              XMINI=XN                  !Add by ENDO
+
+C
+C     THE ARRAYS NOW HAVE GLOBAL SURFACE CLAP DATA IN THEM
+C
+C     6.IF NEEDED, DETERMINE SCALE FACTORS AND PLOT RANGE
+C
+              CALL NSSPLTSC
+C
+C     7.CYCLE THROUGH THE THE ARRAYS, APPLY SCALE FACTORS
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+              DO I=0,360
+                  CLPDAT(I,1)=(CLPDAT(I,1)/NSSSCFA)*1000.0D0
+                  CLPDAT(I,2)=(CLPDAT(I,2)/NSSSCFA)*1000.0D0
+              END DO
+C
+C     8. APPLY THE XSHIFT AND YSHIFT VALUES
+              DO I=0,360
+                  IF(LORIENT) CALL ORSHIFT
+                  CLPDAT(I,1)=CLPDAT(I,1)+DBLE(PXSHFT)
+                  CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0+DBLE(PYSHFT)
+              END DO
+C
+C     9. SET THE PLOT JUSTIFICATION IF NEEDED
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+C     NOW
+              IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+                  JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+                  RCL=-1
+              ELSE
+              END IF
+              IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+                  RCL=-2
+                  JUSOFF=5000.0D0
+              ELSE
+              END IF
+              IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+                  JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+                  RCL=-3
+              ELSE
+              END IF
+C
+              DO I=0,360
+                  CLPDAT(I,1)=CLPDAT(I,1)+JUSOFF
+              END DO
+C     9. PLOT GAMMA
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+              DO I=0,360
+                  CLPDAT(I,1)=CLPDAT(I,1)-5000.0D0
+                  CLPDAT(I,2)=CLPDAT(I,2)-3500.0D0
+              END DO
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+              IF(DBLE(PGAMMA).NE.0.0D0) THEN
+                  LKG=(PII/180.0D0)*DBLE(PGAMMA)
+
+                  DO I=0,360
+                      X=CLPDAT(I,1)
+                      Y=CLPDAT(I,2)
+                      XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                      YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                      CLPDAT(I,1)=XNEW
+                      CLPDAT(I,2)=YNEW
+                  END DO
+              ELSE
+              END IF
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+              DO I=0,360
+                  CLPDAT(I,1)=CLPDAT(I,1)+5000.0D0
+                  CLPDAT(I,2)=CLPDAT(I,2)+3500.0D0
+              END DO
+C
+C     NOW DRAW THE CLAP
+C     WITH THE PEN UP, GO TO THE STARTING PLOT POSITION
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+              DO J=0,360
+C     PUT INSTRUCTIONS IN P1ARAY TO DROP PEN AND DRAW
+                  IF(J.EQ.0.or.J.eq.360) IPST=0
+                  IF(J.NE.0) IPST=1
+                  IF(CLPDAT(J,1).GT.1.0D6) CLPDAT(J,1)=1.0D6
+                  IF(CLPDAT(J,2).GT.1.0D6) CLPDAT(J,2)=1.0D6
+                  IF(CLPDAT(J,1).LT.-1.0D6) CLPDAT(J,1)=-1.0D6
+                  IF(CLPDAT(J,2).LT.-1.0D6) CLPDAT(J,2)=-1.0D6
+                  IX=INT(CLPDAT(J,1))
+                  IY=INT(CLPDAT(J,2))
+                  P1ARAY(J,1,1)=IX
+                  P1ARAY(J,2,1)=IY
+                  P1ARAY(J,3,1)=IPST
+                  IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+              END DO
+C     FINISHED WITH THAT CLAP, LIFT PEN
+              IPST=0
+C     NOW ISSUE THE PLOTTING COMMANDS STORED IN THE P1ARAY ARRAY
+C
+C     LINE TYPE SETTING
+              COLPAS=COLCLP
+              CALL MY_COLTYP(COLPAS)
+              OLLNTP=LNTYPE
+              LNTYPE=0
+              FIXUP=.FALSE.
+              DO IK=0,360
+                  CALL PENMV2(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1))
+!       call datacolorssave(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1)
+!     &,3)
+              END DO
+              LNTYPE=OLLNTP
+C
+          END DO
+          DEALLOCATE(CLPDAT,STAT=ALLOERR)
+          RETURN
+      END
+
+
+      SUBROUTINE NSSPROTUB(JJ,V3)
+          USE NSSMOD
+          USE GLOBALS
+C
+          IMPLICIT NONE
+C
+C       THIS ROUTINE DOES THE PLOTTING OF SURFACE PROFILES FOR NSS TUBES
+C
+          REAL*8 X,Y,Z,XN,YN,ZN,ROT1X,ROT1Z,ROT2Y,V3,
+     1    ROT2Z,AX,AY,AZ,AALF,APHI,XMAXI,XMINI
+     2    ,XNEW,YNEW,LKG,VIEPH,VIEAL,Z1
+     3    ,X00,Y00,Z0,LX0,LY0,LZ0
+     4    ,X1,Y1,MX0,MY0,MZ0,NX0,NY0,NZ0
+C
+          LOGICAL YESONE1,YESONE2,YESONE3,YESONE4
+     1    ,YESONE5,YESONE6,NSSINSIDEIT
+C
+          COMMON/YESSIR/YESONE1,YESONE2,YESONE3,YESONE4,YESONE5,YESONE6
+C
+          EXTERNAL NSSINSIDEIT
+C
+          INTEGER M1,M2,J,IK,III,ALLOERR
+     1    ,COLPAS,JJ
+C
+          REAL*8 THETA
+
+C
+          INTEGER IX,IY,I,II,IPST
+C
+          INCLUDE 'datmai.inc'
+          INCLUDE 'datlen.inc'
+C
+          REAL*8 PRO
+C
+          DIMENSION PRO(:,:)
+          ALLOCATABLE :: PRO
+C     LOOK.VIEW TRANSFORMS
+
+          ROT1X(AX,AZ,APHI)=((AX*DCOS(APHI))-(AZ*DSIN(APHI)))
+          ROT1Z(AX,AZ,APHI)=((AX*DSIN(APHI))+(AZ*DCOS(APHI)))
+C
+          ROT2Z(AZ,AY,AALF)=((AZ*DCOS(AALF))+(AY*DSIN(AALF)))
+          ROT2Y(AZ,AY,AALF)=((-AZ*DSIN(AALF))+(AY*DCOS(AALF)))
+C
+          M1=2
+          M2=3
+          DEALLOCATE (PRO,STAT=ALLOERR)
+          ALLOCATE (PRO(M1,M2),STAT=ALLOERR)
+          PRO(1:2,1:3)=0.0D0
+C
+          X=0.0D0
+          Y=0.0D0
+C
+          VIEPH=(PII/180.0D0)*VIEPHI
+          VIEAL=(PII/180.0D0)*VIEALF
+
+C
+C       USES GLOBAL NSSVERTEX ARRAY
+C
+C     CONVERT THETA TO RADIAN MEASURE
+          IF(V3.GE.89.95D0.AND.V3.LE.90.05D0) V3=90.001D0
+          IF(V3.GE.269.95D0.AND.V3.LE.270.05D0) V3=270.001D0
+          THETA=V3*PII/180.0D0
+C     THE ARRAY CONTAINING SURFACE PROFILE DATA ARE:
+C
+C     PRO(1:2,1:3)
+C
+C     THE FIRST DIMENSION IS FOR THE DATA POINT NUMBER
+C     THE SECOND DIMENSION IS FOR THE X,Y AND Z COORDINATES OR THE POINT
+C
+C     WE NEED TO LOAD THE ARRAY BEFORE PLOTTING
+C
+C     THE PROCEDURE IS:
+C     1. DETERMINE THE MAXIMUM AND MINIMUM LOCAL X AND Y
+c               COORDINATES FOR A SURFACE FOR WHICH THE PROFILE
+C               IS TO BE CALCULATED.
+C
+C     CYCLE THROUGH ALL THE SURFACES BUT SKIP SURFACES WITH MULTIPLE
+C     APERTURE DEFS ON IT
+C
+          II=JJ
+          III=II
+C
+C     NOW FOR THE II SURFACE WE CALCULATE ALL THE END POINTS
+C
+C     NOW WE HAVE THE END POINTS, CYCLE THROUGH ALL THE PAIRS AND LOAD
+C     ALL THE ARRAYS WITH SURFACE LOCAL X,Y AND Z DATA
+C
+          X=DABS(NSSALENS(10,JJ))
+          Y=DABS(NSSALENS(10,JJ))
+          PRO(1,1)=X*DCOS(V3*PII/180.0D0)
+          PRO(2,1)=X*DCOS(V3*PII/180.0D0)
+          PRO(1,2)=Y*DSIN(V3*PII/180.0D0)
+          PRO(2,2)=Y*DSIN(V3*PII/180.0D0)
+          PRO(1,3)=0.0D0
+          PRO(2,3)=DABS(NSSALENS(11,JJ))
+C
+C     THE ARRAYS NOW HAVE LOCAL X,Y AND Z VALUES STORED IN THEM
+C     CONVERT THE LOCAL X ANY Y PROFILES TO GLOBAL NUMBERS
+C     GLOBAL VERTEX DATA IS
+          II=JJ
+          DO I=1,2
+              X00=NSSVERTEX(1,II)
+              Y00=NSSVERTEX(2,II)
+              Z0= NSSVERTEX(3,II)
+              LX0=NSSVERTEX(4,II)
+              MX0=NSSVERTEX(5,II)
+              NX0=NSSVERTEX(6,II)
+              LY0=NSSVERTEX(7,II)
+              MY0=NSSVERTEX(8,II)
+              NY0=NSSVERTEX(9,II)
+              LZ0=NSSVERTEX(10,II)
+              MZ0=NSSVERTEX(11,II)
+              NZ0=NSSVERTEX(12,II)
+              X=PRO(I,1)
+              Y=PRO(I,2)
+              Z=PRO(I,3)
+C
+              X1=X00+((LX0*(X))+(LY0*(Y))
+     1        +(LZ0*(Z)))
+              Y1=Y00+((MX0*(X))+(MY0*(Y))
+     1        +(MZ0*(Z)))
+              Z1=Z0+((NX0*(X))+(NY0*(Y))
+     1        +(NZ0*(Z)))
+              PRO(I,1)=X1
+              PRO(I,2)=Y1
+              PRO(I,3)=Z1
+          END DO
+C
+C     4. NOW DETERMINE THE BEST PLACE FOR THE ROTATION POINT FOR
+C               PLOT LOOK/VIEW
+C
+          CALL NSSROT
+C
+C     5.  CONVERT THE GLOBAL X ANY Y PROFILES
+C               USING THE LOOK/VIEW VALUES
+          II=JJ
+          DO I=1,2
+              X=PRO(I,1)
+              Y=PRO(I,2)
+              Z=PRO(I,3)
+              X=X-XROT
+              Y=Y-YROT
+              Z=Z-ZROT
+              XN=ROT1X(X,Z,VIEPH)
+              YN=Y
+              ZN=ROT1Z(X,Z,VIEPH)
+              X=XN
+              Y=YN
+              Z=ZN
+C
+              ZN=ROT2Z(Z,Y,VIEAL)
+              YN=ROT2Y(Z,Y,VIEAL)
+              XN=X
+              PRO(I,1)=XN
+              PRO(I,2)=YN
+              PRO(I,3)=ZN
+          END DO
+
+          XMAXI=XN                  !Add by ENDO
+          XMINI=XN                  !Add by ENDO
+C
+C     THE ARRAYS NOW HAVE GLOBAL SURFACE PROFILE DATA IN THEM
+C
+C     6.IF NEEDED, DETERMINE SCALE FACTORS AND PLOT RANGE
+C
+          CALL NSSPLTSC
+C
+C     7.CYCLE THROUGH THE THE ARRAYS, APPLY SCALE FACTORS
+C
+C     RIGHT NOW,COORDINATES ARE IN WORLD COORDINATES
+C     CONVERT THEM TO DEVICE INDEPENDENT GRAPHICS COORDINATES IN
+C     TWO STEPS.
+C
+C     THE WORLD X PLOTS TO THE PLOTTER X
+C     THE WORLD Y PLOTS TO THE PLOTTER Y
+C
+C     STEP 1: CONVERT USING AN APPROPRIATE SCALE FACTOR
+C               CALCULATING AN APPROPRIATE FACTOR IF NECESSARY
+C
+          II=JJ
+          DO I=1,2
+              PRO(I,1)=(PRO(I,1)/NSSSCFA)*1000.0D0
+              PRO(I,2)=(PRO(I,2)/NSSSCFA)*1000.0D0
+          END DO
+C
+C     8. APPLY THE PLOT XSHIFT AND YSHIFT VALUES
+          DO I=1,2
+              II=JJ
+              IF(LORIENT) CALL ORSHIFT
+              PRO(I,1)=PRO(I,1)+DBLE(PXSHFT)
+              PRO(I,2)=PRO(I,2)+3500.0D0+DBLE(PYSHFT)
+          END DO
+C
+C     9. SET THE PLOT JUSTIFICATION IF NEEDED
+C     IF THERE ARE X-OFFSETS (JUSTIFICATION) TO APPLY, DO THEM HERE.
+C
+C     NOW
+          IF(RCL.EQ.1.OR.RCL.EQ.-1) THEN
+              JUSOFF=500.0D0-((XMINI/NSSSCFA)*1000.0D0)
+              RCL=-1
+          ELSE
+          END IF
+          IF(RCL.EQ.2.OR.RCL.EQ.-2) THEN
+              RCL=-2
+              JUSOFF=5000.0D0
+          ELSE
+          END IF
+          IF(RCL.EQ.3.OR.RCL.EQ.-3) THEN
+              JUSOFF=9500.0D0-((XMAXI/NSSSCFA)*1000.0D0)
+              RCL=-3
+          ELSE
+          END IF
+C
+          DO I=1,2
+              II=JJ
+              PRO(I,1)=PRO(I,1)+JUSOFF
+          END DO
+C     9. PLOT GAMMA
+C     IF THERE IS A NON-ZERO GAMMA SPECIFIED IN PLOT LOOK OR PLOT VIEW THEN
+C     ROTATE IN GAMMA ON THE SCREEN ABOUT THE CENTER OF THE SCREEN
+C     WHICH HAS COORDINATES X=5000.0D0,Y=3500.0D0
+C
+C     FIRST SHIFT THE COORDINATE ORIGIN TO THE CETER OF THE DISPLAY
+C
+          DO I=1,2
+              II=JJ
+              PRO(I,1)=PRO(I,1)-5000.0D0
+              PRO(I,2)=PRO(I,2)-3500.0D0
+          END DO
+C     THE SCREEN COORDINATE IN REAL*8 IN THE SHIFTED COORDINATE
+C     FRAME IS NOW X AND Y
+
+          IF(DBLE(PGAMMA).NE.0.0D0) THEN
+              LKG=(PII/180.0D0)*DBLE(PGAMMA)
+
+              DO I=1,2
+                  II=JJ
+                  X=PRO(I,1)
+                  Y=PRO(I,2)
+                  XNEW=((X*DCOS(LKG))-(Y*DSIN(LKG)))
+                  YNEW=((X*DSIN(LKG))+(Y*DCOS(LKG)))
+                  PRO(I,1)=XNEW
+                  PRO(I,2)=YNEW
+              END DO
+          END IF
+C     THE ROTATION IS DONE, NOW SHIFT THE ORIGIN BACK TO THE BOTTOM
+C     LEFT HAND CORNER
+          DO I=1,2
+              II=JJ
+              PRO(I,1)=PRO(I,1)+5000.0D0
+              PRO(I,2)=PRO(I,2)+3500.0D0
+          END DO
+C
+          I=JJ
+C     NOW DRAW THE X PROFILE OF THE CLAP AT SURFACE I
+C     WITH THE PEN UP, GO TO THE STARTING PLOT POSITION
+          IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+C     FIRST CLAP PROFILE
+          DO J=1,2
+C     PUT INSTRUCTIONS IN P1ARAY TO DROP PEN AND DRAW
+              IF(J.EQ.1) IPST=1
+              IF(J.EQ.2) IPST=0
+              IF(PRO(J,1).GT.1.0D6) PRO(J,1)=1.0D6
+              IF(PRO(J,2).GT.1.0D6) PRO(J,2)=1.0D6
+              IF(PRO(J,1).LT.-1.0D6) PRO(J,1)=-1.0D6
+              IF(PRO(J,2).LT.-1.0D6) PRO(J,2)=-1.0D6
+              IX=INT(PRO(J,1))
+              IY=INT(PRO(J,2))
+              P1ARAY(J,1,1)=IX
+              P1ARAY(J,2,1)=IY
+              P1ARAY(J,3,1)=IPST
+              IF(.NOT.PLEXIS) PLEXIS=.TRUE.
+          END DO
+C
+C     LINE TYPE SETTING
+          COLPAS=COLPRO
+          CALL MY_COLTYP(COLPAS)
+          OLLNTP=LNTYPE
+          LNTYPE=0
+          FIXUP=.FALSE.
+
+          DO IK=1,2
+              CALL PENMV2(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1))
+!      CALL datacolorssave(P1ARAY(IK,1,1),P1ARAY(IK,2,1),P1ARAY(IK,3,1)
+!     &,2)
+          END DO
+
+C     FINISHED WITH THAT PROFILE, LIFT PEN
+          IPST=0
+          LNTYPE=OLLNTP
+          DEALLOCATE (PRO,STAT=ALLOERR)
+          RETURN
+      END

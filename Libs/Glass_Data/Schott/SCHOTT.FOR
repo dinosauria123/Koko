@@ -1,0 +1,38 @@
+        PROGRAM MAIN
+C
+        IMPLICIT NONE
+C
+        CHARACTER NAME(1:5000)*13,NUMBER(1:5000)*13,
+     1  DUMMY*20,N*20
+C
+        INTEGER I,J,JJ
+C
+        DOUBLE PRECISION A0(1:5000),A1(1:5000),
+     1  A2(1:5000),A3(1:5000),A4(1:5000),A5(1:5000)
+C
+        OPEN(UNIT=10,ACCESS='SEQUENTIAL',FILE='SCH06.DAT',
+     1  FORM='FORMATTED',STATUS='UNKNOWN')
+        REWIND (UNIT=10)
+        DO J=1,106
+        READ(10,*) NAME(J),A0(J),A1(J),A2(J),A3(J),A4(J),A5(J),NUMBER(J)
+                PRINT*,NAME(J),J
+        JJ=J
+        END DO
+        PRINT*,'READ COMPLETE'
+        CLOSE(UNIT=10,STATUS='KEEP')
+        OPEN(UNIT=30,ACCESS='DIRECT',FILE='SCH2000.BIN',
+     1  FORM='UNFORMATTED',RECL=33,STATUS='UNKNOWN')
+        WRITE(UNIT=30,REC=1) JJ
+        print*,jj
+                DO 6000 I=1,106
+        PRINT*,I,NAME(I),NUMBER(I),A0(I),A1(I),
+     1  A2(I),A3(I),A4(I),A5(I)
+        WRITE(UNIT=30,REC=I+1) NAME(I),NUMBER(I),A0(I),A1(I),
+     1  A2(I),A3(I),A4(I),A5(I)
+ 6000           CONTINUE
+        PRINT*,'WRITE COMPLETE'
+                CLOSE(UNIT=30)
+ 100    FORMAT(A20)
+ 105    FORMAT(A13)
+                STOP
+                END

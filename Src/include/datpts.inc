@@ -1,0 +1,78 @@
+C///////////////////////////////////////////////////////////////////////
+C/
+C/ Copyright (C) 2020 The Koko Project Developers
+C/
+C/ See the file COPYRIGHT.md in the top-level directory of this
+C/ distribution
+C/
+C/ This file is part of Koko.
+C/
+C/ Koko is free software: you can redistribute it and/or modify it
+C/ under the terms of the GNU General Public License as published by
+C/ the Free Software Foundation, either version 3 of the License, or
+C/ (at your option) any later version.
+C/
+C/ Koko is distributed in the hope that it will be useful, but
+C/ WITHOUT ANY WARRANTY; without even the implied warranty of
+C/ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C/ GNU General Public License for more details.
+C/
+C/ You should have received a copy of the GNU General Public License
+C/ along with Koko; see the file COPYING.  If not, see
+C/ <https://www.gnu.org/licenses/>.
+C/
+C///////////////////////////////////////////////////////////////////////
+
+C     PART DRAWING INCLUDE FILE
+C     FLAG FOR PART DRAWINGS INPUT IN PROGRESS
+C
+      LOGICAL PARTS
+      COMMON/PARPAR/PARTS
+C
+C     PART SURFACE NUMBERS
+C
+      INTEGER ISURFF,JSURFF
+      COMMON/PTSSURF/ISURFF,JSURFF
+C
+C     GENERAL FLOATING POINT VALUES
+C
+      REAL*8 ODV1,ODV2,DIATOLV,RADTOV1,RADTOLV2
+     1,RADLFV1,RADTLFV2,FRNGV1,FRNGV2,THITILV,CLERAPV1,CLERAPV2
+     2,QUALV,FNGDIAV1,FNGDIAV2,GLSCDV1,GLSCDV2
+     3,CENTIR
+      COMMON/PTSVAL/ODV1,ODV2,DIATOLV,RADTOV1,RADTOLV2
+     1,RADLFV1,RADTLFV2,FRNGV1,FRNGV2,THITILV,CLERAPV1,CLERAPV2
+     2,QUALV,FNGDIAV1,FNGDIAV2,GLSCDV1,GLSCDV2
+     3,CENTIR
+C
+C     CHARACTER VALUES
+C
+      INTEGER DRAWSURF
+      LOGICAL FRINTOL1,FRINTOL2,FLAT1,FLAT2
+      CHARACTER SURQUAL*20,SURCOAT*20,DTITLE*32,DWGNO*12,SURMATL*13
+     1,CONAME*32
+      REAL*8 POD1,POD2,DIATOL,RADTOL1,RADTOL2,THITOL,CLP1,CLP2,WAVEL1
+     1,FNGDIA1,FNGDIA2,BRKEDG,SAGTL1,SAGTL2
+     1,PRPNTL1,PRPNTL2,FRNG1,FRNG2
+      COMMON/PRTDWG/DRAWSURF,POD1,POD2,DIATOL,RADTOL1,RADTOL2
+     1,FRINTOL1,THITOL,CLP1,CLP2,FNGDIA1,FNGDIA2,
+     2BRKEDG,SAGTL1,SAGTL2,PRPNTL1,PRPNTL2,
+     3FRNG1,FRNG2,WAVEL1,FRINTOL2
+      COMMON/PRTDWG2/SURQUAL,SURCOAT,DTITLE,DWGNO,SURMATL,CONAME,
+     1FLAT1,FLAT2
+C
+      LOGICAL PARTISDRAWING
+      COMMON/ISPART/PARTISDRAWING
+C
+      REAL*8 TEST1,TEST2,PODA1,PODA2,PODB1,PODB2
+C
+      COMMON/PARTS3/TEST1,TEST2,PODA1,PODA2,PODB1,PODB2
+C
+      LOGICAL CLP1SET,CLP2SET
+C
+      COMMON/CLPSETS/CLP1SET,CLP2SET
+C
+      LOGICAL SINGLET,DOUBLET,NOTEPAGE
+C
+      COMMON/SINGDOUB/SINGLET,DOUBLET,NOTEPAGE
+C

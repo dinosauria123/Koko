@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Optimize</class>
+ <widget class="QDialog" name="Optimize">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>350</width>
+    <height>350</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Input Variables</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_7">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>8</width>
+           <height>250</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Focal Length(mm)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>112</width>
+             <height>27</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QComboBox" name="comboBox">
+             <property name="currentText">
+              <string/>
+             </property>
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CV</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Index n</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Abbe V</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_2">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CV</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Index n</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Abbe V</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_3">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CV</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Index n</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Abbe V</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_4">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CV</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Index n</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Abbe V</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="comboBox_5">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>CV</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>TH</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Index n</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Abbe V</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>143</width>
+             <height>13</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Target</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox_6">
+               <property name="currentText">
+                <string>SA3</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>SA3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>SA5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>SA7</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>= 0.0</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>143</width>
+             <height>13</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLineEdit" name="lineEdit_2"/>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_3"/>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_4"/>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_5"/>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_6"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>14</width>
+           <height>250</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>311</width>
+         <height>60</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+  <zorder></zorder>
+  <zorder>horizontalSpacer_2</zorder>
+  <zorder>verticalSpacer</zorder>
+  <zorder>verticalSpacer_4</zorder>
+  <zorder>verticalSpacer_3</zorder>
+  <zorder>verticalSpacer_5</zorder>
+  <zorder>horizontalSpacer_2</zorder>
+  <zorder>horizontalSpacer</zorder>
+  <zorder>verticalSpacer_2</zorder>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>Optimize</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>177</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>Optimize</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>177</x>
+     <y>370</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

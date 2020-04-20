@@ -1,0 +1,22 @@
+# backup files
+*~
+
+# intermediate files
+*.o
+*.a
+*.mod
+
+# the executables
+koko
+koko_gui
+
+# binary files
+*.pdf
+
+#Qt related
+.qmake*
+
+# MacOS cruft
+.DS_Store
+
+
