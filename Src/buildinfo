@@ -5,5 +5,5 @@
 printf "      character buildstr*80\n" > buildinfo.inc
 printf "      buildstr = '[GCC %s]" `gcc -dumpfullversion` >> buildinfo.inc
 printf "[build date: %s]" `date -Idate` >> buildinfo.inc
-printf "[git commit: 0]'\n" >> buildinfo.inc
+printf "[git commit: %d]'\n" `git log --pretty=oneline|wc -l` >> buildinfo.inc
 
