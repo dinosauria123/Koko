@@ -12,6 +12,11 @@ ifndef OS
   OS = LINUX
 endif
 
+# default number of jobs
+ifndef JOBS
+  JOBS = 1
+endif
+
 # compiler flags
 CC = gcc
 FC = gfortran
@@ -51,7 +56,7 @@ modules:
 .PHONY: libraries $(SUBDIRS)
 libraries: $(SUBDIRS)
 $(SUBDIRS):
-	make -C $@
+	make -j $(JOBS) -C $@
 
 koko-cli: buildinfo.inc $(COBJ) $(FOBJ)
 	$(FC) -o koko-cli $(FOBJ) $(COBJ) $(LDIR) $(LIBS)
@@ -62,10 +67,10 @@ buildinfo:
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) -I./include -I./modules $<
-	
+
 %.o: %.F
 	$(FC) -c $(FFLAGS) -I./include -I./modules $<
-	
+
 %.o: %.c
 	$(CC) -c $(CFLAGS) $<
 
@@ -75,6 +80,6 @@ clean:
 	rm -f ./lib/lib*.a
 	make -C modules clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
-	
+
 install:
 	install -m 755 koko-cli /usr/local/bin

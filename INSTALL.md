@@ -29,7 +29,7 @@ the command shell prompt, type
     make
 
 This will build a version of Koko without debugging information. The
-executable file is called 'koko'.Debugging information is included in
+executable file is called 'koko-cli'.Debugging information is included in
 the executable file when make is called as follows:
 
     make DEBUG=true
@@ -40,6 +40,12 @@ command
 
     make NATIVE=true
 
+In all cases the compile process can be speeded up by running multiple
+compile jobs in parallel. The number of jobs can be specified on the
+make command line as shown in the following example:
+
+    make NATIVE=true JOBS=8
+    
 Koko must be installed as super-user (or using sudo) with the command
 
     make install
@@ -86,7 +92,7 @@ command at the command prompt, followed by
 
     make
 
-and, which creates the executable file 'koko_gui'. Finally,
+and, which creates the executable file 'koko-gui'. Finally,
 
     make install
 
