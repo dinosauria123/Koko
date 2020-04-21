@@ -1,0 +1,30 @@
+﻿
+About Porting
+——————
+
+I used to calculate old lens as my hobby. I use free demo version of commercial softwares,
+they have limitation of number of surfaces or lacking optimization.
+
+I found KDP-2 by Jim Klein, It is free open source software and has full features.
+
+I am mainly using Linux and MacOSX, but KDP-2 is windows version only.
+
+I asked to Jim Klein to port KDP-2, he is kindly gave me a permission to port KDP-2 to
+other platforms.
+
+KDP-2 is originally written by Intel fortran compiler and Winteracter to make GUI and graph drawing.
+I think replace them with free softwares such as gfortran, gnuplot, and Qt tool kit.
+
+I commented out winteracter based codes by “!”, and write code lower case in *.F files.
+I made kods.for file for replaced winteracter subroutines and function.
+
+The CUI version of my program (KODS) start to working about one month later from start to porting.
+Then I start to make GUI program (KODS_GUI) but I am a beginner of C++ and Qt tool kit,
+I borrowed many part of cords from Stackoverflow, Qt centre and many web pages.
+
+Now I can release my codes it took about two years since start to porting.
+
+I really appreciate to Jim Klein, the original author of KDP-2, he encouraged to 
+me every time when I talk to him.
+
+2014.9.12       ENDO Michiaki

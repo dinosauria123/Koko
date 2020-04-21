@@ -1,0 +1,14 @@
+Dear Ulf,
+
+KODS is big do-loop to execute input command and display data.
+
+Subroutine userinpt2 waits input then subroutine proces and cmder
+execute input commands.
+
+Graphics are plotted by my_plot from saved calculated data via
+drawdatasave.
+
+That’s I remember the structure of KODS...
+
+ENDO Michiaki 
+

@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+  <head><title>First Optical Design Tutorial for KDP-2 / Koko</title></head>
+  <body>
+  <center><h1>Optical Design Tutorials</h1></center>
+    <center><h2>By Jim Klein</h2></center>
+
+    <h2>General Instructions</h2>
+    
+    <h3>Optical System Specifications</h3> In every design exercise,
+    certain optical system specifications re required in order to know
+    what is to be designed. Each tutorial exercise will begin with
+    such a specification.
+
+    <h3>Graphics Displays</h3> No graphical output will be included in
+    this tutorial because it makes the document unnecessarily
+    bulky. Any time a command generates graphical output, that output
+    is drawn to a new screen. Pressing any key clears that screen. The
+    screen may be re-drawn by issuing the <strong>DRAW</strong>
+    command or the screen may be printed by issuing
+    the <strong>GRAOUT</strong> command which sends the graphics to
+    the current default printer.
+    
+    <h3>Using the Tutorials</h3> <p>I am assuming that those who are
+    running these tutorials know something about optical design and
+    analysis and are running the tutorials in order to
+    overcome <strong>New User Angst</strong> which, trust me on this
+    one, we all have from time to time. The tutorials will start
+    simple and bet progressively more complex, though compared to some
+    areas of scientific computing, what you will be doing here is
+    relatively simple and straight forward. Please email any and all
+    questions and complaints to the email address above.</p>
+
+    <h2>Tutorial #1, <a href=https://en.wikipedia.org/wiki/Cassegrain_reflector>
+	The Newtonian Telescope</a></h2>
+    <p>Designing a Newtonian Telescope System with specifications:
+    Telescope aperture diameter = 6.0 inches. Telescope focal ratio =
+    f/8. Telescope tube outside diameter = 7.0 inches. Distance
+    outside the tube at which the infinite conjugate focus is to be
+    placed = 2.0 inches.</p>
+
+    <p>We start by starting the program in the usual way. At the
+    command prompt, we now enter the telescope prescription. All input
+    commands shown in the following are in <strong>BOLD CAPS</strong>,
+    but they may be entered in lower case as the command input is not
+    case sensitive. In tutorial #1, bracketed descriptors describe all
+    commands. In following tutorials, only newly introduced commands
+    will have bracketed descriptors and only in their first usage.</p>
+
+    <table>
+      <tr><td><strong>LENS</strong></td><td>starts lens input</td></tr>
+      <tr><td><strong>LI,MY 6", F/8 NEWTORNIAN TELESCOPE</strong></td><td>names the lens</td></tr>
+      <tr><td><strong>UNITS IN    </strong></td><td>sets the units to inches - the default</td></tr>
+      <tr><td><strong>EPD 6    </strong></td><td>sets the entrance pupil diameter to 6.0 inches</td></tr>
+      <tr><td><strong>SCY FANG .25    </strong></td><td>sets the half angle of the field to 1/4 degree</td></tr>
+      <tr><td><strong>TH 1E20    </strong></td><td>sets the distance from the object to the first surface}</td></tr>
+      <tr><td><strong>AIR    </strong></td><td>defines the material to be air - refractive index = 1.0 and stops current surface data input</td></tr>
+      <tr><td><strong>AIR    </strong></td><td>inserts a dummy surface</td></tr>
+      <tr><td><strong>TH 48    </strong></td><td>sets the distance to the next surface to 48 inches</td></tr>
+      <tr><td><strong>AIR    </strong></td><td>sets the material to air and stops current surface data input</td></tr>
+      <tr><td><strong>RD -96    </strong></td><td>sets the radius of curvature of the mirror to 96.0 inches</td></tr>
+      <tr><td><strong>CC -1    </strong></td><td>sets the mirror conic constant to -1 - a parabola</td></tr>
+      <tr><td><strong>TH -48    </strong></td><td>sets the distance to the next surface to 48 inches</td></tr>
+      <tr><td><strong>ASTOP</strong></td><td>sets primary mirror to be the aperture stop</td></tr>
+      <tr><td><strong>REFS</strong></td><td>sets the primary mirror to be the real ray reference surface</td></tr>
+      <tr><td><strong>CLAP 3.0</strong></td><td>sets the clear aperture radius to be 3.0 inches on the primar mirror</td></tr>
+      <tr><td><strong>REFL    </strong></td><td>sets the surface to be a mirror and stops current surface input</td></tr>
+      <tr><td><strong>AIR    </strong></td><td>inputs a dummy surface</td></tr>
+      <tr><td><strong>AIR    </strong></td><td>inputs another dummy surface</td></tr>
+      <tr><td><strong>END    </strong></td><td>stops all lens input and returns you to the CMD program level</td></tr>
+    </table>
+    
+    <p>I admit, a bit cryptic but its much faster than a spread sheet
+    after you do a few designs. The bracketed comments tell you what
+    each command did.  Remember, a Newtonian telescope has a parabolic
+    primary mirror and the radius of curvature is always twice the
+    focal length. Also, every other reflection reverses the beam path
+    with respect to the local Z-axis so that is why the distance from
+    the mirror is specified as a negative distance.</p>
+
+    <p>Let's take a look. By typing: <strong>VIE</strong>{view the
+    lens} and pressing the return key (you always need to
+    press the return key after all commands) you will get a quick
+    YZ-plane picture of your telescope. Pressing any key will close
+    the drawing window. Now let's add the folding flat. We want the
+    final focus to lie 2 inches outside of the 7.0 inch diameter tube
+    so we need to place a fold mirror in the beam 2.0 + 7.0/2 or 5.5
+    inches in front of the final focus.</p>
+
+    <p>Before we make the changes, list out the lens prescription with
+    the <strong>RTG ALL</strong> {radius-thickness-glass all surface
+    listing}. The output looks like this:</p>
+
+    <pre>
+      BASIC LENS DATA (RADIUS MODE)
+      
+      SURF RADIUS      THICKNESS      MATERIAL      INDEX     V-NUM
+      0    0.00000       0.100000E+21 AIR
+      1    0.00000       0.00000      AIR
+      2    0.00000      48.0000       AIR
+      3*  -96.0000     -48.0000       REFL
+      3* Conic,REFS,STOP
+      4    0.00000       0.00000      AIR
+      5    0.00000       0.00000      LAST SURFACE
+    </pre>
+
+    <p>Now to change the thickness of surface #3 to 42.5 inches and
+    make surface #4 a fold mirror and have the total distance from the
+    mirror to the focal plane to remain at 48.0 inches we enter the
+    following update lens commands:</p>
+
+    <table>
+      <tr><td><strong>U L</strong>      </td><td>go into update lens mode</td></tr>
+      <tr><td><strong>CHG 3</strong>    </td><td>change surface #3</td></tr>
+      <tr><td><strong>TH -42.5</strong> </td><td>set surface #3 thickness to -42.5 inches</td></tr>
+      <tr><td><strong>CHG 4</strong>    </td><td>change surface #4</td></tr>
+      <tr><td><strong>TH 5.5</strong>   </td><td>set surface #4 thickness to 5.5 inches</td></tr>
+      <tr><td><strong>REFL</strong>     </td><td>set surface #4 to be a mirror</td></tr>
+      <tr><td><strong>TILT BEN -45</strong></td><td>define surface #4 as a fold mirror with TILT BEN</td></tr>
+      <tr><td><strong>END</strong>      </td><td>return to CMD program level</td></tr>
+    </table>
+
+   <p>Now if you enter the <strong>VIE</strong> {yz-plane view}
+   command gain you will see the telescope with its fold mirror.  Next
+   you will want to set the clear aperture on the fold mirror so that
+   it is large enough to pass all the light coming from the primary
+   mirror from all points in the full +/- 0.25 degree field of
+   view. Do this buy typing:</p>
+
+   <table>
+     <tr><td><strong>U L</strong>          </td><td>go into update lens mode</td>
+     <tr><td><strong>CHG 4</strong>        </td><td>change surface #4</td>
+     <tr><td><strong>CLAP ELIP 1,2</strong></td><td>assign an elliptical clear aperture with place holder numeric values 1 and 2</td>
+     <tr><td><strong>END</strong>          </td><td>return to the CMD program level</td>
+     <tr><td><strong>SETCLAP</strong>      </td><td>automatically adjust clear aperture data on all surfaces based on automatic ray traces in the yz and xz-planes</td>
+   </table>
+   
+   <p>NOTE: For manufacturing considerations only, add an additional
+   0.40 to 0.80 inch on the radius of all automatically assigned clear
+   apertures before having the parts fabricated.  The resultant clear
+   aperture on surface #4 and the user-assigned clear aperture on
+   surface #3 can be listed by issuing the <strong>CAOB ALL</strong>
+   {list all clear aperture data} command:</p>
+
+   <table>
+     <tr><td><strong>CAOB ALL</strong></td><td>list all clear aperture data</td></tr>
+   </table>
+
+   <pre>
+     CLEAR APERTURES AND OBSCURATIONS
+     
+     SURF   TYPE  Y-SEMI.     X-SEMI.     Y-DEC    X-DEC     CORNER-RADIUS   TILT(DEG)
+                  (RADIUS)    (N-POLY)
+                              (RAD-FLT)                    (DELTA-Z)
+     3      CIRC  3.00        3.00
+     4      ELIP  0.752       0.530     -0.438E-01
+   </pre>
+   
+  <p>The off-set in the Y-direction comes from the geometry of
+  elliptical fold mirrors and is correct.  Now, how good is the
+  design? By definition, performance is perfect (no geometrical
+  aberration and diffraction limited) on-axis. This is true for all
+  parabolic mirrors on-axis. At the edge of the field of view, at the
+  control wavelength which by default is = 0.58756 microns, the
+  optical path errors can be listed by issuing the following three
+  commands.</p>
+
+  <table>
+    <tr><td><strong>FOB 1</strong></td><td>define the field of view position to be + 0.25 degree in the Y-direction</td></tr>
+    <tr><td><strong>YFAN OPD -1 1 1 11</strong></td><td>do an 11 ray OPD fan of rays in the yz-plane</td></tr>
+  </table>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS A "YFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =  0.587560    MICRONS
+    REL AP HT    OPD (LENS UNITS)    OPD (WAVE UNITS)
+     -1.0000     0.1454911383E-04      0.62895
+     -0.8000     0.7680481083E-05      0.33202
+     -0.6000     0.3401836999E-05      0.14706
+     -0.4000     0.1103375268E-05      0.47699E-01
+     -0.2000     0.1736397266E-06      0.75064E-02
+      0.0000     0.000000000           0.0000
+      0.2000    -0.3087070866E-07     -0.13345E-02
+      0.4000    -0.5325166512E-06     -0.23020E-01
+      0.6000    -0.2118220316E-05     -0.91570E-01
+      0.8000    -0.5400523676E-05     -0.23346
+      1.0000    -0.1099075095E-04     -0.47513
+  </pre>
+
+  <table>
+    <tr><td><strong>XFAN OPD -1 1 1 11</strong></td><td>do an 11 ray OPD fan of rays in the XZ-plane</td></tr>
+  </table>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS AN "XFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =  0.587560    MICRONS
+    REL AP HT    OPD (LENS UNITS)    OPD (WAVE UNITS)
+    -1.0000    -0.4357403327E-09     -0.18837E-04
+    -0.8000    -0.1784812298E-09     -0.77157E-05
+    -0.6000    -0.5647393664E-10     -0.24413E-05
+    -0.4000    -0.1116262638E-10     -0.48256E-06
+    -0.2000     0.000000000           0.0000
+     0.0000     0.000000000           0.0000
+     0.2000     0.000000000           0.0000
+     0.4000    -0.1116262638E-10     -0.48256E-06
+     0.6000    -0.5647393664E-10     -0.24413E-05
+     0.8000    -0.1784812298E-09     -0.77157E-05
+     1.0000    -0.4357403327E-09     -0.18837E-04
+  </pre>
+  
+  <p>The optical OPD error is seen to be over one wave peak to valley
+  at the edge of the field of view.  Now save the design in lens
+  library position (record) 100 by issuing a <strong>LIB PUT
+  100</strong> command. Later you can list the contents of the lens
+  library by typing <strong>LIB P</strong> and the lens can be
+  retrieved from the library with a <strong>LIB GET 100</strong>
+  command.</p>
+  
+  <p>Finally, let's document the design. By typing <strong>OUT
+  LP</strong>, the output device for the program will be changed from
+  the screen to the file PRINTER.TXT. Now issue the following
+  commands:</p>
+
+  <table>
+    <tr><td><strong>LEPRT</strong></td> <td>outputs the prescription on human readable form</td></tr>
+    <tr><td><strong>LENO</strong></td>  <td>outputs the design in a format which can be read back into the program at a future date</td></tr>
+    <tr><td><strong>OUT TP</strong></td><td>resets the screen as the output device</td></tr>
+    <tr><td><strong>PRINT</strong></td><td>prints the PRINTER.TXT file to the Windows print manager</td></tr>
+  </table>
+	    
+  <p>Now lets get some graphics output. Issue the following commands:</p>
+
+  <table>
+    <tr><td><strong>VIE .1</strong>       </td><td>generates a YZ-plane picture of the design at 1/10 scale</td></tr>
+    <tr><td><strong>GRAOUT</strong>       </td><td>sends the plot to the Windows Print Manager</td></tr>
+    <tr><td><strong>VIE ORTHO .1</strong> </td><td>generates an orthographic picture of the design at 1/10 scale</td></tr>
+    <tr><td><strong>GRAOUT</strong>       </td><td>sends the plot to the Windows Print Manager</td></tr>
+    <tr><td><strong>FANS XYOPD 1</strong> </td><td>generates the XY OPD fans on-axis, 0.7 and 1.0 fractional FOV with a 1.0 wave scale bar</td></tr>
+    <tr><td><strong>GRAOUT    </strong>   </td><td>sends the plot to the printer</td></tr>
+  </table>
+
+  <p>Finally, issue the following commands:</p>
+
+  <table>
+    <tr><td><strong>FOB</strong></td></tr>
+    <tr><td><strong>FANS</strong></td><td>generates x-components of an x-fan and the y-components of a y-fan transverse aberration plot</td></tr>
+  </table>
+  
+  <p>We see from this plot that the dominant residual aberration in
+  the system is COMA (reflected by the symmetric transverse ray
+  aberration plots in the y-fan.).  That's all there is to doing your
+  first design. In the next exercise, we will design a classical
+  Cassegrain telescope.</p>
+    
+  <h3>Extra Analysis</h3>
+  
+  <p>The following things may be done to enhance the analysis of the
+    telescope in tutorial #1 or any design in later tutorials.
+    Display first-order, and YZ-plane paraxial ray trace data using
+    the command <strong>PXTY ALL</strong>.</p>
+  <pre>  
+    PARAXIAL RAYTRACE DATA (YZ-PLANE) - (CFG # 1)
+    (PUY AND PUCY) MEASURED WITH RESPECT TO THE Z-AXIS
+    SURF     PY           PUY            PCY              PUCY
+    0        0.00000      0.300000E-19   -0.436335E+18    0.436335E-02
+    1        3.00000      0.300000E-19   -0.209441        0.436335E-02
+    2        3.00000      0.300000E-19   -0.209441        0.436335E-02
+    3        3.00000      0.625000E-01   -0.555112E-16   -0.436335E-02
+    4        0.343750    -0.625000E-01    0.185442        0.436335E-02
+    5        0.00000     -0.625000E-01    0.209441        0.436335E-02
+  </pre>
+
+  <p>Display third-order YZ-plane aberration data using the command <strong>MAB3 ALL</strong>:</p>
+
+  <pre>
+    (Y-Z), PLANE THIRD ORDER
+    ABERRATION CONTRIBUTIONS - (CFG # 1)
+    TRANSVERSE - WITH FINAL SURFACE CONVERSION
+    SURF    SA3          CMA3         AST3          DIS3         PTZ3
+    0       0.0000       0.0000       0.0000        0.0000       0.0000
+    1       0.0000       0.0000       0.0000        0.0000       0.0000
+    2       0.0000       0.0000       0.0000        0.0000       0.0000
+    3       0.0000       0.61360E-03 -0.28558E-04   0.0000       0.28558E-04
+    4       0.0000       0.0000       0.0000        0.0000       0.0000
+    5       0.0000       0.0000       0.0000        0.0000       0.0000
+    SYSTEM TOTALS ARE:
+            0.0000       0.61360E-03 -0.28558E-04   0.0000      0.28558E-04
+  </pre>
+  
+<h2>Tutorial #2, <a href=https://en.wikipedia.org/wiki/Cassegrain_reflector>The Cassegrain Telescopes</a></h2>
+
+<h3>System specifications:</h3>
+<p>Telescope aperture diameter = 12.0 inches. Primary mirror focal ratio
+= f/3. Final telescope focal ratio = F/18. Primary mirror thickness
+3.0 inches. Secondary mirror thickness 0.5 inch. Field of view = +/-
+0.25 degrees. The design will be a classical Cassegrain design
+comprising a parabolic primary mirror and a hyperbolic secondary
+mirror.  Issue the following commands to set up the Cassegrain
+telescope in a "pre-optimization" configuration. The design will be
+optimized by automatically adjusting the conic constant of the
+secondary mirror until the third order spherical aberration has been
+driven to 0.0.</p>
+
+<table>
+  <tr><td><strong>LENS</strong></td></tr>
+  <tr><td><strong>LI MY 12 INCH, F/18 CASSEGRAIN TELESCOPE.</strong></td></tr>
+  <tr><td><strong>UNITS IN</strong></td></tr>
+  <tr><td><strong>EPD 12.0</strong></td></tr>
+  <tr><td><strong>SCY FANG 0.25</strong></td></tr>
+  <tr><td><strong>TH 1.0E20</strong></td></tr>
+  <tr><td><strong>AIR</strong></td></tr>
+  <tr><td><strong>AIR</strong></td></tr>
+  <tr><td><strong>TH 36</strong></td></tr>
+  <tr><td><strong>AIR</strong></td></tr>
+  <tr><td><strong>RD –72</strong></td> <td>sets primary mirror radius of curvature to -72 inches</td></tr>
+  <tr><td><strong>CC –1</strong></td>  <td>sets primary mirror to a parabolic profile</td></tr>
+  <tr><td><strong>PY , 1</strong></td> <td>paraxial marginal ray height solve-adjusts the airspace following the primary mirror so than the next surface is located where the paraxial marginal ray has a height of 1.0 inch. This is necessary for the 6:1 focal length "magnification" in going from the F/3 primary to the final focal ratio of F/18.</td></tr>
+  <tr><td><strong>ASTOP</strong></td></tr>
+  <tr><td><strong>REFS</strong></td></tr>
+  <tr><td><strong>THM 3</strong></td><td>set mirror thickness to 3.0 inches</td></tr>
+  <tr><td><strong>CLAP 6</strong></td></tr>
+  <tr><td><strong>REFL</strong></td></tr>
+  <tr><td><strong>PUY -.0277777777</strong></td><td>paraxial marginal ray angle solve-adjusts the secondary mirror curvature so that the slope of the marginal paraxial ray leaving the secondary mirror has a 1/36 slope (required for the final F/18 focal ratio)</td></tr>
+  <tr><td><strong>PY</strong></td><td>paraxial marginal ray height solve-adjusts the airspace after the secondary mirror so that the next surface will always be at the paraxial focal position</td></tr>
+  <tr><td><strong>THM 0.5</strong></td><td>sets the thickness of the secondary mirror to 0.5 inch</td></tr>
+  <tr><td><strong>REFL</strong></td></tr>
+  <tr><td><strong>AIR</strong></td></tr>
+  <tr><td><strong>AIR</strong></td></tr>
+  <tr><td><strong>END</strong></td></tr>
+</table>
+
+  <p>Now we are going to let the conic constant on the secondary mirror vary during optimization. To do this type:</p>
+
+  <table>
+    <tr><td><strong>VARI</strong></td></tr>
+    <tr><td><strong>CC 4</strong></td></tr>
+    <tr><td><strong>END</strong></td></tr>
+  </table>
+  
+  <p>Now we will set up the optimization figure of merit so as to drive the third order spherical aberration to zero:</p>
+
+  <table>
+    <tr><td><strong>MERIT</strong></td></tr>
+    <tr><td><strong>SA3</strong></td></tr>
+    <tr><td><strong>END</strong></td></tr>
+  </table>
+	    
+  <p>Now run one cycle of direct optimization by typing: <strong>IT
+  D</strong>. <strong>IT D</strong> is a direct rather than damped
+  least squares type of optimization and is useful when there is only
+  one operand and one variable. In this case it usually converges in
+  one cycle. The result is:</p>
+
+  <pre>
+    CALCULATING DERIVATIVES, PLEASE WAIT...
+    CALCULATING A SOLUTION VECTOR, PLEASE WAIT...
+        NEW FMT =  0.0.176694601778536E-21 (or some other very small #)
+        OLD FMT =  0.558395862792566E-03
+    FMT(CHANGE) = -0.558395862792566E-03
+  </pre>
+  
+  <p>Checking that the spherical aberration on-axis is now zero is
+  done by issuing the following two commands from the last
+  tutorial:</p>
+
+  <table>
+    <tr><td><strong>FOB</strong></td></tr>
+    <tr><td><strong>YFAN OPD –1 1 1 11</strong></td></tr>
+  </table>
+
+  <p> which results in the following output:</p>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS A "YFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =  0.587560    MICRONS
+    REL AP HT    OPD (LENS UNITS)      OPD (WAVE UNITS)
+    -1.0000      0.000000000           0.0000
+    -0.8000      0.000000000           0.0000
+    -0.6000      0.000000000           0.0000
+    -0.4000      0.000000000           0.0000
+    -0.2000      0.000000000           0.0000
+     0.0000      0.000000000           0.0000
+     0.2000      0.000000000           0.0000
+     0.4000      0.000000000           0.0000
+     0.6000      0.000000000           0.0000
+     0.8000      0.000000000           0.0000
+     1.0000      0.000000000           0.0000
+  </pre>
+  
+  <p>The conic constant on the secondary mirror was automatically
+  adjusted to make the third order (and in fact all spherical
+  aberration) go to zero. Now list the conic constants 20<sup>th</sup>
+  orderin the design by typing <strong>ASPH ALL</strong>:</p>
+
+  <pre>
+    CONIC AND 4th THROUGH 10th ORDER ASPHERIC DATA
+    (+) - DESIGNATES A PLANO SURFACE WITH A 2ND ORDER ASPHERIC
+    TERM IN THE SECOND COLUMN INSTEAD OF A CONIC CONSTANT
+    SURF    CC
+    3       -1.00000
+    4       -1.96000
+    NO 12th through 20th ORDER ASPHERIC DATA
+  </pre>
+  
+  <p>Now let us examine the optical performance at the edge of the
+  field of view. We already know that there are no aberrations
+  on-axis. At the edge of the field of view, the OPDs are:</p>
+  
+  <table>
+    <tr><td><strong>FOB 1</strong></td></tr>
+    <tr><td><strong>YFAN OPD –1 1 1 11</strong></td></tr>
+  </table>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS A "YFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =  0.587560    MICRONS
+    REL AP HT    OPD (LENS UNITS)      OPD (WAVE UNITS)
+    -1.0000      0.3629234148E-04      1.5689
+    -0.8000      0.2259726686E-04      0.97687
+    -0.6000      0.1235529565E-04      0.53411
+    -0.4000      0.5332558146E-05      0.23052
+    -0.2000      0.1293317517E-05      0.55910E-01
+     0.0000      0.000000000           0.0000
+     0.2000      0.1213227002E-05      0.52447E-01
+     0.4000      0.4691847678E-05      0.20283
+     0.6000      0.1019297306E-04      0.44064
+     0.8000      0.1747201145E-04      0.75531
+     1.0000      0.2628270481E-04      1.1362
+  </pre>
+  
+  <table>
+    <tr><td><strong>XFAN OPD –1 1 1 11</strong></td></tr>
+  </table>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS AN "XFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =  0.587560    MICRONS
+    REL AP HT    OPD (LENS UNITS)    OPD (WAVE UNITS)
+    -1.0000      0.2311390936E-04      0.99921
+    -0.8000      0.1479826035E-04      0.63972
+    -0.6000      0.8326366178E-05      0.35995
+    -0.4000      0.3701351680E-05      0.16001
+    -0.2000      0.9254496334E-06      0.40007E-01
+     0.0000      0.000000000           0.0000
+     0.2000      0.9254496334E-06      0.40007E-01
+     0.4000      0.3701351680E-05      0.16001
+     0.6000      0.8326366192E-05      0.35995
+     0.8000      0.1479826035E-04      0.63972
+     1.0000      0.2311390936E-04      0.99921
+  </pre>
+  
+  <p>As can be seen, the telescope is not diffraction limited at the
+  edge of the field of view. If we compare a transverse ray aberration
+  plot of this system via a simple <strong>FOB , 1</strong> and
+  a <strong>FANS</strong> command with the <strong>FOB, 1</strong>
+  and <strong>FANS</strong> command run on the previous design in
+  tutorial #1, we see that the dominant residual aberration in the F/8
+  Newtonian was COMA whereas the dominant residual aberration in the
+  F/18 Cassegrain is field curvature.</p>
+  
+  <p>Finally, the design can be saved in library file # 101 with a <strong>LIB PUT 101</strong> command.</p>
+
+  <h2>Tutorial #3, Two Mirror <a href=https://en.wikipedia.org/wiki/Afocal_system>Afocal</a> Beam Compressor</h2>
+  
+  <h3>System specifications:</h3>
+  
+  <p>Input beam diameter = 12.0 inches, output beam diameter 4.0
+    inches. Primary/secondary mirror focal ratios, F/6. Primary mirror
+    aperture 12.0 inches. Aperture stop on primary mirror. Primary
+    mirror thickness 3.0 inches. Secondary mirror thickness 0.5
+    inch. Field of view = +/- 0.1 degrees. The design form will be
+    con-focal concave parabolic mirrors. Wavelength will be 10.6
+    microns.  Issue the following commands to set up the
+    telescope:</p>
+
+  <table>
+    <tr><td><strong>LENS</strong></td></tr>
+    <tr><td><strong>UNITS IN</strong></td></tr>
+    <tr><td><strong>WV 10.6 0 0 0 0 </strong></td><td>change wavelengths to 10.6 microns with wavelengths 2 through 5 set to zero</td></tr>
+    <tr><td><strong>EPD 12.0</strong></td></tr>
+    <tr><td><strong>SCY FANG 0.1</strong></td></tr>
+    <tr><td><strong>TH 1E20</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>TH 72</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>RD –144</strong></td></tr>
+    <tr><td><strong>CC –1</strong></td></tr>
+    <tr><td><strong>TH -72</strong></td></tr>
+    <tr><td><strong>CLAP 6</strong></td></tr>
+    <tr><td><strong>ASTOP</strong></td></tr>
+    <tr><td><strong>REFS</strong></td></tr>
+    <tr><td><strong>REFL</strong></td></tr>
+    <tr><td><strong>TH –18</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>RD 36</strong></td></tr>
+    <tr><td><strong>TH 18</strong></td></tr>
+    <tr><td><strong>CLAP 1.5</strong></td></tr>
+    <tr><td><strong>CC –1</strong></td></tr>
+    <tr><td><strong>REFL</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>AIR</strong></td></tr>
+    <tr><td><strong>END</strong></td></tr>
+    <tr><td><strong>MODE AFOCAL</strong></td><td>sets the evaluation mode of the program to AFOCAL</td></tr>
+    <tr><td><strong>VIEVIG OFF</strong></td><td>turns off the automatic vignetting calculation in VIE</td></tr>
+    <tr><td><strong>SETCLAP</strong></td><td>adjusts the clear aperture on the second parabola to ensure no vignetting of the off-axis beams.</td></tr>
+  </table>
+  
+  <p>Issuing a <strong>VIE</strong> command will display the system.
+  The on-axis performance is again perfect by the nature of the
+  con-focal parabolas. At the edge of the field of view the
+  performance is still diffraction limited. This is partially due to
+  the small field of view and partially due to the long wavelength
+  (10.6 microns).
+
+  <p><strong>FOB 1;YFAN OPD –1 1 1 11</strong> (the semicolon can be used to string up to 20 commands together on one command line).</p></p>
+
+  <pre>
+    OPTICAL PATH DIFFERENCE TABLE : UNITS = INCHES
+    RAY FAN TRACED IS A "YFAN"
+    FRACTIONAL FAN OFFSET =   0.00000    (RELATIVE TO FULL APERTURE)
+    OPD REFERENCE WAVLENGTH =   10.6000    MICRONS
+    REL AP HT    OPD (LENS UNITS)     OPD (WAVE UNITS)
+    -1.0000     -0.1904198531E-05     -0.45629E-02
+    -0.8000     -0.1218642798E-05     -0.29201E-02
+    -0.6000     -0.6854616802E-06     -0.16425E-02
+    -0.4000     -0.3046385722E-06     -0.72998E-03
+    -0.2000     -0.7615687173E-07     -0.18249E-03
+     0.0000      0.000000000           0.0000
+     0.2000     -0.7615133100E-07     -0.18248E-03
+     0.4000     -0.3045942518E-06     -0.72988E-03
+     0.6000     -0.6853121553E-06     -0.16422E-02
+     0.8000     -0.1218288409E-05     -0.29193E-02
+     1.0000     -0.1903506328E-05     -0.45612E-02
+  </pre>
+  
+  <p>Issuing the <strong>FANS XYOPD 0.25</strong> command will display
+  the optical path errors on-axis, at 0.7 for the full field of view
+  and at full field of view. The scale bar will be 0.25 waves @ 10.6
+  microns. Now save this prescription in library location 102 by
+  typing <strong>LIB PUT 102</strong>. A lens is retrieved from the
+  library using the <strong>LIB GET #</strong> command where # may be
+  any value between 1 and 999. The lens library may be viewed using
+  the <strong>LIB P</strong> command and a partial listing from
+  library location "i" to "j" may be produced using the
+  command <strong>LIB P i j</strong></p>
+  
+</body>
+</html>
