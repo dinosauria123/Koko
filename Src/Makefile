@@ -42,7 +42,7 @@ COBJ = $(CSRC:.c=.o)
 FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o) 
 
 # targets
-all: buildinfo modules libraries koko
+all: buildinfo modules libraries koko-cli
 
 .PHONY: modules
 modules:
@@ -53,8 +53,8 @@ libraries: $(SUBDIRS)
 $(SUBDIRS):
 	make -C $@
 
-koko: buildinfo.inc $(COBJ) $(FOBJ)
-	$(FC) -o koko $(FOBJ) $(COBJ) $(LDIR) $(LIBS)
+koko-cli: buildinfo.inc $(COBJ) $(FOBJ)
+	$(FC) -o koko-cli $(FOBJ) $(COBJ) $(LDIR) $(LIBS)
 
 .PHONY: buildinfo
 buildinfo:
@@ -71,11 +71,10 @@ buildinfo:
 
 
 clean:
-	rm -f *.o *~ koko buildinfo.inc
+	rm -f *.o *~ koko-cli buildinfo.inc
 	rm -f ./lib/lib*.a
 	make -C modules clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 	
 install:
-	install -m 755 koko /usr/local/bin
-
+	install -m 755 koko-cli /usr/local/bin
