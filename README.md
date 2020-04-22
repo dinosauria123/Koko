@@ -15,7 +15,7 @@ needed to design, analyze, and fabricate complex optical systems:
 * Spot diagrams, wavefront and aberration analysis
 * Lens optimization
 * Macro language
-* Tolerancing
+* Tolerance analysis
 * Glass data from Ohara, Schott, Hoya, Corning, CDGM
 * Test plate libraries
 * Lens fabrication drawings
