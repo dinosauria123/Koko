@@ -171,7 +171,7 @@ C       MAX SAVE/REST = 36 8/24/2006
 C
 
           call get_environment_variable("KODS_HOME", HOME, NCHAR)
-          IF (NCHAR == 0) HOME = '/usr/local/KODS/'
+          IF (NCHAR == 0) HOME = '/usr/local/lib/KODS/'
 
           CALL MY_NDPEXC
 C
