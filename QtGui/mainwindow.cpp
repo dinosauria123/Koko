@@ -42,6 +42,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     histnum=0;
     curhist=histnum;
 
+    ldir="/usr/local/lib/KODS";
     hdir="/usr/local/bin";   //For Linux, MacOSX
 
 //    hdir="/sdcard/KODS";     //For Android
@@ -71,7 +72,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     proc->start(hdir+"/koko-cli"); //For Linux, MacOSX
 //    proc->start("/data/data/com.install.kods/lib/libkods.so");   //For Android
     proc->write("RTG ALL\n");
-    ReadFileToTable(hdir+"/CURLENS/LENSTEXT.DAT");
+    ReadFileToTable(ldir+"/CURLENS/LENSTEXT.DAT");
 
     for(int i=0; i<=nol-1; i++){
             tableitem=table->item(i,2);
@@ -302,7 +303,7 @@ void MainWindow::slot_commandExec()
         proc->write("LENSSAVE\n");
         proc->write("RTG ALL\n");
         delay();
-        ReadFileToTable(hdir+"/LENSES/LENS.PRG");
+        ReadFileToTable(ldir+"/LENSES/LENS.PRG");
     }
 
     cmdLine->clear();
@@ -800,7 +801,7 @@ void MainWindow::Glass(QString BinName){
     QByteArray HexData;
     GN.clear();
 
-    QFile GlassData(hdir+"/LIBGLA/" + BinName);                 //set data file
+    QFile GlassData(ldir+"/LIBGLA/" + BinName);                 //set data file
 
     GlassData.open(QIODevice::ReadOnly);                    //file open
     HexData = GlassData.readAll();                          //Read all data to Hex
@@ -849,7 +850,7 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
     double nF,nD,nC;
 
 
-    QFile GlassData(hdir+"/LIBGLA/"+ BinName);                 //set data file
+    QFile GlassData(ldir+"/LIBGLA/"+ BinName);                 //set data file
     GlassData.open(QIODevice::ReadOnly);                    //file open
     HexData = GlassData.readAll();                          //Read all data to Hex
     GlassData.close();
@@ -1273,7 +1274,7 @@ void MainWindow::slot_actionOpen()
 {
 
     QFileDialog dlg;
-    QString pathname = dlg.getOpenFileName(this,tr("Open Lens File"), hdir+"/LENSES",tr("LENS (*.PRG);;All Files (*)"));
+    QString pathname = dlg.getOpenFileName(this,tr("Open Lens File"), ldir+"/LENSES",tr("LENS (*.PRG);;All Files (*)"));
 
         QFileInfo info1 (pathname);
         QString filename = info1.baseName();
@@ -1300,7 +1301,7 @@ void MainWindow::slot_actionOpen()
 void MainWindow::slot_actionSave()
 {
 
-    QString pathname = QFileDialog::getSaveFileName(this,tr("Save Lens File"), hdir+"/LENSES",tr("LENS (*.PRG);;All Files (*)"));
+    QString pathname = QFileDialog::getSaveFileName(this,tr("Save Lens File"), ldir+"/LENSES",tr("LENS (*.PRG);;All Files (*)"));
     QFileInfo info1 (pathname);
     QString filename = info1.baseName();
 
@@ -1319,7 +1320,7 @@ void MainWindow::slot_actionSave()
 void MainWindow::slot_actionImport_Zemax()
 {
 
-    QString pathname = QFileDialog::getOpenFileName(this,tr("Import ZEMAX File"), hdir+"/LENSES",tr("ZEMAX (*.ZMX);;All Files (*)"));
+    QString pathname = QFileDialog::getOpenFileName(this,tr("Import ZEMAX File"), ldir+"/LENSES",tr("ZEMAX (*.ZMX);;All Files (*)"));
     QFileInfo info1 (pathname);
     QString filename = info1.fileName();
 
@@ -1329,7 +1330,7 @@ void MainWindow::slot_actionImport_Zemax()
         proc->write("LENSSAVE\n");
         proc->write("RTG ALL\n");
         delay();
-        ReadFileToTable(hdir+"/LENSES/LENS.PRG");
+        ReadFileToTable(ldir+"/LENSES/LENS.PRG");
         proc->write("VIE XZ\n");
         return;
     }
@@ -1344,7 +1345,7 @@ void MainWindow::slot_actionImport_Zemax()
 void MainWindow::slot_actionImport_CODE_V()
 {
 
-    QString pathname = QFileDialog::getOpenFileName(this,tr("Import Code-V File"), hdir+"/LENSES",tr("Code-V (*.SEQ);;All Files (*)"));
+    QString pathname = QFileDialog::getOpenFileName(this,tr("Import Code-V File"), ldir+"/LENSES",tr("Code-V (*.SEQ);;All Files (*)"));
     QFileInfo info1 (pathname);
     QString filename = info1.fileName();
 
@@ -1354,7 +1355,7 @@ void MainWindow::slot_actionImport_CODE_V()
         proc->write("LENSSAVE\n");
         proc->write("RTG ALL\n");
         delay();
-        ReadFileToTable(hdir+"/LENSES/LENS.PRG");
+        ReadFileToTable(ldir+"/LENSES/LENS.PRG");
         proc->write("VIE XZ\n");
         return;
     }
@@ -1369,7 +1370,7 @@ void MainWindow::slot_actionImport_CODE_V()
 void MainWindow::slot_actionExport_Zemax()
 {
 
-    QString pathname = QFileDialog::getSaveFileName(this,tr("Export ZEMAX File"), hdir+"/LENSES",tr("ZEMAX (*.ZMX);;All Files (*)"));
+    QString pathname = QFileDialog::getSaveFileName(this,tr("Export ZEMAX File"), ldir+"/LENSES",tr("ZEMAX (*.ZMX);;All Files (*)"));
     QFileInfo info1 (pathname);
     QString filename = info1.fileName();
 
@@ -1388,7 +1389,7 @@ void MainWindow::slot_actionExport_Zemax()
 void MainWindow::slot_actionExport_CODE_V()
 {
 
-    QString pathname = QFileDialog::getSaveFileName(this,tr("Export Code-V File"), hdir+"/LENSES",tr("Code-V (*.SEQ);;All Files (*)"));
+    QString pathname = QFileDialog::getSaveFileName(this,tr("Export Code-V File"), ldir+"/LENSES",tr("Code-V (*.SEQ);;All Files (*)"));
     QFileInfo info1 (pathname);
     QString filename = info1.fileName();
 
@@ -2021,7 +2022,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
 
                     qDebug() << "Return key pressed";
 
-                QFile HistData(hdir+"/HISTORY.DAT");                 //set data file
+                QFile HistData(ldir+"/HISTORY.DAT");                 //set data file
                 HistData.open(QIODevice::WriteOnly|QIODevice::Append);
 
                 QTextStream out(&HistData);
@@ -2051,7 +2052,7 @@ void MainWindow::delay()  //Code from StackOverFlow
 void MainWindow::history(int curhist)
 {
 
-    QFile HistData(hdir+"/HISTORY.DAT");                 //set data file
+    QFile HistData(ldir+"/HISTORY.DAT");                 //set data file
 
     HistData.open(QIODevice::ReadOnly);                    //file open
     QTextStream input(&HistData);
@@ -2071,6 +2072,6 @@ void MainWindow::slot_quit2()
 {
     proc->write("EXIT\n");
     delay();
-    QFile::remove(hdir+"/HISTORY.DAT");
+    QFile::remove(ldir+"/HISTORY.DAT");
     QApplication::quit();
 }
