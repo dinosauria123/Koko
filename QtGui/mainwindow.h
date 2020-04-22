@@ -41,7 +41,7 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 public:
     MainWindow(QMainWindow *parnet=0);
     QProcess *proc;
-    QString hdir;
+    QString hdir,ldir;
     double lF,lD,lC;
 
     QMenu *MaterialMenu;
