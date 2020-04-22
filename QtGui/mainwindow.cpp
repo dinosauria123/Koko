@@ -42,7 +42,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     histnum=0;
     curhist=histnum;
 
-    hdir="/usr/local/KODS";   //For Linux, MacOSX
+    hdir="/usr/local/bin";   //For Linux, MacOSX
 
 //    hdir="/sdcard/KODS";     //For Android
 
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     addcontextmenu();
 
-    proc->start(hdir+"/koko"); //For Linux, MacOSX
+    proc->start(hdir+"/koko-cli"); //For Linux, MacOSX
 //    proc->start("/data/data/com.install.kods/lib/libkods.so");   //For Android
     proc->write("RTG ALL\n");
     ReadFileToTable(hdir+"/CURLENS/LENSTEXT.DAT");
