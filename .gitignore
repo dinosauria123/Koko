@@ -7,8 +7,8 @@
 *.mod
 
 # the executables
-koko
-koko_gui
+koko-cli
+koko-gui
 
 # binary files
 *.pdf

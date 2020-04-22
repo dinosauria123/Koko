@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+    <title>Another Optical Design Tutorial for KDP-2 / Koko</title></head>
+  <body>
+    <h1>Another Optical Design Software Tutorial
+      (<a href=https://en.wikipedia.org/wiki/Cooke_triplet>Cooke Triplet</a>)</h1>
+  <h3>By Jim Klein</h3>
+
+<h3>General Information</h3>
+
+<p>Welcome to the program! At this point, I assume that you have
+completed installation, opened your reference manual and said, "Oh,
+my! What do I do next?" Well, keep reading.</p>
+
+<h3>The User's Reference Manual</h3>
+
+The User's Reference Manual is the program book of all knowledge. All
+features and commands are documented there. Keep the User's Reference
+Manual with you whenever you use the program. You will need it until
+you start to remember command names and syntax. If you need additional
+copies you may make your own copies. </p>
+
+<h3>The Program Statement</h3>
+
+<p>The program has a powerful command driven interface and a well
+written reference manual. As time goes on, a full and optional GUI
+interface will be added to Koko. Read the manual! This program
+provides a vast assortment of immediate mode and programmable
+functions for use in the design and analysis of optical systems. It is
+not just an optical design program, it is also a powerful optical
+design programming language. All commands may be issued from the
+keyboard in an immediate mode, may be issued from an ASCII text file
+in a batch mode or may be included in a programmable macro or macro
+function. The macros and macro functions, once written, operate
+exactly as if they were hard coded program commands. </p>
+
+<h3>Running the Program</h3>
+
+<p>After installation, you type the command <strong>koko-cli</strong>
+at a shell prompt to start the command line version of Koko. The
+graphical, table based user interface is started by running
+<strong>koko-gui</strong>. </p>
+
+<h3>Exiting the Program</h3>
+
+<p>When you need to leave the program, you should always exit from the
+CMD level. If you don't know what level you are at, a simple press of
+the ENTER key without any preceding command will cause the current
+level to be displayed on the screen. If you are not at the CMD level,
+then one or more issuances of the "EOS" command will always bring you
+to the CMD level. You may then exit by issuing the "EXI" or "EXIT"
+command. This is the only proper way to leave the program. This is the
+only way the program will know that it should save its current lens
+and close all of its files. Exiting the program in any other manner
+will produce unpredictable results and you will lose data! You may
+also exit the program using the close window option or by chossing
+EXIT from the FILE menu.</p>
+
+<h3>Commands to be Entered During the Tutorial</h3>
+
+<p>Only commands shown <strong>in BOLD, UPPERCASE</strong>are meant to
+be input during this tutorial. All other type is to be considered
+explanatory only.</p>
+
+<h2>Lesson #0 - Read the User's Reference Manual</h2>
+
+<p>Since the program is a command-driven program, you must eventually
+become familiar with the commands. Reading the User's Reference Manual
+once from cover to cover isn't the only way to get started but all
+other methods work less well. Just as you need to learn the words of
+the language you speak, you need to learn the command language in
+order to speak to the program.</p>
+
+<h2>Lesson #1 - Entering a known lens prescription (Cooke Triplet)</h2>
+
+<p>The first lesson will be to input a known lens prescription
+using the LENS INPUT mode. While you are performing this task, have
+your User's Reference Manual open to the LENS section. Look up each
+command in the User's Reference Manual as you enter it. The lens
+prescription which we will be inputting is that of a Cooke Triplet
+(U.S. Patent #2,453,260). This lens is the only lens in the lens
+library when you first install the program. We will use this
+prescription throughout this tutorial. The prescription of the design
+is given in the following table:</p>
+
+<table>
+  <tr> <th>Radius</th> <th>Thickness</th> <th>Material</th> <th>Index</th> <th>V-no</th> <th>sa</th> </tr>
+  <tr><td>40.940</td> <td>8.740</td> <td>SSK4</td> <td>1.618 </td><td>55.1</td> <td>18.5</td> </tr>
+  <tr> <td>inf.</td><td>11.050</td> <td>air</td> <td>-</td> <td>-</td> <td>18.5</td> </tr>
+  <tr> <td>-55.650</td> <td>2.780</td> <td>SF2</td><td>1.648</td> <td>33.8</td> <td>14.9</td> </tr>
+  <tr><td>39.750</td> <td>1.000</td> <td>air</td> <td>-</td> <td>-</td><td>14.4</td> </tr>
+  <tr> <td>inf.</td> <td>6.630</td><td>air</td> <td>-</td> <td>-</td> <td>14.1</td> </tr>
+  <tr> <td>107.560</td> <td>9.540</td> <td>SSK4</td><td>1.618</td> <td>55.1</td> <td>15.5</td> </tr>
+  <tr><td>-43.330</td> <td>78.739</td> <td>air</td> <td>-</td> <td>-</td><td>15.5</td> </tr>
+</table>
+
+<p>The units are millimeters. The half angle of the field of view is
+20.81 degrees. The effective focal length will end up at 99.4 mm. The
+f-number is 2.7. The entrance pupil diameter is 36.947 mm. We will
+assume that we do not know the names of the glass manufacturers.</p>
+
+<h3>What I Did</h3>
+
+<p>I first input the prescription into the program just as you will. I
+then reset the output device from TP (screen) to ED (edittext.dat
+file) using the <strong>OUTPUT ED</strong> command and listed the
+prescription with the CMD level <strong>LENO</strong> command. This
+resulted in a prescription being written to the disk
+file <em>EDITTEXT.DAT</em>. The format of this type of
+<strong>LENO</strong> produced prescription is such that if each line
+were read back into the program, the lens would be recreated as the
+new "current lens". The <strong>LENO</strong> output is verbose. When
+you type the prescription into the program, you won't need to type
+everything which <strong>LENO</strong> output. I have trimmed down the
+full <strong>LENO</strong> output to the list of commands which you
+should now input from the keyboard. The following string of commands,
+input exactly as shown, will result in the above Cooke triplet
+prescription becoming the current lens. If you make mistakes during
+this input, don't worry. We will fix errors using the UPDATE LENS
+level in the next lesson. If you wish to stop during this input
+process and start over, just issue an <strong>EOS</strong> command and
+then repeat the input of these following commands. Issue each of the
+next commands from the keyboard:</p>
+
+<p>
+<strong>
+  LENS<br>
+  LI, COOKE TRIPLET U.S.# 2,453,26Ø <br>
+  UNITS MM<br>
+  SAY 18.4735<br>
+  SCY FANG 2Ø.81<br>
+  TH 1.ØE2Ø<br>
+  AIR<br>
+  AIR<br>
+  RD 4Ø.94<br>
+  TH 8.74<br>
+  CLAP 18.5<br>
+  GLCAT SSK4<br>
+  TH 11.Ø5<br>
+  CLAP 18.5<br>
+  AIR<br>
+  RD -55.65<br>
+  TH 2.78<br>
+  CLAP 14.9<br>
+  GLCAT SF2<br>
+  RD 39.75<br>
+  TH 1<br>
+  CLAP 14.4<br>
+  AIR<br>
+  TH 6.63<br>
+  CLAP 14.1<br>
+  REFS<br>
+  ASTOP<br>
+  AIR<br>
+  RD 1Ø7.56<br>
+  TH 9.54<br>
+  CLAP 15.5<br>
+  GLCAT SSK4<br>
+  RD -43.33<br>
+  TH 78.739<br>
+  CLAP 15.5<br>
+  AIR<br>
+  AIR<br>
+  AIR<br>
+  EOS</strong></p>
+
+<p>The original <strong>LENO</strong> output, from which this trimmed
+down command list was made, is now listed for completeness. Commands
+which you did not input would have only set parameters to their
+already default LENS INPUT mode values. You could, of course, always
+input the full list if you so desired. If your listing looks a little
+different, it is because your current version of the program has been
+augmented, fixed or improved since this example was generated.</p>
+
+<pre>
+  ANGLES MIXED
+  LENS
+  LI, COOKE TRIPLET U.S.# 2,453,260
+  WV, 0.5876000E+00, 0.4861000E+00, 0.6563000E+00, 0.0000000E+00, 0.0000000E+00
+  WV2,0.0000000E+00, 0.0000000E+00, 0.0000000E+00, 0.0000000E+00, 0.0000000E+00
+  UNITS MM
+  PCW,2,3
+  SCW,2,1
+  CW,1
+  SAY, 0.18473500E+02
+  SAX, 0.18473500E+02
+  SCY,-0.38006410E+20,-0.10155457E+02
+  SCX,-0.38006410E+20,-0.10155457E+02
+  CV, 0.00000000E+00
+  TH, 0.10000000E+21
+  NORMAL REGULAR
+  AIR
+  CV, 0.00000000E+00
+  TH, 0.00000000E+00
+  NORMAL REGULAR
+  AIR
+  CV, 0.24425989E-01
+  TH, 0.87400000E+01
+  CLAP, 0.1850000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  GLCAT SSK4
+  CV, 0.00000000E+00
+  TH, 0.11050000E+02
+  CLAP, 0.1850000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  AIR
+  CV,-0.17969452E-01
+  TH, 0.27800000E+01
+  CLAP, 0.1490000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  GLCAT SF2
+  CV, 0.25157233E-01
+  TH, 0.10000000E+01
+  CLAP, 0.1440000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  AIR
+  CV, 0.00000000E+00
+  TH, 0.66300000E+01
+  CLAP, 0.1410000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  REFS
+  ASTOP
+  AIR
+  CV, 0.92971365E-02
+  TH, 0.95400000E+01
+  CLAP, 0.1550000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  GLCAT SSK4
+  CV,-0.23078698E-01
+  TH, 0.78739000E+02
+  CLAP, 0.1550000E+02 0.0000000E+00 0.0000000E+00
+  NORMAL REGULAR
+  AIR
+  CV, 0.00000000E+00
+  TH, 0.00000000E+00
+  NORMAL REGULAR
+  AIR
+  CV, 0.00000000E+00
+  TH, 0.00000000E+00
+  NORMAL REGULAR
+  AIR
+  EOS
+  AIMRAY YES
+  MODE FOCAL
+  SPTWT, 0.100000E+01 0.100000E+01 0.100000E+01 0.000000E+00 0.000000E+00
+  SPTWT2, 0.000000E+00 0.000000E+00 0.000000E+00 0.000000E+00 0.000000E+00
+</pre>
+
+<p>When you type the "EOS" command at the end of lens input, the lens
+prescription becomes the "current lens". If you exited now, a copy of
+this "current lens" is stored in the file LENSTEXT.DAT in the CURLENS
+directory which sits just beneath the PRG directory. When you run the
+program again, this file is read in and automatically becomes the
+"current lens". Before you exit, you should save your work in the lens
+library by issuing the command <strong>LIB PUT</strong>. This command
+will store your lens in the lens library (described in the LENS
+section of the User's Reference Manual). The library entry name will
+be the lens identifier which you entered with the <strong>LI</strong>
+command. The lens library entry will be time and date stamped. The
+lens library provides a good way to save and recall lens
+prescription. The library has room for 999 optical systems as long as
+you have enough disk space. At this point, look up and try out the
+lens library commands <strong>LIB P</strong> and
+<strong>LSTAT</strong>. This is the end of Lesson #1. In Lesson #2, we will learn how
+to list and modify the lens system we just entered using the UPDATE
+LENS mode.</p>
+
+
+<h2>Lesson #2 - Listing and modifying the "current lens"</h2>
+
+<p>In the first lesson, we learned how to use the LENS INPUT mode to
+input a lens prescription and how to save what we input to the lens
+library. If you are among the 99.99% of us who are not perfect, you
+probably made some input errors during lesson #1. I will now show you
+how to list your lens and fix errors without re-inputting the entire
+prescription from the start. The LENS section of the manual describes
+a number of lens database or "current lens" output commands. Let's try
+a few. At the CMD level, issue the command:</p>
+
+<p><strong>RTG ALL</strong></p>
+
+<p>The Radius, Thickness and Glass materials associated with the
+"current lens" will be displayed on the screen.</p>
+
+<p><strong>RIN ALL</strong></p>
+
+<p>For a complete list of the "current lens" in a readable format,
+issue the command:</p>
+
+<p><strong>LEPRT</strong></p>
+
+<p>which stands for <b>L</b>ens <b>PR</b>in<b>T</b>. If you want to
+  print this list, issue the commands:</p>
+
+<p>
+  <strong>
+    OUTPUT LP<br>
+    LEPRT<br>
+    OUTPUT TP<br>
+    PRINT<br>
+  </strong>
+</p>
+
+<p>These four commands set the default output device to the file
+PRINTER.TXT, output the lens prescription to that file, reset the
+default output device to the screen and then print the PRINTER.TXT
+file to the current printer attached to the LPT1 printer
+port. <strong>LEPRT</strong>, as described in the LENS section of the
+User's Reference Manual, is a composite of a number of other lens
+output commands which are described in the same section. Try them
+all. See what the output looks like. As long as you saved the
+prescription in the library, you can't break anything. In the
+Reference Manual and at the end of this lesson, I show you how to use
+the built-in full screen editor to change a lens. For the tutorial, we
+will use the UPDATE LENS level commands. So much for listing the
+current lens. Now, let's change something. All changes to the lens
+database or "current lens" are made at the LENS UPDATE level. At that
+level, most of the LENS INPUT level commands may be issued. There are
+three additional commands, <strong>CHG</strong>, <strong>INS</strong>,
+and <strong>DEL</strong>, which are unique to the LENS UPDATE
+level. These commands are described in the User's Reference Manual. In
+order to change an existing value in the current lens prescription,
+use the <strong>CHG</strong> command. If, for example, the radius of
+curvature of surface number 2 had been input as 4.094 instead of 40.94
+and the thickness of surface 3 had been left equal to the default
+(0.0) instead of input as 11.05, the following commands would be used
+to make the corrections:</p>
+
+<p><strong>
+    U L<br>
+    CHG 2<br>
+    RD 4Ø.94<br>
+    CHG 3<br>
+    TH 11.Ø5<br>
+    EOS<br>
+</strong></p>
+
+<p>If you had failed to type
+the second <strong>AIR</strong> command in the listing, the dummy surface would not
+  have been inserted as surface 1. To fix that, simply type:</p>
+
+<p><strong>
+    U L<br>
+    INS 1<br>
+    EOS<br>
+</strong></p>
+
+<p>If you had typed three <strong>AIR</strong> commands instead of
+two <strong>AIR</strong> commands near the top of the input command
+list, you would now have surface 1 and surface 2 as dummy surfaces. To
+remove surface 2, just type:</p>
+
+<p><strong>
+    U L<br>
+    DEL 2<br>
+    EOS<br>
+</strong></p>
+
+<p>Experiment with other changes to the lens using other UPDATE LENS
+  level commands described in the LENS section.</p>
+
+<h3>Query of Lens Values During Lens Input and Update</h3>
+
+<p>During LENS INPUT and LENS UPDATE, typing a lens parameter name
+followed by a space and a question mark will result in the current
+value of that parameter being displayed on the screen. For example,
+while at surface 3, typing:</p>
+
+<p><strong>
+    RD ?<br>
+</strong></p>
+
+<p>will result in the radius of curvature of surface 3 being displayed
+on the screen.</p>
+
+<h3>Full Screen Editing Your Lens</h3>
+
+<p>If you wish to use the full screen edit
+  method to modify a lens prescription, do the following:</p>
+
+<ol>
+  <li>Make sure the lens you want to edit is your current lens.</li>
+  <li>Type:<br>
+    <strong>
+      OUTPUT ED<br>
+      LENO<br>
+      OUTPUT TP<br>
+      EDIT<br> </strong></li>
+</ol>
+
+<p>The result will be a full screen edit display of your
+current lens using either the default program full screen editor or
+the editor you you have designated with the "EDITOR" command described
+in the reference manual. Modify the lens as you desire and then file
+the lens. The program will return from the editor to the CMD
+level. Then type:</p>
+
+<p><strong>INPUT ED</strong></p>
+
+<p>Your full screen edit modified lens is now the current lens. This
+  is the end of lesson 2.</p>
+
+<h2>Lesson #3 - Paraxial Rays and 3<sup>rd</sup>, 5<sup>th</sup>, and
+7<sup>th</sup> Order Aberrations</h2>
+
+<p>To make this lesson easier, turn on full headings with the CMD
+level <strong>HEADINGS ON</strong> command. See the description in the
+reference manual. Then issue the following command:</p>
+
+<p><strong>HEADINGS ON</strong></p>
+
+<p>The paraxial ray trace is automatically performed each time the
+lens is updated. It is performed in both the XZ and YZ-planes. It
+ignores tilts, decentrations and special surface definitions. To
+display YZ-plane paraxial ray data, issue the command:</p>
+
+<p><strong>PXTY ALL</strong></p>
+
+<p>A table displaying the YZ-plane paraxial marginal ray height (PY),
+paraxial marginal ray slope tangent (PUY), paraxial chief ray height
+(PCY) and paraxial chief ray slope tangent (PUCY) will be
+generated. The output is always calculated at the current control
+wavelength. Look up and read about the <strong>PXTY</strong>
+command. Try the other paraxial ray output commands described in the
+same section. The commands are in the CMD section of the reference
+manual. Try the single surface modes of these commands, like:</p>
+
+<p><strong>PXTY 3</strong></p>
+
+<p>This form of the command just lists the paraxial ray data at
+surface 3. With <strong>HEADINGS OFF</strong>, no heading would appear
+in single surface output. There are also paraxial output commands
+which display paraxial incidence angle tangents rather than slope
+tangents. Try them.</p>
+
+<p>The 3<sup>rd</sup>, 5<sup>th</sup> and 7<sup>th</sup> order
+aberration values calculated are based on the work of Buchdahl
+[H. A. Buchdahl, <em>Optical Aberration Coefficients</em>, Dover
+1968]. To calculate and display the 3<sup>rd</sup>, 5<sup>th</sup> and
+7<sup>th</sup> order spherical aberrations, issue the command:</p>
+
+<p><strong>SA357 ALL</strong></p>
+
+<p>It must be remembered that, except for third order aberrations, all
+higher order aberrations are made up of an intrinsic surface dependent
+part and a transferred part due to lower order aberrations at
+preceding surfaces. The program not only calculates and displays the
+sum of the intrinsic and the transferred part of 5th and 7th order
+aberration values but also can calculate and display just the
+intrinsic surface dependent component part of each aberration. These
+intrinsic surface dependent parts of the higher order aberrations can
+lead to great insight into the aberration makeup of an optical
+system. To look at the intrinsic components of spherical aberration,
+for example, issue the command:</p>
+
+<p><strong>SA357I ALL</strong></p>
+
+<p>Now, experiment with the other 3<sup>rd</sup>, 5<sup>th</sup>, and
+7<sup>th</sup> order aberration output commands discussed in the CMD
+section of the reference manual.</p>
+
+<h2>Lesson #4 - Chromatic Differences</h2>
+
+<p>When the paraxial ray trace and 3<sup>rd</sup>, 5<sup>th</sup>, and
+7<sup>th</sup> order aberrations are calculated at wavelengths other
+than the control wavelength, the differences in these values
+characterize the 1<sup>st</sup>, 3<sup>rd</sup>, 5<sup>th</sup>, and
+7<sup>th</sup> order chromatic behavior of an optical system. The
+commands in this lesson are described in the CMD section of the
+reference manual. The first order YZ-plane chromatic characteristics
+of the current lens are calculated and displayed by issuing the
+following command:</p>
+
+<p><strong>FCHY ALL</strong></p>
+
+<p>This command displays the primary and secondary axial and lateral
+chromatic aberration of the lens based upon the definitions of the
+primary and secondary wavelength pairs as set with
+the <strong>PCW</strong> and <strong>SCW</strong> command at the lens
+input level.</p>
+
+<p>To query the wavelength numbers of <strong>PCW</strong>
+and <strong>SCW</strong> at the CMD level, issue the following two
+commands:</p>
+
+<p><strong>
+    PCW ?<br>
+    SCW ?<br>
+</strong></p>
+
+<p>To calculate the primary chromatic differences for 3<sup>rd</sup>,
+5<sup>th</sup>, and 7<sup>th</sup> order spherical aberrations, issue
+the command:</p>
+
+<p><strong>PCDSA ALL</strong></p>
+
+<p>Try the other primary and secondary chromatic difference commands
+described in the CMD section.</p>
+
+<h2>Lesson #5 - Tracing Individual Real Rays</h2>
+
+<p>Individual real trigonometric rays are traced using the two
+commands,<strong>FOB</strong> and </strong>RAY</strong>.
+The <strong>FOB</strong> command is used to specify the location of
+the current object point from which all subsequent rays are to be
+traced. Input consists of the relative Y, X, and Z coordinates,
+measured in the current object surface and in relative units of the
+reference object heights. Reference object heights were input in the
+current lens prescription using the <strong>SCY/SCX</strong> or
+<strong> SCY FANG / SCX FANG</strong>
+commands. The <strong>FOB</strong> command, in many cases, also causes
+a central or <em>chief</em> ray to be traced. This ray starts at the
+specified object point, is iteratively aimed so as to pass through the
+center of the current reference surface, and then proceeds through the
+rest of the current lens. The <strong>RAY</strong> command is used to
+specify and trace all general <em>non-chief</em> rays by specifying
+the relative Y and X coordinates of the ray in the current reference
+surface (see definition of reference surface in the reference
+manual). The <strong>FOB</strong> and <strong>RAY</strong> commands
+may also be used to specify that the rays be traced at wavelengths
+other than the default control wavelength. You should go to the
+reference manual at this point, and read the full descriptions of
+the <strong>FOB</strong> and <strong>RAY</strong> commands and also
+read about ray aiming. After a ray has been traced, the ray data may
+be displayed in a textual sense or plotted in a graphical display or
+individual ray data may be transferred to the macro accumulator
+(x-register) for further manipulation. The following three commands
+trace the axial, full marginal ray in the YZ-plane and then display
+the X, Y and coordinates at each surface and also the ray slope
+angles.</p>
+	
+<p><strong>
+    FOB<br>
+    RAY,1<br>
+    PRXYZ ALL<br>
+</strong><p>
+
+<p>There are quite a few different ray data display commands described
+in the reference manual. You should go look them up in the CMD section
+and read about them. This is the end of lesson #5.</p>
+
+<h2>Lesson #6 - Draw the Lens</h2>
+
+<p>There are a great many graphics options. You don't
+need to know them all to draw the lens. To see XY, XZ, YZ and
+orthographic projections of the current lens, just issue one of the
+  following commands:</p>
+
+<p><strong>VIE XY 3 </strong>(You must enter
+an explicit scale factor when an XY view is requested and 3 is a good
+  value using this lens.)<br>
+  <strong>
+  VIE XZ<br>
+  VIE YZ<br>
+  VIE ORTHO<br>
+</strong></p>
+
+<p>Each of these commands creates a graphics file containing a picture
+of the current lens system with marginal rays traced from on-axis and
+at the limits of the field of view as specified by the SCY and SCX
+values stored in the lens database. To see the pictures, just
+type:</p>
+
+<p><strong>DRAW</strong></p>
+
+<p>To clear the screen, just press ENTER. If you want a hard copy,
+either do a graphics screen dump or use the <strong>GRAOUT</strong>
+command described in the GRAPHICS section of the reference
+manual. </p>
+
+<h2>Lesson #7 - Automation, Writing a Macro</h2>
+
+<p>The best feature of this program is that most of the hundreds of
+commands can be put together to form a macro which then looks just
+like any other command. We will first do something useful but not too
+complex. Then, we will do something useful and complex. The first
+macro we will write will be named MYMAC1. It will change the output
+device to ED, which stands for the EDITTEXT.DAT output file, will do
+a <strong>LENO</strong> to output the lens in a program readable ASCII
+form and will change the output device back to TP, which stands for
+the display screen. To write the macro using the macro input mode,
+type the following commands:</p>
+
+<p><strong>
+    MACRO MYMAC1<br>
+    OUTPUT ED<br>
+    LENO<br>
+    OUTPUT TP<br>
+    EOM<br>
+</strong></p>
+
+<p>If you wish to use the full screen macro edit mode of macro
+creation, type these alternate commands:</p>
+
+<p><strong>MEDIT MYMAC1</strong></p>
+
+<p>The next macro adds the first and second numeric word entries
+issued with the macro and displays the result. The result is also
+placed in the accumulator or X-register. The macro is named ADDER. We
+will use the macro input mode to enter the macro. Follow each command
+in your reference manual.</p>
+
+<p><strong>
+    MACRO ADDER<br>
+    NSUB DV Ø Ø<br>
+    NSUB Ø 1<br>
+    STO 1<br>
+    NSUB Ø 2<br>
+    STO PLUS 1<br>
+    RCL, 1<br>
+    FORMAT F13.6<br>
+    WRITE X<br>
+    FORMAT D23.15<br>EOM<br>
+</strong></p>
+
+<p>The first line defines the macro, names it ADDER and causes the
+program to enter the macro input mode. The second line causes the
+default values for numeric words #1 and #2, which are input when the
+macro is run, to be set to 0.0. The third line moves the first numeric
+word into the X-register. STO 1 stores that value in numeric register
+#1. Next, numeric word #2 is moved to the X-register and then added
+into numeric register #1 with the STO PLUS 1 command. Next, the sum in
+register 1 is recalled into the X-register. The output format is set
+to F13.6. The sum is output with a label X=. The format is reset to
+the program default of D23.15. The last line files the
+macro.</p> <p>To add 4.5 and 6.7, just type:</p>
+
+<p><strong>ADDER 4.5 6.7</strong></p>
+
+<p>The answer displayed will be:</p>
+
+<p>X = 11.200000</p>
+
+<p>Macros are powerful. They can do just about anything you can
+imagine you wish to do. If macros cannot be made to do something which
+you need to do, call me and I will attempt to modify their behavior to
+satisfy your needs.</p>
+
+<h2>Lesson #8 - Optimization with Predefined Operands</h2>
+
+<p>There are several examples of optimization files in the reference
+manual. Here is another simple one. We are going to vary the last
+surface curvature and its conic constant of the current lens so as to
+change the system focal length to 100 mm while at the same time
+driving the 3rd order spherical aberration to 0.0. We will keep the
+system paraxially focused with a PY solve on the second to last
+surface. First, put on the PY solve by typing:</p>
+
+<p><strong>
+    U L<br>
+    CHG 9<br>
+    PY<br>
+    EOS
+</strong></p>
+
+<p>This causes surface #9 to take on the value 0.174770E-02 mm as can
+be seen by doing an <strong>RTG 9</strong> command. Next, set up the
+operands with the following commands:</p>
+
+<p><strong>
+    MERIT<br>
+    FLCLTH 1ØØ 1 Ø 1Ø<br>
+    SA3 Ø 1</br>
+    EOS
+</strong></p>
+
+<p>The first command causes the program to enter Merit creation
+mode. The next command indicates that the paraxial focal length be
+targeted to 100 with a weight of 1 for surfaces 0 to 10 (the entire
+lens). The next command targets the 3rd order spherical aberration to
+0.0 with a weight of 1. Finally, <strong>EOS</strong> saves these
+definitions and causes a return to the CMD level. Next, set up the
+variables with the following commands:</p>
+
+<p><strong>
+    VARIABLES<br>
+    CV 8<br>
+    CC 8<br>
+    EOS<br>
+</strong></p>
+
+<p>The first command causes the program to enter Variables creation
+mode. The next two commands define the curvature and conic constant of
+surface 8 to be variables. Finally,
+<strong>EOS</strong> saves these definitions and causes a return to the CMD
+level. First type:</p>
+
+<p><strong>VB</strong></p>
+
+<p>This lists the current variables. Next, type:</p>
+
+<p><strong>OPRD</strong></p>
+
+<p>This lists the current operands with their current and targeted
+values. The focal length is currently 99.4030 mm and the SA3 value is
+-0.437230. This optimization problem can be solved with damped least
+squares or directly since we have two variables and two operands which
+happen to be linearly independent. We will do a combination of the two
+techniques. Type:</p>
+
+<p><strong>
+    ITER<br>
+    PFIND<br>
+    ITER<br>
+</strong></p>
+
+<p>After these optimization cycles, the FMT (Figure of Merit) will be
+much smaller than it was. Before we started, it was 0.13095. The new
+focal length and SA3 values will be very near their target
+values. Further cycles could drive the values closer to their
+targets. The new curvature and conic values can be seen by issuing
+another <strong>VB</strong> command or by issuing an <strong>RTG
+ALL</strong> or an <strong>RTG 8</strong> command. The thickness of
+surface 9 has now changed to 0.474615 mm in order to maintain paraxial
+focus. There are other optimization methods described in the reference
+manual which you should try.</p>
+
+<h2>Lesson #9 - A Merit Function using Predefined and User-defined
+  Operands</h2>
+
+<p>Here is a simple example of a senseless (not intended to be a
+meaningful figure of merit) merit function which is made up of ray
+based and non-ray based user-defined and predefined operands. We will
+make up a merit function which consists of the following
+aberrations:</p>
+
+<p><strong>Predefined:</strong> The Y-height on the image surface of
+the full marginal Y-ray for an on-axis image position The PY marginal
+paraxial ray height on surface 3</p>
+
+<p><strong>User-defined:</strong> The PY marginal paraxial ray height
+on surface 3 squared and added to the PCY chief paraxial ray height on
+surface 3 squared. The difference between the X-ray heights of the FOB
+1, RAY 0 7 ray and the FOB 1, RAY 0 -8 ray at surface 5.</p>
+
+<p>First the user-defined aberrations. We write the following macro
+function named FUN01 by entering the following commands at the CMD
+level:</p>
+
+<p><strong>
+    MACRO FUN01<br>
+    C FIRST THE SUM OF THE SQUARES OF PY AND PCY AT SURFACE 3 (STORE IN #1)<br>
+    GET PY 3<br>
+    ENT<br>
+    GET PY 3<br>
+    C MULTIPLY<br>
+    *<br>
+    STO 1<br>
+    GET PCY 3<br>
+    ENT<br>
+    GET PCY 3<br>
+    C MULTIPLY<br>
+    *<br>
+    C STORE PLUS INTO REG 1<br>
+    STO PLUS 1<br>
+    C SECOND THE DIFFERENCE IN RAY HEIGHTS (STORE IN #2)<br>
+    C SET THE OBJECT POSITION<br>
+    FOB 1<br>
+    C TRACE THE FIRST RAY<br>
+    RAY 0 7<br>
+    C GET THE X POSITION ON SURFACE 5<br>
+    GET X 5<br>
+    C STORE IN REGISTER 2<br>
+    STO 2<br>
+    C TRACE THE SECOND RAY<br>
+    RAY 0 -8<br>
+    C GET THE X POSITION ON SURFACE 5<br>
+    GET X 5<br>
+    C STORE MINUS INTO REG 2<br>
+    STO MINUS 2<br>
+    EOM<br>
+</strong></p>
+
+<p>Now macro function FUN01 exists and sets up the user-defined
+operands. now set up the merit function by entering the following
+commands:</p>
+
+<p><strong>
+    MERIT<br>
+    Y 0 1,,1 2<br>
+    PY 0 1 3<br>
+    FUNC01 UOP1 0 1 1<br>
+    FUNC01 UOP2 0 1 2<br>
+    EOM<br>
+</strong></p>
+
+<p>Line #1 enters the MERIT sub-level. Line #2 targets the Y height of
+Ray #2, Field #1 (predefined fields and rays list in Optimization
+section of the User Manual) to zero height on the image surface with
+weight of 1.0. Line #3 targets the PY paraxial ray height to 0.0 with
+weight 1.0 on surface #3. Line #4 targets the first user-defined
+operand in FUN01 (stored in register #1) to zero with weight 1.0. The
+user-defined name is UOP1. You can use any name here. Line #5 targets
+the second user-defined operand in FUN01 (stored in register #2) to
+zero with weight 1.0. The user-defined name is UOP2. You can use any
+name here as well. Line #6 ends MERIT definition and returns the
+program to the CMD level. You can now define variables and proceed to
+optimize. User-defined operands can be anything that the program can
+calculate in a macro function. It is just that easy.</p>
+
+<h2>Lesson #10 - Basic Aberration Analysis</h2>
+
+<p>Many types of aberration analysis are available. This next lesson
+should get you started with some of the more common types.</p>
+
+<h3>Aberration Fans and their Plots</h3>
+
+<p>To generate transverse fan data at a specific point in the field of
+view, issue an <strong>FOB</strong> command which specifies that
+fractional field of view location. In our example lens, the SCY FANG
+value was 20.81 degrees. To use <strong>FOB</strong> to specify that
+analysis is to be performed at a Y-object angle of 2.5 degrees and an
+X-object angle of 1.25 degrees, issue:</p>
+
+<p><strong>FOB 0.1201, 0.060067</strong></p>
+
+<p>since these are the relative fractional object heights
+corresponding to the two angles. Now generate a YZ-plane, transverse
+aberration fan at the control wavelength with eleven rays in the fan
+by entering the following command:</p>
+
+<p><strong>YFAN, -1, 1, 1, 11</strong></p>
+
+<p>The next command will graphically display this fan.</p>
+
+<p><strong>DRAWFAN</strong></p>
+
+<p>The <strong>FANS</strong> command can be used to generate more
+complex ray fan aberration graphics. The next two commands generate YZ
+and XZ-plane, transverse ray aberration plots at three pre-selected
+field of view positions.</p>
+
+<p><strong>FANS </strong>or<strong> FANS YFAN</strong></p>
+
+<p>and</p>
+
+<p><strong>FANS XFAN</strong></p>
+
+<p>There is an extensive list of commands in the CMD section of the
+reference manual which can be used to generate useful types of
+aberration fans. There is an extensive aberration fan plotting
+capability described in the GRAPHICS section of the reference
+manual. Experiment with these.</p>
+
+<h3>Distortion, Field Curvature, and Astigmatism</h3>
+
+<p>Unlike all other optical design programs, this program correctly
+calculates distortion, astigmatism and field curvature for off-axis,
+decentered systems. It does this by basing its calculations on
+a <em>generalized paraxial ray trace</em> instead of on the paraxial
+ray trace based upon simple algebraic relationships. This
+so-called <em>generalized paraxial ray trace</em> is based upon a
+finite difference, differential ray trace along the chief ray and it
+accounts for all optical system parameters including tilts and
+decenters. For centered systems, the results of this "generalized
+paraxial ray trace" agree exactly with the conventional paraxial
+trace. There are many more types of aberration analysis available than
+can be described here. Read the CMD and GRAPHICS sections for the
+complete story. Look up these next commands in the reference manual to
+see how they can be customized. To generate tabular and graphical
+output of distortion, astigmatism and field curvature, issue the
+following sequence of commands:</p>
+
+<p><source>
+    DIST<br>
+    PLTDIST<br>
+    AST<br>
+    PLTAST<br>
+    FLDCV<br>
+    PLTFLDCV<br>
+</strong></p>
+
+<p>Remember that after a graphic is displayed, it may be printed with
+a screen dump or it may be printed in high resolution using
+the <strong>GRAOUT</strong> command.</p>
+
+<h3>Spot Diagram Generation</h3>
+
+<p>Spot diagrams are easy to generate. Specify the fractional object
+position with an <strong>FOB</strong> command and then issue
+the <strong>SPD</strong> command. For a graphical display, follow up
+with a <strong>PLTSPD</strong> command. Try the following
+sequence:</p>
+
+<p><strong>
+    FOB, .1 .1<br>
+    SPD<br>
+    PLTSPD<br>
+</strong></p>
+
+<h3>Diffraction MTF</h3>
+
+<p>Diffraction MTF generation and plotting is almost as easy. Try the
+following commands to generate DOTF data at fractional object point
+Y=.1 and X=.2:</p>
+
+<p><strong>
+    FOB, .1 .2<br>
+    CAPFN (generates the complex aperture function)<br>
+    DOTF (generates the MTF)<br>
+    PLTDOTF (plots the MTF)<br>
+</strong></p>
+
+<h2>Lesson #11 - Basic Tolerance Analysis</h2>
+
+<p>This next lesson describes how to perform a simple tolerance
+analysis upon the Cooke triplet lens of example 1. In this analysis,
+we will determine how two aberrations, third order spherical
+aberration (SA3) and third order coma (CMA3) change when manufacturing
+tolerances are applied to the first element of the design. Before the
+impact of these manufacturing tolerances are evaluated, the lens will
+be refocused using an automatic adjustment of the thickness of surface
+#8 so that the paraxial marginal ray height, PY, at the image surface
+is restored to its original value prior to the application of the
+manufacturing tolerances. It's really very easy to do. Simplicity
+itself. Read the TOLERANCE section of the reference manual before you
+run this lesson and look up each command as you enter it. This is a
+simple example. The power and flexibility of the tolerance analysis is
+superior to most other commercial optical design programs.</p>
+
+<p>
+  <strong>LIB GET 1</strong> ( GETS LIBRARY 1 LENS INTO THE CURRENT LENS)<br>
+    RESTORED LIBRARY LENS NO.  1<br>
+    (THE NEXT THREE COMMANDS SET UP COMPENSATOR VARIABLES)<br>
+    <strong>COMPVAR</strong><br>
+    <strong>TH 1 8</strong> (Compensator 1 is the thickness of surface 8)<br>
+    <strong>EOS</strong><br>
+    (THE NEXT THREE COMMANDS SET UP TOLERANCE VARIABLES)<br>
+    <strong>TVAR</strong><br>
+    <strong>RD 2 .2</strong> (Radius of surface 2 changes by .2%)<br>
+    <strong>CV_FR 3 4</strong> (Curvature of surface 3 changes by 4 fringes of power)<br>
+    <strong>TH 2 .005</strong> (Thickness of surface 2 changes by 0.005 lens units)<br>
+    <strong>EOSbr</strong><br>
+    (THE NEXT THREE COMMANDS SET UP THE FOCUS CRITERIA)<br>
+    <strong>FOCRIT</strong><br>
+    <strong>PY 1</strong> (PY height is focus criteria #1)<br>
+    <strong>EOS</strong><br>
+    (THE NEXT THREE COMMANDS SET UP THE TOLERANCE OPERANDS)<br>
+    <strong>TOPER</strong><br>
+    <strong>SA3 1,,,,.003 </strong>(Third order spherical is operand #1, inverse value to be 0.003)<br>
+    <strong>CMA3 2,,,,.003 </strong>(Third order coma is operand #2,
+    inverse value to be 0.003)<br>
+    <strong>EOS</strong></p>
+
+<p>(If you have a macro named TOLDEF, delete it with the command)</p>
+
+<p><strong>MDEL TOLDEF</strong></p>
+
+<p>Now save the current tolerance definitions in a macro named TOLDEF
+by typing:</p>
+
+<p><strong>TOLDMP TOLDEF</strong></p>
+
+<p>You may review the compensator, tolerance variable, focus criteria
+and tolerance operand definitions by entering the next four
+commands. Try them now.</p>
+
+<p><strong>COMPS</strong> displays current compensator definitions</p>
+
+<p>
+  <pre>
+    CURRENT COMPENSATION VARIABLE DATA (COMPS)
+    COMPVAR # VARIABLE SURF# CURRENT VALUE DINCR VALUE
+    1 TH 8 78.7390 0.100000E-04</pre>
+</p>
+
+<p><strong>TVB</strong> displays current tolerance variable
+  definitions</p>
+
+<p>
+  <pre>
+    CURRENT TOLERANCE VARIABLE DATA (TVB)
+    TVAR # VARIABLE SURF# CURRENT VALUE DELTA VALUE
+    1 RD 2  40.9400  0.200000
+    2 CV_FR  3  0.000000  4.00000
+    3 TH 2  8.74000  0.500000E-02</pre>
+</p>
+
+<p><strong>CRITS</strong> displays current focus criteria
+  definitions</p>
+
+<p>
+  <pre>
+    CURRENT FOCRIT DATA
+    FOCRIT # FOCRIT NAME NW2 NW3 NW4
+    (I) (J) (K)
+    1 PY 9.00 1.000</pre>
+</p>
+
+<p><strong>TOPS </strong> displays current tolerance operand
+  definitions</p>
+
+<p>
+  <pre>
+    CURRENT TOPER DATA
+    TOPER # TOPER NAME NW2 NW3 NW4 NW5
+    (I) (J) (K)
+    1 SA3 10.00 ----- ----- 0.3000E-02
+    2 CMA3 10.00 ----- ----- 0.3000E-02</pre>
+</p>
+
+<p>Now we perform the three tolerance analyses available.</p>
+
+<p><strong>SENSI</strong> generates the following sensitivity output
+(aberration changes resulting from the specified tolerances):</p>
+
+<p>
+  <pre>
+  ****** SENSITIVITY ANALYSIS ******
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = RD TOLERANCE VARIABLE # = 1
+  TOLERANCE VARIABLE SURFACE # = 2
+  TOLERANCE VARIABLE % CHANGE = 0.20000000
+  TOLERANCE VARIABLE CHANGE VALUE = 0.81880001E-01 MM
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(#1) = SA3 *CHANGE = 0.11054431E-01
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.45566641
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.78866589E-02
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.59052139E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33195599E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.29823930  
+  COMPENSATOR VARIABLE SURFACE # 8
+
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = RD TOLERANCE VARIABLE # = 1
+  TOLERANCE VARIABLE SURFACE # = 2
+  TOLERANCE VARIABLE % CHANGE = -0.20000000
+  TOLERANCE VARIABLE CHANGE VALUE = -0.81880001E-01 MM
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(#1) = SA3 *CHANGE = -0.11099570E-01
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.47782041
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.78544811E-02
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.43310999E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194089E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.29802909
+  COMPENSATOR VARIABLE SURFACE # 8
+
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = CV_FR TOLERANCE VARIABLE # = 2
+  TOLERANCE VARIABLE SURFACE # = 3
+  TOLERANCE VARIABLE CHANGE (FRINGE) = 4.0000000
+  TOLERANCE VARIABLE CHANGE VALUE = 0.63824689E-05 (1/MM)
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(# 1) = SA3 *CHANGE = 0.97302000E-03
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46574782
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.13187210E-02
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.49846759E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194495E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.32869032E-01
+  COMPENSATOR VARIABLE SURFACE # 8
+
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = CV_FR TOLERANCE VARIABLE # = 2
+  TOLERANCE VARIABLE SURFACE # = 3
+  TOLERANCE VARIABLE CHANGE (FRINGE) = -4.0000000
+  TOLERANCE VARIABLE CHANGE VALUE = -0.63824689E-05 (1/MM)
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(# 1) = SA3 *CHANGE = -0.97351377E-03
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46769435
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.13206987E-02
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.52486179E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.32850706E-01
+  COMPENSATOR VARIABLE SURFACE # 8
+
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = TH TOLERANCE VARIABLE # = 3
+  TOLERANCE VARIABLE SURFACE # = 2
+  TOLERANCE VARIABLE CHANGE VALUE = 0.50000000E-02 MM
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(# 1) = SA3 *CHANGE = -0.31193728E-03
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46703278
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.10750874E-03
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.51272989E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.69511347E-02  
+  COMPENSATOR VARIABLE SURFACE # 8
+
+  ******************************************************************************
+  TOLERANCE VARIABLE NAME = TH TOLERANCE VARIABLE # = 3
+  TOLERANCE VARIABLE SURFACE # = 2
+  TOLERANCE VARIABLE CHANGE VALUE = -0.50000000E-02 MM
+  (TOLERANCE OPERAND SENSITIVITIES)
+  TOLERANCE OPERAND(# 1) = SA3 *CHANGE = 0.31189257E-03
+  TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46640895
+  TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.10739960E-03
+  TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.51058081E-01
+  (FOCUS CRITERIA (FOCRIT) DATA)
+  FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+  FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+  (COMPENSATOR VARIABLE DATA)
+  COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.69512490E-02
+  COMPENSATOR VARIABLE SURFACE # 8
+  ******************************************************************************
+  ****** SENSITIVITY ANALYSIS COMPLETED ******
+</pre></p>
+
+<p><strong>INVSENSI</strong> generates the following inverse
+sensitivity (maximum tolerance resulting from allowable aberration
+change) output:</p>
+
+<p>
+  <pre>
+    ****** INVERSE SENSITIVITY ANALYSIS ******
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = RD TOLERANCE VARIABLE # = 1
+    TOLERANCE VARIABLE SURFACE # = 2
+    TOLERANCE VARIABLE % CHANGE = 0.20000000
+    TOLERANCE VARIABLE CHANGE VALUE = 0.81880001E-01 MM
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(#1) = SA3 *CHANGE = 0.11054431E-01
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.45566641
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.78866589E-02
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.59052139E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.29823930
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 1) = RD REQUIRED MOTION = 0.22220955E-01
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 1) = RD REQUIRED MOTION = 0.31146270E-01
+    
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = RD TOLERANCE VARIABLE # = 1
+    TOLERANCE VARIABLE SURFACE # = 2
+    TOLERANCE VARIABLE % CHANGE = -0.20000000
+    TOLERANCE VARIABLE CHANGE VALUE = -0.81880001E-01 MM
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(#1) = SA3 *CHANGE = -0.11099570E-01
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.47782041
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.78544811E-02
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.43310999E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.29802909
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 1) = RD REQUIRED MOTION = -0.22130588E-01
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 1) = RD REQUIRED MOTION = -0.31273868E-01
+    
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = CV_FR TOLERANCE VARIABLE # = 2
+    TOLERANCE VARIABLE SURFACE # = 3
+    TOLERANCE VARIABLE CHANGE (FRINGE) = 4.0000000
+    TOLERANCE VARIABLE CHANGE VALUE = 0.63824689E-05 (1/MM)
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(# 1) = SA3 *CHANGE = 0.97302000E-03
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46574782
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.13187210E-02
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.49846759E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.32869032E-01
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 2) = CV_FR REQUIRED MOTION = 0.19678328E-04
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 2) = CV_FR REQUIRED MOTION = 0.14519680E-04
+    
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = CV_FR TOLERANCE VARIABLE # = 2
+    TOLERANCE VARIABLE SURFACE # = 3
+    TOLERANCE VARIABLE CHANGE
+    (FRINGE) = -4.0000000
+    TOLERANCE VARIABLE CHANGE VALUE = -0.63824689E-05 (1/MM)
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(# 1) = SA3 *CHANGE = -0.97351377E-03
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46769435
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.13206987E-02
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.52486179E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.32850706E-01
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 2) = CV_FR REQUIRED MOTION = -0.19668347E-04
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 2) = CV_FR REQUIRED MOTION = -0.14497937E-04
+    
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = TH TOLERANCE VARIABLE # = 3
+    TOLERANCE VARIABLE SURFACE # = 2
+    TOLERANCE VARIABLE CHANGE VALUE = 0.50000000E-02 MM
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(# 1) = SA3 *CHANGE = -0.31193728E-03
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46703278
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = 0.10750874E-03
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.51272989E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(# 1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.69511347E-02
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 3) = TH REQUIRED MOTION = 0.48086589E-01
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 3) = TH REQUIRED MOTION = 0.13952354
+    WARINING:
+    PROJECTED VARIABLE CHANGE IS 10 OR MORE TIMES
+    GREATER THAN THE INPUT "DELTA" FOR THE CURRENT
+    VARIABLE. LINEARITY MAY NOT BE VALID.
+    
+    ******************************************************************************
+    TOLERANCE VARIABLE NAME = TH TOLERANCE VARIABLE # = 3
+    TOLERANCE VARIABLE SURFACE # = 2
+    TOLERANCE VARIABLE CHANGE VALUE = -0.50000000E-02 MM
+    (TOLERANCE OPERAND SENSITIVITIES)
+    TOLERANCE OPERAND(# 1) = SA3 *CHANGE = 0.31189257E-03
+    TOLERANCE OPERAND(# 1) = SA3 VALUE = -0.46640895
+    TOLERANCE OPERAND(# 2) = CMA3 *CHANGE = -0.10739960E-03
+    TOLERANCE OPERAND(# 2) = CMA3 VALUE = 0.51058081E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33194494E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33194494E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = 0.69512490E-02
+    COMPENSATOR VARIABLE SURFACE # 8
+    (INVERSE SENSITIVITY TOLERANCE VARIABLE CHANGE PROJECTION)
+    TOLERANCE OPERAND(# 1) = SA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 3) = TH REQUIRED MOTION = -0.48093483E-01
+    TOLERANCE OPERAND(# 2) = CMA3 DESIRED CHANGE = 0.30000000E-02
+    TOLERANCE VARIABLE(# 3) = TH REQUIRED MOTION = -0.13966533
+    WARINING:
+    PROJECTED VARIABLE CHANGE IS 10 OR MORE TIMES
+    GREATER THAN THE INPUT "DELTA" FOR THE CURRENT
+    VARIABLE. LINEARITY MAY NOT BE VALID.
+    ******************************************************************************
+    ****** INVERSE SENSITIVITY ANALYSIS COMPLETED ******
+</pre></p>
+
+<p><strong>MONTE</strong> generates the following Monte-Carlo output:</p>
+
+<p>
+  <pre>
+    ****** MONTE-CARLO ANALYSIS ******
+    ******************************************************************************
+    (TOLERANCE OPERAND VALUES)
+    TOLERANCE OPERAND(# 1) = SA3 * CHANGE = -0.11131760E-01
+    TOLERANCE OPERAND(# 1) = SA3 * VALUE = -0.47785262
+    TOLERANCE OPERAND(# 2) = CMA3 * CHANGE = -0.65268567E-02
+    TOLERANCE OPERAND(# 2) = CMA3 * VALUE = 0.44638783E-01
+    (FOCUS CRITERIA (FOCRIT) DATA)
+    FOCRIT(#1) = PY FOCRIT STARTING VALUE = 0.33312394E-03
+    FOCRIT(# 1) = PY FOCRIT FINAL RESTORED VALUE = 0.33312394E-03
+    (COMPENSATOR VARIABLE DATA)
+    COMPENSATOR VARIABLE(# 1) = TH MOTION = -0.30127549
+    ******************************************************************************
+    ****** MONTE-CARLO SUMMARY ******
+    TOTAL NUMBER OF MONTE-CARLO CYCLES = 1
+    FOR TOLERANCE OPERAND # 1
+    AVERAGE OPERAND CHANGE VALUE = -0.11131760E-01
+    WITH STANDARD DEVIATION = 0.0000000
+    FOR TOLERANCE OPERAND # 2
+    AVERAGE OPERAND CHANGE VALUE = -0.65268567E-02
+    WITH STANDARD DEVIATION = 0.0000000
+    FOR COMPENSATOR # 1
+    AVERAGE COMPENSATOR VALUE = -0.30127549
+    WITH STANDARD DEVIATION = 0.0000000
+    FOR FOCRIT # 1
+    FOCRIT CHANGE= -0.13005828E-08
+    WITH STANDARD DEVIATION = 0.0000000
+    ******************************************************************************
+    ****** MONTE-CARLO ANALYSIS COMPLETED ******
+</pre></p>
+
+<h2>Lesson #12 - Beam Footprint Analysis</h2>
+
+<p>Beam footprints may be easily drawn and may include clear
+apertures. The following sequence of commands causes an off-axis
+bundle of rays to be plotted on surface #2 of the Cooke Triplet lens
+stored in lens library file #1. The first string of commands causes a
+beam footprint to be drawn which is unvignetted by any clear apertures
+or obscurations assigned to any surfaces other than the reference
+surface. It could be used to determine how much larger to make the
+clear aperture on surface 2 so as to not clip the beam.</p>
+
+<p><strong>
+    PLOT NEW<br>
+    PLOT SCALE 2 2<br>
+    ORIENT 2<br>
+    PLOT CLAP 2 2<br>
+    FOB 1<br>
+    FOOT 2<br>
+    PLOT FOOT<br>
+    DRAW<br>
+</strong></p>
+
+<p>The next string of commands causes a beam footprint to be drawn
+which is vignetted by clear apertures and obscurations assigned to any
+surface. It could be used to determine the area of the vignetted
+beam. </p>
+
+<p><strong>
+    PLOT NEW<br>
+    PLOT SCALE 2 2<br>
+    ORIENT 2<br>
+    PLOT CLAP 2 2<br>
+    FOB 1<br>
+    FOOT APE 2<br>
+    PLOT FOOT</br>
+    DRAW<br>
+</strong></p>
+
+<p>The <strong>ORIENT 2</strong> command sets the "look" vector to be
+normal to surface 2. The <strong>PLOT SCALE 2 2</strong> command just
+sets a convenient scale. Remember, look up all these commands in the
+reference manual or you won't learn as much as you should from this
+lesson. After each <strong>DRAW</strong> command, additional beams may
+be traced and drawn on the same plots.</p>
+
+<h2>Lesson #13 - NSS (non-sequential systems)</h2>
+
+<p>From the program main CMD level, type <strong>NSSREST</strong>
+which will retrieve a simple non-sequential system stored in the
+NSSDIR sub-directory and named TEST.NSS. Typing
+<strong>NSSTRACE</strong> will trace a single ray through the
+system. Typing:</p>
+
+<p><strong>
+    PLOT NEW<br>
+    PLOT LOOK , 1 , 1 , 1<br>
+    PLOT NSSSCALE , .2<br>
+    PLOT NSSSURFS<br>
+    PLOT NSSRAYS<br>
+    DRAW<br>
+</strong></p>
+
+<p>will generate an orthographic view of the system. Read the NSS
+manual section and play with this NSS system and then try changing
+it. More will be said later.</p>
