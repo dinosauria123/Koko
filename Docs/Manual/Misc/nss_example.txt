@@ -1,0 +1,184 @@
+﻿C
+C       NON-SEQUENTIAL DATABASE
+C
+C                       MEDIA1 MATERIAL NAMES ARE:
+C                NSSGLASS1(1,SFID)=WORD1
+C                NSSGLASS1(2,SFID)=WORD2
+C                     MEDIA2 MATERIAL NAMES ARE:
+C                NSSGLASS2(1,SFID)=WORD1
+                 NSSGLASS2(2,SFID)=WORD2
+C
+C     NSSSYSTEM() --  This is the array which keeps track of NSS database
+C                  parameters which are not surface dependent.
+C
+C     NSSSYSTEM(1)   -- Wavelength in microns for wavelength #1
+C     NSSSYSTEM(2)   -- Wavelength in microns for wavelength #2
+C     NSSSYSTEM(3)   -- Wavelength in microns for wavelength #3
+C     NSSSYSTEM(4)   -- Wavelength in microns for wavelength #4
+C     NSSSYSTEM(5)   -- Wavelength in microns for wavelength #5
+C     NSSSYSTEM(6)   -- Wavelength in microns for wavelength #6
+C     NSSSYSTEM(7)   -- Wavelength in microns for wavelength #7
+C     NSSSYSTEM(8)   -- Wavelength in microns for wavelength #8
+C     NSSSYSTEM(9)   -- Wavelength in microns for wavelength #9
+C     NSSSYSTEM(10)  -- Wavelength in microns for wavelength #10
+C     NSSSYSTEM(11)  -- Wavelength weight for wavelength #1
+C     NSSSYSTEM(12)  -- Wavelength weight for wavelength #2
+C     NSSSYSTEM(13)  -- Wavelength weight for wavelength #3
+C     NSSSYSTEM(14)  -- Wavelength weight for wavelength #4
+C     NSSSYSTEM(15)  -- Wavelength weight for wavelength #5
+C     NSSSYSTEM(16)  -- Wavelength weight for wavelength #6
+C     NSSSYSTEM(17)  -- Wavelength weight for wavelength #7
+C     NSSSYSTEM(18)  -- Wavelength weight for wavelength #8
+C     NSSSYSTEM(19)  -- Wavelength weight for wavelength #9
+C     NSSSYSTEM(20)  -- Wavelength weight for wavelength #10
+C     NSSSYSTEM(21)  -- Units identifier 1=inches
+C                                        2=cm
+C                                        3=mm
+C                                        4=meters
+C     NSSSYSTEM(22) -- 0 FOR CIRCULAR REFERENCE GRID CLIPPING, 1 FOR RECTANGULAR
+C     NSSSYSTEM(23) -- DBLOSS TERM FOR GAUSSIAN REFERENCE GRID APODIZATION
+C     NSSSYSTEM(24) -- CURRENT HIGHEST SURFACE NUMBER. DETERMINED AT THE TIME OF C			     NSSEOS
+C     NSSSYSTEM(25) -- TERMINAL RAY LENGTH
+C     NSSSYSTEM(26) -- MIN FRACTIONAL RAY ENERGY
+C     NSSSYSTEM(27) -- MAXIMUM NUMBER OF RAY/SURFACE INTERSECTIONS
+C     NSSSYSTEM(28) -- RAY SPLITTING FLAG 0=NO, 1=YES
+C     NSSSYSTEM(29) -- OBJECT X POSITION
+C     NSSSYSTEM(30) -- OBJECT Y POSITION
+C     NSSSYSTEM(31) -- OBJECT Z POSITION
+C     NSSSYSTEM(32) -- OBJECT GRID N VALUE
+C     NSSSYSTEM(33) -- 0 FOR CIRCULAR SOURCE GRID CLIPPING, 1 FOR RECTANGULAR
+C     NSSSYSTEM(34) -- 1 IF OBJECT IS REAL, -1 IF OBJECT IS VIRTUAL
+C     NSSSYSTEM(35) NOT USED
+C     NSSSYSTEM(36) -- REFERENCE GRID N VALUE
+C     NSSSYSTEM(37) -- OBJECT GRID SPACING
+C     NSSSYSTEM(38) -- REFERENCE GRID SPACING
+C     NSSSYSTEM(39) -- 0 = NO POLARIZATION CALC, 1 = POLARIZATION CALC
+C     NSSSYSTEM(40) -- GLOBAL X- LOCATION OF THE CENTER OF THE REFERENCE GRID
+C     NSSSYSTEM(41) -- GLOBAL Y- LOCATION OF THE CENTER OF THE REFERENCE GRID
+C     NSSSYSTEM(42) -- GLOBAL Z- LOCATION OF THE CENTER OF THE REFERENCE GRID
+C     NSSSYSTEM(43) -- NUMBER OF PIXELS IN THE X DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(44) -- NUMBER OF PIXELS IN THE Y DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(45) -- PIXEL PITCH IN THE X DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(46) -- PIXEL PITCH IN THE Y DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(47) -- X COORDINATE OF THE CENTER OF THE DETECTOR ARRAY ON THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(48) -- Y COORDINATE OF THE CENTER OF THE DETECTOR ARRAY ON THE SPOT DIAGRAM SURFACE
+C     NSSSYSTEM(49) -- SURFACE NUMBER OF THE SPOT DIAGRAM SURFACE (EXPLICITLY ASSIGNED IN NSS BY IS THE
+C                      CURRENT OBJECT SURFACE IN SEQUENTIAL SPOT DIAGRAMS.
+C     NSSSYSTEM(51) -- POWER SCALE FACTOR FOR IRRADIANCE PLOTS FROM SPOT DIAGRAMS
+C     NSSSYSTEM(51-100)NOT USED
+C
+C     NSSALENS(ITEM#,SURF#) --  This is the array which keeps track of NSS database
+C                  values which are surface dependent.
+C
+C     ITEM #1 --  SURFACE TYPE FLAG
+C                       1  = PLANO
+C                       2  = SPHERIC
+C                       3  = ANAMORPH
+C                       4  = USER
+C                       5  = MEM (MICRO ELEMENT MIRRORS)
+C                       6  = TUBE
+C     ITEM #2  --  (NOT USED)
+C     ITEM #3  --  SURFACE CURVATURE OR # MEM PIXELS IN X
+C     ITEM #4  --  SURFACE CONIC OR 2ND ORDER ASPHERIC IF PLANO OR # OF MEM C	PIXELS IN Y
+C     ITEM #5  --  SURFACE   4TH ORDER ASPHERIC OR # OF MEM FILE
+C     ITEM #6  --  SURFACE   6TH ORDER ASPHERIC OR X-LENGTH OF MEM PIXEL
+C     ITEM #7  --  SURFACE   8TH ORDER ASPHERIC OR Y-LENGTH OF MEM PIXEL
+C     ITEM 8 AND 9 SURFACE INTERACTION CODES IN SPACES #1 AND #2
+C     1=T, 2=R, 3=A
+C     ITEM #10 --  TUBE RADIUS
+C     ITEM #11 --  TUBE LENGTH
+C     ITEM #12 TO 18 NOT USED
+C     ITEM #19 --  SURFACE CLAP TYPE
+C                       0 = NO CLAP
+C                       1=CIRCULAR
+C                       2=RECTANGULAR
+C                       3=ELLIPTICAL
+C     ITEM #20 --  X SEMI DIMENSION CLAP
+C     ITEM #21 --  Y SEMI DIMENSION CLAP
+C     ITEM #22 --  X SEMI OFFSET
+C     ITEM #23 --  Y SEMI OFFSET
+C     ITEM #24 --  GAMMA ROTATION
+C
+C     ITEM #25 --  SURFACE HOLE TYPE
+C                       0 = NO HOLE
+C                       1=CIRCULAR
+C                       2=RECTANGULAR
+C                       3=ELLIPTICAL
+C     ITEM #26 --  X SEMI DIMENSION
+C     ITEM #27 --  Y SEMI DIMENSION
+C     ITEM #28 --  X SEMI OFFSET
+C     ITEM #29 --  Y SEMI OFFSET
+C     ITEM #30 --  GAMMA ROTATION
+C     ITEM #31 --  COATING1 FILE NUMBER 0 TO 1000
+C     ITEM #32 --  COATING2 FILE NUMBER 0 TO 1000
+C     ITEM #33    Not used
+C     ITEM #34 --  "current" SURFACE X-POS
+C     ITEM #35 --  "current" SURFACE Y-POS
+C     ITEM #36 --  "current" SURFACE Z-POS
+C     ITEM #37 --  "current" SURFACE NUMBER TO REFERENCE SURFACE POSITION AND 		TILT (DEFAULT=-1)
+C     ITEM #38-39 not used
+C     ITEM #40 --  "current" SURFACE ALPHA (STORED RIGHT HAND POS.)
+C     ITEM #41 --  "current" SURFACE BETA  (STORED RIGHT HAND POS.)
+C     ITEM #42 --  "current" SURFACE GAMMA (STORED RIGHT HAND POS.)
+C     ITEM #43 --  NOT USED
+C     ITEM #44 --  "LINK ALL SURFACE SHAPE DATA FROM THE SPECIFIED SURFACE "PROFILE, BOUNDS, CLAPS, HOLES
+C                  AND PARAMETERS " IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #45 --  "LINK ALL SURFACE MATERIAL DATA FROM THE SPECIFIED SURFACE
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #46 --  "LINK ALL SURFACE INTERACTION CODES DATA FROM THE SPECIFIED SURFACE
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #47 --  "LINK ALL SURFACE COATING DEFINITIONS FROM THE SPECIFIED SURFACE
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #48 --  "LINK SURFACE X-POSITION
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #48 --  "LINK SURFACE X-POSITION
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #48 --  "LINK SURFACE X-POSITION
+C                  IF VALUE IS THE CURRENT SURFACE NUMBER, NO PICKUP
+C     ITEM #48 To 91 (not used)
+C     ITEM #92 -- NOT USED
+C     ITEM #93 to 99 (not in use)
+C
+C     ITEM #100--  OCCUPENCY FLAG, 0= THIS CELL/SURFACE NOT USED, 1= THIS
+                   CELL/SURFACE IS USED
+C     ITEM #101-- 110 REAL REFRACTIVE INDEX VALUES FROM GLASS CAT -Z SPACE
+C     ITEM #111-- 120 IMAGINARY REFRACTIVE INDEX VALUES FROM GLASS CAT -Z SPACE
+C     ITEM #121-- 130 REAL REFRACTIVE INDEX VALUES FROM GLASS CAT +Z SPACE
+C     ITEM #131-- 140 IMAGINARY REFRACTIVE INDEX VALUES FROM GLASS CAT +Z SPACE
+C     ITEM #141-- 145 ORDER, SPACING AND L,M,N GENERATING PLANE DIR COS FOR
+C                  A LINEAR DIFFRACTION GRATING
+C     ITEM #201-400 THESE ARE THE SURFACE PARAMETER VALUE STORAGE AREAS.
+C
+C     NSSBOUNDS(N,SFID)
+C     N=1 -X SURFACE BOUND
+C     N=2 +X SURFACE BOUND
+C     N=3 -Y SURFACE BOUND
+C     N=4 +Y SURFACE BOUND
+C     N=5 -Z SURFACE BOUND
+C     N=6 +Z SURFACE BOUND
+C
+C
+NSSEXIST = TRUE OR FALSE DEPENDING ON THE EXISTENCE OF AN NSS DATABASE
+SID IS THE CURRENT SURFACE NUMBER ID
+GRAY (global ray data before surface interaction),LRAY (local ray data before surface interaction),LRAYP (local ray data after surface interaction) AND GRAYP (global ray data after surface interaction) ARE SET UP ALL ALIKE AND STORE
+THE FOLLOWING DATA
+                        NSSGRAY(1)=X
+                        NSSGRAY(2)=Y
+                        NSSGRAY(3)=Z
+                        NSSGRAY(4)=L
+                        NSSGRAY(5)=M
+                        NSSGRAY(6)=N
+                        NSSGRAY(7)=XL
+                        NSSGRAY(8)=XM
+                        NSSGRAY(9)=XN
+                        NSSGRAY(10)=YL
+                        NSSGRAY(11)=YM
+                        NSSGRAY(12)=ZM
+                        NSSGRAY(13)=LN
+                        NSSGRAY(14)=MN
+                        NSSGRAY(15)=NN
+                        NSSGRAY(16)=RAY INTENSITY
+                        NSSGRAY(17)=REAL REFRACTIVE INDEX WHERE RAY IS
+                        NSSGRAY(18)=OPL FROM LAST SURFACE
+                        NSSGRAY(19)=PHYSICAL LENGTH FROM LAST SURFACE
+

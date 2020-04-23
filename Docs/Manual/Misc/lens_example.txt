@@ -1,0 +1,1616 @@
+﻿NOTE: NEGATIVE OPD IS DIVERGING, POSITIVE OPD IS CONVERGING
+
+
+
+C     SYSTEM() --    This is the array which keeps track of lens database
+C                  parameters which as not surface dependent.
+C                  There are 130 entries in this array for every lens.
+C                  The array contains:
+C     SYSTEM(1)  -- Wavelength in microns for wavelength #1
+C     SYSTEM(2)  -- Wavelength in microns for wavelength #2
+C     SYSTEM(3)  -- Wavelength in microns for wavelength #3
+C     SYSTEM(4)  -- Wavelength in microns for wavelength #4
+C     SYSTEM(5)  -- Wavelength in microns for wavelength #5
+C     SYSTEM(6)  -- Units identifier 1=inches
+C                                    2=cm
+C                                    3=mm
+C                                    4=meters
+C     SYSTEM(7)  -- First wavelength of the primary wavelength pair.
+C     SYSTEM(8)  -- Second wavelength of the primary wavelength pair.
+C     SYSTEM(9)  -- First wavelength of the secondary wavelength pair.
+C     SYSTEM(10) -- Second wavelength of the secondary wavelength pair.
+C     SYSTEM(11) -- Control wavelength number (reference wavelength).
+C     SYSTEM(12) -- SAY value
+C     SYSTEM(13) -- SAX value
+C     SYSTEM(14) -- SCY value
+C     SYSTEM(15) -- Y1 value for the SCY value
+C     SYSTEM(16) -- SCX value
+C     SYSTEM(17) -- X1 value for the SCX value
+C     SYSTEM(18) -- Flag for SCY FANG explicitly set(1.0), else = 0.0
+C     SYSTEM(19) -- Flag for SCX FANG explicitly set(1.0), else = 0.0
+C     SYSTEM(20) -- Surface number of the last surface.
+C     SYSTEM(21) -- SCY FANG value.
+C     SYSTEM(22) -- Y1 value for SCY FANG
+C     SYSTEM(23) -- SCX FANG value.
+C     SYSTEM(24) -- X1 value for SCY FANG
+C     SYSTEM(25) -- Surface number of the REFERENCE surface.(default=1)
+C     SYSTEM(26) -- Surface number of the ASTOP surface. (-99 if no ASTOP)
+C     SYSTEM(27) -- ASTOP adjustment flag
+C                      1.0=EN
+C                     -1.0=EX
+C                      0.0=(none)
+C                      2.0=ENEX
+C     SYSTEM(28) -- XZ bilateral symmetry flag (1=yes,0=no)
+C     SYSTEM(29) -- Flag for generalized paraxial ray trace (1=on,0=off)
+C     SYSTEM(30) -- Mode flag
+C                      1.0=FOCAL
+C                      2.0=UFOCAL
+C                      3.0=AFOCAL
+C                      4.0=UAFOCAL
+C     SYSTEM(31) -- Spectral weighting factor for wavelength #1
+C     SYSTEM(32) -- Spectral weighting factor for wavelength #2
+C     SYSTEM(33) -- Spectral weighting factor for wavelength #3
+
+C     SYSTEM(34) -- Spectral weighting factor for wavelength #4
+C     SYSTEM(35) -- Spectral weighting factor for wavelength #5
+C     SYSTEM(36) -- YZ transverse MAG reset value
+C     SYSTEM(37) -- XZ transverse MAG reset value
+C     SYSTEM(38) -- YZ desired magnification
+C     SYSTEM(39) -- XZ desired magnification
+C     SYSTEM(40) -- Beginning surface YZ mag)
+C     SYSTEM(41) -- Beginning surface XZ mag)
+C     SYSTEM(42) -- Ending surface YZ mag)
+C     SYSTEM(43) -- Ending surface XZ mag)
+C     SYSTEM(44) -- F/# or F/# hold flag (1 or -1) YZ
+C     SYSTEM(45) -- F/# or F/# hold flag (1 or -1) XZ
+C     SYSTEM(44) -- Expup or Expup hold flag (2 or -2) YZ
+C     SYSTEM(45) -- Expup or Expup hold flag (2 or -2) xZ
+C     SYSTEM(46) -- F/# hold value YZ
+C     SYSTEM(47) -- F/# hold value XZ
+C     SYSTEM(48) -- YZ bilateral symmetry flag (1=yes,0=no)
+C     SYSTEM(49) -- if 0, XZ data not entered for field or aperture
+C     SYSTEM(49) -- if 1, XZ data entered for aperture only
+C     SYSTEM(49) -- if 2, XZ data entered for field only
+C     SYSTEM(49) -- if 3, XZ data entered for field and aperture
+C     SYSTEM(50) -- flag tracks current configuration (don't mess with this!)
+C     SYSTEM(51) -- = 1.0 if Y1(SCY) was explicitly set, else is = 0.0
+C     SYSTEM(52) -- = 1.0 if X1(SCX) was explicitly set, else is = 0.0
+C     SYSTEM(53) -- = 1.0 if Y1(SCY FANG) was explicitly set, else is = 0.0
+C     SYSTEM(54) -- = 1.0 if X1(SCX FANG) was explicitly set, else is = 0.0
+C     SYSTEM(55) -- = used by subroutine STH.FOR (don't mess with this!)
+C     SYSTEM(56) -- = number of the highest number non-blank alternate config.
+C     SYSTEM(57) -- = NOT IN USE
+C     SYSTEM(58) -- = 0 means generalized paraxial trace "off", 1 means "on"
+C     SYSTEM(59) -- = reference surface orientation angle
+C     SYSTEM(60) -- = 0 if SCY or SCY FANG not explicitly set
+C     SYSTEM(60) -- = 1 if SCY or SCY FANG explicitly set
+C     SYSTEM(61) -- = 0 if SCX or SCX FANG not explicitly set
+C     SYSTEM(61) -- = 1 if SCX or SCX FANG explicitly set
+C     SYSTEM(62) -- = 1, REGULAR RAY AIMING IS ON, 0= AIMING OFF
+C     SYSTEM(63) -- = 1, TELECENTRIC RAY AIMING IS ON, 0= TELE AIMING OFF
+C     SYSTEM(64) -- = 1, NAOY EXPLICITLY SET, 2= NAOX EXPLICITLY SET ,3= BOTH SET
+C     SYSTEM(65) -- = NAOY value
+C     SYSTEM(66) -- = NAOX value
+C     SYSTEM(67) -- = 1, FNOY EXPLICITLY SET, 2= FNOX EXPLICITLY SET ,3= BOTH SET
+C     SYSTEM(68) -- = FNOY value
+C     SYSTEM(69) -- = FNOX value
+C     SYSTEM(70) -- = 0.0 (no aplanatic ray aiming, 1.0 (aplanatic ray aiming)
+C     SYSTEM(71) -- Wavelength in microns for wavelength #6
+C     SYSTEM(72) -- Wavelength in microns for wavelength #7
+C     SYSTEM(73) -- Wavelength in microns for wavelength #8
+C     SYSTEM(74) -- Wavelength in microns for wavelength #9
+C     SYSTEM(75) -- Wavelength in microns for wavelength #10
+C     SYSTEM(76) -- Spectral weighting factor for wavelength #6
+C     SYSTEM(77) -- Spectral weighting factor for wavelength #7
+C     SYSTEM(78) -- Spectral weighting factor for wavelength #8
+C     SYSTEM(79) -- Spectral weighting factor for wavelength #9
+C     SYSTEM(80) -- Spectral weighting factor for wavelength #10
+C     SYSTEM(81) -- is AIMOFFSET in X
+C     SYSTEM(82) -- is AIMOFFSET in Y
+C     SYSTEM(83) -- =1 means SAY floats, =0 means SAY does not float
+C     SYSTEM(84) -- =1 means SAX floats, =0 means SAX does not float
+C     SYSTEM(85) -- WRX gaussian beam setting.
+C     SYSTEM(86) -- WRY gaussian beam setting.
+C     SYSTEM(87) -- BDX gaussian beam setting.
+C     SYSTEM(88) -- BDY gaussian beam setting.
+C     SYSTEM(89) -- is AIMOFFSET in Z
+C     SYSTEM(90) -- LENS TILT RET resolution flag
+C                   0=NOT RESOLVED
+C                   1=RESOLVED
+C     SYSTEM(91) -- AUTOFUNC SETTING 0 TO 10, 0=NO CALL, 1-10= FUNC# TO CALL
+C     SYSTEM(92) -- PXIM OR PXIM FANG value
+C     SYSTEM(93) -- PYIM OR PYIM FANG value
+C     SYSTEM(94) -- Flag for PXIM FANG explicitly set(1.0), else = -1.0
+C                   if PXIM else 0.0
+C     SYSTEM(95) -- Flag for PYIM FANG explicitly set(1.0), else = -1.0
+C                   if PYIM else 0.0
+C     SYSTEM(96) -- RXIM OR RXIM FANG value
+C     SYSTEM(97) -- RYIM OR RYIM FANG value
+C     SYSTEM(98) -- Flag for RXIM FANG explicitly set(1.0), else = -1.0
+C                   if RXIM else 0.0
+C     SYSTEM(99) -- Flag for RYIM FANG explicitly set(1.0), else = -1.0
+C                   if RYIM else 0.0
+C     SYSTEM(100)-- 0 FOR NO REVERSE TRACE, 1 FOR REVERSE TRACE
+C     SYSTEM(101)-- 0 FOR NON-VERBOSE OPTIMIZATION OUTPUT
+C                   1 FOR VERBOSE (CONTROLLED VIA THE "OVERBOSE" COMMAND
+C     SYSTEM(102)-- 1 IF NSS SURFACES ARE PRESENT, 0 IF NO NSS SURFACES ARE PRESENT
+C     SYSTEM(103)-- 0 FOR NO SCREEN SURFACE, 1 FOR A SCREEN SURFACE
+C     SYSTEM(104)-- SURFACE NUMBER OF THE SCREEN SURFACE
+C     SYSTEM(105)-- DIAMETER OF HOLES IN SCREEN SURFACE
+C     SYSTEM(106)-- THICKNESS OF SCREEN SURFACE (DEPTH OF THE HOLES)
+C     SYSTEM(107)-- X AND Y SPACING, ON A RECTANGULAR GRID BETWEEN HOLES
+C     SYSTEM(108)-- NOT IN USE
+C     SYSTEM(109)-- NOT IN USE
+C     SYSTEM(110)-- NOT IN USE
+C     SYSTEM(111)-- WV1 IN MICRONS
+C     SYSTEM(112)-- WV2 IN MICRONS
+C     SYSTEM(113)-- WV3 IN MICRONS
+C     SYSTEM(114)-- WV4 IN MICRONS
+C     SYSTEM(115)-- WV5 IN MICRONS
+C     SYSTEM(116)-- WV6 IN MICRONS
+C     SYSTEM(117)-- WV7 IN MICRONS
+C     SYSTEM(118)-- WV8 IN MICRONS
+C     SYSTEM(119)-- WV9 IN MICRONS
+C     SYSTEM(120)-- WV10 IN MICRONS
+
+C     SYSTEM(121) -- NUMBER OF PIXELS IN THE X DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     SYSTEM(122) -- NUMBER OF PIXELS IN THE Y DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     SYSTEM(123) -- PIXEL PITCH IN THE X DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     SYSTEM(124) -- PIXEL PITCH IN THE Y DIMENSION OF THE SPOT DIAGRAM SURFACE
+C     SYSTEM(124) -- X COORDINATE OF THE CENTER OF THE DETECTOR ARRAY ON THE SPOT DIAGRAM SURFACE
+C     SYSTEM(126) -- Y COORDINATE OF THE CENTER OF THE DETECTOR ARRAY ON THE SPOT DIAGRAM SURFACE
+C     SYSTEM(127) -- SURFACE NUMBER OF THE SPOT DIAGRAM SURFACE (EXPLICITLY ASSIGNED IN NSS BY IS THE
+C                      CURRENT OBJECT SURFACE IN SEQUENTIAL SPOT DIAGRAMS.
+C     SYSTEM(128) -- 0 FOR FLIPREFX OFF, 1 FOR ON
+C     SYSTEM(129) -- 0 FOR FLIPREFY OFF, 1 FOR ON
+C
+C     ARRAAYS PFLDS(1:2,1:10) AND CFLDS(1:2,1:10) STORE THE X AND Y
+C     VALUES OF THE MULTIPLE FIELDS OF VIEW DEFINED WITH A LENS
+C     FLDCNT COUNTS THE NUMBER OF CURRENT ACTIVE FIELDS.
+C
+C     FTFL01(J,SURF#) holds all 96 special surface coefficients
+C     which the user can both input and also vary during optimization
+C     J ranges from 1 to 96. All 96 coefficients are available in the
+C     type 21 user-defined surface
+C
+C     The ALENS(J,SURF#) array holds all the surface dependent lens
+C     database information.
+C     ALENS(1,surf#) -- The surface curvature.
+C     ALENS(2,surf#) -- The surface conic constant.
+C     ALENS(3,surf#) -- The surface thickness to the next surface
+C     ALENS(4,surf#) -- 4th order aspheric coefficient
+C     ALENS(5,surf#) -- 6th order aspheric coefficient
+C     ALENS(6,surf#) -- 8th order aspheric coefficient
+C     ALENS(7,surf#) -- 10th order aspheric coefficient
+C     ALENS(8,surf#) -- asphere flag, 1= asphere, 0 = no asphere
+C     ALENS(9,surf#) -- Clear aperture type flag
+C                       0.0=NONE
+C                       1.0=CIRCULAR
+C       ALENS(10,SURF#)=CLAP RADIUS
+C       ALENS(11,SURF#)=RAD TO FLT
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C       ALENS(14,SURF#)=ZD
+C                       2.0=RECTANGULAR
+C       ALENS(10,SURF#)=Y
+C       ALENS(11,SURF#)=X
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C                       3.0=ELLIPTICAL
+C       ALENS(10,SURF#)=Y
+C       ALENS(11,SURF#)=X
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C                       4.0=RACETRACK
+C       ALENS(10,SURF#)=Y
+C       ALENS(11,SURF#)=X
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C       ALENS(14,SURF#)=RAD OF CORNER
+C                       5.0=REGULAR POLYGON
+C       ALENS(10,SURF#)=RAD TO CORNER
+C       ALENS(11,SURF#)=N (NUMBER OF SIDES)
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C                       6.0=IRREGULAR POLYGON
+C       ALENS(10,SURF#)=POLYGON DEFINITION FILE # (1 TO 99) IPOLY01.DAT TO IPOLY99.DAT
+C       ALENS(11,SURF#)=NUMBER OF POINTS
+C       ALENS(12,SURF#)=YD
+C       ALENS(13,SURF#)=XD
+C       ALENS(14,SURF#)=MAXIMUM DIMENSION FOR SYS12/SYS13 SETTINGS
+C     ALENS(15,surf#)=CLAP TILT
+C     ALENS(16,surf#) -- Obscuration type flag
+C                       0.0=NONE
+C                       1.0=CIRCULAR
+C                       2.0=RECTANGULAR
+C                       3.0=ELLIPTICAL
+C                       4.0=RACETRACK
+C                       5.0=REGULAR POLYGON
+C                       6.0=IRREGULAR POLYGON
+C     ALENS(17,surf#) TO ALENS(22,surf#)
+C     ALENS(23,surf#) -- toric surface flag
+C                       0.0=not toric
+C                       1.0=Y-toric
+C                       2.0=X-toric
+C     ALENS(24,surf#) -- toric curvature value
+C     ALENS(25,surf#) -- Tilt flag
+C                       0.0=NO TILT (DEFAULT VALUE)
+C                       1.0= TILT
+C                      -1.0= RTILT
+C                       2.0= TILT AUTO
+C                       3.0= TILT AUTOM
+C                       4.0= TILT BEN
+C                       5.0= TILT DAR
+C                       6.0= TILT RET
+C                       7.0= TILT REV
+C     ALENS(26,SURF) TO ALENS(28,SURF) STORE THE ALPHA,BETA AND GAMMA
+C                       ANGLES IN DEGREES
+C     ALENS(29,surf#) -- Decenter flag, 0= no decenter, 1= decenter
+C     ALENS(30,surf#) -- Y-decenter value
+C     ALENS(31,surf#) -- X-decenter value
+C     ALENS(69,surf#) -- Z-decenter value
+C     ALENS(32,surf#) -- is the pickup flag
+C                       0.0=NO PIKUPS
+C                       GREATER THAN 0.0 = NUMBER OF PIKUPS ON A SURFACE
+C     ALENS(33,surf#) -- IS THE SOLVES FLAG
+C                       0.0=NO SOLVES
+C                       1.0=YZ THICKNES SOLVES
+C                       2.0=YZ CURVATURE SOLVES
+C                       3.0=YZ CURVATURE AND THICKNESS SOLVES
+C                       0.1=XZ THICKNES SOLVES
+C                       0.2=XZ CURVATURE SOLVES
+C                       0.3=XZ CURVATURE AND THICKNESS SOLVES
+C     IF ALL SOLVES PRESENT, ALENS(33,SURF) CAN GET TO 3.3
+C     ALENS(34,surf#) -- is the special surface flag = to the special
+C                        surface type. If negative, the special surface
+C                        is currently shut "OFF".
+C     ALENS(35,surf#) -- ASI flag, 0 = no ASI, 1= ASI (alternate surf int)
+C     ALENS(36,surf#) -- anamorphic asphere, 0 = none, 1 = anamorphic
+C     ALENS(37,surf#) -- 4th order anamorphic aspheric term
+C     ALENS(38,surf#) -- 6th order anamorphic aspheric term
+C     ALENS(39,surf#) -- 8th order anamorphic aspheric term
+C     ALENS(40,surf#) -- 10th order anamorphic aspheric term
+C     ALENS(41,surf#) -- anamorphic conic coefficient
+C     ALENS(42,surf#) -- config data flag, 0 = none, 1 = config data exists
+C     ALENS(43,surf#) -- 2nd order aspheric coefficient (plano surfaces only)
+C     ALENS(44,surf#) -- surface label flag, 0 = no label, 1 = label exists
+C     ALENS(45,surf#) -- NOT USED
+C     ALENS(46,surf#) -- refractive index at wavelength #1
+C     ALENS(47,surf#) -- refractive index at wavelength #2
+C     ALENS(48,surf#) -- refractive index at wavelength #3
+C     ALENS(49,surf#) -- refractive index at wavelength #4
+C     ALENS(50,surf#) -- refractive index at wavelength #5
+C     ALENS(69,surf#) -- Z-decenter value
+C     ALENS(51,surf#) -- Clear aperture erase type flag
+C                       0.0=NONE
+C                       1.0=CIRCULAR
+C                       2.0=RECTANGULAR
+C                       3.0=ELLIPTICAL
+C                       4.0=RACETRACK
+C                       5.0=REGULAR POLYGON
+C                       6.0=IRREGULAR POLYGON
+C     ALENS(52,surf#) TO ALENS(57,surf#)
+C     ALENS(58,surf#) -- 0.0 OR 1.0, IF 1.0, FORCES RAYS TO BE BLOCKED
+
+C                        BY CLAPS AND COBS IN FOOTPRINT TRACING IN QTRA.FOR
+C                        DEFAULT IS 0.0
+C       ON 10/28/2004    ADDED THE OPTION IN "RAY CAOB" THAT IF FOOTBLOCK WAS ON OR SET TO 1
+C       NORMAL APERTURE CHECKING WOULD BE SKIPPED. A DOUBLE POSITIVE MAKES A NEGATIVE.
+C     ALENS(59,surf#) -- PIVOT FLAG (0= at origin, 1= alternate pivot defined
+C                        in ALENS 78,79 and 80 (X,Y,Z fom surface vertex)
+C     ALENS(60,surf#) -- (not in use)
+C     ALENS(61,surf#) -- Obscuration erase type flag
+C                       0.0=NONE
+C                       1.0=CIRCULAR
+C                       2.0=RECTANGULAR
+C                       3.0=ELLIPTICAL
+C                       4.0=RACETRACK
+C                       5.0=REGULAR POLYGON
+C                       6.0=IRREGULAR POLYGON
+C     ALENS(62,surf#) TO ALENS(67,surf#)
+C     hold oscuration data (don't mess with these!).
+C     ALENS(68,surf#) -- DUMMY SURFACE FLAG, 0 = DUMMY, 1= NOT DUMMY
+C     ALENS(69,surf#) -- Z-decenter value
+C     ALENS(70,surf#) -- designates the RET surf# for TILT RET
+C     ALENS(71,surf#) -- refractive index at wavelength #6
+C     ALENS(72,surf#) -- refractive index at wavelength #7
+C     ALENS(73,surf#) -- refractive index at wavelength #8
+C     ALENS(74,surf#) -- refractive index at wavelength #9
+C     ALENS(75,surf#) -- refractive index at wavelength #10
+C     ALENS(76,surf#) -- current "INR" surface value
+C     ALENS(77,surf#) -- TILT RETURN RESOLUTION FLAG, SURFACE
+C                        0=not resolved
+C                        1=resolved
+C     ALENS(78,surf#) -- TILT PIVOT X-LOCATION
+C     ALENS(79,surf#) -- TILT PIVOT Y-LOCATION
+C     ALENS(80,surf#) -- TILT PIVOT Z-LOCATION
+C     ALENS(81,surf#) -- 12th order aspheric coefficient
+C     ALENS(82,surf#) -- 14th order aspheric coefficient
+C     ALENS(83,surf#) -- 16th order aspheric coefficient
+C     ALENS(84,surf#) -- 18th order aspheric coefficient
+C     ALENS(85,surf#) -- 20th order aspheric coefficient
+C     ALENS(86, ) IS THE REFRACTIVE INDEX INPUT VALUE FOR FICT GLASS
+C     ALENS(87, ) IS THE ABBE-NUMBER INPUT VALUE FOR FICT GLASS
+C     ALENS(88, ) IS THE READ GRID DATA FLAG, 0 NOT YET READ, 1 READ ALREADY
+C     ALENS(89, ) IS THE PARTIAL DISPERSION TO USE IN MODEL GLASS
+C     ALENS(90, ) IS GLOBAL X-DECENTER
+C     ALENS(91, ) IS GLOBAL Y-DECENTER
+C     ALENS(92, ) IS GLOBAL Z-DECENTER
+C     ALENS(93, ) IS GLOBAL ALPHA TILT
+C     ALENS(94, ) IS GLOBAL BETA  TILT
+C     ALENS(95, ) IS GLOBAL GAMMA TILT
+C     ALENS(96, ) IS GRATING FLAG, 0.0=NO GRATING, 1.0= GRATING
+C     ALENS(97, ) IS GRATING ORDER
+C     ALENS(98, ) IS GRATING SPACING (LENS UNITS)
+C     ALENS(99, ) IS GRATING X-DIR NUMBER
+C     ALENS(100, ) IS GRATING Y-DIR NUMBER
+C     ALENS(101, ) IS GRATING Z-DIR NUMBER
+C     ALENS(102, ) SPECIFIC GRAVITY IN GRAMS/CC
+C     ALENS(103, ) 0 OR 1, FLAG FOR DEFORMABLE SURFACE
+C     ALENS(104, ) FILE ID FOR DEFORMABLE SURFACE
+C     ALENS(105, ) TOTAL NUMBER OF ACTUATOR
+C     ALENS(106, ) Z-SCALE FOR DEFORMABLE SURFACE
+C     ALENS(107, ) (not in use)
+C     ALENS(108, ) (not in use)
+C     ALENS(109, ) DEFORMABLE SURFACE UPDATE FLAG (WORKS LIKE ALENS(88, )
+C     ALENS(110, ) MIRROR THICKNESS
+C     ALENS(111, ) COST PER UNIT WEIGHT
+C     ALENS(112, ) COATING FILE NUMBER 1 TO 1000, 0 IS ALSO NO COATING
+C     ALENS(113, ) 0 FOR PIVAXIS LOCAL, 1 FOR PIVAXIS NORMAL (LOCAL=DEFAULT)
+C     ALENS(114, ) PERMANENT DX,TERM ADDED WITH A DX WITH A PIVOT
+C     ALENS(115, ) PERMANENT DY,"                 DY            "
+C     ALENS(116, ) PERMANENT DZ,"                 DZ            "
+C     ALENS(117, ) ADDITIONAL DECENTER FLAG FOR PIVOTED SURFACES 0 FOR NONE,
+C                  1 FOR SOME DECENTER TO ADD.
+C     ALENS(118, ) PERMANENT ALPHA
+C     ALENS(119, ) PERMANENT BETA
+C     ALENS(120, ) PERMANENT GAMMA
+C     ALENS(121, ) FOCAL LENGTH OF AN IDEAL LENS
+C     ALENS(122, ) FIRST THREE DIGITS OF GLASS CODE
+C     ALENS(123, ) SECOND THREE DIGITS OF GLASS CODE
+C     ALENS(124, ) 0 FOR A REAL SURFACE, 1 FOR A PARAXIAL SURFACE (9/27/99)
+C     ALENS(125, ) REFLECTION MODE
+C                       0 = REFL
+C                       1 = REFLTIRO
+C                       2 = REFLTIR
+C     ALENS(126, ) CCR/ROOF 0=NO,1=ROOF,2=CCR
+C     ALENS(127, ) 0=NO MULTI-CLAP,  1.0=MULTI CLAP
+C     ALENS(128, ) 0=NO MULTI-COBS,  1.0=MULTI COBS
+C     ALENS(129, ) (not in use)
+C     ALENS(130, ) NOT USED YET
+C     ALENS(131, ) ARRAY LENS DX
+C     ALENS(132, ) ARRAY LENS DY
+C     ALENS(133, ) ARRAY LENS ODD=-1,EVEN=1,NONE=0
+C     ALENS(134, ) 0=NO SPIDER, 1=SPIDER
+C     ALENS(135, ) SPIDER N VALUE
+C     ALENS(136, ) SPIDER W VALUE
+C     ALENS(137, ) SPIDER L VALUE
+C     ALENS(138, ) CCR OR ROOF NW1
+C     ALENS(139, ) CCR OR ROOF NW2
+C     ALENS(140, ) CCR OR ROOF NW3
+C     ALENS(141, ) CCR OR ROOF NW4
+C     ALENS(142, ) CCR OR ROOF NW5
+C     ALENS(143, ) 0 IF INR IMPLICIT, ELSE 1 FOR INR EXPLICIT
+C     ALENS(144, ) RANDOM RAY ERROR IN ARC SECONDS
+C     ALENS(145, ) NOT USED YET
+C     ALENS(146, ) NOT USED YET
+C     ALENS(147, ) NOT USED YET
+C     ALENS(148, ) NOT USED YET
+C     ALENS(149, ) NOT USED YET
+C     ALENS(150, ) NOT USED YET
+C     ALENS(151, ) NOT USED YET
+C     ALENS(152, ) NOT USED YET
+C     ALENS(153, ) NOT USED YET
+C     ALENS(154, ) NOT USED YET
+C     ALENS(155, ) NOT USED YET
+C     ALENS(156, ) NOT USED YET
+C     ALENS(157, ) NOT USED YET
+C     ALENS(158, ) NOT USED YET
+C     ALENS(159, ) NOT USED YET
+C     ALENS(160, ) NOT USED YET
+C
+C     MULTCLAP(1:1000,1:3,0:MAXSUR) 1=X, 2=Y, 3=GAMMA
+C     MULTCOBS(1:1000,1:3,0:MAXSUR) 1=X, 2=Y, 3=GAMMA
+C
+C     TOL ARRAY KEEPS TRACK OF TOLERANCE VARIABLE VALUES
+C     ADDED 2/25/98
+C     TOLER(1, )  IS VALUE FOR DISPX
+C     TOLER(2, )  IS SECOND SURFACE NUMBER FOR DISPX
+C     TOLER(3, )  IS VALUE FOR DISPY
+C     TOLER(4, )  IS SECOND SURFACE NUMBER FOR DISPY
+C     TOLER(5, )  IS VALUE FOR DISPZ
+C     TOLER(6, )  IS SECOND SURFACE NUMBER FOR DISPZ
+
+C     TOLER(7, )  IS VALUE FOR STILTA
+C     TOLER(8, )  IS X PIVOT FOR STILTA
+C     TOLER(9, ) IS Y PIVOT FOR STILTA
+C     TOLER(10, ) IS Z PIVOT FOR STILTA
+C     TOLER(11, ) IS VALUE FOR STILTB
+C     TOLER(12, ) IS X PIVOT FOR STILTB
+C     TOLER(13, ) IS Y PIVOT FOR STILTB
+C     TOLER(14, ) IS Z PIVOT FOR STILTB
+C     TOLER(15, ) IS VALUE FOR STILTC
+C     TOLER(16, ) IS X PIVOT FOR STILTC
+C     TOLER(17, ) IS Y PIVOT FOR STILTC
+C     TOLER(18, ) IS Z PIVOT FOR STILTC
+
+C     TOLER(19, ) IS VALUE FOR BTILTA
+C     TOLER(20, ) IS SECOND SURFACE NUMBER FOR BTILTA
+C     TOLER(21, ) IS X PIVOT FOR BTILTA
+
+C     TOLER(22, ) IS Y PIVOT FOR BTILTA
+C     TOLER(23, ) IS Z PIVOT FOR BTILTA
+C     TOLER(24, ) IS VALUE FOR BTILTB
+C     TOLER(25, ) IS SECOND SURFACE NUMBER FOR BTILTB
+C     TOLER(26, ) IS X PIVOT FOR BTILTB
+C     TOLER(27, ) IS Y PIVOT FOR BTILTB
+C     TOLER(28, ) IS Z PIVOT FOR BTILTB
+C     TOLER(29, ) IS VALUE FOR BTILTC
+C     TOLER(30, ) IS SECOND SURFACE NUMBER FOR BTILTC
+C     TOLER(31, ) IS X PIVOT FOR BTILTC
+C     TOLER(32, ) IS Y PIVOT FOR BTILTC
+C     TOLER(33, ) IS Z PIVOT FOR BTILTC
+
+C     TOLER(34, ) IS VALUE FOR ROLLX
+C     TOLER(35, ) ENDING SURFACE NUMBER FOR ROLLX
+C     TOLER(36, ) ALTERNATE SURFACE NUMBER FOR ROLLX
+C     TOLER(37, ) IS VALUE FOR ROLLY
+C     TOLER(38, ) ENDING SURFACE NUMBER FOR ROLLY
+C     TOLER(39, ) ALTERNATE SURFACE NUMBER FOR ROLLX
+C
+C
+C                  ADDED 4/27/92 (LBL AND PLBL)
+C     80 CHARACTER LABEL (LBL) LINES FOR EACH LENS ARE ADDED WITH
+C     THE ARRAYS LBL(0:MAXSUR)*80 AND PLBL(0:MAXSUR)*80 [PERM LENS]
+C     THEY ARE USED TO HOLD IDENTIFIER OF OTHER IMPORTANT NOTATIONS
+C     REGARDING EACH LENS SURFACE. SEE ALENS(44,SURF) FOR THE FLAG DENOTING
+C     OR ABSENCE OF THE NOTATION IN THE NOTATION ARRAYS.
+C
+C LI AND LIC(FOUR LINES WORTH) ARE STORED IN THE CHARACTER ARRAYS
+C LI AND LIC(1 TO 4)
+C
+C
+C        ARE USED TO DEIFINE THE SURFACE.
+C
+C A LENS FILE MAY HAVE ANY SURFACE A UNIQUE TYPE 1 TO TYPE 50
+C IF SURFACE 45 IS A TYPE 30 THEN:
+C
+C                ALENS(34,45)=30.0
+C
+C GLASS NAME DATA IS STORED IN GLANAM(0 TO 199,1 TO 2)
+C VALID PRIMARY GLASS NAMES ARE: AIR,GLASS
+C
+C SECONDARY GLASS NAMES ARE TO BE USED AS IDENTIFIERS OR SPECIAL
+C QUALIFIERS.
+C
+C       SOLVES
+C
+C       SOLVE VALUES AND SPECIFIC TYPES ARE STORED IN THE ARRAY
+C       (SOLVE) DIMMENSIONED 0:9,0:199
+C       THE SECOND DIMENSION IS THE SURFACE NUMBER TO WHICH THE
+C       SOLVE IS ASSIGNED. THE FIRST DIMMENSION IS:
+C
+C                       6 STORES THE THICKNESS SOLVE TYPE
+C
+C                               1.0=PY
+C                               2.0=PCY
+C                               3.0=CAY
+C
+C                       4 STORES THE THICKNESS SOLVE TYPE
+C
+C                               4.0=PX
+C                               5.0=PCX
+C                               6.0=CAX
+C
+C                       7 STORES THE NUMERIC VALUE ASSOCIATED
+C               WITH THE (YZ) PLANE THICKNESS SOLVE (DEFAULTS ARE
+C                               ALWAYS ZERO)
+C                       3 STORES THE NUMERIC VALUE ASSOCIATED
+C               WITH THE (XZ) PLANE THICKNESS SOLVE (DEFAULTS ARE
+C                               ALWAYS ZERO)
+C                       8 STORES THE CURVATURE SOLVE TYPE (YZ) PLANE
+C
+C                               1.0=APY
+C                               2.0=PIY
+C                               3.0=PUY
+C                               4.0=APCY
+C                               5.0=PICY
+C                               6.0=PUCY
+C                               7.0=COCY
+C
+C                       2 STORES THE CURVATURE SOLVE TYPE (XZ) PLANE
+C
+C                               8.0=APX
+C                               9.0=PIX
+C                               10.0=PUX
+C                               11.0=APCX
+C                               12.0=PICX
+C                               13.0=PUCX
+C                               14.0=COCX
+C
+C                       9 STORES THE NUMERIC VAULU ASSOCIATED WITH
+C       THE (YZ) PLANE CURVATURE SOLVE (DEFAULTS ARE ALWAYS ZER0)
+C                       1 STORES THE NUMERIC VAULU ASSOCIATED WITH
+
+C        THE (XZ) PLANE CURVATURE SOLVE (DEFAULTS ARE ALWAYS ZER0)
+C
+C                       THE ZERO POSITION IN THE FIRST DIMENSION
+C                       IS NOT USED.
+C
+C       THE ARRAY SOLVE IS INITIALIZED IN THE SUBROUTINE LENNS
+C
+C
+C       PIKUPS ARE TRACKED IN ALENS(32,SURF). THE INTEGER VALUE
+C       OF THE NUMBER STORED THERE IS THE NUMBER OF PIKUPS STORED
+C       ON THAT PARTICULAR SURFACE. THE ACTUAL PIKUP DATA IS
+C       STORED IN THE PIKUP ARRAY DIMMENSIONED
+C
+C               PIKUP(1:6,0:199,1:SPIK) WHERE THE FIRST DIMENSION
+C                       STORES
+C                       1=PIKUP EXISTENCE FLAG, WHICH IS
+C                       1.0 IF THE PIKUP IS PRESENT AND 0.0
+C                       IF THE PIKUP IS NOT PRESENT
+C                       2 TO 6 STORE THE 5 NUMERIC WORDS
+C                       6 STORES THE SOURCE CONFIGURATION FLAG
+C                               THE SECOND DIMENSION
+C                       STORES DATA FOR EACH OF THE MAXSUR SURFACES
+C                               THE THIRD DIMMENSION ALLOWS
+C                       FOR UP TO 45 DIFFERENT PIKUPS TO BE
+C                       ASSIGNED TO A SURFACE AT ONE TIME
+C
+C
+C       THE THIRD DIMENSION DESIGNATES THE TYPE OF PIKUP
+C                       ENCODED AS:
+C                       1=RD
+C                       2=CV
+C                       3=TH
+C                       4=CC
+C                       5=AD
+C                       6=AE
+C                       7=AF
+C                       8=AG
+C                       9=CVTOR
+C                       10=RDTOR
+C                       11=PRO
+C                       12=NPRO
+C                       13=YD
+C                       14=XD
+C                       15=ALPHA
+C                       16=BETA
+
+C                       17=GAMMA
+C                       18=CLAP
+C                       19=COBS
+C                       20=GLASS
+C                       21=CCTOR
+C                       22=ADTOR
+C                       23=AETOR
+C                       24=AFTOR
+C                       25=AGTOR
+C                       26=AC
+C                       27=AH
+C                       28=AI
+C                       29=AJ
+C                       30=AK
+C                       31=AL
+C                       32=THOAL
+C                       33=ZD
+C                       34=PIVX
+C                       35=PIVY
+C                       36=PIVZ
+C                       37=GDX
+C                       38=GDX
+C                       39=GDX
+C                       40=GALPHA
+C                       41=GBETA
+C                       42=GGAMMA
+C                       43=GRT
+C                       44=COATING
+C     FOR THOAL NW1 IS STARTING SURFACE NUMBER
+C     FOR THOAL NW2 IS STOPPING SURFACE NUMBER
+C     FOR THOAL NW3 IS MULTIPLICATIVE TERM
+C     FOR THOAL NW4 IS ADDITIVE TERM
+C     FOR THOAL NW5 IS SOURCE CONFIGURATION FLAG
+C*********************************************************************
+C       CONFIGURATION DATA IS STORED IN
+C               THE ARRAY CONFIG(2:100,1:200)*80
+C       WHERE THERE MAY BE 200 80 CHARACTER LINES OF CONFIG DATA
+C       FOR ANY ONE OF THE 99 CONFIGS FROM 2 TO 100
+C
+C       THE VARIABLE CFGCNT(2:100) KEEPS COUNT OF THE NUMBER OF
+C       DATA ITEMS IN EACH CONFIGURATION
+C
+C       CONFIG DATA IS PASSED IN COMMON/CFG/CONFIG,CFGCNT
+C
+C       FLAGS ASSOCIATED WITH CFGS ARE:
+C               F11=1 FOR UPDATE CONFIG(F1=0)
+C               F10=1 FOR CONFIG INPUT (F1=0)
+C               F12= THE NUBER OF THE CURRENT CONFIGURATION
+C               F13 TRACKS U L INSIGE OF CONFIG INPUT OR UPDATE
+C               F14 TRACKS U SP INSIDE CONFIG INPUT OR UPDATE
+C
+C********************************************************************
+C
+C                       THE PARAXIAL TRACE. (BEGUN 6/22/88)
+C
+C                       AFTER LENS INPUT OR UPDATE LENS
+C
+C       THE PARAXIAL TRACE IS BEGUN BY A CALL FROM
+C       LNSEOS TO SUBROUTINE PRTRA1 WHENEVER THE COMMAND EOS
+C       IS ISSUED FROM THE LENS OR UPDATE LENS LEVEL.
+C                       RULES:
+C       1. TRACE IS AUTOMATICALLY PERFORMED UPON THE CURRENT
+C               LENS WHICH IS ALWAYS CFG 1
+C       2. TRACE IS PERFORMED USING THE CURRENTLY DEFINED CONTROL
+C               WAVELENGTH WITH THE CURRENTLY DEFINED PRIMARY AND
+C               SECONDARY WAVELENGTH PAIRS.
+C       3. FIRST PASS THROUGH THE TRACE IGNORES PARAXIAL SOLVES
+C               AND SETS THE CORRECT TARGETING VALUES TO
+C               CORRECTLY INTERCEPT THE STOP AT THE REQUIRED
+C               COORDINATES. THIS TARGET IS REMEMBERED IN SECOND ENTRY
+C               OF
+C               SCY, SCX, SCY FANG AND SCX FANG
+C
+C       CASE OF TORIC FLAG OFF
+C       PARAXIAL DATA DEVELOPED AND STORED IN THE ARRAY
+C       (PXTRAY(M,SURF)) WHERE M RANGES FROM 1 TO 6
+C               M:
+C                       1=PY(SURF)
+C                       2=PUY(SURF)
+C                       3=PIY(SURF)
+C                       4=PIYP(SURF)
+C                       5=PCY(SURF)
+C                       6=PUCY(SURF)
+C                       7=PICY(SURF)
+C                       8=PICYP(SURF)
+C               SURF RANGES FROM 0 TO INT(SYSTEM(20))
+C               AND SYSTEM(20) CAN REACH A MAX VALUE OF 199
+C
+C       CASE OF TORIC FLAG ON
+C       IN THE YZ PLANE
+
+C       PARAXIAL DATA DEVELOPED AND STORED IN THE ARRAY
+C       (PXTRAY(M,SURF)) WHERE M RANGES FROM 1 TO 6
+C               M:
+C                       1=PY(SURF)
+C                       2=PUY(SURF)
+C                       3=PIY(SURF)
+C                       4=PIYP(SURF) ANGLE OF REFLECTION OR REFRACTION
+C                       5=PCY(SURF)
+C                       6=PUCY(SURF)
+C                       7=PICY(SURF)
+C                       8=PICYP(SURF) ANGLE OR REFLECTION OR REFRACTION
+C               SURF RANGES FROM 0 TO INT(SYSTEM(20))
+C               AND SYSTEM(20) CAN REACH A MAX VALUE OF 199
+C       AND IN THE XZ PLANE
+C       PARAXIAL DATA DEVELOPED AND STORED IN THE ARRAY
+C       (PXTRAX(M,SURF)) WHERE M RANGES FROM 1 TO 8
+C               M:
+C                       1=PX(SURF)
+C                       2=PUX(SURF)
+C                       3=PIX(SURF)
+C                       4=PIXP(SURF)
+C                       5=PCX(SURF)
+C                       6=PUCX(SURF)
+C                       7=PICX(SURF)
+C                       8=PICXP(SURF)
+C               SURF RANGES FROM 0 TO INT(SYSTEM(20))
+C               AND SYSTEM(20) CAN REACH A MAX VALUE OF 199
+C
+C       STARTING VALUES: (DITO FOR XZ PLANE TRACE WHEN TORICS PRESENT)
+C               PY(SURF=0)=0
+C               PY(SURF=1)=SAY
+C               PCY(SURF=0)=SCY
+C               PCY(SURF=1)=0 ; ALSO SET TO PCYTAR WHICH IS
+C       MODIFIED IF ASTOP NOT AT SURF=1
+C                       NOW ALSO PUY(0)=SAY/(TH(0))
+C       AND                     PUCY(0)=PUCY(1)=SCY/TH(0)
+C
+C       PARAXIAL EQUATIONS:
+C       PU[C]Y'=-CV*P[C]Y*((N'-N)/N')+(N/N')*PU[C]Y
+C       (REFRACTION/REFLECTION)
+C
+C       P[C]Y'=P[C]Y+TH*PU[C]Y'  (TRANSFER)
+C
+C       PI[C]Y=CV*P[C]Y+PU[C]Y          (INCIDENCE ANGLE)
+C
+C       PI[C]Y'=(N/N')*PI[C]Y           (REFLECTION/REFRACTION ANGLE)
+C
+C       REMINDER: SAY,SAX  STORED IN SYSTEM(12) AND SYSTEM(13)
+C                 SCY STORED IN SYSTEM(14) AND SYSTEM(15)
+C                 SCX STORED IN SYSTEM(16) AND SYSTEM(17)
+C                 SCY FANG STORED IN SYSTEM(21) AND SYSTEM(22)
+C                 SCX FANG STORED IN SYSTEM(23) AND SYSTEM(24)
+C               LENS DATA IN ALENS
+C               GLASS DATA IN ALENS AND GLANAM
+C
+C
+C       MACRO STUFF ADDED 3/13/90
+C
+C       THE MAXIMUM NUMBER OF MACRO LINES IS (MAXLIN) NOT 512
+C       MAXLIN IS INITIALIZED IN THE INCLUDE FILE DATMAC.FOR. THIS
+C       FILE IS INCLUDED IN ALL MACRO RELATED SUBROUTINES AND INCLUDES
+C       ALL APPROPRIATE COMMONS FOR MACRO DATA PASSAGE.
+C
+C     THE ARRAY DUMMM(1:MAXSUR) VALUES ARE SET TO TRUE OR FALSE
+C     DEPENDING ON WHETHER A SURFACE IS A DUMMY OR NOT. tHIS IS
+C     DONE IN LNSEOS EACH TIME IT IS CALLED. tHE ARRAY IS NOT WRITTEN
+C     TO DISK BUT IS PASSED IN A COMMON BLOCK VIA DATLEN.FOR
+C     GLOBAL SURFACE VERTEX ARRAY
+C     VERTEX(I,SURF)
+C                       I=1  X (GLOBAL X OF ORIGIN)
+C                       I=2  Y (GLOBAL Y OF ORIGIN)
+C                       I=3  Z (GLOBAL Z OF ORIGIN)
+C                       I=4  LX-L DIR COS X-AXIS
+C                       I=5  MX-M DIR COS X=AXIS
+C                       I=6  NX-N DIR COS X AXIS
+C                       I=7  LY (Y-AXIS)
+C                       I=8  MY ........
+C                       I=9  NY ........
+C                       I=10 LZ (Z-AXIS)
+C                       I=11 MZ ........
+C                       I=12 NZ ........
+
+C
+C       THIS PROGRAM CONSISTS OF A CMD OR MAIN LEVEL AND
+C       A NUMBER OF SUB- LEVELS.
+C
+C       FLAG F1=1 REPRESENTS THE CMD LEVEL OF THE PROGRAM
+C       FLAG F1=0 REPRESENTS NOT THE CMD LEVEL.
+C
+C       FLAG F2=1 REPRESENTS NEW MACRO CREATION
+C       FLAG F2=0 REPRESENTS NOT NEW MACRO CREATION
+C
+C       (OTHER FLAG STATUS COMMENTS WILL GO HERE AS THE
+C       PROGRAM IS DEVELOPED)
+C
+C       INITIALIZE THE RAY-DIRECTION COSINE TRACKING FLAGS
+C       TO +Z DIRECTION, OTHERWISE THE RAYTRACE GIVES INCORRECT
+C       RESULTS.
+C
+C       START THE PROGRAM ALWAYS AT CMD LEVEL. SET FLAG F1
+C
+                                F1=1
+C
+C       AND FLAG F2 (MACRO CREATION) IS SET TO 0
+                                F2=0
+C
+C       FLAG F3 IS INITIALLY SET TO 0. WHEN SET TO 1
+C       THE MACRO EDIT OR MEDIT LEVEL OF THE PROGRAM
+C       IS IN EFFECT. ONLY THE FL COMMAND CAN RESET
+C       FLAG F3 TO ZERO.
+                        F3=0
+C
+C       FLAG F4 WHEN SET MEANS THAT A MACRO IS BEING EXECUTED.
+C       THE INITIAL DEFAULT SETTING FOR F4 IS F4 = 0
+                        F4=0
+C
+C       THE SPECIAL TRACE FLAG TF(NEST) TRACKS STATUS
+C       OF TRACE ON OR OFF IN MACRO EXECUTION AT VARIOUS
+C       NESTING LEVELS.
+C       TF(NEST)=1 IS TRACE ON, TF(NEST)=0 IS TRACE OFF
+C       DEFAULT IS TF(NEST)=0
+C
+                TF(0:20)=0
+C
+C       FLAG F5 TRACKS LENS INPUT MODE WHICH IS INITIALIZED
+C       BY THE 'LENS' COMMAND AND TERMINATED WITH EOS (END OF SUBFILE).
+C       THE DEFAULT VALUE OF F5 IS 0. DURING LENS INPUT F5=1 AND F1=0.
+C
+                F5=0
+C
+C       FLAG F6 TRACKS LENS UPDATES INITIALIZED BY THE 'UPDATE'
+C       COMMAND WITH THE 'LENS' QUALIFIER WORD. THE DEFAULT VALUE OF
+C       F6=0. DURING LENS UPDATING F6=0 AND F1=0.
+C
+                F6=0
+C
+C       FLAG F7 TRACKS SPSRF (SPECIAL SURFACE) INPUT MODE
+C       INITIATED BY THE COMMAND (SPSRF). DEFAULT IS F7=0
+C
+                F7=0
+C
+C       FLAG F8 TRACKS UPDATE SPSRF (SPECIAL SURFACE)
+C       UPDATE MODE BY THE COMMAND (UPDATE SPSRF) DEFAULT VALUE
+C       IS F8=0
+C
+                F8=0
+C
+C       FLAG F9 TRACKS THE SPFIT LEVEL ENTERED BY (SPFIT)
+C       DEFAULT VALUE IS F9=0
+C
+                F9=0
+C
+C       FLAG F10 TRACKS THE CONFIGS INPUT LEVEL ENTERED BY COMMAND
+C       (CONFIGS) ITS DEFAULT VALUE IS 0
+C
+                F10=0
+C
+C       FLAG F11 TRACKS THE CONFIGS UPDATE LEVEL ENTERED BY COMMAND
+C       (UPDATE CONFIGS) ITS DEFAULT VALUE IS 0
+C
+                F11=0
+C
+C
+C       FLAG F12 TRACKS THE CURRENT CONFIGURATION NUMBER
+C       THE STARTING AND DEFAULT VALUE IS 1
+C
+                F12=1
+C
+C       FLAGS F13 AND F14 TRACK THE USAGE OF UPDATE LENS
+C       AND UPDATE SPSRF FROM WITHIN CONFIGS OR UPDATE
+C       CONFIGS AND ARE USED BY QUERRY TO PRINT CORRECT
+C       RESPONSE TO A ? AT THE CONFIGS/UPDATE CONFIGS LEVEL
+C       DEFAULT VALUES ARE BOTH 0
+C
+                F13=0
+                F14=0
+C
+C       FLAG F15 IS SET TO 1 WHEN THE PROCESS OF ACTIVATING
+C       A CONFIGURATION IS BEING PERFORMED. OTHERWISE
+C       ITS DEFAULT VALUE IS 0
+C
+                F15=0
+C
+C       FLAG F16 TRACKS WHETHER OR NOT A MACRO OF THE SAME NAME AS
+C       AN EXISTING MACRO IS TRYING TO BE CREATED BY THE "MACRO"
+C       COMMAND. THE DEFAULT VALUE ID F16=0. IF A MACRO OF THE SAME
+C       NAME DOES EXIST, F16 IS SET TO 1
+C
+                F16=0
+C
+C       FLAG F17 TRACKS THE SPECT OR SPECTRAL ANALYSIS
+C       LEVEL OF THE PROGRAM. IF F17=1 THEN F1 IS = 1 NOT 0.
+C       SPECT HAS AVAILABLE, MANY CMD LEVEL COMMANDS.
+C       AND WE ARE AT THE SPECT SUB-LEVEL OF THE PROGRAM.
+C       THE DEFAULT IS F17=0
+C
+                        F17=0
+C
+C       FLAG F18 TRACKS THE TABLE INPUT LEVEL WITHIN THE SPECT
+C       LEVEL OF THE PROGRAM. IF F18=1 AND F17=1 THEN
+C       AND WE ARE AT THE TABLE SUB-LEVEL OF SPECT.
+C       THE DEFAULT IS F18=0
+C
+                        F18=0
+C
+C       FLAG F19 TRACKS THE EXISTENCE OF TABLE DATA.
+C       THE DEFAULT IS F19=0 FOR NO DATA.
+C
+                        F19=0
+C
+C       FLAG F20 IS AVAILABLE FOR USE
+C
+C       FLAG F21 IS USED TO TELL THE PROGRAM WHEN
+C       REFRACTIVE INDICES SHOULD BE MADE NEGATIVE.
+C       EACH TIME A REFECTIVE SURFACE IS ENCOUNTERED, THE
+C       VALUE OF FLAG F21 IS REVERSED. THE DEFAULT VALUE IS
+C               F21=0
+                        F21=0
+C
+C       AT LENS EOS IN SUBROUTINE LNSEOS, ALL RESOLUTION OF
+C       SIGN OF REFRACTIVE INDICES IS HANDLED AS ONE OF THE
+C       FIRST DUTIES IN THAT SUBROUTINE.
+C
+C       F22
+C       IF F22=0, THE GLASS CATALOG IS NOT REFERENCED. IF
+C       F22=1, A CATALOG LOOKUP IS PERFORMED.
+C       F22 IS ALWAYS SET TO 1 DURING LENS INPUT. AFTER
+C       LENS INPUT OR LENS UPDATE OR CONFIG CHANGE, F22=0
+C       THE STARTING DEFAULT IS F22=0
+C       DURING LENS UPDATE, THE FOLLOWING OPERATIONS
+C       SET F22 TO 1
+C                       ANY CHANGE OF MATERIAL
+C                       ANY SUFACE DELETION OR INSERTION
+C                       ANY CHANGE TO THE REFRACTIVE INDICES
+C                       ANY CHANGE TO THE WAVELENGTHS
+C       LIB GET ALSO SETS F22=1
+C
+                        F22=0
+C
+C       F23 TRACKS IF TYPE OR SURF WAS ENTERED IN THE
+C       SPFIT ROUTINES. IF TYPE IS SET, F23=1,
+C       IF SURF IS SET, F23=2
+C       DEFAULT IS NOT F23=0
+C
+                        F23=0
+C
+C       F24 TRACKS THE PRESENTS OF DATA TO BE FITTED, THAT IS
+C       DATA ACCUMULATED WITH THE PROER COEFFS AND FUNCTIONAL FORM
+C       NO DATA IS F24=0, DATA = F24=1
+C
+                        F24=0
+C
+C       F25 IS SET TO 1 IF FITTED DATA EXISTS TO BE EVALUATED.
+C       IF A FIT IS NOT PERFORMED TO THE POINT THAT COEFS ARE
+C       AVAILABLE FOR EVALUATION, F24=0 (DEFAULT)
+C
+                        F25=0
+C
+C       FLAG F26 IS 1 WHEN A MACRO FUNCTION IS RUNNING
+                        F26=0
+C
+C       FLAG F27 TRACKS IF THE PROGRAM IS IN THE MERIT LEVEL
+C       AND THE UPDATE MERIT (U M) LEVEL
+C       IF F27=0, NOT
+C       IF F27=1, MERIT CREATION LEVEL
+C       IF F27=2, UPDATE MERIT LEVEL
+                        F27=0
+C
+C       FLAG F28 TRACKS THE PROGRAM OPERATION DURING OPTIMIZATION
+C       CALCULATIONS
+C       IF F28=0, NOT
+C       IF F28=1, OPTIMIZATION CALCULATIONS IN PROGRESS
+                        F28=0
+C
+C       F35 IS LIKE F28 BUT ONLY USED WITH INTERNAL CALLS TO ITER
+C       FLAG F35 TRACKS THE PROGRAM OPERATION DURING OPTIMIZATION
+C       CALCULATIONS
+C       IF F35=0, NOT
+C       IF F35=1, OPTIMIZATION CALCULATIONS IN PROGRESS
+                        F35=0
+C
+C       FLAG F29 TRACKS THE VARIABLES LEVEL
+C       AND THE UPDATE VARIABLES LEVEL
+C     IF F29=0 ; NOT
+C     IF F29=1 ; VARIABLES
+C     IF F29=2 ; UPDATE VARIABLES
+                        F29=0
+C
+C       FLAG F30 NOT USED
+                        F30=0
+C
+C       FLAG F31 TRACKS THE PROGRAM OPERATION DURING TOLERANCE
+C       CALCULATIONS
+C       IF F31=0, NOT
+C       IF F31=1, TOLERANCING CALCULATIONS IN PROGRESS
+                        F31=0
+C       FLAG F32 TRACKS THE LENSDRAWING INPUT LEVEL
+C
+C       FLAG 46 IS USED TO TRACK A BLANK MACRO
+C
+C       FLAG F47 IS USED TO FACILITATE CALLING SUBROUTINE
+C       MREA DURING A REPLACEMENT OF A MACRO LINE DURING
+C       THE MEDIT PROCESS.
+C
+C       FLAGS F45,F48 AND F49 ARE USED IN ITF,ILF AND IMF PROCEED
+C       PROCEEDURES. THE MAKE ITF,IMF AND ILF WORK CORRECTLY.
+C       INITIAL VALUES ARE ZERO. FLAG F33 IS USED FOR IPF (PLOT FILE
+C       INITIALIZATION)
+                        F33=0
+                        F45=0
+                        F48=0
+                        F49=0
+C
+C     F34=1 IF VIE PLOTTING IS BEING DONE
+                        F34=0
+C
+C       FLAG F50 TRACKS STATUS TO DETERMINE IF A MESSAGE
+C       RESPONSE IS REQUIRED FOR BLANK LINE INPUT.
+C       DEFAULT IF F50=0
+                        F50=0
+C
+C     FLAG F51 TRACKS TOLERANCE VARIABLE INPUT AND UPDATE (0,1 OR 2)
+C     FLAG F52 TRACKS TOLERANCE COMPENSATOR INPUT AND UPDATE (0,1 OR 2)
+C     FLAG F53 TRACKS TOLERANCE OPERAND INPUT AND UPDATE (0,1 OR 2)
+C     FLAG F54 TRACKS TOLERANCE FOCRIT INPUT AND UPDATE (0,1 OR 2)
+C     FLAG F55 TRACKS OPERATION OF THE TOLERANCE ANALYSIS
+C       F55=0 MEANS NONE BEING DONE
+C       F55=1 MEANS SENSI
+C       F55=2 MEANS INVERSE SENSI
+C       F55=3 MEANS MONTE-CARLO
+                       F51=0
+                       F52=0
+                       F53=0
+                       F54=0
+                       F55=0
+C
+C     FLAGS 57 TO 100 ADDED ON 9/5/92 FOR FUTURE EXPANSION AND SET TO
+C     ZERO HERE
+C     F56 IS 0 IF DEFORMABLE SURFACE DATA HAS NOT BEEN READ FROM DISK
+C     AND ID 1 IF IT ALREADY HAS BEEN
+                        F56=0
+C
+C
+C     FLAG F57 IS 0 IF NO AUTOFUNC FUNCTION IS TO BE EXECUTED, IT IS 1
+C     IF THERE IS AN UNRESOLVED AUTOFUNC FUNCTION
+                        F57=0
+C
+C
+C
+C
+C     FLAG F58 IS 1 IF FANS ARE BEING GENERATED, ELSE F58=0
+C
+                        F58=0
+C
+C
+                        F59=0
+                        F60=0
+                        F61=0
+                        F62=0
+                        F63=0
+                        F64=0
+                        F65=0
+                        F66=0
+                        F67=0
+                        F68=0
+                        F69=0
+                        F70=0
+                        F71=0
+                        F72=0
+                        F73=0
+                        F74=0
+                        F75=0
+                        F76=0
+                        F77=0
+                        F78=0
+                        F79=0
+                        F80=0
+                        F81=0
+                        F82=0
+                        F83=0
+                        F84=0
+                        F85=0
+                        F86=0
+                        F87=0
+                        F88=0
+                        F89=0
+                        F90=0
+                        F91=0
+                        F92=0
+                        F93=0
+                        F94=0
+                        F95=0
+                        F96=0
+                        F97=0
+                        F98=0
+                        F99=0
+                        F100=0
+C
+C
+C       PATCH CODE TO READ HEXAGON CONFIGS RECORDS IS IN UTILITY2.FOR IN THE PRO3 SUBROUTINE, JUST AHEAD OF
+C       THE CALL TO CONTRO
+
+LENO EXCEL FLAG SYSTEM This is used to track if a column is not needed in the config being output.
+
+LENOEX(I) is a logical array. .TRUE. means include the column, .false. means exclude it.
+
+
+I DESIGNMATES
+
+1  = RD
+2  = TH
+3  = MATERIAL
+4  = CC
+5  = AC
+6  = AD
+7  = AE
+8  = AF
+9  = AG
+10 = AH
+11 = AI
+12 = AJ
+13 = AK
+14 = AL
+15 = XD
+16 = YD
+17 = ZD
+18 = TILT TYPE OR DEC ONLY
+19 = ALPHA
+20 = BETA
+21 = GAMMA
+22 = INDEX AT WV1
+23 = INDEX AT WV2
+24 = INDEX AT WV3
+25 = INDEX AT WV4
+26 = INDEX AT WV5
+27 = INDEX AT WV6
+28 = INDEX AT WV7
+29 = INDEX AT WV8
+30 = INDEX AT WV9
+31 = INDEX AT WV10
+32 = GLOBAL XD
+33 = GLOBAL YD
+34 = GLOBAL ZD
+35 = GLOBAL ALPHA
+36 = GLOBAL BETA
+37 = GLOBAL GAMMA
+38 = SPECIAL SURFACE TYPE
+39 TO 134 = SPECIAL SURFACE COEFFICIENTS
+135= SOLVE TYPE
+136= SOLVE DATUM
+137= PIKUP TYPE
+138= PIKUP NW1
+139= PIKUP NW2
+140= PIKUP NW3
+141= PIKUP NW4
+142= PIKUP NW5
+
+C       VARIABLE SUBFILE
+C       VARABL(I,J) WHERE I COUNTS THE NUMBER OF VARIABLE ENTRIES
+C       AND J TAKES ON THE FOLLOWING VALUES AND MEANIINGS.
+C
+C       J=1  > 1 THROUGH 150 AND 250 AND ON FOR ACT., A VARIABLE TYPE DESIGNATOR
+C       J=2  > 1 THROUGH MAXCFG, THE CONFIGURATION DESIGNATOR
+C       J=3  > 0 THROUGH MAXSUR, THE SURFACE NUMBER DESIGNATOR
+C       J=4  > VARIABLE CURRENT VALUE
+C       J=5  > VARIABLE PREVIOUS VALUE
+C       J=6  > LAST VARIABLE CHANGE VALUE
+C       J=7  > WT, THE WEIGHTING FACTOR
+C       J=8  > DINCR (DERIVATIVE CHANGE VALUE)
+C       J=9  > LOW LIMIT VALUE
+C       J=10 > HIGH LIMIT VALUE
+C       J=11 > SEQUENTIAL IDENTIFIER IN THE AUXCFG FILES
+C       J=12 > DEFAULT DINCR FLAG (1=DEFFAULT, 0=USER SET)
+C       J=13 > ORIGINAL VALUE
+C       J=14 > ENTRY NUMBER IN THE CFADD ARRAY THAT REFERS TO
+C              THIS VARIABLE
+C       J=15 > DF2
+C       J=16 > DF4
+C       J=17 > DF5
+C
+C       THE ARRAY OPERND AND OPNAM STORE MERIT INFORMATION
+C       IT IS PASSED IN COMMON IN THE INCLUDE FILE DATSUB.FOR
+C
+C       OPERND(I,J) WHERE I COUNTS THE NUMBER OF OPERAND ENTRIES
+C       AND J TAKES ON THE FOLLOWING VALUES AND MEANIINGS.
+C
+C       J=1  > 1 THROUGH 10, THE NUMBER OF THE FUNCTION IN WHICH
+C               THE ACTUAL OPERAND IS CALCULATED (COMMAND WORD)
+C         (0 IS PREDEFINED OPERAND)
+C
+C       J=2  > TARGET VALUE OF THE OPERAND (NUMERIC WORD #1)
+C       J=3  > OPERAND ORIGINAL VALUE
+C       J=4  > OPERAND CURRENT VALUE
+C       J=5  > OPERAND PREVIOUS VALUE
+C       J=6  > LAST OPERAND CHANGE VALUE (CURRENT-PREVIOUS)
+C       J=7  > WT, THE WEIGHTING FACTOR DURING OPTIMIZATION (NUMERIC WORD #2)
+C
+C       J=8  > NUMBER OF THE GENERAL PURPOSE REGISTER CONTAINING
+C               THE ACTUAL OPERAND VALUE AS RETURNED FROM THE
+C               CALCULATING FUNCTION (NUMERIC WORD #3) (VALUES 1 TO 300)
+C               (A DEFAULT ENTRY HERE CAUSES THE ACCUMULATOR TO BE USED)
+C       FOR PREDEFINED OPERAND, IT IS THE (I) INPUT VALUE
+C
+C       J=9  > OPTIONAL NW1 FOR THE FUNCTION (USING NSUB) (NUMERIC WORD #4)
+C       J=10 > OPTIONAL NW2 FOR THE FUNCTION (USING NSUB) (NUMERIC WORD #5)
+C     FOR PREDEFINED OPERANDS J=9 AND J=10 ARE THE (J) AND (K) INPUT VALUES
+C       J=11 > DEFAULT FLAG FOR NW1
+C       J=12 > DEFAULT FLAG FOR NW2
+C       J=13 > COR MODE 1=COR, 0=BYP, BLO,GTE=-2, BHI,LTE=+2, HLD=10
+C       J=14 > SQUARE ROOT OF WEIGHT TIMES (CURRENT VAL-TARGET))
+C       J=15 > 0 BEFORE THE FIRST CALCULATION OF OPERAND VALUES
+C              1 AFTER THE FIRST CALULATION
+C       J=16 > CFG # FOR PREDEFINED OPERANDS (NW3)
+C       J=17 > CODE FOR THE PREDEFINED OPERANDS
+C       J=18 > DEFAULT FLAG FOR W3 = DBLE(DF3)
+C       J=19 > 0 IF OP CALCULABLE, 1 IF NOT
+C       J=20 > RESERVED FOR EXPANSION
+C             1=X
+C             2=Y
+C             3=Z
+C             4=L
+C             5=M
+C             6=N
+C             7=DX
+C             8=DY
+C             9=DR
+C            10=DXA
+C            11=DYA
+C            12=DRA
+C            13=XANG
+C            14=YANG
+C            15=OPL
+C            16=OPD
+C            17=OPDW
+C            18=LOLD
+C            19=MOLD
+C            20=NOLD
+C            21=LEN
+C            22=AII
+C            23=AIP
+C            24=LN
+C            25=MN
+C            26=NN
+C            27=PXPX
+C            28=PXPY
+C            29=PYPX
+C            30=PYPY
+C            31=PXAPX
+C            32=PXAPY
+C            33=PYAPX
+C            34=PYAPY
+C            35=DXDX
+C            36=DXDY
+C            37=DYDX
+C            38=DYDY
+C            39=DXADX
+C            40=DXADY
+C            41=DYADX
+C            42=DYADY
+C            43=XREF
+C            44=YREF
+C            45=ZREF
+C            46=LREF
+C            47=MREF
+C            48=NREF
+C            49=LREFOL
+C            50=MREFOL
+C            51=NREFOL
+C            52=IREF
+C            53=IPREF
+C            54=XAREF
+C            55=YAREF
+C            56=LNREF
+C            57=MNREF
+C            58=NNREF
+C            59=GLX
+C            60=GLY
+C            61=GLZ
+C            62=GLL
+C            63=GLM
+C            64=GLN
+C            65=GLLOLD
+C            66=GLMOLD
+C            67=GLNOLD
+C            68=LENREF
+C            69=OPLREF
+C            70=RD
+C            71=CV
+C            72=TH
+C            73=CC
+C            74=AC
+C            75=AD
+C            76=AE
+C            77=AF
+C            78=AG
+C            79=RDTOR
+C            80=CVTOR
+C            81=CCTOR
+C            82=ADTOR
+C            83=AETOR
+C            84=AFTOR
+C            85=AGTOR
+C            86=ALPHA
+C            87=BETA
+C            88=GAMMA
+C            89=VNUM
+C            90=PARTL
+C            91=INDEX
+C            92=XD
+C            93=YD
+C            94=XVERT
+C            95=YVERT
+C            96=ZVERT
+C            97=LXVERT
+C            98=MXVERT
+C            99=NXVERT
+C           100=LYVERT
+C           101=MYVERT
+C           102=NYVERT
+C           103=LZVERT
+C           104=MZVERT
+C           105=NZVERT
+C           106=LENGTH
+C           106=OAL
+C           107=MLENGTH
+C           107=OPTLEN
+C           108=ET
+C           108=ETY
+C           109=ETX
+C           110=SHAPEFAC
+C           111 TO 206 = C1 THROUGH C96
+C           207=PWRY
+C           208=PWRX
+C           209=FLCLTHX
+C           210=FLCLTH OR FLCLTHY
+C           211=PY
+C           212=PX
+C           213=PCY
+C           214=PCX
+C           215=PUY
+C           216=PUX
+C           217=PUCY
+C           218=PUCX
+C           219=PIY
+C           220=PIX
+C           221=PICY
+C           222=PICX
+C           223=PIYP
+C           224=PIXP
+C           225=PICYP
+C           226=PICXP
+C           227=PACY
+C           228=PACX
+C           229=PLCY
+C           230=PLCX
+C           231=SACY
+C           232=SACX
+C           233=SLCY
+C           234=SLCX
+C           235=IMDISX
+C           236=IMDISY
+C           237=CENTX
+C           238=CENTY
+C           239=RMSX
+C           240=RMSY
+C           241=RMS
+C           242=RSSX
+C           243=RSSY
+C           244=RSS
+C           245=RMSOPD
+C           246=ZERN37
+C           247=MAGX
+C           248=MAGY
+C           249=MAGXOR
+C           250=MAGYOR
+C           251=FFLX
+C           252=FFLY
+C           253=BFLX
+C           254=BFLY
+C           255=FFNX
+C           256=FFNY
+C           257=BFNX
+C           258=BFNY
+C           259=EFLX
+C           260=EFLY
+C           261=ENDIAX
+C           262=ENDIAY
+C           263=EXDIAX
+C           264=EXDIAY
+C           265=ENPOSX
+C           266=ENPOSY
+C           267=ENPOSZ
+C           268=EXPOSX
+C           269=EXPOSY
+C           270=EXPOSZ
+C           271=FNUMX
+C           272=FNUMY
+C           273=OBFNUMX
+C           274=OBFNUMY
+C           275=ENPDIAX
+C           276=ENPDIAY
+C           277=EXPDIAX
+C           278=EXPDIAY
+C           279=PUPDIAX
+C           280=PUPDIAY
+C           281=PUPDISX
+C           282=PUPDISY
+C           283=CHFIMX
+C           284=CHFIMY
+C           285=GPX
+C           286=GPY
+C           287=GPUX
+C           288=GPUY
+C           289=GPCX
+C           290=GPCY
+C           291=GPUCX
+C           292=GPUCY
+C           293=DIST
+C           294=XFOC
+C           295=YFOC
+C           296=AST
+C           297=SA3
+C           298=XSA3
+C           299=CMA3
+C           300=XCMA3
+C           301=AST3
+C           302=XAST3
+C           303=DIS3
+C           304=XDIS3
+C           305=PTZ3
+C           306=XPTZ3
+C           307=SA5
+C           308=XSA5
+C           309=CMA5
+C           310=XCMA5
+C           311=AST5
+C           312=XAST5
+C           313=DIS5
+C           314=XDIS5
+C           315=PTZ5
+C           316=XPTZ5
+C           317=TOBSA
+C           318=XTOBSA
+C           319=SOBSA
+C           320=XSOBSA
+C           321=ELCMA
+C           322=XELCMA
+C           323=TAS
+C           324=XTAS
+C           325=SAS
+C           326=XSAS
+C           327=SA7
+C           328=XSA7
+C           329=SA3P
+C           330=XSA3P
+C           331=CMA3P
+C           332=XCMA3P
+C           333=AST3P
+C           334=XAST3P
+C           335=DIS3P
+C           336=XDIS3P
+C           337=PTZ3P
+C           338=XPTZ3P
+C           339=SA5P
+C           340=XSA5P
+C           341=CMA3P
+C           342=XCMA3P
+C           343=AST5P
+C           344=XAST5P
+C           345=DIS5P
+C           346=XDIS5P
+C           347=PTZ5P
+C           348=XPTZ5P
+C           349=TOBSAP
+C           350=XTOBSAP
+C           351=SOBSAP
+C           352=XSOBSAP
+C           353=ELCMAP
+C           354=XELCMAP
+C           355=TASP
+C           356=XTASP
+C           357=SASP
+C           358=XSASP
+C           359=SA7P
+C           360=XSA7P
+C           361=SA3S
+C           362=XSA3S
+C           363=CMA3S
+C           364=XCMA3S
+C           365=AST3S
+C           366=XAST3S
+C           367=DIS3S
+C           368=XDIS3S
+C           369=PTZ3S
+C           370=XPTZ3S
+C           371=SA5S
+C           372=XSA5S
+C           373=CMA5S
+C           374=XCMA5S
+C           375=AST5S
+C           376=XAST5S
+C           377=DIS5S
+C           378=XDIS5S
+C           379=PTZ5S
+C           380=XPTZ5S
+C           381=TOBSAS
+C           382=XTOBSAS
+C           383=SOBSAS
+C           384=XSOBSAS
+C           385=ELCMAS
+C           386=XELCMAS
+C           387=TASS
+C           388=XTASS
+C           389=SASS
+C           390=XSASS
+C           391=SA7S
+C           392=XSA7S
+C           393=SA5I
+C           394=XSA5I
+C           395=CMA5I
+C           396=XCMA5I
+C           397=AST5I
+C           398=XAST5I
+C           399=DIS5I
+C           400=XDIS5I
+C           401=PTZ5I
+C           402=XPTZ5I
+C           403=TOBSAI
+C           404=XTOBSAI
+C           405=SOBSAI
+C           406=XSOBSAI
+C           407=ELCMAI
+C           408=XELCMAI
+C           409=TASI
+C           410=XTASI
+C           411=SASI
+C           412=XSASI
+C           413=SA7I
+C           414=XSA7I
+C           415=PSA3
+C           416=XPSA3
+C           417=PCMA3
+C           418=XPCMA3
+C           419=PAST3
+C           420=XPAST3
+C           421=PDIS3
+C           422=XPDIS3
+C           423=PPTZ3
+C           424=XPPTZ3
+C           425=PSA3P
+C           426=XPSA3P
+C           427=PCMA3P
+C           428=XPCMA3P
+C           429=PAST3P
+C           430=XPAST3P
+C           431=PDIS3P
+C           432=XPDIS3P
+C           433=PPTZ3P
+C           434=XPPTZ3P
+C           435=PSA3S
+C           436=XPSA3S
+C           437=PCMA3S
+C           438=XPCMA3S
+C           439=PAST3S
+C           440=XPAST3S
+C           441=PDIS3S
+C           442=XPDIS3S
+C           443=PPTZ3S
+C           444=XPPTZ3S
+C           445=PTZCV
+C           446=XPTZCV
+C           447=AH
+C           448=AI
+C           449=AJ
+C           450=AK
+C           451=AL
+C           452='GBRADX'
+C           453='GBRADY'
+C           454='GBDISX'
+C           455='GBDISY'
+C           456='GBRCVX'
+C           457='GBRCVY'
+C           458='GBWAISTX'
+C           459='GBWAISTY'
+C           460='MGOTF'
+C           461='PGOTF'
+C           462='MDOTF'
+C           463='PDOTF'
+C           460='GOTFM'
+C           461='GOTFP'
+C           462='DOTFM'
+C           463='DOTFP'
+C           464='RED'
+C           465='REDCEN'
+C           466='FISHDIST'
+C           467='ZD'
+C           468='SYMX'
+C           469='SYMY'
+C           470='ASYMX'
+C           471='ASYMY'
+C           472='PACM'
+C           473='PACZ'
+C           474='SACM'
+C           475='SACZ'
+C           476='PLCM'
+C           477='PLCZ'
+C           478='SLCM'
+C           479='SLCZ'
+C           480='CTSX'
+C           481='CTSY'
+C           482='SCEX'
+C           483='SCEY'
+C           484='GREYS'
+C           485='PIVX'
+C           486='PIVY'
+C           487='PIVZ'
+C           488='N1'
+C           489='N2'
+C           490='N3'
+C           491='N4'
+C           492='N5'
+C           493='N6'
+C           494='N7'
+C           495='N8'
+C           496='N9'
+C           497='N10'
+C           498='ABBE'
+C           499='DPART'
+C           500='CLPX'
+C           501='CLPY'
+C           502='GDX'
+C           503='GDY'
+C           504='GDZ'
+C           505='GALPHA'
+C           506='GBETA'
+C           507='GGAMMA'
+C           508='GRS'
+C           509='WEIGHT'
+C           510='DMINUSD'
+C           511='COST'
+C           512='MACOPT'
+C           513='RMSYX'
+C           514='CLEARX'
+C           515='CLEARY'
+C           801='ACT'

@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for HTML5 for Linux version 5.6.0">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<style type="text/css">
+@import url('https://themes.googleusercontent.com/fonts/css?kit=2bPVbcwPE_zMKzbiwGlcaw');ol{margin:0;padding:0}table td,table th{padding:0}.c14{border-right-style:solid;padding:0pt 5.4pt 0pt 5.2pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:1pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:1pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:257.9pt;border-top-color:#000000;border-bottom-style:solid}.c9{border-right-style:solid;padding:0pt 5.4pt 0pt 5.2pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:1pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:1pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:108pt;border-top-color:#000000;border-bottom-style:solid}.c4{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Times New Roman";font-style:normal}.c6{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Palatino";font-style:normal}.c0{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:9pt;font-family:"Times New Roman";font-style:normal}.c17{font-size:9pt;font-family:"Times New Roman";font-style:italic;color:#000000;font-weight:700}.c16{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:center}.c18{color:#000000;font-weight:700;font-size:9pt;font-family:"Times New Roman"}.c8{margin-left:auto;border-spacing:0;border-collapse:collapse;margin-right:auto}.c2{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:left}.c11{font-size:9pt;font-family:"Times New Roman";color:#008000;font-weight:700}.c10{font-size:9pt;font-family:"Times New Roman";color:#0000ff;font-weight:700}.c7{font-size:9pt;font-family:"Times New Roman";color:#ff0000;font-weight:700}.c21{vertical-align:sub;font-size:15pt;font-family:"Times New Roman";font-weight:400}.c5{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:justify}.c3{font-size:9pt;font-family:"Times New Roman";font-weight:400}.c15{font-size:9pt;font-family:"Noto Sans Symbols";font-weight:400}.c24{font-size:9pt;font-family:"Times New Roman";font-weight:700}.c25{background-color:#ffffff;max-width:504pt;padding:36pt 36pt 53.2pt 72pt}.c13{text-decoration:none;vertical-align:baseline;font-style:normal}.c23{orphans:2;widows:2}.c19{text-decoration:none;vertical-align:baseline}.c1{height:0pt}.c20{color:#0000ff}.c12{height:12pt}.c22{font-style:italic}.title{padding-top:24pt;color:#000000;font-weight:700;font-size:36pt;padding-bottom:6pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:18pt;color:#666666;font-size:24pt;padding-bottom:4pt;font-family:"Georgia";line-height:1.0;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:12pt;font-family:"Times New Roman"}p{margin:0;color:#000000;font-size:12pt;font-family:"Times New Roman"}h1{padding-top:24pt;color:#000000;font-weight:700;font-size:24pt;padding-bottom:6pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-weight:700;font-size:18pt;padding-bottom:4pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:14pt;color:#000000;font-weight:700;font-size:14pt;padding-bottom:4pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:12pt;color:#000000;font-weight:700;font-size:12pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:11pt;color:#000000;font-weight:700;font-size:11pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:10pt;color:#000000;font-weight:700;font-size:10pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}
+</style>
+<title></title>
+</head>
+<body class="c25">
+<p class="c2 c12"></p>
+<p class="c5"><span class="c10">CONFIGS-GENERAL
+INFORMATION</span><span class="c3">&nbsp;- The alternate
+configurations (CONFIGS) section describes the establishment and
+manipulation of alternate versions or configurations of the lens
+database. These alternate configurations are stored with the lens
+database. Some of the commands described here are CMD level
+commands issued at the CMD level. These CMD level commands are
+described here instead of in the CMD section because they act to
+modify, or in other ways manipulate, these alternate
+configurations. The other commands described here are CONFIGS input
+level and UPDATE CONFIGS level commands which can only be issued at
+one or both of these levels. The alternate configuration database
+provides a way for surface and non-surface dependent lens parameter
+values as well as special surface parameter values to be set to
+values different from those values established in the main lens
+database and the main special surface database . The lens database
+is described in the LENS manual section. Special surface database
+is described in the SPECIAL SURFACES manual section.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">THE CONFIGS
+DATABASE</span><span class="c3">&nbsp;- The alternate configuration
+(CONFIGS) database consists of a sequence of UPDATE LENS, UPDATE
+SPSRF and CMD level commands which are &nbsp;stored in memory and
+on disk with the "current lens" data. There can be up to 75
+configurations defined in a lens database including the regular
+lens database which is always the main configuration or
+configuration #1. This means there can be 74 alternate
+configurations. In each alternate configuration, there can be up to
+2000 individual command entries.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">CURRENT AND PERMANENT
+LENS</span><span class="c24">&nbsp;-</span> <span class="c3">There
+is always a "current lens" which was described in the LENS section.
+There is also always a lens called the "permanent lens". As long as
+there are no alternate configurations defined, the "permanent lens"
+is identical to the "current lens". When alternate configurations
+are defined, the "current lens" is only identical to the "permanent
+lens" when the main configuration, designated as CFG 1, is the
+active configuration. If a configuration other than this main
+configuration becomes the active configuration, then the UPDATE
+LENS, &nbsp;UPDATE SPSRF and CMD level commands, which are stored
+in the alternate configuration database, are applied to the
+"permanent lens" in order to generate a new "current lens". This
+new "current lens" is no longer identical to the "permanent lens"
+but is the result of the commands stored in the alternate
+configuration database acting or operating upon the "permanent
+lens". The order in which the alternate configuration commands are
+applied to the "permanent" lens in order to create the new
+"current" lens is:</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update
+Lens level commands are applied,</span></p>
+<p class="c5"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then
+all Update Special Surface level commands are applied,</span></p>
+<p class="c5"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and
+finally, all CMD level commands are applied.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">CREATING A NEW CONFIGS
+DATABASE</span></p>
+<p class="c16 c12"></p>
+<p class="c5"><span class="c7">CONFIGS</span><span class=
+"c3">&nbsp;- The "CONFIGS" command causes the program to leave the
+CMD level and enter the CONFIGS input level. The alternate
+configuration database is wiped clean and is ready for new input.
+Between "CONFIGS" and "EOS" or "END", any CONFIGS input level
+command may be entered. The "CONFIGS" command also wipes clean any
+optimization and tolerance definitions which were in effect prior
+its issuance.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">EOS</span><span class=
+"c3">&nbsp;or</span> <span class="c7">END</span><span class=
+"c3">&nbsp;- The "EOS" or "END" command, issued from the CONFIGS
+level, causes the program to return to the CMD level. The alternate
+configuration database is left in memory and is ready for
+analysis.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">MODIFYING A CONFIGS
+DATABASE</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">UPDATE CONFIGS</span><span class=
+"c3">&nbsp;or</span> <span class="c7">U CF</span><span class=
+"c3">&nbsp;- The "UPDATE CONFIGS" command, or its abbreviated form
+"U CF", causes the program to leave the CMD level and enter the
+UPDATE CONFIGS level. The alternate configuration database is
+opened and is ready for modification. Between "UPDATE CONFIGS" or
+"U CF" and "EOS" or "END", any UPDATE CONFIGS level command may be
+entered.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">EOS</span><span class=
+"c3">&nbsp;or</span> <span class="c7">END</span><span class=
+"c3">&nbsp;- The "EOS" or "END" command, issued from the UPDATE
+CONFIGS level, causes the program to return to the CMD level. The
+alternate configuration database is left in memory and is ready for
+analysis.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">CONFIGS AND UPDATE CONFIGS SPECIFIC
+COMMANDS</span></p>
+<p class="c12 c16"></p>
+<p class="c5"><span class="c7">CFG , i</span><span class=
+"c3">&nbsp;- The "CFG" command, issued from the CONFIGS or UPDATE
+CONFIGS level, designates that configuration "i" will be the
+configuration to which all the following CONFIGS or UPDATE CONFIGS
+commands are to be applied. Configuration "i" remains the
+configuration for input until another CFG command is entered or
+until the CONFIGS or UPDATE CONFIGS levels are exited via the "EOS"
+or "END" command. Valid values for "i" range from "2" to "75". If
+this command is not issued, all alternate configuration input will
+be made to configuration number 2.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">CFG</span><span class="c3">&nbsp;-
+The "CFG" command, issued with no numeric input, simply causes the
+current configuration number to be displayed.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c5 c12"></p>
+<p class="c2"><span class="c10">HOW COMMANDS WITHIN CONFIGS
+WORK</span><span class="c3">&nbsp;- After the CONFIGS or the UPDATE
+CONFIGS level has been entered and the configuration number for
+input has been designated, either by way of the "CFG , i" command
+or by default, then specifying changes to the main lens database
+and/or the special surface database is trivial. All that need be
+done is to enter selected CMD, UPDATE LENS or UPDATE SPSRF level
+commands in exactly the same way as would have been done from
+outside the CONFIGS level. These commands will be stored and later
+executed when configurations are switched at the CMD
+level.</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class="c10">EXAMPLES</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c10">EXAMPLE 1 (A CMD LEVEL
+CHANGE)</span><span class="c3">&nbsp;- The current lens is set up
+in mode FOCAL. It is desired to define configuration 3 as mode
+AFOCAL. The following commands are used:</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">UPDATE
+CONFIGS</span><span class="c3">&nbsp;(or</span> <span class=
+"c11">CONFIGS</span><span class="c3">)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CFG
+, 3</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MODE
+AFOCAL</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to UPDATE CONFIGS)</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c0">The current lens database now has an
+alternate configuration number 3 attached to it. Using the CMD
+level command "CFG , 3" switches the lens into configuration 3. The
+CMD level command "MODE" will display the message "AFOCAL".
+Switching back to the main configuration with the CMD level command
+"CFG , 1" returns the lens to configuration number 1. The CMD level
+command "MODE" will now display the message "FOCAL" as
+expected.</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c10">EXAMPLE 2 (AN UPDATE LENS LEVEL
+CHANGE)</span><span class="c3">&nbsp;- The current lens has been
+set up and surface number 5 has a radius of 234.567 lens units. It
+is desired to have the radius of this surface be 500.00 lens units
+in configuration 2. The command sequence will be:</span></p>
+<p class="c5 c12"></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">UPDATE
+CONFIGS</span><span class="c3">&nbsp;(or CONFIGS)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CFG
+, 2</span><span class="c3">&nbsp;(this is optional since CFG 2 is
+the default)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">UPDATE
+LENS</span><span class="c3">&nbsp;(or</span> <span class="c11">U
+L</span><span class="c3">)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CHG,5</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RD
+, 500</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "U L" )</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "UPDATE CONFIGS")</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c0">The current lens database now has an
+alternate configuration number 2 attached to it. Using the CMD
+level command "CFG , 2" switches the lens into configuration 2. The
+CMD level command "RTG , 5" will display the radius, thickness and
+glass at surface 5 with radius = 500. Switching back to the main
+configuration with the CMD level command "CFG , 1" returns the lens
+to configuration number 1. The CMD level command "RTG , 5" will now
+display the radius, thickness and glass at surface 5 with radius =
+234.567.</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c10">EXAMPLE 3 (AN UPDATE SPSRF LEVEL
+CHANGE)</span><span class="c3 c20">&nbsp;</span><span class="c3">-
+The current lens has been set up and surface number 6 has special
+surface definition assigned to it. Coefficient C2 = 2.34D-5. It is
+desired to have the C2 coefficient of this surface be = 0 in
+configuration 10. The command sequence will be:</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">UPDATE
+CONFIGS</span><span class="c3">&nbsp;(or</span> <span class=
+"c11">CONFIGS</span><span class="c3">)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CFG
+, 10</span></p>
+<p class="c2"><span class=
+"c11">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE
+SPSRF</span><span class="c3">&nbsp;(or</span> <span class="c11">U
+SP</span><span class="c3">)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">C2
+, 6 , 0</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "U SP")</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "UPDATE CONFIGS")</span></p>
+<p class="c2 c12"></p>
+<p class="c5"><span class="c3">The current lens database now has an
+alternate configuration number 10 attached to it. Using the CMD
+level command "CFG , 10" switches the lens into configuration 10.
+The CMD level command "PRSPR , 6" will display coefficient values
+at surface 6. C2 will be = 0. Switching back to the main
+configuration with the CMD level command "CFG , 1" returns the lens
+to configuration number 1. The CMD level command "PRSPR , 6" will
+now display the coefficient values at surface 6. C2 will be back to
+2.34D-5.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c2 c12"></p>
+<p class="c2"><span class="c10">EXAMPLE 4 (EXAMPLES 1, 2 AND 3 ALL
+TOGETHER)</span><span class="c3">&nbsp;- All of the changes could
+have been done at once with the following command
+sequence:</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">UPDATE
+CONFIGS</span><span class="c3">&nbsp;(or</span> <span class=
+"c11">CONFIGS</span><span class="c3">)</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CFG
+, 3</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MODE
+AFOCAL</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CFG
+, 2</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE
+LENS</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CHG,5</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RD
+, 500</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "U L")</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">CFG
+, 10</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UPDATE
+SPSRF</span></p>
+<p class="c2"><span class=
+"c11 c13">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C2
+, 6 , 0</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "U SP"</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c11">EOS</span><span class="c3">&nbsp;or</span>
+<span class="c11">END</span><span class="c3">&nbsp;(This "EOS" or
+"END" refers to "UPDATE CONFIGS)</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class="c10">ALLOWED COMMANDS WITHIN
+CONFIGS</span><span class="c3">&nbsp;- All UPDATE LENS commands
+(except "INS" and "DEL") &nbsp;and all of the UPDATE SPSRF are
+valid for use in defining alternate configurations. Consult the
+LENS and SPECIAL SURFACES manual sections for command syntax. The
+following CMD level commands are also valid within the CONFIGS or
+UPDATE CONFIGS level:</span></p>
+<p class="c2 c12"></p>
+<p class="c2"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MODE
+( FOCAL, UFOCAL, AFOCAL or UAFOCAL),</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;THERM
+(SHAPE, THICK, SPACE, GLASS, GAS, or specific gas names) , i , j
+,</span> <span class="c15">Δ</span><span class="c3">T ,
+coeff,</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PRES
+(GAS, or specific gas names) , i , j ,</span> <span class=
+"c15">Δ</span><span class="c3">P , coeff,</span></p>
+<p class="c2"><span class=
+"c3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPTWT
+,</span> <span class="c15">λ</span><span class=
+"c21">1</span><span class="c3">,</span> <span class=
+"c15">λ</span><span class="c21">2</span><span class=
+"c3">&nbsp;,</span> <span class="c15">λ</span><span class=
+"c21">3</span><span class="c3">&nbsp;,</span> <span class=
+"c15">λ</span><span class="c21">4</span><span class=
+"c3">&nbsp;,</span> <span class="c15">λ</span><span class=
+"c21">5</span><span class="c3">&nbsp; and SPTWT2 ,</span>
+<span class="c15">λ</span><span class="c21">6</span><span class=
+"c3">,</span> <span class="c15">λ</span><span class=
+"c21">7</span><span class="c3">&nbsp;,</span> <span class=
+"c15">λ</span><span class="c21">8</span><span class=
+"c3">&nbsp;,</span> <span class="c15">λ</span><span class=
+"c21">9</span><span class="c3">&nbsp;,</span> <span class=
+"c15">λ</span><span class="c21">10,</span></p>
+<p class="c2"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and
+the first order f-number, exit pupil radius and magnification hold
+commands:</span></p>
+<p class="c2"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FNBX,
+FNBX HLD, FNBY, FNBY HLD, ERX, ERX HLD, ERY, ERY HLD, MAGX,
+MAGX,</span></p>
+<p class="c2"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HLD,
+MAGY, MAGY HLD, FLDS MAX, FLDS FRA, FLDS POS, FLDS ANG, FLDS
+and</span></p>
+<p class="c2"><span class=
+"c0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPSRF
+(ON or OFF) .,i</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">CMD LEVEL CONFIGS
+MANIPULATION</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">CONFIGS DISPLAY COMMANDS</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">CF , i</span><span class=
+"c3">&nbsp;- The "CF" command, when issued at the CMD level, causes
+the "i"th configuration data to be displayed. If "i" is not
+explicitly entered, all of the alternate configuration data from
+all currently defined configurations will be displayed. Each item
+in the alternate configuration database is numbered sequentially
+within each configuration. These sequential position values are the
+first items listed in this data display. Should an item need to be
+removed from the alternate configuration database, the item is
+referred to by the configuration number and entry
+number.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">REMOVE , i , j ,
+k</span><span class="c3">&nbsp;- The "REMOVE" command can be used
+to manually delete alternate configuration data items number "j"
+through the "k" in configuration number "I".</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">DELCFG , i</span><span class=
+"c3">&nbsp;- The "DELCFG" command deletes the "i"th configuration
+from the current configuration database attached to the
+lens.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">CFG , i</span><span class=
+"c3">&nbsp;- The "CFG" command, when issued at the CMD level,
+causes the "i"th configuration to become the "current"
+configuration represented as a new "current" lens. Only the
+"current" configuration in the form of the "current" lens can be
+used in ray trace or other forms of analysis.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">DEZOOM , i</span><span class=
+"c3">&nbsp;- The "DEZOOM" command, when issued at the CMD level,
+causes the "i"th configuration to become the "permanent lens" and
+the "current" lens. All other alternate configuration data is
+deleted! The "DEZOOM" command also wipes clean any optimization and
+tolerance definitions which were in effect prior its
+issuance.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">AUTOMATIC DATA
+MANAGEMENT</span><span class="c3">&nbsp;- Many items which can be
+made part of an alternate configuration definition are mutually
+exclusive. A "TH" definition is mutually exclusive to a "PY" or a
+"PIKUP TH" definition. Mutually exclusive items will be
+automatically deleted with the last item entered taking precedence.
+The exceptions to this rule are the "THERM" and "PRES" commands.
+Since the user may wish to enter several identical "THERM" and
+"PRES" commands in order to produce a specific lens configuration,
+no automatic removal of "THERM" or "PRES" commands will be
+performed. Only through the use of the "REMOVE" command can
+individual "THERM" or "PRES" commands be removed from alternate
+configuration data.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c5 c12"></p>
+<p class="c5"><span class="c10">HEXAGON/ACCOS-V
+INPUT</span><span class="c17">&nbsp;-</span> <span class=
+"c3">Between the issuance of a CONFIGS or UPDATE CONFIGS command
+and the EOS or END command, the following HEXAGON/ACCOS-V commands
+may be entered. They are automatically converted into regular
+program commands.</span></p>
+<p class="c5 c12"></p>
+<p class="c5"><span class="c7">(parameter name) , j ,
+v</span><span class="c3">&nbsp;- The "(parameter name)" command
+(from the following table), when issued at the configs level,
+causes the parameter on the "j"th surface to take on the value
+"v".</span></p>
+<p class="c5 c12"></p>
+<a id="t.52218f843dd17b5076b2f54dcb1a485358aeaa81"></a><a id=
+"t.0"></a>
+<table class="c8">
+<tbody>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c18 c13">parameter name</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c18 c13">parameter</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">CV</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">profile curvature</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">RD</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">profile radius</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">CVR</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">toric curvature</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">RDR</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">toric radius</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">CC</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">conic constant</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">XD</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">x-decenter</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">YD</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">y-decenter</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">ALPHA</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">alpha tilt</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">BETA</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">beta tilt</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">GAMMA</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">gamma tilt</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">AD</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">4th order aspheric
+coefficient</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">AE</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">6th order aspheric
+coefficient</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">AF</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">8th order aspheric
+coefficient</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">AG</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">10th order aspheric
+coefficient</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">RN</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">refractive index (this results in a
+null input)</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">DF</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">dispersion factor (this results in a
+null input)</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">TH</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">axial thickness</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">TEMP</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c2"><span class="c0">medium temperature (this results in
+a null input)</span></p>
+</td>
+</tr>
+<tr class="c1">
+<td class="c9" colspan="1" rowspan="1">
+<p class="c5"><span class="c0">GLALPHA</span></p>
+</td>
+<td class="c14" colspan="1" rowspan="1">
+<p class="c5"><span class="c0">medium thermal expansion coefficient
+(this results in a null input)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="c5 c12"></p>
+<p class="c5 c12"></p>
+<div>
+<p class="c16 c12 c23"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for HTML5 for Linux version 5.6.0">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<style type="text/css">
+@import url('https://themes.googleusercontent.com/fonts/css?kit=hh9VFM0qOK4TrLidDd__UvesZW2xOQ-xsNqO47m55DA');ol{margin:0;padding:0}table td,table th{padding:0}.c2{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Times New Roman";font-style:normal}.c0{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:left;height:12pt}.c3{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:justify;height:12pt}.c18{vertical-align:super;font-size:15pt;font-family:"Times New Roman";font-weight:400}.c13{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:center}.c17{vertical-align:sub;font-size:15pt;font-family:"Times New Roman";font-weight:400}.c5{color:#000000;text-decoration:none;vertical-align:baseline;font-style:italic}.c7{font-size:9pt;font-family:"Noto Sans Symbols";color:#ff0000;font-weight:700}.c9{font-size:9pt;font-family:"Times New Roman";color:#ff0000;font-weight:700}.c8{font-size:9pt;font-family:"Times New Roman";color:#008000;font-weight:700}.c4{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:justify}.c6{color:#000000;text-decoration:none;vertical-align:baseline;font-style:normal}.c12{text-decoration:none;vertical-align:baseline;font-style:normal}.c20{background-color:#ffffff;max-width:504pt;padding:36pt 36pt 53.2pt 72pt}.c23{font-weight:400;font-size:12pt;font-family:"Book Antiqua"}.c1{font-size:9pt;font-family:"Times New Roman";font-weight:400}.c11{font-size:9pt;font-family:"Noto Sans Symbols";font-weight:400}.c16{font-size:9pt;font-family:"Times New Roman";font-weight:700}.c21{orphans:2;widows:2}.c24{color:#008000}.c10{color:#ff0000}.c14{height:12pt}.c15{font-style:italic}.c22{color:#000000}.c19{color:#0000ff}.title{padding-top:24pt;color:#000000;font-weight:700;font-size:36pt;padding-bottom:6pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:18pt;color:#666666;font-size:24pt;padding-bottom:4pt;font-family:"Georgia";line-height:1.0;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:12pt;font-family:"Times New Roman"}p{margin:0;color:#000000;font-size:12pt;font-family:"Times New Roman"}h1{padding-top:24pt;color:#000000;font-weight:700;font-size:24pt;padding-bottom:6pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-weight:700;font-size:18pt;padding-bottom:4pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:14pt;color:#000000;font-weight:700;font-size:14pt;padding-bottom:4pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:12pt;color:#000000;font-weight:700;font-size:12pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:11pt;color:#000000;font-weight:700;font-size:11pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:10pt;color:#000000;font-weight:700;font-size:10pt;padding-bottom:2pt;font-family:"Times New Roman";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}
+</style>
+<title></title>
+</head>
+<body class="c20">
+<p class="c0"></p>
+<p class="c4"><span class="c16 c19">SPECT-GENERAL
+INFORMATION</span><span class="c1">&nbsp;- The Spectral Analysis,
+or SPECT, level is the level at which wavelength dependent data
+files may be manipulated. At this level, optical system
+transmission and other wavelength dependent analyses can be
+performed. SPECT level commands may be issued from the keyboard or
+as part of a macro.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT FILE
+INITIALIZATION</span><span class="c1">&nbsp;- The SPECT disk file
+system is initially created by entering the CMD level
+command:</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">ITF</span><span class="c1">&nbsp;-
+To avoid accidental destruction of the existing SPECT disk file
+system, the "ITF" command performs no file initialization unless it
+is &nbsp;followed immediately by the command:</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">PROCEED</span><span class=
+"c1">&nbsp;- If the CMD level command "PROCEED" is not immediately
+entered following the "ITF" command, then the "ITF" command is
+ignored and canceled.</span> <span class="c1">THIS INITIALIZATION
+PROCEDURE SHOULD BE USED WITH CAUTION AS LARGE AMOUNTS OF DATA MAY
+BE LOST IF IT IS USED CARELESSLY.</span><span class="c1">&nbsp;The
+"ITF" command is intended for a user who has no SPECT disk file
+system or for a user who intentionally desires to clean the slate
+and begin anew with an empty SPECT disk file system.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT LEVEL</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">SPECT</span><span class="c1">&nbsp;-
+The "SPECT" command causes the program to move into the SPECT
+level. All SPECT level commands and a limited sub-set of CMD level
+commands may be issued at this level.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">EOS</span><span class=
+"c1">&nbsp;or</span> <span class="c9">END</span><span class=
+"c1">&nbsp;- The "EOS" or "END" command causes the program to leave
+the SPECT level and return to the CMD level.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT DISK
+DATABASE</span><span class="c16">&nbsp;</span><span class=
+"c1">&nbsp;- Just as there is a Lens Library at the CMD level which
+is used to store and recall lens system data, there is also a disk
+based data structure at the SPECT level which is used to store and
+recall tables of wavelength dependent data. This wavelength
+dependent data may represent optical transmittance or reflectance
+values or other wavelength dependent data which needs to be stored,
+recalled and manipulated.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT MEMORY
+ORGANIZATION</span><span class="c1">&nbsp;- There are two areas of
+computer memory available within the SPECT level. These areas are
+named the</span> <span class="c1">WORK</span> <span class=
+"c1">memory areas and the</span> <span class="c1">CUMULATIVE</span>
+<span class="c1">memory area</span><span class=
+"c15 c16">.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">WORK MEMORY
+AREA</span><span class="c1">&nbsp;- The</span> <span class=
+"c1">WORK</span> <span class="c1">memory area is a memory area into
+which a SPECT disk data file may be read. This memory area is large
+enough to store up to 1001 pairs of wavelength dependent
+data.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">CUMULATIVE MEMORY
+AREA</span><span class="c16">&nbsp;-</span> <span class=
+"c1">The</span> <span class="c1">CUMULATIVE</span> <span class=
+"c1">memory area is a memory area into which linearly interpolated
+wavelength dependent data is multiplied. This memory area is large
+enough to store up to 1001 pairs of wavelength dependent
+data.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">MEMORY AREA COMMANDS</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">START</span><span class="c1">&nbsp;-
+The "START" command causes all the wavelength dependent data in
+the</span> <span class="c1">CUMULATIVE</span> <span class=
+"c1">memory area to be set to 1.0. A "START" command is
+automatically executed each time the SPECT level is entered and
+whenever a "WAVLN" command is issued.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">WAVLN ,</span> <span class=
+"c7">λ</span><span class="c9">lower ,</span> <span class=
+"c7">λ</span><span class="c9">upper , ntot</span><span class=
+"c1">&nbsp;- The "WAVLN" command defines the spectral region to be
+used in the CUMULATIVE memory area. The "</span><span class=
+"c11">λ</span><span class="c1">lower" wavelength must be greater
+than zero, the "</span><span class="c11">λ</span><span class=
+"c1">upper" must be greater than the &nbsp;"</span><span class=
+"c11">λ</span><span class="c1">lower" and the number of entries,
+and "ntot" must be an integer in the range 1 to 1001. There are no
+defaults for the "</span><span class="c11">λ</span><span class=
+"c1">lower" and "</span><span class="c11">λ</span><span class=
+"c1">upper" input values. The default value for "ntot" is 1001.
+Whenever a "WAVLN" command is issued, an automatic "START" command
+is also issued.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">INT</span><span class=
+"c1 c10">&nbsp;</span><span class="c1">- The "INT" command causes
+Simpson's rule to be used to integrate the</span> <span class=
+"c1">CUMULATIVE AREA</span><span class="c1">&nbsp;over the spectral
+region specified by the preceding "WAVLN" command. &nbsp;The value
+of the integral is printed along with the lower and upper bounds of
+the current spectral region. The value of the integral is also
+placed into the macro accumulator.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">WORK</span><span class="c1">&nbsp;-
+The "WORK" command displays the current contents of the WORK memory
+area to the current output device.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">CUME</span><span class="c1">&nbsp;-
+The "CUME" command displays the current contents of the CUMULATIVE
+memory area to the current output device.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">NAME</span><span class="c1">&nbsp;-
+The "NAME" command displays the name of the current SPECT disk file
+loaded in the WORK memory area..</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT DATABASE
+COMMANDS</span></p>
+<p class="c13 c14"></p>
+<p class="c4"><span class="c9">DIRECT</span><span class=
+"c1">&nbsp;or</span> <span class="c9">DIR</span><span class=
+"c1">&nbsp;or</span> <span class="c9">DIRECT , i</span><span class=
+"c1 c10">&nbsp;</span><span class="c1">or</span> <span class=
+"c9">DIR , i</span><span class="c1 c10">&nbsp;</span><span class=
+"c1">- The "DIRECT" or "DIR" command issued alone displays a
+directory listing of the entire SPECT disk database. If "DIRECT" or
+"DIR" is issued with the numeric entry "i", then the directory
+listing of just the "i"th file is displayed. The SPECT disk
+database can store up to 999 database files.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c4"><span class="c9">DELETE (name)</span><span class=
+"c1">&nbsp;or</span> <span class="c9">DELETE , i</span><span class=
+"c1">&nbsp;- The "DELETE" command deletes the specified SPECT disk
+file. If "DELETE" is issued with the file name, the file with name
+= "name" will be deleted. If "DELETE" is issued with the numeric
+value "i", the "i"th SPECT disk file will be deleted.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">FILE (name)</span><span class=
+"c1">&nbsp;- The "FILE" command causes the current wavelength
+dependent data in the WORK area to be stored on disk as a SPECT
+disk file with name = "name". Storage occurs only if there is data
+to store and if the file named "name" does not already
+exist.</span></p>
+<p class="c13 c14"></p>
+<p class="c4"><span class="c9">LIST (name)</span><span class=
+"c1 c10">&nbsp;</span><span class="c1">or</span> <span class=
+"c9">&nbsp;LIST , i</span><span class=
+"c1">&nbsp;</span><span class="c1 c22">&nbsp;or</span> <span class=
+"c9">LIST</span><span class="c1">&nbsp;- The "LIST</span>
+<span class="c1 c15">name</span><span class="c1">" command causes
+the SPECT disk file with name = "name" to be read into the WORK
+memory area and its contents displayed. "LIST , i" causes the "i"th
+SPECT disk file to be loaded into the WORK memory area and
+displayed. The "LIST" command simply displays the current WORK
+memory area.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">PUNCH (name)</span><span class=
+"c1">&nbsp;</span><span class="c1 c22">&nbsp;</span><span class=
+"c1">or</span> <span class="c9">PUNCH , i</span><span class=
+"c1">&nbsp;or</span> <span class="c9">PUNCH</span><span class=
+"c1">&nbsp;- The "PUNCH" commands are identical to the "LIST"
+commands, except that the contents of the SPECT disk file are sent
+to the "CARDTEXT.DAT" file instead of to the display.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">SPRINT (name)</span><span class=
+"c9 c15">&nbsp;,</span> <span class="c9">a , b , c , d ,
+e</span><span class="c1">&nbsp;- The "SPRINT" command causes the
+SPECT disk file with name = "name" to be read into the WORK memory
+area. If the "</span><span class="c1 c15">name</span><span class=
+"c1">" is left blank, the CUMULATIVE memory area is moved into the
+WORK area. The data moved to the WORK area is modified by the
+transformations:</span></p>
+<p class="c3"></p>
+<p class="c13"><span style=
+"overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 136.00px; height: 26.67px;">
+<img alt="" src="sa_images/image1.png" style=
+"width: 135.99px; height: 26.66px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
+title=""></span></p>
+<p class="c13 c14"></p>
+<p class="c13"><span class="c6 c1">and</span></p>
+<p class="c13"><span style=
+"overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 182.67px; height: 34.67px;">
+<img alt="" src="sa_images/image2.png" style=
+"width: 182.66px; height: 34.65px; margin-left: 0.01px; margin-top: 0.01px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
+title=""></span></p>
+<p class="c13 c14"></p>
+<p class="c4"><span class="c1">If "a", "c" or "e" are blank, they
+are automatically set to 1.0. If "b" or "d" are left blank, they
+are set to zero. After the above transformations, the data in the
+WORK memory area is linearly interpolated to obtain
+n</span><span class="c17">tot</span><span class="c1">&nbsp;equally
+spaced values between</span> <span class="c11">λ</span><span class=
+"c17">lower</span> <span class="c1">&nbsp;and</span> <span class=
+"c11">λ</span><span class="c17">upper.</span> <span class=
+"c1">These n</span><span class="c17">tot</span> <span class=
+"c1">functional values are displayed at the current output device.
+The CUMULATIVE memory area is not changed by this command.</span>
+<span class="c11">λ</span><span class=
+"c17">lower</span><span class="c1">,</span> <span class=
+"c11">λ</span><span class="c17">upper</span><span class=
+"c1">&nbsp;and n</span><span class="c17">tot</span> <span class=
+"c1">&nbsp;are specified by the last "WAVLN" command.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">RENAME (old name) , &nbsp;(new
+name)</span><span class="c1">&nbsp;- The "RENAME" command is used
+to rename a SPECT disk file named "old name"</span><span class=
+"c1 c15">&nbsp;</span><span class="c1">to "new
+name"</span><span class="c1 c15">.</span> <span class=
+"c1">&nbsp;"Old name" is entered as a qualifier word and "new name"
+is entered as a string.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">DUP (old name) , (new
+name)</span><span class="c1">&nbsp;- The "DUP" command is used to
+copy the SPECT disk file named "old name"</span><span class=
+"c1 c15">&nbsp;</span><span class="c1">to a new SPECT disk file
+named "new-name"</span><span class="c1 c15">.</span> <span class=
+"c1">"Old name" is entered as a qualifier word and "new name" is
+entered as a string.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">GETFILE (name)</span><span class=
+"c9 c15">&nbsp;,</span> <span class="c9">a , b , c , d ,
+e</span><span class="c1">&nbsp;- The "GETFILE" command causes the
+SPECT disk file with name = "name" to be read into the WORK memory
+area where it is modified by the transformations:</span></p>
+<p class="c3"></p>
+<p class="c13"><span style=
+"overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 136.00px; height: 26.67px;">
+<img alt="" src="sa_images/image1.png" style=
+"width: 135.99px; height: 26.66px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
+title=""></span></p>
+<p class="c13 c14"></p>
+<p class="c13"><span class="c6 c1">and</span></p>
+<p class="c13"><span style=
+"overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 182.67px; height: 34.67px;">
+<img alt="" src="sa_images/image2.png" style=
+"width: 182.66px; height: 34.65px; margin-left: 0.01px; margin-top: 0.01px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
+title=""></span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c1">If "a", "c" or "e" are blank, they
+are automatically set to 1.0. If "b" or "d" are left blank, they
+are set to zero. After the above transformations, the data in the
+WORK memory area is linearly interpolated to obtain
+n</span><span class="c17">tot</span><span class="c1">&nbsp;equally
+spaced values between</span> <span class="c11">λ</span><span class=
+"c17 c15">lower</span><span class="c17">&nbsp;</span><span class=
+"c1">&nbsp;and</span> <span class="c11">λ</span><span class=
+"c17 c15">upper</span><span class="c17">.</span> <span class=
+"c1">These</span> <span class="c1 c15">n</span><span class=
+"c17 c15">tot</span><span class="c17">&nbsp;</span><span class=
+"c1">functional values are then multiplied by the values currently
+in the CUMULATIVE memory area and the results are stored in the
+CUMULATIVE memory area.</span> <span class=
+"c11">λ</span><span class="c17">lower</span><span class=
+"c1">,</span> <span class="c11">λ</span><span class=
+"c17">upper</span><span class="c1">&nbsp;and n</span><span class=
+"c17">tot</span> <span class="c1">&nbsp;are specified by the last
+"WAVLN" command.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">PUT (name)</span><span class=
+"c1">&nbsp;- The "PUT" command creates a SPECT disk file of
+&nbsp;name = "name". It will have n</span><span class=
+"c17">tot</span><span class="c1">&nbsp;points. &nbsp;The data in
+the current CUMULATIVE memory area is stored in this file.
+n</span><span class="c17">tot</span> <span class="c1">&nbsp;is
+specified by the last "WAVLN" command.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">INTER (name) &nbsp;,</span>
+<span class="c7">λ</span><span class="c1">&nbsp;- The "INTER"
+command is used to linearly interpolate a SPECT disk file with name
+= "name" to a value corresponding to the independent variable
+"</span><span class="c11">λ</span><span class="c1">". &nbsp;The
+interpolated value is displayed at the output device and placed
+into the accumulator.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c3"></p>
+<p class="c4"><span class="c9">BLACKBDY</span><span class=
+"c9 c15">&nbsp;(</span><span class="c9">qualifier word) ,
+T</span><span class="c1">&nbsp;- The "BLACKBDY" command without a
+"qualifier word" or with the qualifier "SRE" generates blackbody
+"spectral radiant emmittance" values at temperature "T". These
+values are calculated for each wavelength entry in the CUMULATIVE
+memory area and then multiplied into the CUMULATIVE memory area's
+stored functional values. "T" must be in degrees Kelvin. If "T" is
+not entered, 300.0 degrees Kelvin is assumed for the default. If
+the "qualifier word" "SRPE" is used, "spectral radiant photon
+emmittance" values are calculated and stored instead of "spectral
+radiant emmittance" values. The units of "spectral radiant
+emmittance" are: Watts-cm</span><span class=
+"c18">-2</span><span class="c1">-micron</span><span class=
+"c18">-1</span><span class="c1">. The units of "spectral radiant
+photon emmittance" are: Photons-sec</span><span class=
+"c18">-1</span><span class="c1">-cm</span><span class=
+"c18">-2</span><span class="c1">-micron</span><span class=
+"c18">-1</span><span class="c1">.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT DATA INPUT</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">TABLE (filename)</span><span class=
+"c1">&nbsp;- The "TABLE" command is used to initiate the entry of
+data into an empty SPECT database disk file. "filename" is the name
+of that file. "TABLE" is followed by not more than 1001 input
+commands of the form:</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">DATA ,</span><span class=
+"c7">λ</span><span class="c9">&nbsp;, f(</span><span class=
+"c7">λ</span><span class="c9">)</span><span class="c1">&nbsp;-
+where "</span><span class="c11">λ</span><span class="c1">&nbsp;" is
+the wavelength in microns and "f(</span><span class=
+"c11">λ</span><span class="c1">)" is the functional value related
+to that wavelength. The entries must be in ascending order by
+wavelength.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">ENDTABLE</span><span class=
+"c1">&nbsp;- The "ENDTABLE" command terminates file input and
+writes the data to the disk.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">INSERT (name) ,</span><span class=
+"c7">λ</span><span class="c9">&nbsp;, f(</span><span class=
+"c7">λ</span><span class="c9">)</span><span class="c1">&nbsp;- The
+"INSERT" command is used to insert an entry into the SPECT disk
+file with name = "name". The entry is positioned in the file by
+ascending value of "</span><span class="c11">λ</span><span class=
+"c1">". This command may not be used to create a file or insert
+records into an "empty" file.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">DROP name , i</span><span class=
+"c1">&nbsp;- This command causes the "i"th entry of the named SPECT
+disk file to be deleted or dropped from that file.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">PHOTOPIC</span><span class=
+"c1">&nbsp;- This command causes the spect disk file named
+"PHOTOPIC" to be automatically created. It has 81 entries and
+represents the Photopic response function of the human eye from
+0.380 micron to 0.780 micron. (Based on data taken from the
+American Institue of Physics Handbook.)</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">SCOTOPIC</span><span class=
+"c1">&nbsp;- This command causes the spect disk file named
+"SCOTOPIC" to be automatically created. It has 81 entries and
+represents the Scotopic response function of the human eye from
+0.380 micron to 0.780 micron. (Based on data taken from the
+American Institue of Physics Handbook.)</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECT FILE
+GRAPHICS</span><span class="c1">&nbsp;- The following two &nbsp;The
+commands are used to graphically display the contents of a SPECT
+disk file. The plots are automatically displayed on the screen.
+They may then be re-displayed on the screen using the "DRAW"
+command or printed using the "GRAOUT" command. The two commands are
+identical in that they generate plots of the contents of SPECT disk
+files. They are different only in the fact that the "PLOTT" command
+labels the vertical axis as TRANSMISSION and the "PLOTR" command
+labels the vertical axis as REFLECTION. The horizontal scale will
+always be labeled "WAVELENGTH (MICRONS)".</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">PLOTT (file name) ,</span>
+<span class="c7">λ</span><span class="c9">lower ,</span>
+<span class="c7">λ</span><span class="c9">upper,
+F(</span><span class="c7">λ</span><span class="c9">lower) ,
+F(</span><span class="c7">λ</span><span class=
+"c9">upper)</span><span class="c1">&nbsp; and</span></p>
+<p class="c4"><span class="c9">PLOTT , i ,</span> <span class=
+"c7">λ</span><span class="c9">lower ,</span> <span class=
+"c7">λ</span><span class="c9">upper, F(</span><span class=
+"c7">λ</span><span class="c9">lower) , F(</span><span class=
+"c7">λ</span><span class="c9">upper)</span><span class="c1">&nbsp;
+and</span></p>
+<p class="c4"><span class="c9">PLOTR (file name) ,</span>
+<span class="c7">λ</span><span class="c9">lower ,</span>
+<span class="c7">λ</span><span class="c9">upper,
+F(</span><span class="c7">λ</span><span class="c9">lower) ,
+F(</span><span class="c7">λ</span><span class=
+"c9">upper)</span><span class="c1">&nbsp; and</span></p>
+<p class="c4"><span class="c9">PLOTR , i ,</span> <span class=
+"c7">λ</span><span class="c9">lower ,</span> <span class=
+"c7">λ</span><span class="c9">upper, F(</span><span class=
+"c7">λ</span><span class="c9">lower) , F(</span><span class=
+"c7">λ</span><span class="c9">upper)</span><span class="c1">&nbsp;
+- If the "file name" version of each command is used, the contents
+of the SPECT disk file with name = "file name" will be plotted. If
+the version with SPECT disk file number "i" is used, the "i"th
+SPECT disk file will be plotted. If not entered explicitly, the
+plot will be scaled in X and Y so as to include all data in the
+designated file. This automatic scaling can be overridden by
+explicitly entering the X-plot limits,</span> <span class=
+"c11">λ</span><span class="c17">lower</span> <span class=
+"c1">and</span> <span class="c11">λ</span><span class=
+"c17">upper</span><span class="c1">,</span><span class=
+"c17">&nbsp;</span><span class="c1">and the Y-plot limits,
+F(</span><span class="c11">λ</span><span class=
+"c17">lower</span><span class="c1">) and F(</span><span class=
+"c11">λ</span><span class="c17">upper</span><span class=
+"c1">).</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">SPECTRAL WEIGHTING
+FACTORS</span><span class="c1">&nbsp;- Many times it is necessary
+to determine a set of wavelengths with associated spectral
+weighting factors which will be used during the design or analysis
+of an optical system. These values depend upon the spectral
+characteristics of the source illumination filtered by any filters
+and upon the spectral response of the detector. If SPECT data files
+are created and stored, using the SPECT commands described earlier
+in this section, which describe the filtered illumination and the
+detector response, then the "WFACTOR" command may be used to
+determine an appropriate set of wavelengths and associated spectral
+weights.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c9">WFACTOR , n</span><span class=
+"c1">&nbsp;- The "WFACTOR" command is entered with the number of
+wavelengths, "n", for which spectral weighting factors are desired.
+"WFACTOR" operates upon the current CUMULATIVE memory area. It
+first divides the CUMULATIVE area into "n" equal wavelength extent
+sub-sections. Each sub-section covers 1/"n" th of the spectral band
+included in the full CUMULATIVE area. The area of each of these
+equal wavelength sub-sections, normalized by the area under the
+complete CUMULATIVE area becomes the spectral weighting factor for
+that sub-section. Next, each sub-section is divided into two equal
+area pieces. The wavelength which lies at the boundary of these two
+equal area pieces of each sub-section becomes the wavelength for
+that sub-section. That wavelength is the wavelength which is to be
+related to that sub-sections spectral weighting factor.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c3"></p>
+<p class="c4"><span class="c16 c19">WEIGHTING FACTOR
+EXAMPLE</span><span class="c1">&nbsp;- Source illunination for the
+system under consideration is to be a black body at 5600 degrees
+Kelvin. The detector response is to be the Photopic response of the
+human eye. The number of wavelengths, "n", will be 6.</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Step 1</span></p>
+<p class="c4"><span class="c6 c1">Enter the SPECT program
+level</span></p>
+<p class="c4"><span class=
+"c6 c1">COMMAND(S):&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">SPECT</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Step 2</span></p>
+<p class="c4"><span class="c6 c1">Set up the Cumulative area with
+1001 points from wavelength 0.38 to 0.78 microns.</span></p>
+<p class="c4"><span class="c6 c1">COMMAND(S):</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">START</span></p>
+<p class="c4"><span class=
+"c8 c12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WAVLN
+0.38 0.78</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Step 3</span></p>
+<p class="c4"><span class="c6 c1">Create a SPECT database file
+named PHOTOPIC which contains the Photopic response on the human
+eye from 0.38 to 0.78 microns. Then multiply this file into the
+Cumulative area.</span></p>
+<p class="c4"><span class="c6 c1">COMMANDS:</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">PHOTOPIC</span></p>
+<p class="c4"><span class=
+"c8 c12">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GETFILE
+PHOTOPIC</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Step 4</span></p>
+<p class="c4"><span class="c6 c1">Multiply into the Cumulative area
+the black body radiant emmittance at T = 5600 degrees
+Kelvin.</span></p>
+<p class="c4"><span class=
+"c6 c1">COMMANDS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">BLACKBDY
+5600</span></p>
+<p class="c4"><span class="c6 c1">Step 5</span></p>
+<p class="c4"><span class="c6 c1">Issue the command "WFACTOR " with
+a numerical argument "6"</span></p>
+<p class="c4"><span class="c6 c1">COMMANDS:</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">WFACTOR
+6</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Results are:</span></p>
+<p class="c3"></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WAVELENGTH
+-
+(MICRONS)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SPECTRAL
+WEIGHT</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.4382&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.00416</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.4986&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.12037</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.5486&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.57045</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.6006&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.28706</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.6574&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.01777</span></p>
+<p class="c4"><span class=
+"c6 c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.7226&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.01777</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Step 6</span></p>
+<p class="c4"><span class="c6 c1">Exit the SPECT level</span></p>
+<p class="c4"><span class="c6 c1">COMMAND:</span></p>
+<p class="c4"><span class=
+"c1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="c8">EOS</span>
+<span class="c1 c22">or</span><span class="c8">&nbsp;END</span></p>
+<p class="c3"></p>
+<p class="c4"><span class="c6 c1">Now use the WV and WV2 update
+lens commands to input the new wavelengths and the SPTWT and SPTWT2
+commands to enter the new spectral weights.</span></p>
+<div>
+<p class="c13 c14 c21"></p>
+</div>
+</body>
+</html>

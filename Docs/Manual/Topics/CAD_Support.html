@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content=
+"HTML Tidy for HTML5 for Linux version 5.6.0">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
+<style type="text/css">
+@import url('https://themes.googleusercontent.com/fonts/css?kit=hh9VFM0qOK4TrLidDd__Ui5bnSrpY5TE94xSqAiQW93FZpnJ93ENjpCMHhqE69dYb15ZBabpYfUA0xh2ZDRWIY1ouBTO3EmcDISxB9oYU1E');ol.lst-kix_list_1-3{list-style-type:none}ol.lst-kix_list_1-4{list-style-type:none}ol.lst-kix_list_1-5{list-style-type:none}ol.lst-kix_list_1-6{list-style-type:none}ol.lst-kix_list_1-0{list-style-type:none}.lst-kix_list_1-4>li{counter-increment:lst-ctn-kix_list_1-4}ol.lst-kix_list_1-1{list-style-type:none}ol.lst-kix_list_1-2{list-style-type:none}ol.lst-kix_list_1-6.start{counter-reset:lst-ctn-kix_list_1-6 0}.lst-kix_list_1-1>li{counter-increment:lst-ctn-kix_list_1-1}ol.lst-kix_list_1-3.start{counter-reset:lst-ctn-kix_list_1-3 0}ol.lst-kix_list_1-2.start{counter-reset:lst-ctn-kix_list_1-2 0}ol.lst-kix_list_1-8.start{counter-reset:lst-ctn-kix_list_1-8 0}.lst-kix_list_1-0>li:before{content:" "}ol.lst-kix_list_1-5.start{counter-reset:lst-ctn-kix_list_1-5 0}ol.lst-kix_list_1-7{list-style-type:none}.lst-kix_list_1-1>li:before{content:" "}.lst-kix_list_1-2>li:before{content:" "}.lst-kix_list_1-7>li{counter-increment:lst-ctn-kix_list_1-7}ol.lst-kix_list_1-8{list-style-type:none}.lst-kix_list_1-3>li:before{content:" "}.lst-kix_list_1-4>li:before{content:" "}ol.lst-kix_list_1-0.start{counter-reset:lst-ctn-kix_list_1-0 0}.lst-kix_list_1-0>li{counter-increment:lst-ctn-kix_list_1-0}.lst-kix_list_1-6>li{counter-increment:lst-ctn-kix_list_1-6}.lst-kix_list_1-7>li:before{content:" "}.lst-kix_list_1-3>li{counter-increment:lst-ctn-kix_list_1-3}.lst-kix_list_1-5>li:before{content:" "}.lst-kix_list_1-6>li:before{content:" "}ol.lst-kix_list_1-7.start{counter-reset:lst-ctn-kix_list_1-7 0}.lst-kix_list_1-2>li{counter-increment:lst-ctn-kix_list_1-2}.lst-kix_list_1-5>li{counter-increment:lst-ctn-kix_list_1-5}.lst-kix_list_1-8>li{counter-increment:lst-ctn-kix_list_1-8}ol.lst-kix_list_1-4.start{counter-reset:lst-ctn-kix_list_1-4 0}.lst-kix_list_1-8>li:before{content:" "}ol.lst-kix_list_1-1.start{counter-reset:lst-ctn-kix_list_1-1 0}ol{margin:0;padding:0}table td,table th{padding:0}.c2{border-right-style:solid;padding:0pt 5.4pt 0pt 5.2pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:1pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:1pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:144pt;border-top-color:#000000;border-bottom-style:solid}.c18{border-right-style:solid;padding:0pt 5.4pt 0pt 5.2pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:1pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:1pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:225.5pt;border-top-color:#000000;border-bottom-style:solid}.c4{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:9pt;font-family:"Times New Roman";font-style:normal}.c9{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Book Antiqua";font-style:normal}.c0{padding-top:0pt;padding-bottom:0pt;line-height:1.0;orphans:2;widows:2;text-align:left;height:12pt}.c3{color:#ff0000;font-weight:700;text-decoration:none;vertical-align:baseline;font-size:9pt;font-family:"Times New Roman";font-style:normal}.c8{color:#000000;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:10pt;font-family:"Book Antiqua";font-style:normal}.c7{color:#0000ff;font-weight:700;text-decoration:none;vertical-align:baseline;font-size:9pt;font-family:"Times New Roman";font-style:normal}.c6{padding-top:0pt;padding-bottom:0pt;line-height:1.0;orphans:2;widows:2;text-align:left}.c10{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:center;height:12pt}.c14{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:left}.c15{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:center}.c21{color:#000000;text-decoration:none;vertical-align:baseline;font-style:normal}.c5{font-size:9pt;font-family:"Times New Roman";color:#ff0000;font-weight:700}.c1{padding-top:0pt;padding-bottom:0pt;line-height:1.0;text-align:justify}.c28{margin-left:auto;border-spacing:0;border-collapse:collapse;margin-right:auto}.c26{font-weight:400;font-size:10pt;font-family:"Courier New"}.c11{font-size:9pt;font-family:"Times New Roman";font-weight:400}.c20{background-color:#ffffff;max-width:504pt;padding:36pt 36pt 53.2pt 72pt}.c23{text-decoration:none;vertical-align:baseline;font-style:italic}.c25{text-decoration:none;vertical-align:baseline;font-style:normal}.c17{font-size:9pt;font-family:"Times New Roman";font-weight:700}.c27{orphans:2;widows:2}.c22{color:#008000}.c24{color:#000000}.c12{height:12pt}.c13{height:0pt}.c16{color:#ff0000}.c19{color:#0000ff}.title{padding-top:24pt;color:#000000;font-weight:700;font-size:36pt;padding-bottom:6pt;font-family:"Book Antiqua";line-height:1.0;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:18pt;color:#666666;font-size:24pt;padding-bottom:4pt;font-family:"Georgia";line-height:1.0;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:12pt;font-family:"Book Antiqua"}p{margin:0;color:#000000;font-size:12pt;font-family:"Book Antiqua"}h1{padding-top:12pt;-webkit-text-decoration-skip:none;color:#000000;font-weight:700;text-decoration:underline;font-size:12pt;padding-bottom:0pt;line-height:1.0;text-decoration-skip-ink:none;font-family:"Helvetica Neue";orphans:2;widows:2;text-align:left}h2{padding-top:6pt;color:#000000;font-weight:700;font-size:12pt;padding-bottom:0pt;font-family:"Helvetica Neue";line-height:1.0;orphans:2;widows:2;text-align:left}h3{padding-top:0pt;color:#000000;font-weight:700;font-size:12pt;padding-bottom:0pt;font-family:"Times";line-height:1.0;orphans:2;widows:2;text-align:left}h4{padding-top:0pt;-webkit-text-decoration-skip:none;color:#000000;text-decoration:underline;text-decoration-skip-ink:none;font-size:12pt;padding-bottom:0pt;font-family:"Times";line-height:1.0;orphans:2;widows:2;text-align:left}h5{padding-top:0pt;color:#000000;font-weight:700;font-size:10pt;padding-bottom:0pt;font-family:"Times";line-height:1.0;orphans:2;widows:2;text-align:left}h6{padding-top:0pt;-webkit-text-decoration-skip:none;color:#000000;text-decoration:underline;text-decoration-skip-ink:none;font-size:10pt;padding-bottom:0pt;font-family:"Times";line-height:1.0;orphans:2;widows:2;text-align:left}
+</style>
+<title></title>
+</head>
+<body class="c20">
+<p class="c12 c14"></p>
+<p class="c14"><span class="c17 c19">CAD-GENERAL
+INFORMATION</span><span class="c11">&nbsp;- The CAD (Computer Aided
+Design) section describes a number of different program features
+which can be used in support of opto-mechanical design and optical
+component fabrication. All commands in this section are issued from
+the program CMD level. The program performs all its CAD output to
+the specific files. These files may be imported to compatible CAD
+programs from outside this program.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c17 c19">3D-DXF
+COMMANDS</span><span class="c11">&nbsp;- The 3D-DXF commands allow
+the user to create 3D-DXF polyline representations of the current
+lens configuration as well as rays traced through that lens. The
+resultant DXF files may be imported to compatible CAD programs from
+outside this program.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF NEW</span><span class=
+"c11">&nbsp;- The "DXF NEW" command initializes the program for new
+3D DXF output. WARNING:</span> <span class="c11">ANY EXISTING 3D
+DXF DATA IN THE FILE</span> <span class=
+"c17">DXF3D.DXF</span><span class="c11">&nbsp;WILL BE DELETED WHEN
+THE "DXF NEW" COMMAND IS ISSUED</span><span class=
+"c11">.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF LAYER (8-character layer
+name)</span><span class="c11">&nbsp;- The "DXF LAYER" command
+&nbsp;is used to specify the name of the current DXF layer name.
+The default layer is named: LAYER001. Issued with a “?”, the
+current layer name is displayed. Layer names must be exactly 8
+characters in length.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF GLBSURF , global surface
+number</span><span class="c11">&nbsp;- The "DXF GLBSURF" command
+&nbsp;is used to specify the surface number, which will be used as
+the global origin for all DXF coordinates. Issued with a “?”, the
+current DXF global surface number will be displayed. The default
+global surface number is usually 1 unless the thickness assigned to
+surface 1 is infinite.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF PROFY , i , j</span><span class=
+"c17">&nbsp;</span><span class="c11">and</span><span class=
+"c17">&nbsp;</span><span class="c5">DXF PROFX , i ,
+j</span><span class="c11">&nbsp;- The "DXF PROFY" and "DXF PROFX"
+commands are used to output the YZ and XZ-plane lens surface
+profiles to the current 3D DXF file. These profiles are the
+projections of the surface's local coordinate system Y and X-axes
+upon the lens surface. Each profile is bounded by the explicit or
+implicit clear aperture on that surface. A blank space will be left
+if there is an assigned obscuration.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF PROF , i , j ,
+theta</span><span class="c11">&nbsp;- The"DXF PROF" command is a
+general form of the commands "DXF PROFX" and "DXF PROFY". It is
+used to output surface profiles in any azimuthal orientation to the
+current #d DXF file. The third numeric word "theta" specifies the
+azimuthal orientation angle. "Theta" is measured positive,
+counter-clockwise from the local surface positive x-axis to the
+local surface positive y-axis. "Theta" can be assigned any angle
+between 0.0 and 360.0 degrees. The default value for "theta" is
+0.0. This is equivalent to a "DXF PROFX" command. A "DXF PROFY"
+command may be simulated with "theta" set to 90.0 degrees. The
+profile is bounded by the explicit or implicit clear aperture on
+that surface. A blank space will be left if there is an assigned
+obscuration.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF EDGEY , i , j</span><span class=
+"c11">&nbsp;and</span> <span class="c5">DXF EDGEX , i ,
+j</span><span class="c11">&nbsp;- The "DXF EDGEY" and "DXF EDGEX"
+commands are used to output edges connecting non-air spaces. The
+edges connect the ends of surface profiles.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF CLAP , i , j ,
+k</span><span class="c11">&nbsp;- The "DXF CLAP" command is used to
+output surface clear apertures projected onto the surface to the
+current 3D DXF file. The optional third numeric word "k" is used to
+specify fractional clear aperture display The default value for "k"
+is 1.0. "k" may be set to any value greater than 0.0 and less than
+or equal to 1.0.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF RAY , i , j</span><span class=
+"c11 c16">&nbsp;</span><span class="c11">- The "DXF RAY" command
+causes the most recent ray traced to be added to the current 3D DXF
+file. Ray data will be added from lens surface "i" to lens surface
+"j" .The internal operation of the "DXF RAY" command is such that
+if the ray to be output is a failed ray, the ray will be
+represented through the optical system up to the surface for which
+ray data becomes unreliable. Rays may fail for any of the valid
+failure reason recognized by the program including ray failures due
+to blockages by clear apertures and obscurations when the "RAY
+CAOB" command is used to trace the ray. &nbsp;Prior to issuing a
+“DXF RAY” command, the “FOB” and “RAY” or “RAY CAOB” commands must
+be issued to generate the ray data.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF LINE</span><span class=
+"c11">&nbsp;- The "DXF LINE" command allows the user to add a 3D
+line from coordinates X1, Y1, Z1 to coordinates X2, Y2 and Z2. The
+coordinates of these two points are always considered to be
+represented in the global coordinate system of the current optical
+system graphic in which the origin is either located at the vertex
+of surface 0 (for finit conjugate object points) or the vertex of
+surface 1 (for infinite conjugate object points). The coordinates
+of these two points are assigned using the following six commands.
+By default, both points are located at 0,0,0 when the program
+starts or when a new plot is initiated.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">X1 or Y1 or Z1 or X2 or Y2 or
+Z2</span><span class="c11">&nbsp;- The "X1", "Y1", "Z1", "X2", "Y2"
+and"Z2" commands allows the user to specify the starting and ending
+coordinates of the next 3D line to be drawn. By default, the values
+are 0,0,0 when the program starts and when a DXF file is
+initiated.</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c1 c12"></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c17 c19">DXF TERMINATION</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">DXF END</span><span class=
+"c11">&nbsp;- The "DXF END" command stops all DXF output to the
+DXF3D.DXF file.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c17 c19">OPTICAL COMPONENT
+DRAWINGS</span><span class="c11">&nbsp;- &nbsp;In support of the
+fabrication of single lenses, the following commands may be used in
+order to generate single lens engineering drawings. Except for the
+beginning surface number, all inputs to this set of commands have
+sensible default values.</span></p>
+<p class="c1 c12"></p>
+<p class="c1 c27"><span class="c3">PARTDRAW , n</span><span class=
+"c4">&nbsp;- The "PARTDRAW" command initializes and initiates lens
+part drawing. The starting surface number "n" must be explicitly
+entered. The lens drawn will start at surface "n" and end at
+surface "n+1" in the current lens database. The "PARTDRAW" command
+may be followed by the entry of optional values as shown in the
+table below. A "PARTGO" command must be used to indicate that no
+more options are to be entered and that the lens part drawing
+should be generated and placed in the NEUTRAL.DAT file. After the
+"PARTGO" command is issued, the part drawing may be displayed to
+the screen with a "DRAW" command or sent to a graphics file or
+hardcopy device with a "GRAOUT" command. "DRAW" and "GRAOUT" are
+described fully in the GRAPHICS section of this manual. All
+tolerance defaults shown in "inches" will be automatically
+converted to mm, cm or meters as needed depending upon the current
+system units. All part diameters and diameters-to-flat are taken
+from the lens database.</span></p>
+<p class="c1 c12"></p>
+<a id="t.c756393ced59396dc0cb9f226f3f37692d5a3828"></a><a id=
+"t.0"></a>
+<table class="c28">
+<tbody>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c15"><span class="c4">COMMAND</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c15"><span class="c4">DEFAULT</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c15"><span class="c4">DESCRIPTION</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">DIATOL , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.002 inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Outer diameter
+tolerance.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">RADTOL , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.1% of radius or +/- 4 fringes
+if flat.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Radius tolerance for each
+surface.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">RADTLF , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.1% of radius or +/- 4
+fringes.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Radius tolerance in fringes for
+each surface.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">FRNG , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">1 fringe</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Fringes of irregularity.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">THITOL , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.002 inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Thickness tolerance.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">CLERAP , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">OD value minus 0.08
+inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Clear aperture of
+surfaces.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">SURFQUAL , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">(blank)</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Surface quality, up to 20
+alpha/numeric characters.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">FRNGDIA , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">CLERAP</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Diameter at which delta R per
+fringe is calculated for each surface.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">CENTER , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.002 inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Surface to surface centration
+error.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">BRKEDG , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">0.01 inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Break edges.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">SURFCOAT , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">(blank)</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Coating drawing number, up to 20
+alpha/numeric characters.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">SAGTOL , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 0.002 inch.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Sag tolerance for each
+surface.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">PRPNTL , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">+/- 1.00 arc-sec</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Tolerance of flat perpendicularity
+to optical axis for each surface in arc-sec.</span></p>
+<p class="c14"><span class="c4">(This is the NORM. box)</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">TITLE , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">(blank)</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Drawing title, up to 32
+alpha/numeric characters.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">DWGNO , (dwgno)</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">(blank)</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Drawing number, up to 12
+alpha/numeric characters.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">SURFMATL , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Material specified in lens
+database.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Surface material, up to 13
+alpha/numeric characters.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">GLSCD , v1 , v2</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Stored in lens database glass
+catalog.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Glass code, each 3
+digits.</span></p>
+</td>
+</tr>
+<tr class="c13">
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c3">WAVEL , v</span></p>
+</td>
+<td class="c2" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">For visible systems, 0.5461
+microns. For non-visible systems, the control wavelength
+CW.</span></p>
+</td>
+<td class="c18" colspan="1" rowspan="1">
+<p class="c14"><span class="c4">Wavelength for fringe and EFL, BFL,
+FFL calculations.</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="c1 c12"></p>
+<p class="c6"><span class="c4">Any combination of above listed
+commands may be issued in any order. Incorrect values may be
+overwritten by issuing the command again with correct input. If
+only one value is entered for "SAGTOL" or "PRPNTL", it will apply
+to both surfaces. A single value for OD becomes the outer diameter
+of the lens. "RADTOL" and RADTLF" override each other.</span></p>
+<p class="c1 c12"></p>
+<p class="c6"><span class="c3">PARTQUIT</span><span class=
+"c4">&nbsp;- The "PARTQUIT" command terminates all part
+drawing.</span></p>
+<p class="c1 c12"></p>
+<p class="c6"><span class="c3">PARTGO</span><span class=
+"c4">&nbsp;- The "PARTGO" command causes a lens part drawing to be
+generated and stored in the neutral plot file NEUTRAL.DAT. It may
+be displayed on the screen or stored in alternate graphics file
+formats or printed using the "DRAW" and "GRAOUT" commands described
+in the GRAPHICS section of this manual.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c17 c19">DRAWING
+NOTES</span><span class="c11">&nbsp;- The drawing notes used for
+various lens drawings are stored in ASCII format in the NOTES
+subdirectory beneath the main program directory. 11 drawing notes
+currently exist. The first line of each file contains an integer
+designating the number of lines in the note. This is always one
+less than the number of lines in the file. The user may change
+these but really, they should not be touched without making backup
+copies. Bad notes with incorrect counts can cause the program to
+crash. Notes 12 through 25 are blank and may be used by the user to
+add custom notation to the part drawing. The current notes
+are:</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c1 c12"></p>
+<p class="c6"><span class="c7">File NOTE1A.DAT (used for
+polycrystalline ZNS)</span></p>
+<p class="c6"><span class="c4">8</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: POLYCRYSTALLINE
+OPTICAL GRADE ZINC SULFIDE (ZNS),</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; CHEMICAL VAPOR
+DEPOSITED (CVD), STRESS FREE, FINE ANNEALED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; THE AVERAGE
+TRANSMITTANCE THROUGH A POLISHED, UNCOATED 0.20</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; IN. THICK (MIN.),
+NOMINAL SIZE SAMPLE CUT FROM THE SAME LOT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; OF MATERIAL AS THE
+LENS BLANK SHALL NOT BE LESS THAN:</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A. &nbsp;
+2.0 - &nbsp;5.0 MICROMETERS 70%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B. &nbsp;
+7.5 - 10.0 MICROMETERS 71%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;C. &nbsp;
+&nbsp; 11.25 &nbsp; &nbsp;MICROMETERS 60%</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE1B.DAT (used for
+polycrystalline Germanium)</span></p>
+<p class="c6"><span class="c4">8</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: POLYCRYSTALLINE
+OPTICAL GRADE (5-30 OHM-CM) N-TYPE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; GERMANIUM, STRESS
+FREE, FINE ANNEALED. THE TRANSMITTANCE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; THROUGH A POLISHED,
+UNCOATED 0.20 IN. THICK (MIN.) NOMINAL</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; SIZE SAMPLE CUT FROM
+THE SAME LOT OF MATERIAL AS THE LENS</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; BLANK SHALL NOT BE
+LESS THAN:</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A. &nbsp;
+2.5 - 10.0 MICROMETERS 46%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;10.0 - 11.0 MICROMETERS 45%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;C.
+&nbsp;11.0 - 11.5 MICROMETERS 43%</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE1C.DAT (used for
+polycrystalline ZNSE)</span></p>
+<p class="c6"><span class="c4">6</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: POLYCRYSTALLINE
+OPTICAL GRADE ZINC SELENIDE (ZNSE),</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; CHEMICAL VAPOR
+DEPOSITED (CVD), STRESS FREE, FINE ANNEALED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; THE AVERAGE
+TRANSMITTANCE THROUGH A POLISHED, UNCOATED 0.20</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; IN. THICK (MIN.),
+NOMINAL SIZE SAMPLE CUT FROM THE SAME LOT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; OF MATERIAL AS THE
+LENS BLANK SHALL NOT BE LESS THAN 70%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; AVERAGED OVER 2.0 TO
+12.0 MICROMETERS</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE1D.TXT (used for material
+not listed here and not in the standard manufacturer supplied glass
+catalogs)</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: (SEE ATTACHED
+SHEET)</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">File NOTE1E.DAT (used for
+AMTIR-1)</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">12</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: OPTICAL GRADE
+AMTIR-1 OR EQUIVALENT THAT MEETS</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; THE FOLLOWING
+SPECIFICATIONS:</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A.
+&nbsp;STRIA FREE.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;BUBBLE AND INCLUSION FREE WHEN OBSERVED THROUGH A
+10X</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;INFRARED MICROSCOPE.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;C.
+&nbsp;TRANSMITTANCE THROUGH A POLISHED, UNCOATED 0.20
+IN.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;THICK (MIN.) NOMINAL SIZE SAMPLE CUR FROM THE SAME
+MELT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;RUN AS THE LENS BLANK SHALL NOT BE LESS THAN:</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; 2.0 - 10.5 MICROMETERS 67%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;11.0 &nbsp; &nbsp;MICROMETERS 65%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;11.5 &nbsp; &nbsp;MICROMETERS 63%</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;12.0 &nbsp; &nbsp;MICROMETERS 62%</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE1F.DAT (used for visible
+glasses in all of the standard glass catalogs</span><span class=
+"c11 c25 c19">)</span></p>
+<p class="c6"><span class="c4">2</span></p>
+<p class="c6"><span class="c4">1. &nbsp;MATERIAL: GLASS OPTICAL
+TYPECLASS 1, GRADE B,</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; FINE ANNEALED, PER
+MIL-G-174</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE2.DAT</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">2. &nbsp;ELEMENT IN ACCORDANCE WITH
+MIL-0-13830</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE3.DAT</span></p>
+<p class="c6"><span class="c4">2</span></p>
+<p class="c6"><span class="c4">3. &nbsp;SURFACE MARKED "P"
+POLISHED. &nbsp;ALL OTHERS GROUND WITH 220</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; GRIT SIZE OR
+EQUIVALENT</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE4.DAT</span></p>
+<p class="c6"><span class="c4">2</span></p>
+<p class="c6"><span class="c4">4. &nbsp;CLEAR APERTURE :
+ENTRANCE:</span></p>
+<p class="c6"><span class="c4">EXIT:</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE5.DAT</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">5. &nbsp;SURFACE QUALITY (PER
+MIL-C-48497):</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE6.DAT (visible band
+materials)</span></p>
+<p class="c6"><span class="c4">10</span></p>
+<p class="c6"><span class="c4">6. &nbsp;RADIUS OF CURVATURE OF
+FINISHED PART SHALL BE WITHIN THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; TOLERANCE RANGE
+SPECIFIED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; WHEN USING A TEST
+GLASS ( @ 0.5461 MICROMETER NOMINAL):</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A.
+&nbsp;TO MEASURE IRREGULARITY, SURFACE OF FINISHED PART
+SHALL</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FIT TEST GLASS WITHIN 4 TIMES THE IRREGULARITY CALL
+OUT.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;TO CALCULATE SURFACE RADIUS, INCLUDE FRINGE COUNT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;DEPARTURE FROM MEASURED TEST GLASS RADIUS AND</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;UNCERTAINTY OF THE TEST GLASS RADIUS MEASUREMENT.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FOR &nbsp; &nbsp; &nbsp; &nbsp; R. &nbsp;R/FRINGE= &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AT &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp;DIA.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;R. &nbsp;R/FRINGE=
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AT &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp;DIA.</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">FILE NOTE6A.DAT (used for both
+surfaces flat)</span></p>
+<p class="c6"><span class="c4">4</span></p>
+<p class="c6"><span class="c4">6. &nbsp;FLATNESS OF FINISHED PART
+SHALL BE WITHIN THE</span></p>
+<p class="c6"><span class="c4">4 TIMES THE IRREGULARTITY CALLOUT
+OVER THE ENTRANCE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; AND EXIT DIAMETERS
+WHEN USING A TEST GLASS AT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; AT A NOMINAL
+WAVELENGTH (MICRONS) =</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE6B.DAT (surface 1 flat,
+surface 2 not flat)</span></p>
+<p class="c6"><span class="c4">16</span></p>
+<p class="c6"><span class="c4">6. &nbsp;RADIUS OF CURVATURE OF
+FINISHED PART SHALL BE WITHIN THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; TOLERANCE RANGE
+SPECIFIED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; WHEN USING A TEST
+GLASS (NOMINAL WAVELENGTH (MICRONS) =</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A.
+&nbsp;TO MEASURE IRREGULARITY, SURFACE OF FINISHED PART
+SHALL</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FIT TEST GLASS WITHIN 4 TIMES THE IRREGULARITY CALL
+OUT.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;TO CALCULATE SURFACE RADIUS, INCLUDE FRINGE COUNT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;DEPARTURE FROM MEASURED TEST GLASS RADIUS AND</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;UNCERTAINTY OF THE TEST GLASS RADIUS MEASUREMENT.</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">FOR: SURFACE 1, FLAT TO WITHIN 4
+TIMES THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;IRREGULARITY CALLOUT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FOR: SURFACE 2</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp;
+&nbsp;DELTA-R/FRINGE=</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE6C.DAT (surface 1 not flat,
+surface 2 flat)</span></p>
+<p class="c6"><span class="c4">16</span></p>
+<p class="c6"><span class="c4">6. &nbsp;RADIUS OF CURVATURE OF
+FINISHED PART SHALL BE WITHIN THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; TOLERANCE RANGE
+SPECIFIED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; WHEN USING A TEST
+GLASS (NOMINAL WAVELENGTH (MICRONS) =</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A.
+&nbsp;TO MEASURE IRREGULARITY, SURFACE OF FINISHED PART
+SHALL</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FIT TEST GLASS WITHIN 4 TIMES THE IRREGULARITY CALL
+OUT.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;TO CALCULATE SURFACE RADIUS, INCLUDE FRINGE COUNT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;DEPARTURE FROM MEASURED TEST GLASS RADIUS AND</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;UNCERTAINTY OF THE TEST GLASS RADIUS MEASUREMENT.</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FOR: SURFACE 1</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp;
+&nbsp;DELTA-R/FRINGE=</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">FOR: SURFACE 2, FLAT TO WITHIN 4
+TIMES THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;IRREGULARITY CALLOUT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE6D.DAT (neither surface
+flat)</span></p>
+<p class="c6"><span class="c4">16</span></p>
+<p class="c6"><span class="c4">6. &nbsp;RADIUS OF CURVATURE OF
+FINISHED PART SHALL BE WITHIN THE</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; TOLERANCE RANGE
+SPECIFIED.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; WHEN USING A TEST
+GLASS (NOMINAL WAVELENGTH (MICRONS) =</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;A.
+&nbsp;TO MEASURE IRREGULARITY, SURFACE OF FINISHED PART
+SHALL</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FIT TEST GLASS WITHIN 4 TIMES THE IRREGULARITY CALL
+OUT.</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp;B.
+&nbsp;TO CALCULATE SURFACE RADIUS, INCLUDE FRINGE COUNT</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;DEPARTURE FROM MEASURED TEST GLASS RADIUS AND</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;UNCERTAINTY OF THE TEST GLASS RADIUS MEASUREMENT.</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FOR: SURFACE 1</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp;
+&nbsp;DELTA-R/FRINGE=</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;FOR: SURFACE 2</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp;
+&nbsp;DELTA-R/FRINGE=</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp;AT: DIA.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE7.DAT</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">7. &nbsp;DATUM -A- IS THE LINE
+CONNECTING THE TWO CENTERS OF CURVATURE</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE8.DAT</span></p>
+<p class="c6"><span class="c4">2</span></p>
+<p class="c6"><span class="c4">8. &nbsp;CENTERING ERROR TO BE LESS
+THAN :</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; REFERENCED TO DIA.
+=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE9.DAT</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">9. &nbsp;BREAK EDGES, FACE WIDTH
+MAX.=</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE10.DAT</span></p>
+<p class="c6"><span class="c4">1</span></p>
+<p class="c6"><span class="c4">10. COAT CLEAR APERTURES
+PER:</span></p>
+<p class="c0"></p>
+<p class="c6"><span class="c7">File NOTE11.DAT</span></p>
+<p class="c6"><span class="c4">4</span></p>
+<p class="c6"><span class="c4">11. REF. ONLY @ NOMINAL WAVELENGTH
+(MICRONS):</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+EFL =</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+BFL =</span></p>
+<p class="c6"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+FFL =</span></p>
+<hr style="page-break-before:always;display:none;">
+<p class="c1 c12"></p>
+<p class="c1"><span class="c17 c19">SAMPLE PART
+DRAWING</span><span class="c11">&nbsp;- The following sample
+drawing was created by retrieving the COOKE TRIPLET distributed
+with the program and then issuing the following string of
+commands:</span> <span class="c17 c22">PARTDRAW
+2;PARTGO;DRAW</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c11">The drawing was output to a
+monochrome Bit Map file (BMP) and imported into this manual using
+the command:</span> <span class="c17 c22">GRAOUT
+BMP</span><span class="c11">.</span></p>
+<p class="c10"></p>
+<p class="c15"><span style=
+"overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 542.40px; height: 406.80px;">
+<img alt="" src="cs_images/image1.png" style=
+"width: 542.39px; height: 406.79px; margin-left: 0.01px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
+title=""></span></p>
+<p class="c10"></p>
+<p class="c15 c27"><span class="c4">Sample Lens Part
+Drawing</span></p>
+<p class="c10 c27"></p>
+<p class="c1"><span class="c17 c19">TEST PLATE
+FITTING</span><span class="c17">&nbsp;-</span> <span class=
+"c11">The test plate fitting of an optical design is one of the
+more important phases of preparing a design for fabrication. The
+"TPLATE" command allows the user read/copy access to all currently
+installed testplate lists.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">TPLATE (testplate list
+name)</span><span class="c11">&nbsp;- The "TPLATE" command causes
+the built-in full screen edit program to open the designated
+testplate list. After the list is opened, any testplate radius may
+be copied into the Windows Clipboard and later pasted into the
+program command line as input to a "TESTRD" or "TESTCYL" command.
+Issued with the "?", the currently available testplate list names
+are displayed. Issued with the "LIST" qualifier, the command causes
+the names of the current testplate lists to be displayed along with
+their associated qualifier words.</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">TESTRD , surf# , testplate radius
+value</span><span class="c11">&nbsp;- The "TESTRD" command causes
+surface designated by "surf#" to have its radius of curvature set
+to the "testplate radius value</span> <span class="c17">in
+millimeters</span><span class="c11">". If the current lens database
+units are not millimeters, then the input testplate radius value
+will be converted from millimeters to the current lens database
+units and then assigned to the lens surface. Before the assignment
+is made, any curvature solve or pikup which would control the
+radius is removed. If the surface curvature is a current variable,
+that variable is removed from the variables
+list.</span><span class="c17">&nbsp;</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c5">TESTCYL , surf# , testplate cylinder
+radius value</span><span class="c11">&nbsp;- The "TESTCYL" command
+causes surface designated by "surf#" to have its toric radius of
+curvature set to the "testplate cylinder radius value</span>
+<span class="c17">in millimeters</span><span class="c11">". If the
+current lens database units are not millimeters, then the input
+testplate cylinder radius value will be converted from millimeters
+to the current lens database units and then assigned to the lens
+surface. Before the assignment is made, any curvature solve or
+pikup which would control the toric radius is removed. If the
+surface toric curvature is a current variable, that variable is
+removed from the variables list.</span><span class=
+"c17">&nbsp;</span></p>
+<p class="c1 c12"></p>
+<p class="c1"><span class="c4">All testplate values in the
+testplate databases are expressed in millimeters. Make sure to
+convert these units into the units being used in the lens database
+being testplated.</span></p>
+<p class="c1 c12"></p>
+<div>
+<p class="c10 c27"></p>
+</div>
+</body>
+</html>
