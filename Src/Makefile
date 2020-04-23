@@ -82,4 +82,4 @@ clean:
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 
 install:
-	install -m 755 koko-cli /usr/local/bin
+	install -m 755 koko-cli $(PREFIX)/bin

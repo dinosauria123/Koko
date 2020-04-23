@@ -23,14 +23,15 @@ Prerequisites
 Building Koko with Command Line Interface
 -----------------------------------------
 
-Change to the directory __./Src__ that holds the source code and, at
+In the top level directory ./Koko that holds the source code, at
 the command shell prompt, type
 
     make
 
 This will build a version of Koko without debugging information. The
-executable file is called 'koko-cli'.Debugging information is included in
-the executable file when make is called as follows:
+executable file is called 'koko-cli', the GUI is started with
+'koko-gui'. Debugging information is included in the executable file
+when make is called as follows:
 
     make DEBUG=true
 
@@ -50,10 +51,11 @@ Koko must be installed as super-user (or using sudo) with the command
 
     make install
 
-which installs the executable 'koko' in '/usr/local/bin'. When a
-directory prefix other than '/usr/local' is desired, e.g. '/opt', then
-the installation directory can be changed by specifying the directory
-prefix during installation:
+which installs the executables 'koko-cli' and 'koko-gui' in
+'/usr/local/bin' and the program data in the directory
+'/usr/local/KODS'. When a directory prefix other than '/usr/local' is
+desired, e.g. '/opt', then the installation directory can be changed
+by specifying the directory prefix during installation:
 
     make PREFIX=/opt install
 
@@ -67,7 +69,7 @@ or
     make PREFIX=/data_directory installdata
 
 When an installation directory prefix other than '/usr/local' was
-used, the location of the KODS data directory must be specified by
+used, the location of the KODS data directory can be specified by
 setting the value of the environment variable __KODS_HOME__ to the
 data directory. For example, when the bash shell is used, the command
 
