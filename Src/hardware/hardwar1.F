@@ -709,6 +709,9 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
+
+          USERHOME = "~"
+
           OPEN28=.FALSE.
           INQUIRE(UNIT=28,OPENED=OPEN28)
           IF(OPEN28) CALL MY_ENDPLT
