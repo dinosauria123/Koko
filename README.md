@@ -3,16 +3,17 @@ Koko Optical Design Software (KODS)
 
 Koko is raytracing software for the design and analysis of optical
 imaging and illumination systems. Koko has evolved from the optics
-design program KDP that was made open-source by its original developer
-James E. Klein (see KDP-LICENSE). The software provides the tools
-needed to design, analyze, and fabricate complex optical systems:
+design program KDP-2 that was made open-source by its original
+developer James E. Klein (see KDP-LICENSE). The software provides the
+tools needed to design, analyze, and fabricate complex optical
+systems:
 
-* Focal and afocal optical systems
+* Focal and afocal optical systems with decenters and tilts
 * Paraxial raytracing
 * Sequential and non-sequential raytracing
 * Spherical, aspheric, diffractive, and user-defined surfaces
 * Multi-configuration raytracing (zoom lenses, interferometers, etc.)
-* Spot diagrams, wavefront and aberration analysis
+* Spot diagrams, wavefront, and aberration analysis
 * Lens optimization
 * Macro language
 * Tolerance analysis
