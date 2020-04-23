@@ -42,7 +42,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     histnum=0;
     curhist=histnum;
 
-    ldir="/usr/local/lib/KODS";
+    ldir="/usr/local/KODS";
     hdir="/usr/local/bin";   //For Linux, MacOSX
 
 //    hdir="/sdcard/KODS";     //For Android
