@@ -5,7 +5,7 @@
 # Ulf GRIESMANN, April 2020
 #
 
-fSRC = astro.f profit.f
+fSRC = profit.f
 
 FOBJ = $(fSRC:.f=.o)
 
