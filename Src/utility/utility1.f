@@ -374,7 +374,6 @@ C
 C SUB PM.FOR
       SUBROUTINE PM
           USE GLOBALS
-          USE PROFIT_GLOBAL
 C
           IMPLICIT NONE
 C
@@ -396,11 +395,10 @@ C
               IF(WQ.NE.'SURTOL'.AND.WQ.NE.'AIMTOL'.AND.WQ.NE.'SERINC'
      1        .AND.WQ.NE.'PFAC'.AND.WQ.NE.'MRAYS'.AND.WQ.NE.'CAIMTOL'
      2        .AND.WQ.NE.'DINMUL'.AND.WQ.NE.'NRAITR'.AND.WQ.NE.'LINTOL'
-     3        .AND.WQ.NE.'DAYS'.AND.WQ.NE.'ONTOL'.AND.WQ.NE.'SINGTOL'.AND.
+     3        .AND.WQ.NE.'ONTOL'.AND.WQ.NE.'SINGTOL'.AND.
      4        WQ.NE.'DIFTOL'.AND.WQ.NE.'DELSUR'.AND.
-     5        WQ.NE.'SERLIM'.AND.WQ.NE.'SHORT'.AND.WQ.NE.'MEDIUM'.AND.WQ.NE.
-     6        'LONG'.AND.WQ.NE.'SELDELAY'.AND.WQ.NE.'BUYDELAY'
-     6        .AND.WQ.NE.'SAGDEL'.AND.WQ.NE.'MAXREG'.AND.WQ.NE.'MAXOPT') THEN
+     5        WQ.NE.'SERLIM'.AND.
+     6        WQ.NE.'SAGDEL'.AND.WQ.NE.'MAXREG'.AND.WQ.NE.'MAXOPT') THEN
                   OUTLYNE='INVALID QUALIFIER USED WITH "PM" COMMAND'
                   CALL SHOWIT(1)
                   OUTLYNE='RE-ENTER COMMAND'
@@ -428,55 +426,6 @@ C
               END IF
               IF(WQ.EQ.'NRAITR') THEN
                   IF(WQ.EQ.'NRAITR') NRAITR=INT(W1)
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'SHORT') THEN
-                  IF(WQ.EQ.'SHORT') SHORT_TIME=INT(W1)
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'DAYS') THEN
-                  IF(WQ.EQ.'DAYS') PDAYS=INT(W1)
-                  IF(((W1/2.0D0)-DBLE(INT(W1/2.0D0))).NE.0.0D0.OR.
-     1            INT(W1).LT.30.0D0) THEN
-                      WRITE(OUTLYNE,*) '"DAYS" MUST BE AN EVEN INTEGER'
-                      CALL SHOWIT(1)
-                      WRITE(OUTLYNE,*) 'GREATER THAN 30'
-                      CALL SHOWIT(1)
-                      OUTLYNE='RE-ENTER COMMAND'
-                      CALL SHOWIT(1)
-                      CALL MACFAL
-                      RETURN
-                  END IF
-                  IF(WQ.EQ.'DAYS') PDAYS=INT(W1)
-
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'MEDIUM') THEN
-                  IF(WQ.EQ.'MEDIUM') MEDIUM_TIME=INT(W1)
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'LONG') THEN
-                  IF(WQ.EQ.'LONG') LONG_TIME=INT(W1)
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'SELDEALY') THEN
-                  IF(WQ.EQ.'SELDELAY') SELL_DELAY=INT(W1)
-                  WRITE(OUTLYNE,1001) WQ,INT(W1)
-                  CALL SHOWIT(1)
-                  RETURN
-              END IF
-              IF(WQ.EQ.'BUYDEALY') THEN
-                  IF(WQ.EQ.'BUYDELAY') BUY_DELAY=INT(W1)
                   WRITE(OUTLYNE,1001) WQ,INT(W1)
                   CALL SHOWIT(1)
                   RETURN
@@ -846,7 +795,6 @@ C       NOT ONTOL
                           RETURN
                       END IF
                       SINGTOL=W1
-                  ELSE
 C       NOT SINGTOL
                   END IF
                   WRITE(OUTLYNE,2001) WQ,W1
@@ -864,13 +812,11 @@ C
 C
               IF(WQ.NE.'SURTOL'.AND.WQ.NE.'AIMTOL'.AND.WQ.NE.'SERINC'
      1        .AND.WQ.NE.'PFAC'.AND.WQ.NE.'MRAYS'.AND.WQ.NE.'CAIMTOL'
-     2        .AND.WQ.NE.'DINMUL'.AND.WQ.NE.'NRAITR'.AND.WQ.NE.'SHORT'
-     3        .AND.WQ.NE.'MEDIUM'.AND.WQ.NE.'LONG'.AND.WQ.NE.'SELDELAY'
-     4        .AND.WQ.NE.'DIFTOL'.AND.WQ.NE.'DELSUR'.AND.WQ.NE.'ONTOL'.AND.
-     4        WQ.NE.'SINGTOL'.AND.WQ.NE.'LINTOL'
-     5        .AND.WQ.NE.'BUYDELAY'.AND.WQ.NE.'DAYS'.AND.
-     6        WQ.NE.'SERLIM'.AND.WQ.NE.'SAGDEL'.AND.WQ.NE.'MAXREG'.AND.
-     7        WQ.NE.'MAXOPT') THEN
+     2        .AND.WQ.NE.'DINMUL'.AND.WQ.NE.'NRAITR'
+     3        .AND.WQ.NE.'DIFTOL'.AND.WQ.NE.'DELSUR'.AND.WQ.NE.'ONTOL'.AND.
+     4        WQ.NE.'SINGTOL'.AND.WQ.NE.'LINTOL' .AND.
+     5        WQ.NE.'SERLIM'.AND.WQ.NE.'SAGDEL'.AND.WQ.NE.'MAXREG'.AND.
+     6        WQ.NE.'MAXOPT') THEN
                   OUTLYNE='INVALID QUALIFIER USED WITH "PMP" COMMAND'
                   CALL SHOWIT(1)
                   OUTLYNE='RE-ENTER COMMAND'
@@ -888,48 +834,6 @@ C
               END IF
               IF(WQ.EQ.'NRAITR') THEN
                   IF(WQ.EQ.'NRAITR') IVAL=NRAITR
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'SHORT') THEN
-                  IF(WQ.EQ.'SHORT') IVAL=SHORT_TIME
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'DAYS') THEN
-                  IF(WQ.EQ.'DAYS') IVAL=PDAYS
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'MEDIUM') THEN
-                  IF(WQ.EQ.'MEDIUM') IVAL=MEDIUM_TIME
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'LONG') THEN
-                  IF(WQ.EQ.'LONG') IVAL=LONG_TIME
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'BUYDELAY') THEN
-                  IF(WQ.EQ.'BUY_DELAY') IVAL=BUY_DELAY
-                  WRITE(OUTLYNE,1000) WQ,IVAL
-                  CALL SHOWIT(0)
-                  RETURN
-              ELSE
-              END IF
-              IF(WQ.EQ.'SELDELAY') THEN
-                  IF(WQ.EQ.'SELDEALY') IVAL=SELL_DELAY
                   WRITE(OUTLYNE,1000) WQ,IVAL
                   CALL SHOWIT(0)
                   RETURN
@@ -970,11 +874,10 @@ C
                       CALL SHOWIT(0)
                   END IF
                   RETURN
-              ELSE
               END IF
  1000         FORMAT(A8,' = ',I10)
  2000         FORMAT(A8,' = ',G18.10)
-          ELSE
+
 C       NOT PMP
           END IF
           IF(WC.EQ.'OPCON') THEN
@@ -1006,12 +909,6 @@ C       IS SET AT 1.0D-3 OR THE REFERENCE APERTURE HT AT THE REFERENCE SURFACE
               SINGTOL=1.0D-12
 C
               NRAITR=100
-              SHORT_TIME=5
-              MEDIUM_TIME=10
-              LONG_TIME=30
-              SELL_DELAY=5
-              BUY_DELAY=5
-              PDAYS=60
               ASIAD=0
               ASITD=0
               RETURN

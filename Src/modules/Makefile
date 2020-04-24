@@ -7,7 +7,7 @@
 IFLAGS = -I../include
 
 # module sources
-MSRC= globals.f nssmod.f profit_global.f
+MSRC= globals.f nssmod.f
 
 MODS = $(MSRC:.f=.mod)
 FOBJ = $(MSRC:.f=.o)

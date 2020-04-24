@@ -1223,7 +1223,6 @@ C SUB GET.FOR
       SUBROUTINE GET
           USE GLOBALS
           USE NSSMOD
-          USE PROFIT_GLOBAL
 C
           IMPLICIT NONE
 C
@@ -1487,9 +1486,7 @@ C       3RD PUPIL ABERRATIONS (PRIMARY CHROMATIC DIFFERENCES)
      1    .AND.WQ.NE.'XPCMA3P'.AND.WQ.NE.'PDIS3P'.AND.WQ.NE.'XPDIS3P'.AND.
      2    WQ.NE.'PAST3P'.AND.WQ.NE.'RSPHX'.AND.WQ.NE.'RSPHY'.AND.
      3    WQ.NE.'XPAST3P'.AND.WQ.NE.'PPTZ3P'.AND.WQ.NE.'XPPTZ3P'
-     4    .AND.WQ.NE.'RSPHZ'.AND.WQ.NE.'SHORT'.AND.WQ.NE.
-     5    'MEDIUM'.AND.WQ.NE.'LONG'.AND.WQ.NE.
-     6    'BUYDELAY'.AND.WQ.NE.'SELDELAY') THEN
+     4    .AND.WQ.NE.'RSPHZ') THEN
 C
 C       CONTINUE CHECKING
           ELSE
@@ -1801,13 +1798,8 @@ C       FIRST, GET COMMANDS WITH NO NUMBERIC INPUT USED
           IF(WQ.EQ.'FFLX')   ONESY=.TRUE.
           IF(WQ.EQ.'LCV')    ONESY=.TRUE.
           IF(WQ.EQ.'PFAC')   ONESY=.TRUE.
-          IF(WQ.EQ.'SHORT')  ONESY=.TRUE.
-          IF(WQ.EQ.'MEDIUM') ONESY=.TRUE.
-          IF(WQ.EQ.'LONG')   ONESY=.TRUE.
-          IF(WQ.EQ.'BUYDELAY') ONESY=.TRUE.
-          IF(WQ.EQ.'SELDELAY') ONESY=.TRUE.
           IF(WQ.EQ.'ONTOL')  ONESY=.TRUE.
-          IF(WQ.EQ.'SINGTOL') ONESY=.TRUE.
+          IF(WQ.EQ.'SINGTOL')ONESY=.TRUE.
           IF(WQ.EQ.'DINMUL') ONESY=.TRUE.
           IF(WQ.EQ.'LINTOL') ONESY=.TRUE.
           IF(WQ.EQ.'FFLY')   ONESY=.TRUE.
@@ -2628,26 +2620,6 @@ C                        VALUE1=DBLE(TOPCNT)
               END IF
               IF(WQ.EQ.'SINGTOL') THEN
                   VALUE1=SINGTOL
-                  GO TO 200
-              END IF
-              IF(WQ.EQ.'SHORT') THEN
-                  VALUE1=SHORT_TIME
-                  GO TO 200
-              END IF
-              IF(WQ.EQ.'MEDIUM') THEN
-                  VALUE1=MEDIUM_TIME
-                  GO TO 200
-              END IF
-              IF(WQ.EQ.'LONG') THEN
-                  VALUE1=LONG_TIME
-                  GO TO 200
-              END IF
-              IF(WQ.EQ.'SELDELAY') THEN
-                  VALUE1=SELL_DELAY
-                  GO TO 200
-              END IF
-              IF(WQ.EQ.'BUYDELAY') THEN
-                  VALUE1=BUY_DELAY
                   GO TO 200
               END IF
               IF(WQ.EQ.'DIFTOL') THEN

@@ -5,7 +5,7 @@
 #
 
 SUBDIRS = ldm config hardware macro optimize paraxial pickup raytrace \
-          specsurf nonseq utility wavespot glass plotcad kmath quirks
+          specsurf nonseq utility wavespot glass plotcad kmath
 
 # default platform is Linux
 ifndef OS

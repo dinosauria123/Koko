@@ -806,22 +806,6 @@ C
                   CALL LENADD
                   RETURN
               END IF
-              IF(WC.EQ.'LOADPROF') THEN
-                  CALL LOADPROF
-                  RETURN
-              END IF
-              IF(WC.EQ.'LISTPROF') THEN
-                  CALL LISTPROF
-                  RETURN
-              END IF
-              IF(WC.EQ.'LOADISSU') THEN
-                  CALL LOADISSU
-                  RETURN
-              END IF
-              IF(WC.EQ.'PLOTISSU') THEN
-                  CALL PLOTISSU
-                  RETURN
-              END IF
               IF(WC.EQ.'ASTOP') THEN
                   CALL SASTOP
                   RETURN

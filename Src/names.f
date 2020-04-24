@@ -1370,16 +1370,7 @@ C     WCC(2003)=' '
           WCC(2032)='FLIPREFY'
           WCC(2033)='PSFBIN'
           WCC(2034)='CONFIG'
-          WCC(2035)='LOADPROF'
-          WCC(2036)='LISTPROF'
-          WCC(2037)='LOADISSU'
-          WCC(2038)='SHORT'
-          WCC(2039)='MEDIUM'
-          WCC(2040)='LONG'
-          WCC(2041)='SELDELAY'
-          WCC(2042)='BUYDELAY'
-          WCC(2043)='PLOTISSU'
-          WCC(2044)='DAYS'
+C WCC(2035) ... WCC(2044) were used for stock analysis
           WCC(2045)='ONTOL'
           WCC(2046)='SINGTOL'
           WCC(2047)='CHGMAC'
@@ -1389,9 +1380,6 @@ C     WCC(2003)=' '
           WCC(2051)='SHUFFLE'
 C
 C     2049 TO 4500 AVAILABLE FOR OPTICS
-C
-C     4501 TO 5000 RESERVED FOR STOCK ANALYSIS
-C
 C
           V=0
           DO I=5001,8969
