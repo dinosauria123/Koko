@@ -4,7 +4,7 @@
 # Ulf GRIESMANN, April 2020
 #
 
-fSRC = bicubic.f  math.f  opteng.f  sort.f  svd.f  tilter.f
+fSRC = bicubic.f  math.f  opteng.f  svd.f  tilter.f
 
 FOBJ = $(fSRC:.f=.o)
 
