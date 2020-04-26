@@ -328,7 +328,7 @@ void MainWindow::ShowContextMenu(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("CHANCE.BIN",str,row);
@@ -349,7 +349,7 @@ void MainWindow::ShowContextMenu2(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+ //   qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("CORNIN.BIN",str,row);
@@ -370,7 +370,7 @@ void MainWindow::ShowContextMenu3(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("HIKARI.BIN",str,row);
@@ -391,7 +391,7 @@ void MainWindow::ShowContextMenu4(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("HOYA.BIN",str,row);
@@ -412,7 +412,7 @@ void MainWindow::ShowContextMenu5(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("OHARA.BIN",str,row);
@@ -433,7 +433,7 @@ void MainWindow::ShowContextMenu6(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("OHARA-O.BIN",str,row);
@@ -454,7 +454,7 @@ void MainWindow::ShowContextMenu7(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("RADHARD.BIN",str,row);
@@ -475,7 +475,7 @@ void MainWindow::ShowContextMenu8(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("SCH2000.BIN",str,row);
@@ -496,7 +496,7 @@ void MainWindow::ShowContextMenu9(QAction *Action)
     QString str = Action->text();
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
-    qDebug() << Action->parent()->objectName();
+//    qDebug() << Action->parent()->objectName();
 
     LF=18;
     DataRead("SCHOTT.BIN",str,row);
@@ -868,7 +868,7 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
             for(int j=i;j<=i+10;j++){                                       //Read GlassName (10 letters)
                 GlassName=(GlassName+HexData[j]).trimmed();
             }
-                qDebug()<<GlassName;
+//                qDebug()<<GlassName;
             if (GlassName==name.trimmed()) {
                 break;
              }
@@ -878,7 +878,7 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
 
       i=i+10;
       GN << GlassName;
-    qDebug() << "GlassName= "+GlassName;
+//    qDebug() << "GlassName= "+GlassName;
 
       while (HexData[i]==char(0x20)){                                 //skip '0x20'
           i++;
@@ -886,7 +886,7 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
 
 
       while (HexData[i]!=char(0x20)){                                 //read catalog No. until '0x20'
-              qDebug() << char(HexData[i]);
+//              qDebug() << char(HexData[i]);
         i++;
       }
 
@@ -906,14 +906,14 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
         A5=numconv(i+40,HexData);
 
     if (BinName=="SCHOTT.BIN"||BinName=="SCH2000.BIN"||BinName=="OHARA.BIN"){
-        qDebug() << BinName;
+//        qDebug() << BinName;
         nF=sqrt(1+((A0*lF*lF)/(lF*lF-A3))+((A1*lF*lF)/(lF*lF-A4))+((A2*lF*lF)/(lF*lF-A5)));
         nD=sqrt(1+((A0*lD*lD)/(lD*lD-A3))+((A1*lD*lD)/(lD*lD-A4))+((A2*lD*lD)/(lD*lD-A5)));
         nC=sqrt(1+((A0*lC*lC)/(lC*lC-A3))+((A1*lC*lC)/(lC*lC-A4))+((A2*lC*lC)/(lC*lC-A5)));
         }
 
     else{
-        qDebug() << BinName;
+//        qDebug() << BinName;
         nF=sqrt(A0+A1*pow(lF,2)+A2*1/pow(lF,2)+A3*1/pow(lF,4)+A4*1/pow(lF,6)+A5*1/pow(lF,8));
         nD=sqrt(A0+A1*pow(lD,2)+A2*1/pow(lD,2)+A3*1/pow(lD,4)+A4*1/pow(lD,6)+A5*1/pow(lD,8));
         nC=sqrt(A0+A1*pow(lC,2)+A2*1/pow(lC,2)+A3*1/pow(lC,4)+A4*1/pow(lC,6)+A5*1/pow(lC,8));
@@ -1007,11 +1007,6 @@ void MainWindow::ReadFileToTable(QString pathname)
         label << QString::number(i);    //set table vetical label start to 0
     }
 
-    table->clear();
-    table->setRowCount( nol );          //number of row = nol
-    table->setVerticalHeaderLabels(label);
-    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr("Radius") << tr("Thickness" ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
-
     QStringList lambda;
     QRegExp RegExp("WV *");
     RegExp.setPatternSyntax(QRegExp::Wildcard); //pick up Wavelength
@@ -1042,6 +1037,35 @@ void MainWindow::ReadFileToTable(QString pathname)
         }
     }
 
+    QString units;
+    QRegExp RegExp0("UNITS *");
+    RegExp0.setPatternSyntax(QRegExp::Wildcard); //pick up Units
+
+    for(int i=0; i<=nof; i++){
+
+        item = lines[i];
+
+        if (RegExp0.exactMatch(item)){
+           units = item.trimmed().right(2).toLower();
+           qDebug() << units;
+        }
+    }
+
+    QString DpR;
+    QString DpT;
+
+    DpR = "Radius ("+units+")";
+    QByteArray ba1 = DpR.toLocal8Bit();
+    const char *DispRadius = ba1.data();
+
+    DpT = "Thickness ("+units+")";
+    QByteArray ba2 = DpR.toLocal8Bit();
+    const char *DispThickness = ba2.data();
+
+    table->clear();
+    table->setRowCount( nol );          //number of row = nol
+    table->setVerticalHeaderLabels(label);
+    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
 
     QString radius;
     QString curveture;
@@ -1257,8 +1281,8 @@ void MainWindow::ReadFileToTable(QString pathname)
 
 
         if (material.left(5)=="OHARA"){
-                        qDebug()<<material;
-                        qDebug()<<name;
+ //                       qDebug()<<material;
+ //                       qDebug()<<name;
             DataRead("OHARA.BIN",name,k);
             table->setItem(k,3,new QTableWidgetItem(material));
             table->resizeColumnToContents(3);
@@ -1953,13 +1977,13 @@ void MainWindow::slot_actionRay_input_angle()
 }
 
 void MainWindow::leaveEvent(QEvent * event){    //Release input when event happend
-       qDebug() << "Leave event";
+//       qDebug() << "Leave event";
 //       cmdLine->releaseKeyboard();
        QWidget::leaveEvent(event);
 }
 
 void MainWindow::enterEvent(QEvent * event){    //Grab input when event finished
-       qDebug() << "Enter event";
+//       qDebug() << "Enter event";
 //       cmdLine->grabKeyboard();
        QWidget::enterEvent(event);
 }
@@ -1981,7 +2005,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
             {
                 // Return key pressed - record update
 
-                qDebug() << "Return key pressed";
+//                qDebug() << "Return key pressed";
                 slot_action_value_entered();
                 break;
             }
@@ -1989,7 +2013,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
             {
                // Enter key pressed - record update
 
-                qDebug() << "Enter key pressed";
+//                qDebug() << "Enter key pressed";
                 slot_action_value_entered();
                 break;
             }
@@ -2009,7 +2033,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
                 {
                     // Up arrow key pressed - record update
 
-                    qDebug() << "Up arrow key pressed";
+//                    qDebug() << "Up arrow key pressed";
                     curhist--;
                     if (curhist < 0) curhist=histnum-1;
                     history(curhist);
@@ -2020,7 +2044,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
                 {
                    // Down arrow key pressed - record update
 
-                    qDebug() << "Down arrow key pressed";
+//                    qDebug() << "Down arrow key pressed";
                     curhist++;
                     if (curhist >= histnum) curhist=0;
                     history(curhist);
@@ -2033,7 +2057,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event)
                 {
                    // Enter key pressed - record update
 
-                    qDebug() << "Return key pressed";
+ //                   qDebug() << "Return key pressed";
 
                 QFile HistData(ldir+"/HISTORY.DAT");                 //set data file
                 HistData.open(QIODevice::WriteOnly|QIODevice::Append);
@@ -2073,8 +2097,8 @@ void MainWindow::history(int curhist)
     for (int i=0; i<=curhist; i++)
     {
         DispHistory = input.readLine(0);    // read data
-        qDebug() << DispHistory;
-        qDebug() << histnum;
+//        qDebug() << DispHistory;
+//        qDebug() << histnum;
     }
 
     HistData.close();
