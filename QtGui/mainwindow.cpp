@@ -1010,7 +1010,7 @@ void MainWindow::ReadFileToTable(QString pathname)
     table->clear();
     table->setRowCount( nol );          //number of row = nol
     table->setVerticalHeaderLabels(label);
-    table->setHorizontalHeaderLabels( QStringList() << tr("Radius") << tr("Thickness" ) << tr("Material") << tr("Index n")<< tr("Abbe V")<< tr("aperture"));
+    table->setHorizontalHeaderLabels( QStringList() << tr("Radius") << tr("Thickness" ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
 
     QStringList lambda;
     QRegExp RegExp("WV *");
