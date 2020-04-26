@@ -130,7 +130,7 @@
         </column>
         <column>
          <property name="text">
-          <string>Abbe V</string>
+          <string>Abbe VD</string>
          </property>
         </column>
         <column>
@@ -241,7 +241,7 @@
    </widget>
    <widget class="QMenu" name="menuGraphs">
     <property name="title">
-     <string>Graphs</string>
+     <string>Analyze</string>
     </property>
     <widget class="QMenu" name="menuAberration_Fans">
      <property name="title">
@@ -340,11 +340,23 @@
     </property>
     <addaction name="actionInput_Variables"/>
    </widget>
+   <widget class="QMenu" name="menuTolerancing">
+    <property name="title">
+     <string>Tolerancing</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuMacros">
+    <property name="title">
+     <string>Macros</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuLens_View"/>
    <addaction name="menuGraphs"/>
    <addaction name="menuOptimize"/>
+   <addaction name="menuTolerancing"/>
+   <addaction name="menuMacros"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
