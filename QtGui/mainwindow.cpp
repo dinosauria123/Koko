@@ -1053,6 +1053,7 @@ void MainWindow::ReadFileToTable(QString pathname)
 
     QString DpR;
     QString DpT;
+    QString DpA;
 
     DpR = "Radius ("+units+")";
     QByteArray ba1 = DpR.toLocal8Bit();
@@ -1061,6 +1062,10 @@ void MainWindow::ReadFileToTable(QString pathname)
     DpT = "Thickness ("+units+")";
     QByteArray ba2 = DpR.toLocal8Bit();
     const char *DispThickness = ba2.data();
+
+    DpA = "Aperture ("+units+")";
+    QByteArray ba3 = DpA.toLocal8Bit();
+    const char *DispAperture = ba3.data();
 
     table->clear();
     table->setRowCount( nol );          //number of row = nol
