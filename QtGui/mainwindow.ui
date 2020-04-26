@@ -115,6 +115,11 @@
         </row>
         <column>
          <property name="text">
+          <string>Surf. property</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Thickness</string>
          </property>
         </column>

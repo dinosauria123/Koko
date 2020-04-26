@@ -61,7 +61,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     table->installEventFilter(this);  //install event filter
     cmdLine->installEventFilter(this);  //install event filter
 
-    table->setColumnCount( 6 );
+    table->setColumnCount( 7 );
     table->setRowCount( 20 );
 
     table ->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -75,7 +75,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     ReadFileToTable(ldir+"/CURLENS/LENSTEXT.DAT");
 
     for(int i=0; i<=nol-1; i++){
-            tableitem=table->item(i,2);
+            tableitem=table->item(i,3);
             tableitem->setFlags(Qt::ItemIsEnabled);    // material is not editable
     }
 
@@ -332,9 +332,9 @@ void MainWindow::ShowContextMenu(QAction *Action)
 
     LF=18;
     DataRead("CHANCE.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("CHANCE "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("CHANCE "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -353,9 +353,9 @@ void MainWindow::ShowContextMenu2(QAction *Action)
 
     LF=18;
     DataRead("CORNIN.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("CORNIN "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("CORNIN "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -374,9 +374,9 @@ void MainWindow::ShowContextMenu3(QAction *Action)
 
     LF=18;
     DataRead("HIKARI.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("HIKARI "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("HIKARI "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -395,9 +395,9 @@ void MainWindow::ShowContextMenu4(QAction *Action)
 
     LF=18;
     DataRead("HOYA.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("HOYA "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("HOYA "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -416,9 +416,9 @@ void MainWindow::ShowContextMenu5(QAction *Action)
 
     LF=18;
     DataRead("OHARA.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("OHARA "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("OHARA "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -437,9 +437,9 @@ void MainWindow::ShowContextMenu6(QAction *Action)
 
     LF=18;
     DataRead("OHARA-O.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("OHARA-O "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("OHARA-O "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -458,9 +458,9 @@ void MainWindow::ShowContextMenu7(QAction *Action)
 
     LF=18;
     DataRead("RADHARD.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("RADHARD "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("RADHARD "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -479,9 +479,9 @@ void MainWindow::ShowContextMenu8(QAction *Action)
 
     LF=18;
     DataRead("SCH2000.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("SCH2000 "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("SCH2000 "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -500,9 +500,9 @@ void MainWindow::ShowContextMenu9(QAction *Action)
 
     LF=18;
     DataRead("SCHOTT.BIN",str,row);
-    table->setItem(row, 2, new QTableWidgetItem("SCHOTT "+str));  //Change table value to MODEL
-    table->resizeColumnToContents(2);
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("SCHOTT "+str));  //Change table value to MODEL
+    table->resizeColumnToContents(3);
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -518,11 +518,11 @@ void MainWindow::InputAir()
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
 
-    table->setItem(row, 2, new QTableWidgetItem("AIR"));
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("AIR"));
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
-    table->setItem(row, 3, new QTableWidgetItem(""));
     table->setItem(row, 4, new QTableWidgetItem(""));
+    table->setItem(row, 5, new QTableWidgetItem(""));
     proc->write("U L\n");
     proc->write("CHG "+QString(Qrow).toLatin1()+"\n");
     proc->write("AIR\n");
@@ -535,11 +535,11 @@ void MainWindow::InputReflector()
     row = table->currentRow();          //get number of row
     QString Qrow = QString::number(row);
 
-    table->setItem(row, 2, new QTableWidgetItem("REFL"));
-    tableitem=table->item(row,2);
+    table->setItem(row, 3, new QTableWidgetItem("REFL"));
+    tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
-    table->setItem(row, 3, new QTableWidgetItem(""));
     table->setItem(row, 4, new QTableWidgetItem(""));
+    table->setItem(row, 5, new QTableWidgetItem(""));
     proc->write("U L\n");
     proc->write("CHG "+QString(Qrow).toLatin1()+"\n");
     proc->write("REFL\n");
@@ -644,7 +644,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
 
     if (selectedItem->text()==QString("Model")){
         slot_actionModeldialog();
-        table->resizeColumnToContents(2);
+        table->resizeColumnToContents(3);
     }
 
     if (selectedItem->text()==QString("AIR")){
@@ -659,9 +659,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu1){
         LF=18;
         DataRead("CHANCE.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("CHANCE "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("CHANCE "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -674,9 +674,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu2){
         LF=18;
         DataRead("CORNIN.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("CORNIN "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("CORNIN "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -689,9 +689,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu3){
         LF=18;
         DataRead("HIKARI.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("HIKARI "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("HIKARI "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -704,9 +704,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu4){
         LF=18;
         DataRead("HOYA.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("HOYA "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("HOYA "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -719,9 +719,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu5){
         LF=18;
         DataRead("OHARA.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("OHARA "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("OHARA "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -734,9 +734,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu6){
         LF=18;
         DataRead("OHARA-O.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("OHARA-O "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("OHARA-O "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -749,9 +749,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu7){
         LF=18;
         DataRead("RADHARD.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("RADHARD "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("RADHARD "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -764,9 +764,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu8){
         LF=18;
         DataRead("SCH2000.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("SCH2000 "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("SCH2000 "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -779,9 +779,9 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
     if (selectedItem->parent()==&SubMenu9){
         LF=18;
         DataRead("SCHOTT.BIN",selectedItem->text(),row);
-        table->setItem(row, 2, new QTableWidgetItem("SCHOTT "+selectedItem->text()));  //Change table value to MODEL
-        table->resizeColumnToContents(2);
-        tableitem=table->item(row,2);
+        table->setItem(row, 3, new QTableWidgetItem("SCHOTT "+selectedItem->text()));  //Change table value to MODEL
+        table->resizeColumnToContents(3);
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
@@ -924,11 +924,11 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
     qDebug() << nD;
     qDebug() << Abbe;
 
-    table->setItem(k,3,new QTableWidgetItem(QString::number(nD)));
-    table->setItem(k,4,new QTableWidgetItem(QString::number(Abbe)));
+    table->setItem(k,4,new QTableWidgetItem(QString::number(nD,'f',4)));
+    table->setItem(k,5,new QTableWidgetItem(QString::number(Abbe,'f',1)));
 
-    table->item(k,3)->setFlags(Qt::ItemIsEnabled); //Index & Abbe are not editable.
-    table->item(k,4)->setFlags(Qt::ItemIsEnabled);
+    table->item(k,4)->setFlags(Qt::ItemIsEnabled); //Index & Abbe are not editable.
+    table->item(k,5)->setFlags(Qt::ItemIsEnabled);
 
     return;
 
@@ -1010,7 +1010,7 @@ void MainWindow::ReadFileToTable(QString pathname)
     table->clear();
     table->setRowCount( nol );          //number of row = nol
     table->setVerticalHeaderLabels(label);
-    table->setHorizontalHeaderLabels( QStringList() << tr("Radius") << tr("Thickness" ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
+    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr("Radius") << tr("Thickness" ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
 
     QStringList lambda;
     QRegExp RegExp("WV *");
@@ -1054,12 +1054,16 @@ void MainWindow::ReadFileToTable(QString pathname)
 
         item = lines[i];
 
+        if (RegExp1.exactMatch(item)){
+        table->setItem( k, 0, new QTableWidgetItem(""));
+        }
+
         comma = item.indexOf(",")+1; // pick up numenical value
         curveture = item.trimmed().mid(comma,25);
         radius = radius.setNum(1.0E0/curveture.toDouble(),'g',6); //convert curveture to radius
 
         if (RegExp1.exactMatch(item)){
-        table->setItem( k, 0, new QTableWidgetItem(radius));
+        table->setItem( k, 1, new QTableWidgetItem(radius));
         }
 
     QString thickness;
@@ -1073,7 +1077,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (RegExp2.exactMatch(item)){
         thickness = item.trimmed().mid(comma,25);
         thickness = thickness.setNum(thickness.toDouble(),'g',6);
-        table->setItem( k, 1, new QTableWidgetItem(thickness));
+        table->setItem( k, 2, new QTableWidgetItem(thickness));
         k++;
         }
 
@@ -1088,7 +1092,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (RegExp4.exactMatch(item)){
             aperture = item.trimmed().mid(comma,comma2-comma);
             aperture = aperture.setNum(aperture.toDouble(),'g',6);
-            table->setItem( k-1, 5, new QTableWidgetItem(aperture));
+            table->setItem( k-1, 6, new QTableWidgetItem(aperture));
         }
     }
 
@@ -1110,13 +1114,13 @@ void MainWindow::ReadFileToTable(QString pathname)
         name = lines[i+1].mid(7,LF).trimmed();
 
         if (k==nol){
-            table->setItem(k-1,2,new QTableWidgetItem("LAST SURFACE"));
-            table->resizeColumnToContents(2);
+            table->setItem(k-1,3,new QTableWidgetItem("LAST SURFACE"));
+            table->resizeColumnToContents(3);
             return;
         }
 
         if (material.left(3)=="AIR"){
-            table->setItem(k,2,new QTableWidgetItem("AIR"));
+            table->setItem(k,3,new QTableWidgetItem("AIR"));
             k++;
             continue;
         }
@@ -1127,9 +1131,9 @@ void MainWindow::ReadFileToTable(QString pathname)
         }
 
         if (material.left(5)=="IDEAL"){
-            table->setItem(k,2,new QTableWidgetItem("IDEAL"));
-            table->setItem(k,3,new QTableWidgetItem("1"));
-            table->setItem(k,4,new QTableWidgetItem("0"));
+            table->setItem(k,3,new QTableWidgetItem("IDEAL"));
+            table->setItem(k,4,new QTableWidgetItem("1"));
+            table->setItem(k,5,new QTableWidgetItem("0"));
             k++;
             continue;
         }
@@ -1137,37 +1141,37 @@ void MainWindow::ReadFileToTable(QString pathname)
 
         if (material.left(4)=="REFS"){
 
-                table->setItem(k,2,new QTableWidgetItem("REFS "+lines[i+2].trimmed()));
+                table->setItem(k,3,new QTableWidgetItem("REFS "+lines[i+2].trimmed()));
                 k++;
                 i=i+2;
 
             if((lines[i+2].trimmed()=="ASTOP")&&(lines[i+3].trimmed()=="REFL")){
-                table->setItem(k,2,new QTableWidgetItem("REFS STOP REFL"));
+                table->setItem(k,3,new QTableWidgetItem("REFS STOP REFL"));
                 i=i+3;
             }
 
             if(lines[i+2].trimmed()=="ASTOP"){
-                table->setItem(k,2,new QTableWidgetItem("REFS STOP"));
+                table->setItem(k,3,new QTableWidgetItem("REFS STOP"));
                 i=i+2;
             }
             if(lines[i+2].trimmed()=="REFL"){
-                table->setItem(k,2,new QTableWidgetItem("REFS REFL"));
+                table->setItem(k,3,new QTableWidgetItem("REFS REFL"));
                 i=i+2;
             }
         continue;
         }
 
         if (material.left(4)=="REFL"){
-            table->setItem(k,2,new QTableWidgetItem("REFL"));
+            table->setItem(k,3,new QTableWidgetItem("REFL"));
             k++;
             continue;
         }
 
 
         if (material.left(3)=="GLA"){
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->setItem(k,3,new QTableWidgetItem("1.00000"));
-            table->setItem(k,4,new QTableWidgetItem("0.00000"));
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->setItem(k,4,new QTableWidgetItem("1.0000"));
+            table->setItem(k,5,new QTableWidgetItem("0.0"));
             k++;
             continue;
         }
@@ -1175,18 +1179,18 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (material.left(5)=="MODEL"){
             index = lines[i+1].mid(comma+4,20);
             Abbe =  lines[i+1].mid(comma+28,20);
-            table->setItem(k,2,new QTableWidgetItem(material.left(15)));
-            table->setItem(k,3,new QTableWidgetItem(index.setNum(index.toDouble(),'g',6)));
-            table->setItem(k,4,new QTableWidgetItem(Abbe.setNum(Abbe.toDouble(),'g',6)));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material.left(15)));
+            table->setItem(k,4,new QTableWidgetItem(index.setNum(index.toDouble(),'f',4)));
+            table->setItem(k,5,new QTableWidgetItem(Abbe.setNum(Abbe.toDouble(),'f',1)));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
 
         if (material.left(3)=="SCH"){
             DataRead("SCHOTT.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1194,8 +1198,8 @@ void MainWindow::ReadFileToTable(QString pathname)
 
         if (material.left(7)=="SCH2000"){
             DataRead("SCH2000.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1203,32 +1207,32 @@ void MainWindow::ReadFileToTable(QString pathname)
 
         if (material.left(6)=="CHANCE"){
             DataRead("CHANCE.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
 
         if (material.left(6)=="CORNIN"){
             DataRead("CORNIN.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
 
         if (material.left(6)=="HIKARI"){
             DataRead("HIKARI.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
 
         if (material.left(4)=="HOYA"){
             DataRead("HOYA.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1236,8 +1240,8 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (material.left(5)=="OHARA"){
             qDebug()<<material;
             DataRead("OHARA-O.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1247,8 +1251,8 @@ void MainWindow::ReadFileToTable(QString pathname)
                         qDebug()<<material;
                         qDebug()<<name;
             DataRead("OHARA.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1256,8 +1260,8 @@ void MainWindow::ReadFileToTable(QString pathname)
 
         if (material.left(7)=="RADHARD"){
             DataRead("RADHARD.BIN",name,k);
-            table->setItem(k,2,new QTableWidgetItem(material));
-            table->resizeColumnToContents(2);
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->resizeColumnToContents(3);
             k++;
             continue;
         }
@@ -1446,10 +1450,10 @@ void MainWindow::slot_actionInsert_surface()
 
     if (row != 0){
         table->insertRow(row);              //insert row to GUI table
-        table->setItem(row,0,new QTableWidgetItem("inf"));
-        table->setItem(row,1,new QTableWidgetItem("0"));
-        table->setItem(row,2,new QTableWidgetItem("AIR"));
-        tableitem=table->item(row,2);
+        table->setItem(row,1,new QTableWidgetItem("inf"));
+        table->setItem(row,2,new QTableWidgetItem("0"));
+        table->setItem(row,3,new QTableWidgetItem("AIR"));
+        tableitem=table->item(row,3);
         tableitem->setFlags(Qt::ItemIsEnabled);
         nol++;
     }
@@ -1787,13 +1791,13 @@ void MainWindow::slot_action_value_entered()
     proc->write(input_cmd);             //input command (edit surface)
 
     switch (column){
-        case 0:
+        case 1:
             opr="RD ";                  //edit radius
             break;
-        case 1:
+        case 2:
             opr="TH ";                  //edit thickness
             break;
-        case 2:                         //edit glass data
+        case 3:                         //edit glass data
             dialog = new nkDialog();
             dialog->exec();
 
@@ -1805,13 +1809,13 @@ void MainWindow::slot_action_value_entered()
             proc->write("EOS\n");
             proc->write("RTG ALL\n");
 
-            table->setItem(row, 2, new QTableWidgetItem(dialog->GlassName.toUpper()));  //Change table value to MODEL
-            table->setItem(row, 3, new QTableWidgetItem(dialog->Index.trimmed()));
-            table->setItem(row, 4, new QTableWidgetItem(dialog->Abbe.trimmed()));
+            table->setItem(row, 3, new QTableWidgetItem(dialog->GlassName.toUpper()));  //Change table value to MODEL
+            table->setItem(row, 4, new QTableWidgetItem(dialog->Index.trimmed()));
+            table->setItem(row, 5, new QTableWidgetItem(dialog->Abbe.trimmed()));
             break;
         }
 
-        case 5:
+        case 6:
         opr="CLAP ";                  //edit aperture radius
         break;
 
@@ -1853,14 +1857,14 @@ void MainWindow::slot_actionModeldialog()
     proc->write("RTG ALL\n");
     proc->write("FINDGLASS "+Qrow.toLatin1()+"\n");
 
-    table->setItem(Qrow.toInt(), 2, new QTableWidgetItem("MODEL "+dialog->GlassName.toUpper()));  //Change table value to MODEL
-    tableitem=table->item(row,2);
-    tableitem->setFlags(Qt::ItemIsEnabled);
-    table->setItem(Qrow.toInt(), 3, new QTableWidgetItem(dialog->Index.trimmed()));
+    table->setItem(Qrow.toInt(), 3, new QTableWidgetItem("MODEL "+dialog->GlassName.toUpper()));  //Change table value to MODEL
     tableitem=table->item(row,3);
     tableitem->setFlags(Qt::ItemIsEnabled);
-    table->setItem(Qrow.toInt(), 4, new QTableWidgetItem(dialog->Abbe.trimmed()));
+    table->setItem(Qrow.toInt(), 4, new QTableWidgetItem(dialog->Index.trimmed()));
     tableitem=table->item(row,4);
+    tableitem->setFlags(Qt::ItemIsEnabled);
+    table->setItem(Qrow.toInt(), 5, new QTableWidgetItem(dialog->Abbe.trimmed()));
+    tableitem=table->item(row,5);
     tableitem->setFlags(Qt::ItemIsEnabled);
 
     }
