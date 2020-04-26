@@ -1176,6 +1176,15 @@ void MainWindow::ReadFileToTable(QString pathname)
             continue;
         }
 
+        if (material.left(4)=="MATL"){
+            table->setItem(k,3,new QTableWidgetItem(material));
+            table->setItem(k,4,new QTableWidgetItem(index.setNum(index.toDouble(),'f',4)));
+            table->setItem(k,5,new QTableWidgetItem(Abbe.setNum(Abbe.toDouble(),'f',1)));
+            k++;
+            continue;
+        }
+
+
         if (material.left(5)=="MODEL"){
             index = lines[i+1].mid(comma+4,20);
             Abbe =  lines[i+1].mid(comma+28,20);
