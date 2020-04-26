@@ -1070,7 +1070,7 @@ void MainWindow::ReadFileToTable(QString pathname)
     table->clear();
     table->setRowCount( nol );          //number of row = nol
     table->setVerticalHeaderLabels(label);
-    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr("Aperture"));
+    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr(DispAperture));
 
     QString radius;
     QString curveture;
