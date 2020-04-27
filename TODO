@@ -7,6 +7,8 @@ To Do List for KODS
 
 - eliminate compiler warnings
 
+- use writable USERHOME for files written by Koko
+
 - implement Qcon and Qbfs polynomials for aspheric surfaces
 
 - build and installation instructions
