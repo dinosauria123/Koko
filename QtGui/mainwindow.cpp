@@ -1080,11 +1080,13 @@ void MainWindow::ReadFileToTable(QString pathname)
     k=0;
 
     for(int i=0; i<=nof; i++){        
-
-        item = lines[i];
-
-        if (RegExp1.exactMatch(item)){
         table->setItem( k, 0, new QTableWidgetItem(""));
+        if (lines[i].trimmed().left(4)=="REFS"){
+                table->setItem(k-1,0,new QTableWidgetItem("REFS"));
+                if(lines[i+1].trimmed()=="ASTOP"){
+                    table->setItem(k-1,0,new QTableWidgetItem("REFS STOP"));
+                }
+        continue;
         }
 
         comma = item.indexOf(",")+1; // pick up numenical value
@@ -1167,28 +1169,6 @@ void MainWindow::ReadFileToTable(QString pathname)
             continue;
         }
 
-
-        if (material.left(4)=="REFS"){
-
-                table->setItem(k,3,new QTableWidgetItem("REFS "+lines[i+2].trimmed()));
-                k++;
-                i=i+2;
-
-            if((lines[i+2].trimmed()=="ASTOP")&&(lines[i+3].trimmed()=="REFL")){
-                table->setItem(k,3,new QTableWidgetItem("REFS STOP REFL"));
-                i=i+3;
-            }
-
-            if(lines[i+2].trimmed()=="ASTOP"){
-                table->setItem(k,3,new QTableWidgetItem("REFS STOP"));
-                i=i+2;
-            }
-            if(lines[i+2].trimmed()=="REFL"){
-                table->setItem(k,3,new QTableWidgetItem("REFS REFL"));
-                i=i+2;
-            }
-        continue;
-        }
 
         if (material.left(4)=="REFL"){
             table->setItem(k,3,new QTableWidgetItem("REFL"));
