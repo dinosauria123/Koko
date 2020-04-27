@@ -184,17 +184,16 @@ c     in the first column
       END
 
 
-
       SUBROUTINE SHUFFLE(N,ARR)
 C     THIS IS USED TO SET UP A RANDOMLY SORTED LIST OF N
 C     DOUBLE PRECISION REPRESENTATIONS OF N INTEGER VALUES
 C     RANGING FROM 1 TO N. iT WAS ADDED ON 3/13/2006 TO SUPPORT
 C     A NEW WAY TO DO ITER POWELL.
           IMPLICIT NONE
-          INTEGER n,i
+          INTEGER n,i,ier
           REAL*8 RANDMM
           EXTERNAL RANDMM
-          REAL*8 arr(n,1:2)
+          REAL*8 ARR(n,1:2)
           INCLUDE 'datmai.inc'
 C     LOAD ARR(I,2) WITH DOUBLE PRECISION REPRESENTATIONS
 C     OF I
@@ -205,14 +204,10 @@ C     ARR(I,1)
               ARR(I,1)=RANDMM()
           END DO
 C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,2)
-          CALL DARRAY_SORT(N,ARR)
-          DO I=1,N
-C     WRITE(OUTLYNE,*) I,ARR(I,1),ARR(I,2)
-C     CALL SHOWIT(1)
-          END DO
+          CALL sortdmat(ARR,N,2,1,ier)
       END
-C SUB RANDSET.FOR
-C
+
+
       SUBROUTINE RANDSET
 C
           IMPLICIT NONE
@@ -227,7 +222,8 @@ C
 C
           RETURN
       END
-C SUB MYNEWSEED.FOR
+
+C     SUB MYNEWSEED.FOR
 C
       SUBROUTINE MYNEWSEED
 C
@@ -294,7 +290,9 @@ C
 C
           RETURN
       END
-C SUB RANDGET.FOR
+
+      
+C     SUB RANDGET.FOR
 C
       SUBROUTINE RANDGET(RESULT)
 C
@@ -312,6 +310,7 @@ C
 C
           RETURN
       END
+
       FUNCTION RANRAN(MY_IDUM)
           IMPLICIT NONE
           INTEGER MY_IDUM,IDUM
@@ -350,7 +349,6 @@ C
               IDUM=1
               RANRAN=0.0
               RETURN
-          ELSE
           END IF
           INEXT=INEXT+1
           IF(INEXT.EQ.56) INEXT=1
@@ -362,6 +360,7 @@ C
           RANRAN=MJ*FAC
           RETURN
       END
+      
       FUNCTION GASDEV()
 C     RETURNS A ZERO MEAN AND A UNIT VALUE FOR THE ONE-SIGMA VARIANCE
           IMPLICIT NONE
@@ -388,7 +387,8 @@ C     RETURNS A ZERO MEAN AND A UNIT VALUE FOR THE ONE-SIGMA VARIANCE
           END IF
           RETURN
       END
-C SUB RANDMM.FOR
+
+C     SUB RANDMM.FOR
       FUNCTION RANDMM()
           IMPLICIT NONE
           REAL*8 RANDMM

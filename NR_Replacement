@@ -1,9 +1,9 @@
 KDP-2 subroutines cribbed from Numerical Recipes - to be replaced
 
 hardwar1.F: caldat, julday, julday1 (DONE)
-sort.F:     sort
+sort.F:     sort (DONE)
 svd.F:      svdcmp, svdcmpb, svbksbb, svbksb, svbksba, svdcmpa
-math.F:     darray_sort
+math.F:     darray_sort (DONE)
 raytra4.F:  derx6, dery6, derx7, dery7, derx9, dery9, derx10, dery10,
             derx12, dery12, derx13, dery13, derx15, dery15
 optim3.F:   splint, spline
