@@ -1076,14 +1076,22 @@ void MainWindow::ReadFileToTable(QString pathname)
     QString surftype;
 
     for(int i=0; i<=nof; i++){        
+
         table->setItem( k, 0, new QTableWidgetItem(""));
-
         QRegExp RegExp5("CC *");
-        RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up lens curveture
-
+        RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up conic constant
         if (RegExp5.exactMatch(lines[i])){
             surftype = "CONIC ";
+            table->setItem( k, 0, new QTableWidgetItem(surftype));
         } 
+
+        QRegExp RegExp6("ASPH *");
+        RegExp6.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
+        if (RegExp6.exactMatch(lines[i])){
+           surftype = "Asphere ";
+           table->setItem( k-1, 0, new QTableWidgetItem(surftype));
+        } 
+
 
         if (lines[i].trimmed().left(4)=="REFS"){
                 table->setItem(k-1,0,new QTableWidgetItem(surftype+"REFS"));
@@ -1093,7 +1101,6 @@ void MainWindow::ReadFileToTable(QString pathname)
         table->resizeColumnToContents(0);
         continue;
         }
-
 
     QString radius;
     QString curveture;
