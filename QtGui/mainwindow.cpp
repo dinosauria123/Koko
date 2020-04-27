@@ -1060,7 +1060,7 @@ void MainWindow::ReadFileToTable(QString pathname)
     const char *DispRadius = ba1.data();
 
     DpT = "Thickness ("+units+")";
-    QByteArray ba2 = DpR.toLocal8Bit();
+    QByteArray ba2 = DpT.toLocal8Bit();
     const char *DispThickness = ba2.data();
 
     DpA = "Aperture ("+units+")";
