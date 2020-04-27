@@ -1072,22 +1072,33 @@ void MainWindow::ReadFileToTable(QString pathname)
     table->setVerticalHeaderLabels(label);
     table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n")<< tr("Abbe VD")<< tr(DispAperture));
 
+    k=0;
+    QString surftype;
+
+    for(int i=0; i<=nof; i++){        
+        table->setItem( k, 0, new QTableWidgetItem(""));
+
+        QRegExp RegExp5("CC *");
+        RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up lens curveture
+
+        if (RegExp5.exactMatch(lines[i])){
+            surftype = "CONIC ";
+        } 
+
+        if (lines[i].trimmed().left(4)=="REFS"){
+                table->setItem(k-1,0,new QTableWidgetItem(surftype+"REFS"));
+                if(lines[i+1].trimmed()=="ASTOP"){
+                    table->setItem(k-1,0,new QTableWidgetItem(surftype+"REFS STOP"));
+                }
+        table->resizeColumnToContents(0);
+        continue;
+        }
+
+
     QString radius;
     QString curveture;
     QRegExp RegExp1("CV *");
     RegExp1.setPatternSyntax(QRegExp::Wildcard); //pick up lens curveture
-
-    k=0;
-
-    for(int i=0; i<=nof; i++){        
-        table->setItem( k, 0, new QTableWidgetItem(""));
-        if (lines[i].trimmed().left(4)=="REFS"){
-                table->setItem(k-1,0,new QTableWidgetItem("REFS"));
-                if(lines[i+1].trimmed()=="ASTOP"){
-                    table->setItem(k-1,0,new QTableWidgetItem("REFS STOP"));
-                }
-        continue;
-        }
 
         comma = item.indexOf(",")+1; // pick up numenical value
         curveture = item.trimmed().mid(comma,25);
@@ -1819,7 +1830,7 @@ void MainWindow::slot_action_value_entered()
             dialog = new nkDialog();
             dialog->exec();
 
-        if (dialog->Button1 == 1024){
+            if (dialog->Button1 == 1024){
 
             proc->write("U L\n");
             proc->write("CHG 2\n");
@@ -1831,10 +1842,13 @@ void MainWindow::slot_action_value_entered()
             table->setItem(row, 4, new QTableWidgetItem(dialog->Index.trimmed()));
             table->setItem(row, 5, new QTableWidgetItem(dialog->Abbe.trimmed()));
             break;
-        }
-
+            }
+        case 4:
+            break;
+        case 5:
+            break;
         case 6:
-        opr="CLAP ";                  //edit aperture radius
+            opr="CLAP ";                  //edit aperture radius
         break;
 
     }
