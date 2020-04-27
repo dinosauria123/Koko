@@ -1081,7 +1081,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         QRegExp RegExp5("CC *");
         RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up conic constant
         if (RegExp5.exactMatch(lines[i])){
-            surftype = "CONIC ";
+            surftype = "Conic ";
             table->setItem( k, 0, new QTableWidgetItem(surftype));
         } 
 
@@ -1089,6 +1089,13 @@ void MainWindow::ReadFileToTable(QString pathname)
         RegExp6.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
         if (RegExp6.exactMatch(lines[i])){
            surftype = "Asphere ";
+           table->setItem( k-1, 0, new QTableWidgetItem(surftype));
+        } 
+
+        QRegExp RegExp7("TILT *");
+        RegExp7.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
+        if (RegExp7.exactMatch(lines[i])){
+           surftype = "Tilt ";
            table->setItem( k-1, 0, new QTableWidgetItem(surftype));
         } 
 
