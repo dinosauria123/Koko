@@ -79,111 +79,6 @@ C
       END
 
 
-
-      SUBROUTINE DARRAY_sort(n,arr)
-c     sorts a 2-dimensional real*8 array by the value stored
-c     in the first column
-          INTEGER n,M,NSTACK
-          REAL*8 arr(n,1:2)
-          PARAMETER (M=7,NSTACK=50)
-          INTEGER i,ir,j,jstack,k,l,istack(NSTACK)
-          REAL*8 a,temp,b,temp2
-          INCLUDE "datmai.inc"
-
-          jstack=0
-          l=1
-          ir=n
-1         if(ir-l.lt.M)then
-              do 12 j=l+1,ir
-                  a=arr(j,1)
-                  b=arr(j,2)
-                  do 11 i=j-1,1,-1
-                      if(arr(i,1).le.a)goto 2
-                      arr(i+1,1)=arr(i,1)
-                      arr(i+1,2)=arr(i,2)
-11                continue
-                  i=0
-2                 arr(i+1,1)=a
-                  arr(i+1,2)=b
-12            continue
-              if(jstack.eq.0)return
-              ir=istack(jstack)
-              l=istack(jstack-1)
-              jstack=jstack-2
-          else
-              k=(l+ir)/2
-              temp=arr(k,1)
-              temp2=arr(k,2)
-              arr(k,1)=arr(l+1,1)
-              arr(k,2)=arr(l+1,2)
-              arr(l+1,1)=temp
-              arr(l+1,2)=temp2
-              if(arr(l+1,1).gt.arr(ir,1))then
-                  temp=arr(l+1,1)
-                  temp2=arr(l+1,2)
-                  arr(l+1,1)=arr(ir,1)
-                  arr(l+1,2)=arr(ir,2)
-                  arr(ir,1)=temp
-                  arr(ir,2)=temp2
-              endif
-              if(arr(l,1).gt.arr(ir,1))then
-                  temp=arr(l,1)
-                  temp2=arr(l,2)
-                  arr(l,1)=arr(ir,1)
-                  arr(l,2)=arr(ir,2)
-                  arr(ir,1)=temp
-                  arr(ir,2)=temp2
-              endif
-              if(arr(l+1,1).gt.arr(l,1))then
-                  temp=arr(l+1,1)
-                  temp2=arr(l+1,2)
-                  arr(l+1,1)=arr(l,1)
-                  arr(l+1,2)=arr(l,2)
-                  arr(l,1)=temp
-                  arr(l,2)=temp2
-              endif
-              i=l+1
-              j=ir
-              a=arr(l,1)
-              b=arr(l,2)
-3             continue
-              i=i+1
-              if(arr(i,1).lt.a)goto 3
-4             continue
-              j=j-1
-              if(arr(j,1).gt.a)goto 4
-              if(j.lt.i)goto 5
-              temp=arr(i,1)
-              temp2=arr(i,2)
-              arr(i,1)=arr(j,1)
-              arr(i,2)=arr(j,2)
-              arr(j,1)=temp
-              arr(j,2)=temp2
-              goto 3
-5             arr(l,1)=arr(j,1)
-              arr(l,2)=arr(j,2)
-              arr(j,1)=a
-              arr(j,2)=b
-              jstack=jstack+2
-
-              if(jstack.gt.NSTACK)THEN
-                  WRITE(OUTLYNE,*) 'NSTACK too small in sort'
-              END IF
-
-              if(ir-i+1.ge.j-l)then
-                  istack(jstack)=ir
-                  istack(jstack-1)=i
-                  ir=j-1
-              else
-                  istack(jstack)=j-1
-                  istack(jstack-1)=l
-                  l=i
-              endif
-          endif
-          goto 1
-      END
-
-
       SUBROUTINE SHUFFLE(N,ARR)
 C     THIS IS USED TO SET UP A RANDOMLY SORTED LIST OF N
 C     DOUBLE PRECISION REPRESENTATIONS OF N INTEGER VALUES
@@ -195,16 +90,22 @@ C     A NEW WAY TO DO ITER POWELL.
           EXTERNAL RANDMM
           REAL*8 ARR(n,1:2)
           INCLUDE 'datmai.inc'
+          
 C     LOAD ARR(I,2) WITH DOUBLE PRECISION REPRESENTATIONS
-C     OF I
-C     AND LOAD RANDOM DOUBLE PRECISION NUMBERS INTO
+C     OF I AND LOAD RANDOM DOUBLE PRECISION NUMBERS INTO
 C     ARR(I,1)
           DO I=1,N
               ARR(I,2)=DBLE(I)
               ARR(I,1)=RANDMM()
-          END DO
-C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,2)
-          CALL sortdmat(ARR,N,2,1,ier)
+           END DO
+           
+C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,1)
+          call sortdmat(ARR,N,2,1,ier)
+          if (ier > 0) then
+             outlyne = 'Error (shuffle): failed call to sortdmat'
+             call showit(1)
+             call macfal
+          end if
       END
 
 

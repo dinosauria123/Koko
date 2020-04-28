@@ -51,10 +51,6 @@ subroutine sortdmat(A, nr, nc, ic, ier)
   integer, allocatable :: iperm(:)
   integer :: m, n, kflag
 
-  ! create temporary arrays
-  allocate(C(nr))
-  allocate(iperm(nr))
-  
   ! sanity check for input
   if ((ic == 0) .or. (abs(ic) > nc)) then
      ier = 1
@@ -63,12 +59,15 @@ subroutine sortdmat(A, nr, nc, ic, ier)
   
   ! permutation needed to sort the selected column
   kflag = sign(1,ic)
+  allocate(iperm(nr))  ! index array
   call dpsort(A(:,abs(ic)), nr, iperm, kflag, ier)
   if (ier > 0) then
+     deallocate(iperm)
      return
   end if
   
   ! apply permutation to the columns of A
+  allocate(C(nr))      ! matrix column workspace
   do n=1,abs(nc)
      C = A(:,n)
      do m=1,nr
