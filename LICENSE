@@ -5,13 +5,12 @@ Copyright and License Information for the Koko Optical Design Software
 Copyright
 ---------
 
-Copyright (C) 1987-2011 James Eugene Klein <http://www.ecalculations.com>
+Copyright (C) 1987-2011 James Eugene Klein 
 
 Copyright (C) 2013-present ENDO Michiaki  <inugami.mamoru@gmail.com>
 
 The original version of this program (KDP-2 Ver.5 for Windows)  was 
 written by James Eugene Klein.
-Web site is : http://www.ecalculations.com
 
 Initial port of KDP-2 (KODS and KODS_GUI) for Linux, MacOSX, Android was
 written by ENDO Michiaki. 
