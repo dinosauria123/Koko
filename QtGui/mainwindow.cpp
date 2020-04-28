@@ -1076,38 +1076,46 @@ void MainWindow::ReadFileToTable(QString pathname)
     QString surftype;
 
     for(int i=0; i<=nof; i++){        
-
         table->setItem( k, 0, new QTableWidgetItem(""));
+
         QRegExp RegExp5("CC *");
         RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up conic constant
         if (RegExp5.exactMatch(lines[i])){
             surftype = "Conic ";
-            table->setItem( k, 0, new QTableWidgetItem(surftype));
         } 
 
         QRegExp RegExp6("ASPH *");
         RegExp6.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
         if (RegExp6.exactMatch(lines[i])){
-           surftype = "Asphere ";
-           table->setItem( k-1, 0, new QTableWidgetItem(surftype));
+           surftype = surftype + "Asphere ";
         } 
 
         QRegExp RegExp7("TILT *");
         RegExp7.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
         if (RegExp7.exactMatch(lines[i])){
-           surftype = "Tilt ";
-           table->setItem( k-1, 0, new QTableWidgetItem(surftype));
+           surftype = surftype + "Tilt ";
         } 
 
-
-        if (lines[i].trimmed().left(4)=="REFS"){
-                table->setItem(k-1,0,new QTableWidgetItem(surftype+"REFS"));
-                if(lines[i+1].trimmed()=="ASTOP"){
-                    table->setItem(k-1,0,new QTableWidgetItem(surftype+"REFS STOP"));
-                }
-        table->resizeColumnToContents(0);
-        continue;
+        QRegExp RegExp8("REFS*");
+        RegExp8.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
+        if (RegExp8.exactMatch(lines[i])){
+            surftype = surftype + "REFS ";
         }
+
+        QRegExp RegExp9("ASTOP*");
+        RegExp9.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
+        if (RegExp9.exactMatch(lines[i])){
+            surftype = surftype + "STOP ";
+        }
+
+        QRegExp RegExp3("C THE FOLLOWING DATA REFERS TO SURFACE*");
+        RegExp3.setPatternSyntax(QRegExp::Wildcard);
+        if (RegExp3.exactMatch(lines[i])){
+            table->setItem(k-1,0,new QTableWidgetItem(surftype));
+            table->resizeColumnToContents(0);
+            surftype = "";
+        }
+
 
     QString radius;
     QString curveture;
@@ -1151,10 +1159,6 @@ void MainWindow::ReadFileToTable(QString pathname)
             table->setItem( k-1, 6, new QTableWidgetItem(aperture));
         }
     }
-
-
-    QRegExp RegExp3("RAYERROR*");        //pick up glass name/air. Material name is just below "RAYERROR"
-    RegExp3.setPatternSyntax(QRegExp::Wildcard);
 
     QString material;
     QString name;
@@ -1310,7 +1314,6 @@ void MainWindow::ReadFileToTable(QString pathname)
         }
 
     }
-
 }
 
 
