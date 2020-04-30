@@ -64,9 +64,8 @@ MainWindow::MainWindow(QMainWindow *parent)
     table->setColumnCount( 7 );
     table->setRowCount( 20 );
 
-    table ->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(table, SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(slot_ShowContextMenu(QPoint)));    //context menu
-
+    connect(table, SIGNAL(cellClicked(int,int)), this, SLOT(slot_lensInfo(int,int)));
+ 
     addcontextmenu();
 
     proc->start(hdir+"/koko-cli"); //For Linux, MacOSX
@@ -88,6 +87,23 @@ MainWindow::MainWindow(QMainWindow *parent)
             tableitem=table->item(nol-1,i);
             tableitem->setFlags(Qt::ItemIsEnabled);    // last surface is not editable
     }
+
+}
+
+void MainWindow::slot_lensInfo(int row,int col)
+{
+   QString tabletext, surftype;
+   lensPara -> setText(NULL);
+   lensPara -> append(li);
+   lensPara -> append("Wavelength (um): "+QString::number(lF)+", "+QString::number(lD)+", "+QString::number(lC));
+   tabletext = QString("Surface type:");
+   tableitem = table->item(row,0);
+   lensPara -> append("Surface No." + QString::number(row));
+   if (tableitem -> text() == ""){
+        tabletext = QString("Surface type:Spherical");
+   }
+   tabletext = tabletext + tableitem->text().trimmed();
+   lensPara->append(tabletext);
 
 }
 
@@ -1007,12 +1023,19 @@ void MainWindow::ReadFileToTable(QString pathname)
         label << QString::number(i);    //set table vetical label start to 0
     }
 
-    QStringList lambda;
-    QRegExp RegExp("WV *");
-    RegExp.setPatternSyntax(QRegExp::Wildcard); //pick up Wavelength
-
     for(int i=0; i<=nof; i++){
         item = lines[i];
+
+        QRegExp RegExp10("LI,*");
+        RegExp10.setPatternSyntax(QRegExp::Wildcard); //pick up Lens Identifier
+        if (RegExp10.exactMatch(lines[i])){
+           li = lines[i];
+	   qDebug() << li;
+        } 
+
+        QStringList lambda;
+        QRegExp RegExp("WV *");
+        RegExp.setPatternSyntax(QRegExp::Wildcard); //pick up Wavelength
 
         if (RegExp.exactMatch(item)){
 
