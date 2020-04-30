@@ -5,7 +5,7 @@
 #
 
 fSRC = bicubic.f  math.f  opteng.f  svd.f  tilter.f dpsort.f
-f90SRC = sortdmat.f90
+f90SRC = sortdmat.f90 splineint.f90 cubicspline.f90
 
 FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o)
 

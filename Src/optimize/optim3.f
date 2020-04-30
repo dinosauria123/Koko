@@ -174,7 +174,9 @@ C       IT IS PASSED IN COMMON IN THE INCLUDE FILE DATSUB.FOR
 C
           RETURN
       END
-C SUB UCVRBL1.FOR
+
+
+C     SUB UCVRBL1.FOR
       SUBROUTINE UCVRBL1
 C
           IMPLICIT NONE
@@ -203,7 +205,9 @@ C       FROM WITHIN SUBROUTINE CVARBLL.FOR.
 C
           RETURN
       END
-C SUB UVRBL1.FOR
+
+
+C     SUB UVRBL1.FOR
       SUBROUTINE UVRBL1
 C
           IMPLICIT NONE
@@ -236,7 +240,9 @@ C       FROM WITHIN SUBROUTINE VARBLL.FOR.
 C
           RETURN
       END
-C SUB TUVRBL1.FOR
+
+
+C     SUB TUVRBL1.FOR
       SUBROUTINE TUVRBL1
 C
           IMPLICIT NONE
@@ -265,7 +271,9 @@ C       FROM WITHIN SUBROUTINE TVARBLL.FOR.
 C
           RETURN
       END
-C SUB UTOPER.FOR
+
+
+C     SUB UTOPER.FOR
       SUBROUTINE UTOPER
 C
           IMPLICIT NONE
@@ -292,7 +300,9 @@ C
           CORMOD=1
           RETURN
       END
-C SUB UFOCRIT.FOR
+
+
+C     SUB UFOCRIT.FOR
       SUBROUTINE UFOCRIT
 C
           IMPLICIT NONE
@@ -319,6 +329,8 @@ C
           CORMOD=1
           RETURN
       END
+      
+      
 C SUB UMERIT.FOR
       SUBROUTINE UMERIT
 C
@@ -349,81 +361,6 @@ C
           RETURN
       END
 
-
-
-      SUBROUTINE SPLINT(XA,YA,Y2A,N,X,Y)
-C     THIS IS A MODIFIED VERSION FROM NUMERICAL RECIPIES
-          IMPLICIT NONE
-          REAL*8 XA,YA,Y2A,X,Y,H,A,B
-          INTEGER KLO,KHI,N,K
-          DIMENSION XA(N),YA(N),Y2A(N)
-          INCLUDE 'datmai.inc'
-
-          KLO=1
-          KHI=N
-1         IF (KHI-KLO.GT.1) THEN
-              K=(KHI+KLO)/2
-              IF(XA(K).GT.X)THEN
-                  KHI=K
-              ELSE
-                  KLO=K
-              ENDIF
-              GOTO 1
-          ENDIF
-          H=XA(KHI)-XA(KLO)
-          IF (H.EQ.0.0D0) THEN
-              OUTLYNE= 'SERIOUS ERROR IN CALL TO SPLINE INTERPOLATION'
-              CALL SHOWIT(1)
-              OUTLYNE= 'REPORT THIS IMMEDIATELY'
-              CALL SHOWIT(1)
-              CALL MACFAL
-              RETURN
-          END IF
-
-          A=(XA(KHI)-X)/H
-          B=(X-XA(KLO))/H
-          Y=A*YA(KLO)+B*YA(KHI)+
-     *         ((A**3-A)*Y2A(KLO)+(B**3-B)*Y2A(KHI))*(H**2)/6.0D0
-
-          RETURN
-      END
-
-
-
-      SUBROUTINE SPLINE(X,Y,N,YP1,YPN,Y2)
-C     THIS IS A MODIFIED VERSION FROM NUMERICAL RECIPIES
-          IMPLICIT NONE
-          REAL*8 X,Y,Y2,U,SIG,P,YPN,QN,UN,YP1
-          INTEGER NMAX,I,N,K
-          PARAMETER (NMAX=250)
-          DIMENSION X(N),Y(N),Y2(N),U(NMAX)
-          IF (YP1.GT..99D30) THEN
-              Y2(1)=0.0D0
-              U(1)=0.0D0
-          ELSE
-              Y2(1)=-0.5D0
-              U(1)=(3.0D0/(X(2)-X(1)))*((Y(2)-Y(1))/(X(2)-X(1))-YP1)
-          ENDIF
-          DO 11 I=2,N-1
-              SIG=(X(I)-X(I-1))/(X(I+1)-X(I-1))
-              P=SIG*Y2(I-1)+2.0D0
-              Y2(I)=(SIG-1.0D0)/P
-              U(I)=(6.0D0*((Y(I+1)-Y(I))/(X(I+1)-X(I))-(Y(I)-Y(I-1))
-     *            /(X(I)-X(I-1)))/(X(I+1)-X(I-1))-SIG*U(I-1))/P
-11        CONTINUE
-          IF (YPN.GT..99D30) THEN
-              QN=0.0D0
-              UN=0.0D0
-          ELSE
-              QN=0.5D0
-              UN=(3.0D0/(X(N)-X(N-1)))*(YPN-(Y(N)-Y(N-1))/(X(N)-X(N-1)))
-          ENDIF
-          Y2(N)=(UN-QN*U(N-1))/(QN*Y2(N-1)+1.0D0)
-          DO 12 K=N-1,1,-1
-              Y2(K)=Y2(K)*Y2(K+1)+U(K)
-12        CONTINUE
-          RETURN
-      END
 
 
 C SUB ROBB.FOR
