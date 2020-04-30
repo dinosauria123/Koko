@@ -49,16 +49,12 @@ subroutine spline(x,y,n, yps,ype, ypp)
   
   integer :: ier
 
-!  include 'datmai.inc'
-  
   ! call interpolation function
   call spline_cubic_set(n,x,y, 1,yps, 1,ype, ypp, ier)
   
-!  if (ier .ne. 0) then
-!     outline = 'spline: error calculating interpolation spline'
-!     call showit(1)
-!     call macfal
-!  end if
+  if (ier .ne. 0) then
+     call splerror
+  end if
   
 end subroutine spline
 
