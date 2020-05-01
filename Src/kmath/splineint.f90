@@ -43,9 +43,11 @@ subroutine spline(x,y,n, yps,ype, ypp)
 
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer, intent(in) :: n
-  real (kind=8), intent(in) :: x(n), y(n), yps, ype
-  real (kind=8), intent(out) :: ypp(n)
+
+  real (dp), intent(in) :: x(n), y(n), yps, ype
+  real (dp), intent(out) :: ypp(n)
   
   integer :: ier
 
@@ -62,7 +64,8 @@ end subroutine spline
 subroutine splint(x,y,ypp,n, xi,yi)
 
   ! A drop-in replacement for "the Numerical Recipes" subroutine
-  ! 'splint'. Evaluates a natural cubic spline at a specified abscissa.
+  ! 'splint'. Evaluates a natural cubic spline at a specified abscissa
+  ! (see cubicspline.f90).
   !
   ! INPUT
   ! x,y,n :  n values y(i) at knots x(i), i = 1, ..., n that are
@@ -77,10 +80,12 @@ subroutine splint(x,y,ypp,n, xi,yi)
 
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer, intent(in) :: n
-  real (kind=8), intent(in) :: x(n), y(n), ypp(n), xi
-  real (kind=8), intent(out) :: yi
-  real (kind=8) :: ypi, yppi
+
+  real (dp), intent(in) :: x(n), y(n), ypp(n), xi
+  real (dp), intent(out) :: yi
+  real (dp) :: ypi, yppi
 
   call spline_cubic_val(n,x,y,ypp, xi,yi,ypi,yppi)
   

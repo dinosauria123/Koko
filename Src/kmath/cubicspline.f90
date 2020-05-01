@@ -122,11 +122,12 @@ subroutine spline_cubic_set ( n, t, y, ibcbeg, ybcbeg, ibcend, ybcend, ypp, ier 
 
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer :: n, ier
 
-  real (kind=8) :: a1(n), a2(n), a3(n), a4(n), a5(n), b(n)
+  real (dp) :: a1(n), a2(n), a3(n), a4(n), a5(n), b(n)
   integer :: i, ibcbeg, ibcend
-  real (kind=8) :: t(n), y(n), ybcbeg, ybcend, ypp(n)
+  real (dp) :: t(n), y(n), ybcbeg, ybcend, ypp(n)
 
   !  Check input
   if ( n <= 1 ) then
@@ -274,21 +275,22 @@ subroutine penta ( n, a1, a2, a3, a4, a5, b, x )
 !
 !    Input, integer N, the order of the matrix.
 !
-!    Input, real (kind=8) A1(N), A2(N), A3(N), A4(N), A5(N), the nonzero
+!    Input, real (dp) A1(N), A2(N), A3(N), A4(N), A5(N), the nonzero
 !    elements of the matrix.  Note that the data in A2, A3 and A4
 !    is overwritten by this routine during the solution process.
 !
-!    Input, real (kind=8) B(N), the right hand side of the linear system.
+!    Input, real (dp) B(N), the right hand side of the linear system.
 !
-!    Output, real (kind=8) X(N), the solution of the linear system.
+!    Output, real (dp) X(N), the solution of the linear system.
 !
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer :: n
 
-  real (kind=8) :: a1(n), a2(n), a3(n), a4(n), a5(n), b(n)
+  real (dp) :: a1(n), a2(n), a3(n), a4(n), a5(n), b(n)
   integer :: i
-  real (kind=8) :: x(n), xmult
+  real (dp) :: x(n), xmult
 
   do i = 2, n - 1
      xmult = a2(i) / a3(i-1)
@@ -362,27 +364,28 @@ subroutine spline_cubic_val ( n, t, y, ypp, tval, yval, ypval, yppval )
 !
 !    Input, integer N, the number of data values.
 !
-!    Input, real (kind=8) T(N), the knot values.
+!    Input, real (dp) T(N), the knot values.
 !
-!    Input, real (kind=8) Y(N), the data values at the knots.
+!    Input, real (dp) Y(N), the data values at the knots.
 !
-!    Input, real (kind=8) YPP(N), the second derivatives of the
+!    Input, real (dp) YPP(N), the second derivatives of the
 !    spline at the knots.
 !
-!    Input, real (kind=8) TVAL, a point, typically between T(1) and
+!    Input, real (dp) TVAL, a point, typically between T(1) and
 !    T(N), at which the spline is to be evalulated.  If TVAL lies outside
 !    this range, extrapolation is used.
 !
-!    Output, real (kind=8) YVAL, YPVAL, YPPVAL, the value of the spline, and
+!    Output, real (dp) YVAL, YPVAL, YPPVAL, the value of the spline, and
 !    its first two derivatives at TVAL.
 !
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer :: n
 
-  real (kind=8) :: dt, h
+  real (dp) :: dt, h
   integer :: left, right
-  real (kind=8) :: t(n), y(n), ypp(n), tval, yppval, ypval, yval
+  real (dp) :: t(n), y(n), ypp(n), tval, yppval, ypval, yval
 
   !  Determine the interval [T(LEFT), T(RIGHT)] that contains TVAL.
   !  Values below T(1) or above T(N) use extrapolation.
@@ -439,9 +442,9 @@ subroutine r8vec_bracket ( n, x, xval, left, right )
 !
 !    Input, integer N, length of input array.
 !
-!    Input, real (kind=8) X(N), an array sorted into ascending order.
+!    Input, real (dp) X(N), an array sorted into ascending order.
 !
-!    Input, real (kind=8) XVAL, a value to be bracketed.
+!    Input, real (dp) XVAL, a value to be bracketed.
 !
 !    Output, integer LEFT, RIGHT, the results of the search.
 !    Either:
@@ -452,8 +455,9 @@ subroutine r8vec_bracket ( n, x, xval, left, right )
 !
   implicit none
 
+  integer, parameter :: dp = kind(1.0d0)
   integer :: n, i, left, right
-  real (kind=8) :: x(n),xval
+  real (dp) :: x(n),xval
   
   do i = 2, n - 1
 

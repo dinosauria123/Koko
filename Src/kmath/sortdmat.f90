@@ -43,13 +43,15 @@ subroutine sortdmat(A, nr, nc, ic, ier)
 
   implicit none
 
-  real(kind=8), intent(inout) :: A(nr,*)
-  integer, intent(in) :: nr, nc, ic
-  integer, intent(out) :: ier
+  integer, parameter :: dp = kind(1.0d0)
   
-  real(kind=8), allocatable :: C(:)
-  integer, allocatable :: iperm(:)
-  integer :: m, n, kflag
+  real (dp), intent(inout) :: A(nr,*)
+  integer, intent(in)      :: nr, nc, ic
+  integer, intent(out)     :: ier
+  
+  real (dp), allocatable :: C(:)
+  integer, allocatable   :: iperm(:)
+  integer                :: m, n, kflag
 
   ! sanity check for input
   if ((ic == 0) .or. (abs(ic) > nc)) then
