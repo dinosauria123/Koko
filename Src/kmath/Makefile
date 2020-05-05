@@ -6,13 +6,17 @@
 
 fSRC = bicubic.f  math.f  opteng.f  svd.f  tilter.f dpsort.f splerror.f
 f90SRC = sortdmat.f90 splineint.f90 cubicspline.f90
+mSRC = cubicspline.f90
+
+# modules
+FMOD = $(mSRC:.f90=.mod)
 
 FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o)
 
 # targets
 all: libkmath
 
-libkmath: $(FOBJ)
+libkmath: $(FMOD) $(FOBJ)
 	ar r libkmath.a $?
 	ranlib libkmath.a
 	mv libkmath.a ../lib
@@ -23,5 +27,8 @@ libkmath: $(FOBJ)
 %.o: %.f90
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
 
+%.mod: %.f90
+	$(FC) -c $(FFLAGS) $(IFLAGS) $<
+
 clean:
-	rm -f *.o *~
+	rm -f *.o *.mod *~

@@ -41,12 +41,10 @@ subroutine spline(x,y,n, yps,ype, ypp)
   !
   ! Ulf Griesmann, April 2020
 
-  implicit none
+  use cubicspline
 
-  integer, parameter :: dp = kind(1.0d0)
-  integer, intent(in) :: n
-
-  real (dp), intent(in) :: x(n), y(n), yps, ype
+  integer,   intent(in)  :: n
+  real (dp), intent(in)  :: x(n), y(n), yps, ype
   real (dp), intent(out) :: ypp(n)
   
   integer :: ier
@@ -78,14 +76,12 @@ subroutine splint(x,y,ypp,n, xi,yi)
   !
   ! Ulf Griesmann, April 2020
 
-  implicit none
+  use cubicspline
 
-  integer, parameter :: dp = kind(1.0d0)
-  integer, intent(in) :: n
-
-  real (dp), intent(in) :: x(n), y(n), ypp(n), xi
+  integer,   intent(in)  :: n
+  real (dp), intent(in)  :: x(n), y(n), ypp(n), xi
   real (dp), intent(out) :: yi
-  real (dp) :: ypi, yppi
+  real (dp)              :: ypi, yppi
 
   call spline_cubic_val(n,x,y,ypp, xi,yi,ypi,yppi)
   

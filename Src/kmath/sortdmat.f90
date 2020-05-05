@@ -58,18 +58,18 @@ subroutine sortdmat(A, nr, nc, ic, ier)
      ier = 1
      return
   end if
+
+  allocate(iperm(nr))  ! index array
+  allocate(C(nr))      ! matrix column workspace
   
   ! permutation needed to sort the selected column
   kflag = sign(1,ic)
-  allocate(iperm(nr))  ! index array
   call dpsort(A(:,abs(ic)), nr, iperm, kflag, ier)
   if (ier > 0) then
-     deallocate(iperm)
      return
   end if
   
   ! apply permutation to the columns of A
-  allocate(C(nr))      ! matrix column workspace
   do n=1,abs(nc)
      C = A(:,n)
      do m=1,nr
@@ -77,8 +77,4 @@ subroutine sortdmat(A, nr, nc, ic, ier)
      end do
   end do
 
-  ! free memory
-  deallocate(C)
-  deallocate(iperm)
-  
 end subroutine sortdmat
