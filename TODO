@@ -1,6 +1,8 @@
 To Do List for KODS
 ===================
 
+- variable KODS_EDITOR, or some other way to configure editor
+
 - need icons for app and GUI
 
 - replace all subroutines from "Numerical Recipes"

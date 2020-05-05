@@ -1,0 +1,4 @@
+
+Subroutines implementing surface pickups, i.e. surface properties that are
+copies of properties in a preceeding surface.
+
