@@ -14,7 +14,7 @@ all: libconfig
 libconfig: $(FOBJ)
 	ar r libconfig.a $?
 	ranlib libconfig.a
-	mv libconfig.a ../../lib
+	mv libconfig.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

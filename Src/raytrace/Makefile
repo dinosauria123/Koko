@@ -16,7 +16,7 @@ all: libraytrace
 libraytrace: $(FOBJ)
 	ar r libraytrace.a $?
 	ranlib libraytrace.a
-	mv libraytrace.a ../../lib
+	mv libraytrace.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

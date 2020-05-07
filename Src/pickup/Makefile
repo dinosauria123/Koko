@@ -14,7 +14,7 @@ all: libpickup
 libpickup: $(FOBJ)
 	ar r libpickup.a $?
 	ranlib libpickup.a
-	mv libpickup.a ../../lib
+	mv libpickup.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

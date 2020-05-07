@@ -14,7 +14,7 @@ all: libutility
 libutility: $(FOBJ)
 	ar r libutility.a $?
 	ranlib libutility.a
-	mv libutility.a ../../lib
+	mv libutility.a ../lib
 
 # gfortan optimizer chokes on this one
 utility7.o: utility7.f

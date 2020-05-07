@@ -155,9 +155,6 @@
     <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextEdit" name="lensPara"/>
-      </item>
-      <item>
        <widget class="QTextEdit" name="msgView">
         <property name="maximumSize">
          <size>

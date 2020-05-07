@@ -15,7 +15,7 @@ all: libldm
 libldm: $(FOBJ)
 	ar r libldm.a $?
 	ranlib libldm.a
-	mv libldm.a ../../lib
+	mv libldm.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

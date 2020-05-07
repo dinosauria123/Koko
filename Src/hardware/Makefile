@@ -15,7 +15,7 @@ all: libhardware
 libhardware: $(FOBJ)
 	ar r libhardware.a $?
 	ranlib libhardware.a
-	mv libhardware.a ../../lib
+	mv libhardware.a ../lib
 
 %.o: %.F
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

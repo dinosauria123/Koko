@@ -18,7 +18,7 @@ all: libkmod
 libkmod: $(MODS)
 	ar r libkmod.a $(FOBJ)
 	ranlib libkmod.a
-	mv libkmod.a ../../lib
+	mv libkmod.a ../lib
 
 %.mod: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

@@ -14,7 +14,7 @@ all: libglass
 libglass: $(FOBJ)
 	ar r libglass.a $?
 	ranlib libglass.a
-	mv libglass.a ../../lib
+	mv libglass.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

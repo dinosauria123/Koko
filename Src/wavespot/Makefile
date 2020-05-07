@@ -15,7 +15,7 @@ all: libwavespot
 libwavespot: $(FOBJ)
 	ar r libwavespot.a $?
 	ranlib libwavespot.a
-	mv libwavespot.a ../../lib
+	mv libwavespot.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

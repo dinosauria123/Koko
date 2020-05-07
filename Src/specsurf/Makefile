@@ -14,7 +14,7 @@ all: libspecsurf
 libspecsurf: $(FOBJ)
 	ar r libspecsurf.a $?
 	ranlib libspecsurf.a
-	mv libspecsurf.a ../../lib
+	mv libspecsurf.a ../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
