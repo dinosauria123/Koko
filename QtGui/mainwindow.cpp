@@ -64,9 +64,12 @@ MainWindow::MainWindow(QMainWindow *parent)
     table->setColumnCount( 7 );
     table->setRowCount( 20 );
 
-    connect(table, SIGNAL(cellClicked(int,int)), this, SLOT(slot_lensInfo(int,int)));
- 
+    table ->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(table, SIGNAL(customContextMenuRequested(QPoint)),this,SLOT(slot_ShowContextMenu(QPoint)));    //context menu
+
     addcontextmenu();
+
+    connect(table, SIGNAL(cellClicked(int,int)), this, SLOT(slot_lensInfo(int,int)));
 
     proc->start(hdir+"/koko-cli"); //For Linux, MacOSX
 //    proc->start("/data/data/com.install.kods/lib/libkods.so");   //For Android
@@ -75,15 +78,21 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     for(int i=0; i<=nol-1; i++){
             tableitem=table->item(i,3);
-            tableitem->setFlags(Qt::ItemIsEnabled);    // material is not editable
+//            tableitem->setFlags(Qt::ItemIsEnabled);    // material is not editable
     }
 
-    for(int i=0; i<=1; i++){
+    for(int i=0; i<=6; i++){
+            if (table->item(0,i) == NULL){
+                 continue;
+            }
             tableitem=table->item(0,i);
             tableitem->setFlags(Qt::ItemIsEnabled);    // infinity distance is not editable
     }
 
-    for(int i=0; i<=1; i++){
+    for(int i=0; i<=6; i++){
+            if (table->item(0,i) == NULL){
+                 continue;
+            }
             tableitem=table->item(nol-1,i);
             tableitem->setFlags(Qt::ItemIsEnabled);    // last surface is not editable
     }
@@ -93,6 +102,10 @@ MainWindow::MainWindow(QMainWindow *parent)
 void MainWindow::slot_lensInfo(int row,int col)
 {
    QString tabletext, surftype;
+   qDebug() << row;
+   qDebug() << col;
+
+   table->selectRow(row);
    lensPara -> setText(NULL);
    lensPara -> append(li);
    lensPara -> append("Wavelength (um): "+QString::number(lF)+", "+QString::number(lD)+", "+QString::number(lC));
@@ -351,7 +364,7 @@ void MainWindow::ShowContextMenu(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("CHANCE "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("CHANCE "+str.toLatin1()+"\n");
@@ -372,7 +385,7 @@ void MainWindow::ShowContextMenu2(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("CORNIN "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("CORNIN "+str.toLatin1()+"\n");
@@ -393,7 +406,7 @@ void MainWindow::ShowContextMenu3(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("HIKARI "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("HIKARI "+str.toLatin1()+"\n");
@@ -414,7 +427,7 @@ void MainWindow::ShowContextMenu4(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("HOYA "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("HOYA "+str.toLatin1()+"\n");
@@ -435,7 +448,7 @@ void MainWindow::ShowContextMenu5(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("OHARA "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("OHARA "+str.toLatin1()+"\n");
@@ -456,7 +469,7 @@ void MainWindow::ShowContextMenu6(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("OHARA-O "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("OHARA-O "+str.toLatin1()+"\n");
@@ -477,7 +490,7 @@ void MainWindow::ShowContextMenu7(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("RADHARD "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("RADHARD "+str.toLatin1()+"\n");
@@ -498,7 +511,7 @@ void MainWindow::ShowContextMenu8(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("SCH2000 "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("SCH2000 "+str.toLatin1()+"\n");
@@ -519,7 +532,7 @@ void MainWindow::ShowContextMenu9(QAction *Action)
     table->setItem(row, 3, new QTableWidgetItem("SCHOTT "+str));  //Change table value to MODEL
     table->resizeColumnToContents(3);
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     proc->write("U L\n");
     proc->write("CHG "+Qrow.toLatin1()+"\n");
     proc->write("SCHOTT "+str.toLatin1()+"\n");
@@ -536,7 +549,7 @@ void MainWindow::InputAir()
 
     table->setItem(row, 3, new QTableWidgetItem("AIR"));
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     table->setItem(row, 4, new QTableWidgetItem(""));
     table->setItem(row, 5, new QTableWidgetItem(""));
     proc->write("U L\n");
@@ -553,7 +566,7 @@ void MainWindow::InputReflector()
 
     table->setItem(row, 3, new QTableWidgetItem("REFL"));
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     table->setItem(row, 4, new QTableWidgetItem(""));
     table->setItem(row, 5, new QTableWidgetItem(""));
     proc->write("U L\n");
@@ -678,7 +691,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("CHANCE "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("CHANCE "+selectedItem->text().toLatin1()+"\n");
@@ -693,7 +706,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("CORNIN "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("CORNIN "+selectedItem->text().toLatin1()+"\n");
@@ -708,7 +721,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("HIKARI "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("HIKARI "+selectedItem->text().toLatin1()+"\n");
@@ -723,7 +736,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("HOYA "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("HOYA "+selectedItem->text().toLatin1()+"\n");
@@ -738,7 +751,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("OHARA "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("OHARA "+selectedItem->text().toLatin1()+"\n");
@@ -753,7 +766,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("OHARA-O "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("OHARA "+selectedItem->text().toLatin1()+"\n");
@@ -768,7 +781,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("RADHARD "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("RADHARD "+selectedItem->text().toLatin1()+"\n");
@@ -783,7 +796,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("SCH2000 "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("SCH2000 "+selectedItem->text().toLatin1()+"\n");
@@ -798,7 +811,7 @@ void MainWindow::slot_ShowContextMenu(const QPoint& Pos){
         table->setItem(row, 3, new QTableWidgetItem("SCHOTT "+selectedItem->text()));  //Change table value to MODEL
         table->resizeColumnToContents(3);
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         proc->write("U L\n");
         proc->write("CHG "+Qrow.toLatin1()+"\n");
         proc->write("SCHOTT "+selectedItem->text().toLatin1()+"\n");
@@ -943,8 +956,8 @@ void MainWindow::DataRead(QString BinName, QString name, int k){
     table->setItem(k,4,new QTableWidgetItem(QString::number(nD,'f',4)));
     table->setItem(k,5,new QTableWidgetItem(QString::number(Abbe,'f',1)));
 
-    table->item(k,4)->setFlags(Qt::ItemIsEnabled); //Index & Abbe are not editable.
-    table->item(k,5)->setFlags(Qt::ItemIsEnabled);
+//    table->item(k,4)->setFlags(Qt::ItemIsEnabled); //Index & Abbe are not editable.
+//    table->item(k,5)->setFlags(Qt::ItemIsEnabled);
 
     return;
 
@@ -1077,7 +1090,6 @@ void MainWindow::ReadFileToTable(QString pathname)
     QString DpR;
     QString DpT;
     QString DpA;
-    QString DpAbbe;
 
     DpR = "Radius ("+units+")";
     QByteArray ba1 = DpR.toLocal8Bit();
@@ -1102,35 +1114,11 @@ void MainWindow::ReadFileToTable(QString pathname)
     for(int i=0; i<=nof; i++){        
         table->setItem( k, 0, new QTableWidgetItem(""));
 
-        QRegExp RegExp5("CC *");
-        RegExp5.setPatternSyntax(QRegExp::Wildcard); //pick up conic constant
-        if (RegExp5.exactMatch(lines[i])){
-            surftype = "Conic ";
-        } 
-
-        QRegExp RegExp6("ASPH *");
-        RegExp6.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
-        if (RegExp6.exactMatch(lines[i])){
-           surftype = surftype + "Asphere ";
-        } 
-
-        QRegExp RegExp7("TILT *");
-        RegExp7.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
-        if (RegExp7.exactMatch(lines[i])){
-           surftype = surftype + "Tilt ";
-        } 
-
-        QRegExp RegExp8("REFS*");
-        RegExp8.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
-        if (RegExp8.exactMatch(lines[i])){
-            surftype = surftype + "REFS ";
-        }
-
-        QRegExp RegExp9("ASTOP*");
-        RegExp9.setPatternSyntax(QRegExp::Wildcard); //pick up Aspheric surface
-        if (RegExp9.exactMatch(lines[i])){
-            surftype = surftype + "STOP ";
-        }
+        surftype = surftype + surftypeCheck("CC *", "Conic ", lines[i]);
+        surftype = surftype + surftypeCheck("ASPH *", "Asphare ", lines[i]);
+        surftype = surftype + surftypeCheck("TILT *", "Tilt ", lines[i]);
+        surftype = surftype + surftypeCheck("REFS*", "REFS ", lines[i]);
+        surftype = surftype + surftypeCheck("ASTOP*", "STOP ", lines[i]);
 
         QRegExp RegExp3("C THE FOLLOWING DATA REFERS TO SURFACE*");
         RegExp3.setPatternSyntax(QRegExp::Wildcard);
@@ -1341,6 +1329,19 @@ void MainWindow::ReadFileToTable(QString pathname)
 }
 
 
+
+QString MainWindow::surftypeCheck(QString iden, QString type, QString lines)
+{
+        QRegExp RegExp(iden);
+        QString surftype;
+        RegExp.setPatternSyntax(QRegExp::Wildcard); 
+        if (RegExp.exactMatch(lines)){
+            surftype = type;
+        qDebug()<<surftype;
+        } 
+        return surftype;
+}
+
 // File Menu
 
 
@@ -1524,7 +1525,7 @@ void MainWindow::slot_actionInsert_surface()
         table->setItem(row,2,new QTableWidgetItem("0"));
         table->setItem(row,3,new QTableWidgetItem("AIR"));
         tableitem=table->item(row,3);
-        tableitem->setFlags(Qt::ItemIsEnabled);
+//        tableitem->setFlags(Qt::ItemIsEnabled);
         nol++;
     }
 
@@ -1932,13 +1933,13 @@ void MainWindow::slot_actionModeldialog()
 
     table->setItem(Qrow.toInt(), 3, new QTableWidgetItem("MODEL "+dialog->GlassName.toUpper()));  //Change table value to MODEL
     tableitem=table->item(row,3);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     table->setItem(Qrow.toInt(), 4, new QTableWidgetItem(dialog->Index.trimmed()));
     tableitem=table->item(row,4);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
     table->setItem(Qrow.toInt(), 5, new QTableWidgetItem(dialog->Abbe.trimmed()));
     tableitem=table->item(row,5);
-    tableitem->setFlags(Qt::ItemIsEnabled);
+//    tableitem->setFlags(Qt::ItemIsEnabled);
 
     }
 
@@ -2018,13 +2019,13 @@ void MainWindow::slot_actionRay_input_angle()
 
 void MainWindow::leaveEvent(QEvent * event){    //Release input when event happend
 //       qDebug() << "Leave event";
-//       cmdLine->releaseKeyboard();
+       cmdLine->releaseKeyboard();
        QWidget::leaveEvent(event);
 }
 
 void MainWindow::enterEvent(QEvent * event){    //Grab input when event finished
 //       qDebug() << "Enter event";
-//       cmdLine->grabKeyboard();
+       cmdLine->grabKeyboard();
        QWidget::enterEvent(event);
 }
 

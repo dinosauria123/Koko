@@ -41,7 +41,7 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 public:
     MainWindow(QMainWindow *parnet=0);
     QProcess *proc;
-    QString hdir,ldir;
+    QString hdir,ldir,li;
     double lF,lD,lC;
 
     QMenu *MaterialMenu;
@@ -95,6 +95,7 @@ private:
     bool eventFilter(QObject* object, QEvent* event);
     void leaveEvent(QEvent * event);
     void enterEvent(QEvent * event);
+    QString surftypeCheck(QString, QString, QString);
 
 private slots:
 
@@ -167,6 +168,8 @@ private slots:
     void slot_actionRay_input_angle();
 
     void slot_ShowContextMenu(const QPoint& Pos);
+    void slot_lensInfo(int,int);
+
 
     void ShowContextMenu(QAction *Action);
     void ShowContextMenu2(QAction *Action);
@@ -181,7 +184,6 @@ private slots:
 
     void InputAir();
     void InputReflector();
-
 };
 
 
