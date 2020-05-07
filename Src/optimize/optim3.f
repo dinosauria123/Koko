@@ -1603,42 +1603,40 @@ C
 C
           INTEGER SSN,SM,NP2,MP,N,J,I,L,M,VTYPE,ALTYPE,VADD,VCFG
      1    ,VN1,MAXCNT,VN,ALLOERR,IID,JJD
-C
+
           INTEGER ISURF
-C
           REAL*8 NEWDEFVAL
-C
+
           COMMON/DEFVALCOM/NEWDEFVAL
-C
-          REAL*8
-     2    X(1:100000),WT,V1
-C
+
+          REAL*8 X(1:100000),WT,V1
+
           DIMENSION WT(:)
-C
+
           ALLOCATABLE :: WT
-C
-!      LOGICAL LVAL
-C
+
+C      LOGICAL LVAL
+
           CHARACTER AV1*23
 
           COMMON/SVD1/SM,SSN,MP,NP2
-C
-          COMMON/SVD2/X
-C
+
+          COMMON /SVD2/ X
+
           COMMON/CAUX1/V1,AV1
-C
+
           REAL*8 MDERIV
-C
+
           DIMENSION MDERIV(1:IID,1:JJD)
-C
+
           LOGICAL ERR1,ERR2
-C
+
           INCLUDE 'datsub.inc'
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'datcfg.inc'
           INCLUDE 'datmac.inc'
-C
+
           REAL*8 W,V,BTB,BTG,DIAGSUM,WMAX,WMIN
           DIMENSION W(:),V(:,:),BTB(:,:),BTG(:)
           ALLOCATABLE :: W,V,BTB,BTG

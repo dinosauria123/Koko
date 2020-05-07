@@ -1,6 +1,10 @@
 To Do List for KODS
 ===================
 
+- replacement needed for sys_keyin.c (has not copyright)
+
+- remove common block SVD2 (optim10.f and optim3.f)
+
 - variable KODS_EDITOR, or some other way to configure editor
 
 - need icons for app and GUI

@@ -7478,20 +7478,17 @@ C     USES LINMIN,FUNCIP
           INTEGER I,IBIG,ALLOERR
           REAL*8 DEL,FP,FPTT,V
           DIMENSION V(VN,VN)
-C
-          REAL*8 PT,XIT
-     1    ,XDUM(1:100000)
-C
+
+          REAL*8 PT, XIT, XDUM(1:100000)
+
           DIMENSION P(PCNT),PT(:),XIT(:)
-C
+
           ALLOCATABLE :: PT,XIT
-C
+
           COMMON/FNPEE/XDUM
-C
-          REAL*8
-     2    X(1:100000)
-C
-          COMMON/SVD2/X
+
+          REAL*8 X(1:100000)
+          COMMON /SVD2/ X
 C
           INCLUDE 'datsub.inc'
           INCLUDE 'datlen.inc'
@@ -7572,7 +7569,6 @@ C
       END
 
 
-C
       FUNCTION JACME(NUB,PCOM,XICOM)
           IMPLICIT NONE
           INTEGER NUB
