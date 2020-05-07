@@ -35,7 +35,7 @@ IFLAGS = -I../include -I../modules
 # needed in sub-make processes
 export IFLAGS FC FFLAGS
 
-LDIR = -L./lib
+LDIR = -L../lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -Wl,--end-group -lkmod -lm
 
 CSRC = sys_keyin.c
@@ -77,7 +77,7 @@ buildinfo:
 
 clean:
 	rm -f *.o *~ koko-cli buildinfo.inc
-	rm -f ./lib/lib*.a
+	rm -f ../lib/lib*.a
 	make -C modules clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 

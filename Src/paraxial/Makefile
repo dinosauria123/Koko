@@ -14,7 +14,7 @@ all: libparaxial
 libparaxial: $(FOBJ)
 	ar r libparaxial.a $?
 	ranlib libparaxial.a
-	mv libparaxial.a ../lib
+	mv libparaxial.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

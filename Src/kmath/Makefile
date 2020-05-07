@@ -19,7 +19,7 @@ all: libkmath
 libkmath: $(FMOD) $(FOBJ)
 	ar r libkmath.a $?
 	ranlib libkmath.a
-	mv libkmath.a ../lib
+	mv libkmath.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

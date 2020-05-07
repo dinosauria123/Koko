@@ -15,7 +15,7 @@ all: liboptimize
 liboptimize: $(FOBJ)
 	ar r liboptimize.a $?
 	ranlib liboptimize.a
-	mv liboptimize.a ../lib
+	mv liboptimize.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

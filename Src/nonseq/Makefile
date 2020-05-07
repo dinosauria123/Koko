@@ -14,7 +14,7 @@ all: libnonseq
 libnonseq: $(FOBJ)
 	ar r libnonseq.a $?
 	ranlib libnonseq.a
-	mv libnonseq.a ../lib
+	mv libnonseq.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

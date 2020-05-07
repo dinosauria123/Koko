@@ -14,7 +14,7 @@ all: libmacro
 libmacro: $(FOBJ)
 	ar r libmacro.a $?
 	ranlib libmacro.a
-	mv libmacro.a ../lib
+	mv libmacro.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<

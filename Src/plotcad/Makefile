@@ -15,7 +15,7 @@ all: libplotcad
 libplotcad: $(FOBJ)
 	ar r libplotcad.a $?
 	ranlib libplotcad.a
-	mv libplotcad.a ../lib
+	mv libplotcad.a ../../lib
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
