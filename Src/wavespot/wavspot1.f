@@ -1554,10 +1554,14 @@ C
               CALL SHOWIT(0)
               RETURN
           END IF
-      END
+          END
+
+      
 C SUB OPDLOD.FOR
       SUBROUTINE OPDLOD
 C
+          USE SVDSUB
+      
           IMPLICIT NONE
 C
           EXTERNAL FF3
@@ -1573,10 +1577,7 @@ C
 C       THIS PASSES THE SOLUTION OF THE LEAST SQUARES PROBLEM
           COMMON/SOLU/X
 C
-          REAL*8 ACCUM(1:96,1:96),REFHT,
-     1    CCOL(1:96),
-     2    X(1:96)
-C
+          REAL*8 ACCUM(1:96,1:96),REFHT,CCOL(1:96),X(1:96)
           COMMON/ACDATA/ACCUM,CCOL
 C
           INTEGER III,JJ,KK,ALLOERR
@@ -1588,11 +1589,8 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datsp1.inc'
 C
-          REAL*8 W,V,U,
-     2    B,XXX
-C
-          DIMENSION W(:),V(:,:),U(:,:),
-     2    B(:),XXX(:)
+          REAL*8 W,V,U,B,XXX
+          DIMENSION W(:),V(:,:),U(:,:),B(:),XXX(:)
 C
           ALLOCATABLE :: W,V,U,B,XXX
           ALLOCATE (W(1:96),V(1:96,1:96),U(1:96,1:96),B(1:96),XXX(1:96)
@@ -1854,7 +1852,9 @@ C       SIMPLE DATA FIT
       END
 C SUB WAVESLP1.FOR
       SUBROUTINE WAVESLP1(DSPOTT,IITOT,JTYPE)
-C
+
+          USE SVDSUB
+      
           IMPLICIT NONE
 C
           EXTERNAL FF3
@@ -3435,21 +3435,20 @@ C       NOT SPDADD
           END IF
           RETURN
       END
-C SUB OPDLOD2.FOR
+
+
+C     SUB OPDLOD2.FOR
       SUBROUTINE OPDLOD2
+          USE SVDSUB
 C
           IMPLICIT NONE
 C
           EXTERNAL FF3
-C
           INTEGER SSN,SM,NP2,MP,COUNT,I,J,N,M,II,IIP
-C
           LOGICAL OPMAP,ERROP
-C
           COMMON/OPOPMP/OPMAP
-C
           COMMON/PRSIZE/COUNT
-C
+
 C       THIS PASSES THE SOLUTION OF THE LEAST SQUARES PROBLEM
           COMMON/SOLU/X
 C
@@ -3471,11 +3470,9 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datsp1.inc'
 C
-          REAL*8 W,V,U,
-     2    B,XXX
+          REAL*8 W,V,U,B,XXX
 C
-          DIMENSION W(:),V(:,:),U(:,:),
-     2    B(:),XXX(:)
+          DIMENSION W(:),V(:,:),U(:,:),B(:),XXX(:)
 C
           ALLOCATABLE :: W,V,U,B,XXX
           ALLOCATE (W(1:96),V(1:96,1:96),U(1:96,1:96),B(1:96),XXX(1:96)

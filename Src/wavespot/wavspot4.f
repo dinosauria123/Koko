@@ -3371,6 +3371,7 @@ C
 C SUB ENEXFT.FOR
       SUBROUTINE ENEXFT(NNTOT)
           USE GLOBALS
+          USE SVDSUB
 C
           IMPLICIT NONE
 C
@@ -3739,7 +3740,7 @@ C
 C       SOLVE LINEAR EQUATION
 C
           WTOL=0.0D0
-          CALL SVBKSBB(U,V,B,W,15)
+          CALL SVBKSBB(U,W,V,15,B,X)
 C
           I=1
           CFA1(I)=X(I)
@@ -3812,7 +3813,7 @@ C
 C       SOLVE LINEAR EQUATION
 C
           WTOL=0.0D0
-          CALL SVBKSBB(U,V,B,W,15)
+          CALL SVBKSBB(U,W,V,15,B,X)
 C
           I=1
           CFB1(I)=X(I)
@@ -3885,7 +3886,7 @@ C
 C       SOLVE LINEAR EQUATION
 C
           WTOL=0.0D0
-          CALL SVBKSBB(U,V,B,W,15)
+          CALL SVBKSBB(U,W,V,15,B,X)
 C
           I=1
           CFA2(I)=X(I)
@@ -3958,7 +3959,7 @@ C
 C       SOLVE LINEAR EQUATION
 C
           WTOL=0.0D0
-          CALL SVBKSBB(U,V,B,W,15)
+          CALL SVBKSBB(U,W,V,15,B,X)
 C
           I=1
           CFB2(I)=X(I)

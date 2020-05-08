@@ -5,7 +5,7 @@ Numerical Recipes Code in KDP-2
 The original KDP-2 software relies on several subroutines from
 "Numerical Recipes in Fortran 77, 2nd Edition" (NR). In Koko, these
 subroutines were either removed or re-implemented using open-source
-software. The following table lists the replacements of the original
+software. The following table lists the subroutines replacing the original
 NR subroutines.
 
 

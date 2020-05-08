@@ -1,6 +1,12 @@
 To Do List for KODS
 ===================
 
+- 'make' does not work well with Fortran 90 modules. Need better
+  build system.
+  
+- random number generators are also from Numerical Recipes;
+  subroutines 'ranran' and 'gasdev' --> replace
+
 - replacement needed for sys_keyin.c (has not copyright)
 
 - remove common block SVD2 (optim10.f and optim3.f)

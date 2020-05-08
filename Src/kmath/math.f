@@ -110,20 +110,19 @@ C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,1)
 
 
       SUBROUTINE RANDSET
-C
           IMPLICIT NONE
           INTEGER N
-C
           REAL RANRAN,RESLT
-C
+
           EXTERNAL RANRAN
-C
+
           N=-1
           RESLT=RANRAN(-1)
-C
+
           RETURN
       END
 
+      
 C     SUB MYNEWSEED.FOR
 C
       SUBROUTINE MYNEWSEED
@@ -194,25 +193,24 @@ C
 
       
 C     SUB RANDGET.FOR
-C
       SUBROUTINE RANDGET(RESULT)
-C
+
           IMPLICIT NONE
-C
+
           REAL*8 RESULT
           INTEGER N
-C
           REAL RANRAN
-C
           EXTERNAL RANRAN
-C
+
           N=1
           RESULT=DBLE(RANRAN(1))
-C
+
           RETURN
       END
 
+      
       FUNCTION RANRAN(MY_IDUM)
+C     return uniformly distributed random number in [0,1]
           IMPLICIT NONE
           INTEGER MY_IDUM,IDUM
           REAL MBIG,MZ

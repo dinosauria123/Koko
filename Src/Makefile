@@ -4,8 +4,8 @@
 # Ulf GRIESMANN, April 2020
 #
 
-SUBDIRS = ldm config hardware macro optimize paraxial pickup raytrace \
-          specsurf nonseq utility wavespot glass plotcad kmath
+SUBDIRS = kmath ldm config hardware macro optimize paraxial pickup \
+          raytrace specsurf nonseq utility wavespot glass plotcad
 
 # default platform is Linux
 ifndef OS

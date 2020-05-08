@@ -4,9 +4,9 @@
 # Ulf GRIESMANN, April 2020
 #
 
-fSRC = bicubic.f  math.f  opteng.f  svd.f  tilter.f dpsort.f splerror.f
-f90SRC = sortdmat.f90 splineint.f90 cubicspline.f90
-mSRC = cubicspline.f90
+fSRC = bicubic.f  math.f  opteng.f  tilter.f dpsort.f splerror.f
+f90SRC = sortdmat.f90 splineint.f90 cubicspline.f90 svd.f90 svdsub.f90
+mSRC = cubicspline.f90 svd.f90 svdsub.f90
 
 # modules
 FMOD = $(mSRC:.f90=.mod)
@@ -14,9 +14,12 @@ FMOD = $(mSRC:.f90=.mod)
 FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o)
 
 # targets
-all: libkmath
+all: modules libkmath
 
-libkmath: $(FMOD) $(FOBJ)
+modules: $(FMOD)
+	 mv *.mod ../modules
+
+libkmath: $(FOBJ)
 	ar r libkmath.a $?
 	ranlib libkmath.a
 	mv libkmath.a ../lib
@@ -31,4 +34,4 @@ libkmath: $(FMOD) $(FOBJ)
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
 
 clean:
-	rm -f *.o *.mod *~
+	rm -f *.o *~
