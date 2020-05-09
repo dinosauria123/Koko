@@ -117,7 +117,18 @@ void MainWindow::slot_lensInfo(int row,int col)
    }
    tabletext = tabletext + tableitem->text().trimmed();
    lensPara->append(tabletext);
-   lensPara->append(ccv[row].toLatin1());
+   if (ccv[row] != " "){
+        lensPara->append(ccv[row].toLatin1());
+   }
+   if (asphv[row] != " "){
+        lensPara->append(asphv[row].toLatin1());
+   }
+   if (asph2v[row] != " "){
+        lensPara->append(asph2v[row].toLatin1());
+   }
+   if (tiltv[row] != " "){
+        lensPara->append(tiltv[row].toLatin1());
+   }
 }
 
 void MainWindow::addcontextmenu()
@@ -1010,6 +1021,11 @@ double MainWindow::numconv(int k,QByteArray HexData){
 
 void MainWindow::ReadFileToTable(QString pathname)
 {
+    ccv.clear();
+    asphv.clear();
+    asph2v.clear();
+    tiltv.clear();
+
     QFile textFile(pathname);
     QString buffer = "";
     textFile.open(QIODevice::ReadOnly); // file open
@@ -1126,6 +1142,9 @@ void MainWindow::ReadFileToTable(QString pathname)
             table->resizeColumnToContents(0);
             surftype = "";
             ccv << QString(" ");
+            asphv << QString(" ");
+            asph2v << QString(" ");
+            tiltv << QString(" ");
             k++;
         }
 
@@ -1174,8 +1193,26 @@ void MainWindow::ReadFileToTable(QString pathname)
         QRegExp RegExp11("CC *");
         RegExp11.setPatternSyntax(QRegExp::Wildcard); //pick up Conic constant
         if (RegExp11.exactMatch(item)){
-           qDebug()<<k;
            ccv[k-1] = item;
+        }
+
+        QRegExp RegExp12("ASPH2 *");
+        RegExp12.setPatternSyntax(QRegExp::Wildcard); //pick up aspheric constant
+        if (RegExp12.exactMatch(item)){
+           asph2v[k-1] = item;
+           continue;
+        }
+
+        QRegExp RegExp13("ASPH *");
+        RegExp13.setPatternSyntax(QRegExp::Wildcard); //pick up aspheric constant
+        if (RegExp13.exactMatch(item)){
+           asphv[k-1] = item;
+        }
+
+        QRegExp RegExp14("TILT *");
+        RegExp14.setPatternSyntax(QRegExp::Wildcard); //pick up aspheric constant
+        if (RegExp14.exactMatch(item)){
+           tiltv[k-1] = item;
         }
     }
 

@@ -41,7 +41,7 @@ class MainWindow : public QMainWindow, public Ui::MainWindow
 public:
     MainWindow(QMainWindow *parnet=0);
     QProcess *proc;
-    QString hdir,ldir,li,cc;
+    QString hdir,ldir,li;
     double lF,lD,lC;
 
     QMenu *MaterialMenu;
@@ -65,6 +65,9 @@ public:
 
     QTableWidgetItem *tableitem;
     QVector<QString> ccv;
+    QVector<QString> asphv;
+    QVector<QString> asph2v;
+    QVector<QString> tiltv;
 
 private:
 
