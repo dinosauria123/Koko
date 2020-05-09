@@ -117,7 +117,7 @@ void MainWindow::slot_lensInfo(int row,int col)
    }
    tabletext = tabletext + tableitem->text().trimmed();
    lensPara->append(tabletext);
-
+   lensPara->append(ccv[row].toLatin1());
 }
 
 void MainWindow::addcontextmenu()
@@ -1010,7 +1010,6 @@ double MainWindow::numconv(int k,QByteArray HexData){
 
 void MainWindow::ReadFileToTable(QString pathname)
 {
-
     QFile textFile(pathname);
     QString buffer = "";
     textFile.open(QIODevice::ReadOnly); // file open
@@ -1044,7 +1043,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (RegExp10.exactMatch(lines[i])){
            li = lines[i];
 	   qDebug() << li;
-        } 
+        }
 
         QStringList lambda;
         QRegExp RegExp("WV *");
@@ -1126,6 +1125,8 @@ void MainWindow::ReadFileToTable(QString pathname)
             table->setItem(k-1,0,new QTableWidgetItem(surftype));
             table->resizeColumnToContents(0);
             surftype = "";
+            ccv << QString(" ");
+            k++;
         }
 
 
@@ -1139,7 +1140,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         radius = radius.setNum(1.0E0/curveture.toDouble(),'g',6); //convert curveture to radius
 
         if (RegExp1.exactMatch(item)){
-        table->setItem( k, 1, new QTableWidgetItem(radius));
+        table->setItem( k-1, 1, new QTableWidgetItem(radius));
         }
 
     QString thickness;
@@ -1153,8 +1154,7 @@ void MainWindow::ReadFileToTable(QString pathname)
         if (RegExp2.exactMatch(item)){
         thickness = item.trimmed().mid(comma,25);
         thickness = thickness.setNum(thickness.toDouble(),'g',6);
-        table->setItem( k, 2, new QTableWidgetItem(thickness));
-        k++;
+        table->setItem( k-1, 2, new QTableWidgetItem(thickness));
         }
 
     QString aperture;
@@ -1169,6 +1169,13 @@ void MainWindow::ReadFileToTable(QString pathname)
             aperture = item.trimmed().mid(comma,comma2-comma);
             aperture = aperture.setNum(aperture.toDouble(),'g',6);
             table->setItem( k-1, 6, new QTableWidgetItem(aperture));
+        }
+
+        QRegExp RegExp11("CC *");
+        RegExp11.setPatternSyntax(QRegExp::Wildcard); //pick up Conic constant
+        if (RegExp11.exactMatch(item)){
+           qDebug()<<k;
+           ccv[k-1] = item;
         }
     }
 
