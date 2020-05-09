@@ -4527,11 +4527,6 @@ C       SET MIN AND MAX THICKNESS/RADIUS LIMITS FOR VARIABLES
                   RETURN
               END IF
 
-              IF(WC.EQ.'SEED') THEN
-                  CALL MYNEWSEED
-                  RETURN
-              END IF
-
               IF(WC.EQ.'INVSENSI') THEN
 C       INITIATE INVERSE SENSITIVITY ANALYSIS
                   F31=1

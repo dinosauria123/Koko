@@ -32,27 +32,23 @@ C
 C
 C       THIS SUBROUTINE HANDELS THE "PRINT" SPECT COMMAND.
 C
-C                       DEFINE VARIABLES
+C       DEFINE VARIABLES
 C
           INTEGER I,J,JK,KI
-C
           CHARACTER NM*8,FN*10,DDATE*9,TTIME*8
-C
+
           LOGICAL EXISJK
-C
+
           REAL*8 WORK(1:1001,1:3),L1,L2,
      1    DATA1,DATA2,LAMB1,LAMB2,CUMULT(1:1001,1:3),DELLAM,WORKFC,
      2    SLOPE,TEMP(1:1001,1:3)
-C
-          INTEGER OCC,POINTS,NTOTAL
-     4    ,TCOUNT,NF
-C
+
+          INTEGER OCC,POINTS,NTOTAL,TCOUNT,NF
+
           COMMON/CUM/CUMULT
-C
           COMMON/WRK/WORK
-C
           COMMON/WAVEL/LAMB1,LAMB2,NTOTAL
-C
+
           INCLUDE 'datmai.inc'
 C
 C       IF SQ.EQ.0, DON'T LOOK FOR A FILE, JUST MOVE THE
@@ -354,23 +350,22 @@ C SUB NEWSEED.FOR
       SUBROUTINE NEWSEED
 C
           IMPLICIT NONE
-C
-          REAL MSEED
-C
-          COMMON/SEEDER/MSEED
-C
+
           INCLUDE 'datmai.inc'
-C
+
           IF(STI.EQ.1) THEN
               OUTLYNE=
-     1        '"NEWSEED" RESETS THE RANDOM NUMBER GENERATOR PROGRAM WIDE'
+     1        '"NEWSEED" re-initializes the random number generator'
               CALL SHOWIT(1)
               RETURN
           END IF
-          MSEED=1618033.
-          CALL RANDSET()
+
+          call randset
+
           RETURN
       END
+
+
 C SUB PM.FOR
       SUBROUTINE PM
           USE GLOBALS

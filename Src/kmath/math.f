@@ -111,179 +111,33 @@ C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,1)
 
       SUBROUTINE RANDSET
           IMPLICIT NONE
-          INTEGER N
-          REAL RANRAN,RESLT
 
-          EXTERNAL RANRAN
-
-          N=-1
-          RESLT=RANRAN(-1)
+          call random_seed() ! new sequence for Fortran RNG
 
           RETURN
-      END
-
-      
-C     SUB MYNEWSEED.FOR
-C
-      SUBROUTINE MYNEWSEED
-C
-          IMPLICIT NONE
-
-          INCLUDE 'datmai.inc'
-C
-          REAL*8 D,DD
-          INTEGER ID
-          REAL RESLT
-          REAL MSEED
-          COMMON/SEEDER/MSEED
-C
-          IF(STI.EQ.1) THEN
-              OUTLYNE= '"SEED" SETS THE RANDOM NUMBER SEED TO NUMERIC WORD #1'
-              CALL SHOWIT(1)
-              RESLT=(MSEED-1618033.)/1000.
-              IF(ABS(RESLT).LE.0.0001) THEN
-                  WRITE(OUTLYNE,20)
-                  CALL SHOWIT(1)
- 20               FORMAT('RANDOM NUMBER GENERATOR SEED IS THE PROGRAM DEFAULT')
-              ELSE
-                  WRITE(OUTLYNE,10) RESLT
-                  CALL SHOWIT(1)
-              END IF
- 10           FORMAT('THE CURRENT USER-SPECIFIED SEED = ',E15.7)
-              RETURN
-          END IF
-          IF(SQ.EQ.1.OR.SST.EQ.1.OR.S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1
-     1    .OR.S5.EQ.1) THEN
-              OUTLYNE= '"SEED" ONLY TAKES NUMERIC WORD  #1 INPUT'
-              CALL SHOWIT(1)
-              OUTLYNE='RE-ENTER COMMAND'
-              CALL SHOWIT(1)
-              CALL MACFAL
-              RETURN
-          END IF
-          IF(DF1.EQ.1) THEN
-              OUTLYNE= '"SEED" REQUIRES EXPLICIT NUMERIC WORD  #1 INPUT'
-              CALL SHOWIT(1)
-              OUTLYNE='RE-ENTER COMMAND'
-              CALL SHOWIT(1)
-              CALL MACFAL
-              RETURN
-          END IF
-          IF(W1.LT.0.001D0.OR.W1.GT.1.0D0) THEN
-              OUTLYNE=
-     1        '"SEED" INPUT MUST NOT BE LESS THAN 0.001'
-              CALL SHOWIT(1)
-              OUTLYNE=
-     1        '"AND NOT GREATER THAN 1.0'
-              CALL SHOWIT(1)
-              OUTLYNE='RE-ENTER COMMAND'
-              CALL SHOWIT(1)
-              CALL MACFAL
-              RETURN
-          END IF
-          D=W1*100000.0D0
-          ID=INT(D)
-          DD=D-DBLE(ID)
-          D=(W1*100000.0D0)-DD
-C
-          MSEED=(1618033.)+SNGL(D)
-C
-          RETURN
-      END
+      END      
 
       
 C     SUB RANDGET.FOR
       SUBROUTINE RANDGET(RESULT)
 
           IMPLICIT NONE
-
           REAL*8 RESULT
-          INTEGER N
-          REAL RANRAN
-          EXTERNAL RANRAN
 
-          N=1
-          RESULT=DBLE(RANRAN(1))
-
+          call random_number(RESULT) ! call Fortran RNG
+          
           RETURN
       END
-
       
-      FUNCTION RANRAN(MY_IDUM)
-C     return uniformly distributed random number in [0,1]
-          IMPLICIT NONE
-          INTEGER MY_IDUM,IDUM
-          REAL MBIG,MZ
-          REAL RANRAN,FAC
-          REAL MSEED
-          COMMON/SEEDER/MSEED
-          PARAMETER (MBIG=4000000.,MZ=0.,FAC=1./MBIG)
-          INTEGER I,IFF,II,INEXT,INEXTP,K
-          REAL MJ,MK,MA(55)
-          SAVE IFF,INEXT,INEXTP,MA
-          DATA IFF /0/
-          INCLUDE 'datmai.inc'
-          IDUM=MY_IDUM
-          IF(IDUM.LT.0.OR.IFF.EQ.0) THEN
-              IFF=1
-              MJ=MSEED-IABS(IDUM)
-              MJ=MOD(MJ,MBIG)
-              MA(55)=MJ
-              MK=1
-              DO I=1,54
-                  II=MOD(21*I,55)
-                  MA(II)=MK
-                  MK=MJ-MK
-                  IF(MK.LT.MZ) MK=MK+MBIG
-                  MJ=MA(II)
-              END DO
-              DO K=1,4
-                  DO I=1,55
-                      MA(I)=MA(I)-MA(1+MOD(I+30,55))
-                      IF(MA(I).LT.MZ) MA(I)=MA(I)+MBIG
-                  END DO
-              END DO
-              INEXT=0
-              INEXTP=31
-              IDUM=1
-              RANRAN=0.0
-              RETURN
-          END IF
-          INEXT=INEXT+1
-          IF(INEXT.EQ.56) INEXT=1
-          INEXTP=INEXTP+1
-          IF(INEXTP.EQ.56) INEXTP=1
-          MJ=MA(INEXT)-MA(INEXTP)
-          IF(MJ.LT.MZ) MJ=MJ+MBIG
-          MA(INEXT)=MJ
-          RANRAN=MJ*FAC
-          RETURN
-      END
       
       FUNCTION GASDEV()
 C     RETURNS A ZERO MEAN AND A UNIT VALUE FOR THE ONE-SIGMA VARIANCE
-          IMPLICIT NONE
-          REAL GASDEV
-          REAL*8 RESLT
-          INTEGER ISET
-          REAL FAC,GSET,RSQ,V1,V2
-          SAVE ISET,GSET
-          DATA ISET/0/
-          IF(ISET.EQ.0) THEN
- 1            CALL RANDGET(RESLT)
-              V1=2.*REAL(RESLT)-1.
-              CALL RANDGET(RESLT)
-              V2=2.*REAL(RESLT)-1.
-              RSQ=(V1**2)+(V2**2)
-              IF(RSQ.GE.1..OR.RSQ.EQ.0) GO TO 1
-              FAC=SQRT(-2*LOG(RSQ)/RSQ)
-              GSET=V1*FAC
-              GASDEV=V2*FAC
-              ISET=1
-          ELSE
-              GASDEV=GSET
-              ISET=0
-          END IF
+
+          USE RANDOM          
+          REAL*8 GASDEV
+
+          GASDEV = drand_normal()
+
           RETURN
       END
 
@@ -292,17 +146,14 @@ C     SUB RANDMM.FOR
           IMPLICIT NONE
           REAL*8 RANDMM
           REAL*8 RANDX
-          REAL GASDEV
-          INTEGER MY_IDUM
-          EXTERNAL GASDEV
+          REAL*8 GASDEV
+
           INCLUDE 'datmai.inc'
-          MY_IDUM=-1
-          IF(WQ.EQ.' '.OR.WQ.EQ.'ACC'.OR.WQ.EQ.'X')
-     1    MY_IDUM=1
+
           CALL RANDGET(RANDX)
-          RANDMM=RANDX
-          REG(40)=REG(9)
-C     PUT NORMAL RANDOM NUMBER IN REG(10)
-          REG(10)=GASDEV()
+          RANDMM = RANDX
+          
+          REG(40) = REG(9)
+          REG(10) = GASDEV() ! normal random # in reg(10)
           RETURN
       END

@@ -366,7 +366,7 @@ C
 C
           LOGICAL TORRY
 C
-          REAL GASDEV
+          REAL*8 GASDEV
 C
           LOGICAL COMPYES,TOLYES
 C
@@ -693,7 +693,7 @@ C
                       IF(VTYPE.EQ.162) WC='BTILT   '
                       IF(VTYPE.EQ.163) WC='ROLL    '
                       IF(VTYPE.EQ.164) WC='ROLL    '
-                      RANDXX=DBLE(GASDEV())
+                      RANDXX=GASDEV()
                       IF(VTYPE.GE.157.AND.VTYPE.LE.162) THEN
 C     DO A PIVOT
                           WQ='PIVOT'
@@ -1025,21 +1025,21 @@ C
                       IF(VTYPE.EQ.151) WC='GBETA'
                       IF(VTYPE.EQ.152) WC='GGAMMA'
                       IF(VTYPE.EQ.153) WC='GRS'
-                      IF(VTYPE.EQ.4) RANDXX=DBLE(GASDEV())
+                      IF(VTYPE.EQ.4) RANDXX=GASDEV()
                       IF(VTYPE.EQ.3) CALL RANDGET(RESLT)
                       IF(VTYPE.EQ.3) RANDXX=(2.0D0*RESLT)-1.0D0
-                      IF(VTYPE.GE.5.AND.VTYPE.LE.8) RANDXX=DBLE(GASDEV())
-                      IF(VTYPE.GE.11.AND.VTYPE.LE.20) RANDXX=DBLE(GASDEV())
-                      IF(VTYPE.EQ.138) RANDXX=DBLE(GASDEV())
+                      IF(VTYPE.GE.5.AND.VTYPE.LE.8) RANDXX=GASDEV()
+                      IF(VTYPE.GE.11.AND.VTYPE.LE.20) RANDXX=GASDEV()
+                      IF(VTYPE.EQ.138) RANDXX=GASDEV()
                       IF(VTYPE.GE.21.AND.VTYPE.LE.25) CALL RANDGET(RESLT)
                       IF(VTYPE.GE.21.AND.VTYPE.LE.25) RANDXX=(2.0D0*RESLT)-1.0D0
                       IF(VTYPE.GE.124.AND.VTYPE.LE.128) CALL RANDGET(RESLT)
                       IF(VTYPE.GE.124.AND.VTYPE.LE.128) RANDXX=(2.0D0*RESLT)-1.0D0
                       IF(VTYPE.GE.139.AND.VTYPE.LE.140) CALL RANDGET(RESLT)
                       IF(VTYPE.GE.139.AND.VTYPE.LE.140) RANDXX=(2.0D0*RESLT)-1.0D0
-                      IF(VTYPE.EQ.75) RANDXX=DBLE(GASDEV())
-                      IF(VTYPE.GE.129.AND.VTYPE.LE.133) RANDXX=DBLE(GASDEV())
-                      IF(VTYPE.GE.147.AND.VTYPE.LE.153) RANDXX=DBLE(GASDEV())
+                      IF(VTYPE.EQ.75) RANDXX=GASDEV()
+                      IF(VTYPE.GE.129.AND.VTYPE.LE.133) RANDXX=GASDEV()
+                      IF(VTYPE.GE.147.AND.VTYPE.LE.153) RANDXX=GASDEV()
                       WQ='DELT'
                       SQ=1
                       S1=1
@@ -1117,14 +1117,14 @@ C     NOT TORIC SET AS SO
 
                       IF(VTYPE.GE.27.AND.VTYPE.LE.74) THEN
 C     SPECIAL SURFACE COEFFICIENTS
-                          RANDXX=DBLE(GASDEV())
+                          RANDXX=GASDEV()
                           V1=DABS(VARABL(I,8))*RANDXX
                           FTFL01((VTYPE-26),INT(VARABL(I,3)))=V1+
      1                    FTFL01((VTYPE-26),INT(VARABL(I,3)))
                       END IF
                       IF(VTYPE.GE.76.AND.VTYPE.LE.123) THEN
 C     SPECIAL SURFACE COEFFICIENTS
-                          RANDXX=DBLE(GASDEV())
+                          RANDXX=GASDEV()
                           V1=DABS(VARABL(I,8))*RANDXX
                           FTFL01((VTYPE-27),INT(VARABL(I,3)))=V1+
      1                    FTFL01((VTYPE-27),INT(VARABL(I,3)))

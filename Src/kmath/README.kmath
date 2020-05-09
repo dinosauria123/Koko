@@ -4,4 +4,5 @@ Collection of mathematical subroutines required by Koko
 - cubic spline interpolation and evaluation
 - solving of linear equations with singular value decomposition
 - sorting of matrices
+- random number generation
 

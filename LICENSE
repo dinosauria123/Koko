@@ -31,3 +31,5 @@ License
   The complete text of the GNU General Public License version 3 can be found in
   the `COPYING' file.
 
+  NOTE: Several Fortran 90 modules in Koko/Src/kmath are licensed under
+  the terms of the Lesser GNU Public Library (LGPL).
