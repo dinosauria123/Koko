@@ -1,6 +1,8 @@
 To Do List for KODS
 ===================
 
+- fix utility/utility7.f:lwrite
+
 - 'make' does not work well with Fortran 90 modules. Need better
   build system.
   

@@ -768,17 +768,3 @@ C
           call system('touch '//trim(HOME)//'plotdata/magenta.txt')
           return
       end
-
-
-      SUBROUTINE LOWER_CASE(STRUC)
-          IMPLICIT NONE
-          CHARACTER STRUC*80
-          INTEGER I,J
-          DO I=1,80
-              J=ICHAR(STRUC(I:I))
-              IF(J.GE.65.AND.J.LE.90)
-     1               STRUC(I:I)=CHAR(J+32)
-          END DO
-          RETURN
-      END
-

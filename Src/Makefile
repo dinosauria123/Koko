@@ -36,10 +36,9 @@ LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -Wl,--end-group -lkmod -lm
 CSRC = sys_keyin.c
 
 fSRC = koko.f cmder.f names.f libload.f loadgrida.f saverest.f
-FSRC = kods.F
 
 COBJ = $(CSRC:.c=.o)
-FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o) 
+FOBJ = $(fSRC:.f=.o) 
 
 # targets
 all: buildinfo modules libraries koko-cli
@@ -61,9 +60,6 @@ buildinfo:
 	./buildinfo
 
 %.o: %.f
-	$(FC) -c $(FFLAGS) -I./include -I./modules $<
-
-%.o: %.F
 	$(FC) -c $(FFLAGS) -I./include -I./modules $<
 
 %.o: %.c

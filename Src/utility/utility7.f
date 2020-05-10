@@ -1043,6 +1043,8 @@ C
           END IF
           RETURN
       END
+
+
 C SUB MYSYS.FOR
       SUBROUTINE MYSYS
           IMPLICIT NONE
@@ -1120,6 +1122,8 @@ C
           END IF
           RETURN
       END
+
+
 C SUB NTOA2.FOR
       SUBROUTINE NTOA2(N1,N2,N3,N4,N5,BN1,BN2,BN3,BN4,BN5)
 C
@@ -1204,6 +1208,8 @@ C
  300      FORMAT(A10)
           RETURN
       END
+
+
 C SUB NWTOAW.FOR
       SUBROUTINE NWTOAW(N1,N2,N3,N4,N5,AN1,AN2,AN3,AN4,AN5
      1,BN1,BN2,BN3,BN4,BN5)
@@ -1251,6 +1257,8 @@ C
  300      FORMAT(A11)
           RETURN
       END
+
+
 C SUB NWTOAWB.FOR
       SUBROUTINE NWTOAWB(N1,N2,N3,N4,N5,AN1,AN2,AN3,AN4,AN5
      1,BN1,BN2,BN3,BN4,BN5)
@@ -1296,6 +1304,8 @@ C
  300      FORMAT(A11)
           RETURN
       END
+
+
 C SUB ALINE1.FOR
       SUBROUTINE ALINE1(I,LINE1,ALN1)
 C
@@ -1375,6 +1385,8 @@ C
 C       NOT COMENT
           END IF
       END
+
+      
 C SUB FIGURE.FOR
       SUBROUTINE FIGURE
 C
@@ -1400,6 +1412,8 @@ C
           FIGTITLE=WS
           RETURN
       END
+
+      
 C SUB VECTOROP.FOR
       SUBROUTINE VECTOROP
 C
@@ -1524,6 +1538,8 @@ C
           END IF
           RETURN
       END
+
+
 C SUB LINE_TO_PLANE
       SUBROUTINE LINE_TO_PLANE
      1(X,Y,Z,X0,Y0,Z0,L,M,N,XP,YP,ZP,LP,MP,NP,ERROR)
@@ -1556,3 +1572,17 @@ C
           END IF
           RETURN
       END
+
+
+      SUBROUTINE LOWER_CASE(STRUC)
+          IMPLICIT NONE
+          CHARACTER STRUC*80
+          INTEGER I,J
+          DO I=1,80
+              J=ICHAR(STRUC(I:I))
+              IF(J.GE.65.AND.J.LE.90)
+     1               STRUC(I:I)=CHAR(J+32)
+          END DO
+          RETURN
+      END
+
