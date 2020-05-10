@@ -2254,55 +2254,101 @@ C
           INCLUDE 'datspd.inc'
           INCLUDE 'datsp1.inc'
 
-          IF (F1.EQ.1.AND.F17.EQ.0) THEN
+          IF(F1.EQ.1.AND.F17.EQ.0) THEN
               KKDP='cmd'
-          ELSE IF (F1.EQ.1.AND.F17.EQ.1) THEN
-              KKDP='spe'
-          ELSE IF (F2.EQ.1) THEN
-              KKDP='mac'
-          ELSE IF (F3.EQ.1) THEN
-              KKDP='med'
-          ELSE IF (F5.EQ.1) THEN
-              KKDP='len'
-          ELSE IF (F6.EQ.1) THEN
-              KKDP='uln'
-          ELSE IF (F7.EQ.1) THEN
-              KKDP='sps'
-          ELSE IF (F8.EQ.1) THEN
-              KKDP='usp'
-          ELSE IF (F9.EQ.1) THEN
-              KKDP='fit'
-          ELSE IF (F10.EQ.1) THEN
-              KKDP='cfg'
-          ELSE IF (F11.EQ.1) THEN
-              KKDP='ucf'
-          ELSE IF (F27.EQ.1) THEN
-              KKDP='mer'
-          ELSE IF (F27.EQ.2) THEN
-              KKDP='umr'
-          ELSE IF (F29.EQ.1) THEN
-              KKDP='var'
-          ELSE IF (F29.EQ.2) THEN
-              KKDP='uvb'
-          ELSE IF (F51.EQ.1) THEN
-              KKDP='tvb'
-          ELSE IF (F51.EQ.2) THEN
-              KKDP='utv'
-          ELSE IF (F52.EQ.1) THEN
-              KKDP='cmp'
-          ELSE IF (F52.EQ.2) THEN
-              KKDP='ucp'
-          ELSE IF (F53.EQ.1) THEN
-              KKDP='top'
-          ELSE IF (F53.EQ.2) THEN
-              KKDP='utp'
-          ELSE IF (F54.EQ.1) THEN
-              KKDP='foc'
-          ELSE IF (F54.EQ.2) THEN
-              KKDP='ufc'
-          ELSE 
-             KKDP='cmd'
+              RETURN
           END IF
+          IF(F1.EQ.1.AND.F17.EQ.1) THEN
+              KKDP='spe'
+              RETURN
+          END IF
+          IF(F2.EQ.1) THEN
+              KKDP='mac'
+              RETURN
+          END IF
+          IF(F3.EQ.1) THEN
+              KKDP='med'
+              RETURN
+          END IF
+          IF(F5.EQ.1) THEN
+              KKDP='len'
+              RETURN
+          END IF
+          IF(F6.EQ.1) THEN
+              KKDP='uln'
+              RETURN
+          END IF
+          IF(F7.EQ.1) THEN
+              KKDP='sps'
+              RETURN
+          END IF
+          IF(F8.EQ.1) THEN
+              KKDP='usp'
+              RETURN
+          END IF
+          IF(F9.EQ.1) THEN
+              KKDP='fit'
+              RETURN
+          END IF
+          IF(F10.EQ.1) THEN
+              KKDP='cfg'
+              RETURN
+          END IF
+          IF(F11.EQ.1) THEN
+              KKDP='ucf'
+              RETURN
+          END IF
+          IF(F27.EQ.1) THEN
+              KKDP='mer'
+              RETURN
+          END IF
+          IF(F27.EQ.2) THEN
+              KKDP='umr'
+              RETURN
+          END IF
+          IF(F29.EQ.1) THEN
+              KKDP='var'
+              RETURN
+          END IF
+          IF(F29.EQ.2) THEN
+              KKDP='uvb'
+              RETURN
+          END IF
+          IF(F51.EQ.1) THEN
+              KKDP='tvb'
+              RETURN
+          END IF
+          IF(F51.EQ.2) THEN
+              KKDP='utv'
+              RETURN
+          END IF
+          IF(F52.EQ.1) THEN
+              KKDP='cmp'
+              RETURN
+          END IF
+          IF(F52.EQ.2) THEN
+              KKDP='ucp'
+              RETURN
+          END IF
+          IF(F53.EQ.1) THEN
+              KKDP='top'
+              RETURN
+          END IF
+          IF(F53.EQ.2) THEN
+              KKDP='utp'
+              RETURN
+          END IF
+          IF(F54.EQ.1) THEN
+              KKDP='foc'
+              RETURN
+          END IF
+          IF(F54.EQ.2) THEN
+              KKDP='ufc'
+              RETURN
+          END IF
+C     FALL THROUGH OPTION TO CHECK IS MISSED SOMETHING
+          KKDP='cmd'
+          RETURN
       END
 
       SUBROUTINE PROGSIZE

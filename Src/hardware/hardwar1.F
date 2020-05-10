@@ -105,7 +105,7 @@ C SUB MY_DIR.INC
           CHARACTER KKDP*3
 !      CALL PUT_PROMPT('Press any key to continue...',28)
 !      CALL GET_RESPONSE(RESPONSE,80)
-          CALL SELECTKDP(KKDP)
+          CALL SELECTKOKO(KKDP)
 !      CALL PUT_PROMPT(KKDP,3)
       END
 

@@ -12,11 +12,6 @@ ifndef OS
   OS = LINUX
 endif
 
-# default number of jobs
-ifndef JOBS
-  JOBS = 1
-endif
-
 # compiler flags
 CC = gcc
 FC = gfortran
@@ -56,7 +51,7 @@ modules:
 .PHONY: libraries $(SUBDIRS)
 libraries: $(SUBDIRS)
 $(SUBDIRS):
-	make -j $(JOBS) -C $@
+	make -C $@
 
 koko-cli: buildinfo.inc $(COBJ) $(FOBJ)
 	$(FC) -o koko-cli $(FOBJ) $(COBJ) $(LDIR) $(LIBS)

@@ -1025,11 +1025,11 @@ C                       RESET FLAG STATUS
 C     THIS IS A Resume Typing (PRESSED ENTER ONLY)
               HX='  '
               HT=.FALSE.
-              CALL SELECTKDP(KKDP)
+              CALL SELECTKOKO(KKDP)
 !      CALL PUT_PROMPT(KKDP,3)
               RETURN
           END IF
-          CALL SELECTKDP(KKDP)
+          CALL SELECTKOKO(KKDP)
 !      CALL PUT_PROMPT(KKDP,3)
 
           RETURN
@@ -1882,7 +1882,7 @@ C
 
 !      CALL PUT_PROMPT('INPUT ',6)
 !      CALL GET_RESPONSE(ASTRING,80)
-              CALL SELECTKDP(KKDP)
+              CALL SELECTKOKO(KKDP)
 !      CALL PUT_PROMPT(KKDP,3)
           ENDIF
           IF(IV.LE.20.AND.IV.NE.0)  THEN
@@ -1892,7 +1892,7 @@ C
 !      CALL PUT_PROMPT('INPUT '//PMTVAL(1:IV)//' ',(IV+7))
               END IF
 !      CALL GET_RESPONSE(ASTRING,80)
-              CALL SELECTKDP(KKDP)
+              CALL SELECTKOKO(KKDP)
 !      CALL PUT_PROMPT(KKDP,3)
 
           END IF

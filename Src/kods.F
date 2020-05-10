@@ -239,7 +239,7 @@ C///////////////////////////////////////////////////////////////////////
           character KKDP*3
           integer I
 
-          call SELECTKDP(KKDP)
+          call SELECTKOKO(KKDP)
 
           write(6,'(A$)') KKDP//'> '
 

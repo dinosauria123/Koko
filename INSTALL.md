@@ -10,8 +10,7 @@ Prerequisites
 * A __Fortran 90__ compiler such as gfortran.
 * An __ANSI C__ compiler such as gcc.
 * The Make tool, typically gmake on 
-* The __editline__ library (<https://www.thrysoee.dk/editline>).
-* The __gnuplot__ graphing software.
+* The __gnuplot__ plotting software.
   (<https://sourceforge.net/projects/gnuplot>), which is included with
   all Linux distributions.
 * For the graphical user interface an installation of the
@@ -41,12 +40,6 @@ command
 
     make NATIVE=true
 
-In all cases the compile process can be speeded up by running multiple
-compile jobs in parallel. The number of jobs can be specified on the
-make command line as shown in the following example:
-
-    make NATIVE=true JOBS=8
-    
 Koko must be installed as super-user (or using sudo) with the command
 
     make install
@@ -58,15 +51,6 @@ desired, e.g. '/opt', then the installation directory can be changed
 by specifying the directory prefix during installation:
 
     make PREFIX=/opt install
-
-The program data (Glass data, test plate data, macros, etc) are
-installed with
-
-    make installdata
-
-or
-
-    make PREFIX=/data_directory installdata
 
 When an installation directory prefix other than '/usr/local' was
 used, the location of the KODS data directory can be specified by

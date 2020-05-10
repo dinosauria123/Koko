@@ -9,9 +9,6 @@ endif
 export PREFIX
 
 # check variables for sub-makes
-ifdef JOBS
-  export JOBS
-endif
 ifdef NATIVE
   export NATIVE
 endif
