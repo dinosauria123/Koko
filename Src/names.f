@@ -42,9 +42,12 @@ C               HERE IS WHERE ALL POSSIBLE VALID PROGRAM COMMAND WORDS
 C               ARE INITIALIZED AND STORED IN ARRAY WCC WHICH IS PASSED
 C               VIA COMWDS COMMON
 C
-          DO 2211 NNN=1,10000
+          
+          do NNN=1,10000  ! initialize everything to blank
               WCC(NNN)='        '
- 2211     CONTINUE
+          end do
+
+          ! command table
           WCC(1)='OUTPUT'
           WCC(2)='OUT'
           WCC(3)='?'
@@ -652,7 +655,6 @@ C
           WCC(624)='FMT'
           WCC(625)='EXPUP'
           WCC(626)='AIMRAY'
-C               WCC(627)=' '
           WCC(628)='ITER'
           WCC(629)='OPCON'
           WCC(630)='IT'
@@ -802,9 +804,9 @@ C       FIELDS
           DO I=773,972
               V=V+1
               CALL ITOAAA(V,AV)
-              IF(V.LE.9) WCC(I)='F'//AV(1:1)//'  '
-              IF(V.GE.10.AND.V.LE.99) WCC(I)='F'//AV(1:2)//' '
-              IF(V.GE.100.AND.V.LE.999) WCC(I)='F'//AV(1:3)
+              IF (V.LE.9) WCC(I)='F'//AV(1:1)//'  '
+              IF (V.GE.10.AND.V.LE.99) WCC(I)='F'//AV(1:2)//' '
+              IF (V.GE.100.AND.V.LE.999) WCC(I)='F'//AV(1:3)
           END DO
 C       973 TO 1472 NOT YET USED
           WCC(1473)='RAYS'
@@ -922,9 +924,9 @@ C       973 TO 1472 NOT YET USED
           WCC(1585)='SYMY'
           WCC(1586)='ASYMX'
           WCC(1587)='ASYMY'
-          WCC(1588)='IF(X>0)'
-          WCC(1589)='IF(X<0)'
-          WCC(1590)='IF(X=0)'
+          WCC(1588)='IF (X>0)'
+          WCC(1589)='IF (X<0)'
+          WCC(1590)='IF (X=0)'
           WCC(1591)='PACM'
           WCC(1592)='PACZ'
           WCC(1593)='SACM'
@@ -934,9 +936,9 @@ C       973 TO 1472 NOT YET USED
           WCC(1597)='SLCM'
           WCC(1598)='SLCZ'
           WCC(1599)='PSFPLOT'
-          WCC(1600)='IF(X>Y)'
-          WCC(1601)='IF(X<Y)'
-          WCC(1602)='IF(X=Y)'
+          WCC(1600)='IF (X>Y)'
+          WCC(1601)='IF (X<Y)'
+          WCC(1602)='IF (X=Y)'
           WCC(1603)='IN-MM'
           WCC(1604)='IN-CM'
           WCC(1605)='IN-M'
@@ -1218,7 +1220,7 @@ C     NSS DATABASE COMMANDS
           WCC(1879)='NSSSPLIT'
           WCC(1880)='NSSOBJ'
           WCC(1882)='NSSGRIDS'
-C     WCC(1883)=''
+
           WCC(1884)='NSSGRIDR'
           WCC(1885)='NSSTRACE'
           WCC(1886)='SCLAP'
@@ -1338,7 +1340,7 @@ C     WCC(1883)=''
           WCC(2000)='PNOTE'
           WCC(2001)='IOBJECTD'
           WCC(2002)='FRAME'
-C     WCC(2003)=' '
+
           WCC(2004)='CLEARREG'
           WCC(2005)='RMSMAP'
           WCC(2006)='PTVMAP'
@@ -1370,7 +1372,8 @@ C     WCC(2003)=' '
           WCC(2032)='FLIPREFY'
           WCC(2033)='PSFBIN'
           WCC(2034)='CONFIG'
-C WCC(2035) ... WCC(2044) were used for stock analysis
+
+C         WCC(2035) ... WCC(2044) were used for stock analysis
           WCC(2045)='ONTOL'
           WCC(2046)='SINGTOL'
           WCC(2047)='CHGMAC'
@@ -1385,29 +1388,29 @@ C
           DO I=5001,8969
               V=V+1
               CALL ITOAAA(V,AV)
-              IF(V.LE.9) WCC(I)='ACT000'//AV(1:1)//' '
-              IF(V.GE.10.AND.V.LE.99) WCC(I)='ACT00'//AV(1:2)//' '
-              IF(V.GE.100.AND.V.LE.999) WCC(I)='ACT0'//AV(1:3)//' '
-              IF(V.GE.1000.AND.V.LE.3969) WCC(I)='ACT'//AV(1:4)//' '
+              IF (V.LE.9) WCC(I)='ACT000'//AV(1:1)//' '
+              IF (V.GE.10.AND.V.LE.99) WCC(I)='ACT00'//AV(1:2)//' '
+              IF (V.GE.100.AND.V.LE.999) WCC(I)='ACT0'//AV(1:3)//' '
+              IF (V.GE.1000.AND.V.LE.3969) WCC(I)='ACT'//AV(1:4)//' '
           END DO
 C       RAYS
           V=0
           DO I=9000,14001
               V=V+1
               CALL ITOAAA(V,AV)
-              IF(V.LE.9) WCC(I)='R'//AV(1:1)//'  '
-              IF(V.GE.10.AND.V.LE.99) WCC(I)='R'//AV(1:2)//' '
-              IF(V.GE.100.AND.V.LE.999) WCC(I)='R'//AV(1:3)
-              IF(V.GE.1000.AND.V.LE.5000) WCC(I)='R'//AV(1:4)
+              IF (V.LE.9) WCC(I)='R'//AV(1:1)//'  '
+              IF (V.GE.10.AND.V.LE.99) WCC(I)='R'//AV(1:2)//' '
+              IF (V.GE.100.AND.V.LE.999) WCC(I)='R'//AV(1:3)
+              IF (V.GE.1000.AND.V.LE.5000) WCC(I)='R'//AV(1:4)
           END DO
 C       NEXT COME THE 200 NSS PARAMETERS
           V=0
           DO I=14002,14203
               V=V+1
               CALL ITOAAA(V,AV)
-              IF(V.LE.9) WCC(I)='PAR00'//AV(1:1)//'  '
-              IF(V.GE.10.AND.V.LE.99) WCC(I)='PAR0'//AV(1:2)//'  '
-              IF(V.GE.100.AND.V.LE.999) WCC(I)='PAR'//AV(1:3)//'  '
+              IF (V.LE.9) WCC(I)='PAR00'//AV(1:1)//'  '
+              IF (V.GE.10.AND.V.LE.99) WCC(I)='PAR0'//AV(1:2)//'  '
+              IF (V.GE.100.AND.V.LE.999) WCC(I)='PAR'//AV(1:3)//'  '
           END DO
           RETURN
       END
