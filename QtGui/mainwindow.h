@@ -33,6 +33,7 @@
 #include "optimize.h"
 #include "lidialog.h"
 #include "rayinputdialog.h"
+#include "newdialog.h"
 
 class MainWindow : public QMainWindow, public Ui::MainWindow
 {
@@ -94,6 +95,7 @@ private:
     Optimize *dialog2;
     LIDialog *dialog3;
     rayinputDialog *dialog4;
+    NewDialog *dialog5;
     QStringList GN,GN1,GN2,GN3,GN4,GN5,GN6,GN7,GN8,GN9;
     QString DispHistory;
     bool eventFilter(QObject* object, QEvent* event);
@@ -106,6 +108,7 @@ private slots:
     void slot_commandExec();
     void slot_appendView();
 
+    void slot_actionNew();
     void slot_actionOpen();
     void slot_actionSave();
     void slot_actionImport_Zemax();

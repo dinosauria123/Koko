@@ -14,18 +14,21 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
+    newdialog.cpp \
     nkdialog.cpp \
     optimize.cpp \
     lidialog.cpp \
     rayinputdialog.cpp
 
 HEADERS  += mainwindow.h \
+    newdialog.h \
     nkdialog.h \
     optimize.h \
     lidialog.h \
     rayinputdialog.h
 
 FORMS    += mainwindow.ui \
+    newdialog.ui \
     nkdialog.ui \
     optimize.ui \
     lidialog.ui \

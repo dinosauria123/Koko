@@ -1388,6 +1388,24 @@ QString MainWindow::surftypeCheck(QString iden, QString type, QString lines)
 
 // File Menu
 
+void MainWindow::slot_actionNew()
+{
+
+    dialog5 = new NewDialog();
+    dialog5->exec();
+/*
+    if (dialog3->Button3 == 1024){
+
+    proc->write("\n");
+    proc->write("U L\n");
+    proc->write("LI "+dialog3->LensIdentifier.toLatin1()+" \n");
+    proc->write("EOS\n");
+
+    proc->write("LI\n");
+
+    }
+*/
+}
 
 void MainWindow::slot_actionOpen()
 {
