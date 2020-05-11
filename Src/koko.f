@@ -1462,18 +1462,13 @@ C       THE NEXT FEW STATEMENTS CONTROL THE INPUT LINE
 C       AND THE PROGRAM CURSOR. THEY ARE THE ONLY NON-
 C       ANSI FORTRAN 77 STATEMENTS IN THE PROGRAN.
 C
-C     SET DOSKEY KL TO 0
-!                        KL=0
-C
+          CMDNO = 1 ! # of input commands starts at 1
 
-          CMDNO=1 ! Number of input commands start to 1
+ 1        OLDOUTOLD = OUT  ! Command input loop starts here
 
-          OLDOUTOLD=OUT
- 1        CONTINUE
-          OLDOUTOLD=OUT
 C
 C     ALL KEYBOARD AND LATER WINFILE INPUT IS DONE WITH A CALL TO
-C     USERINPT
+C     userinput
 C
 C       FIX THE DOGTAG
 C
@@ -1527,7 +1522,19 @@ C
               OPEN44=.FALSE.
               INQUIRE(FILE=trim(HOME)//'BATCH.DAT',EXIST=EXIS44)
               INQUIRE(FILE=trim(HOME)//'BATCH.DAT',OPENED=OPEN44)
-              IF(EXIS44) THEN
+
+              IF (.not.EXIS44) THEN
+
+                 OUTLYNE='BATCH FILE DOES NOT EXIST'
+                 CALL SHOWIT(1)
+                 SQ=0
+                 SST=0
+                 SN=0
+                 STI=0
+                 CALL EXITT(1)
+                  
+               ELSE
+
                   IF(OPEN44) CALL CLOSE_FILE(44,1)
 C     OPEN AND PROCESS CONTENTS
                   OPEN(UNIT=44,ACCESS='SEQUENTIAL',FILE=trim(HOME)//'BATCH.DAT',
@@ -1604,27 +1611,25 @@ C     AFTER PROCESS, CLOSE AND KEEP BOTH 80 AND 81
                       END IF
                   END DO
                   CALL CLOSE_FILE(44,1)
-C     WHEN FINISHED, EXITT
+
+C     finished processing batch file
                   SQ=0
                   SST=0
                   SN=0
                   STI=0
                   CALL EXITT(0)
-              ELSE
+ 
  9744             CONTINUE
-                  OUTLYNE='ERROR PROCESSING FILE "BATCH.DAT"'
-                  CALL SHOWIT(1)
-                  OUTLYNE='BATCH JOB TERMINATED'
+                  OUTLYNE='ERROR READING BATCH FILE'
                   CALL SHOWIT(1)
                   SQ=0
                   SST=0
                   SN=0
                   STI=0
                   CALL EXITT(1)
+
  9743             CONTINUE
-                  OUTLYNE='END OF FILE "BATCH.DAT" ENCOUNTERED'
-                  CALL SHOWIT(1)
-                  OUTLYNE='BATCH JOB TERMINATED'
+                  OUTLYNE='UNEXPECTED END OF BATCH FILE'
                   CALL SHOWIT(1)
                   SQ=0
                   SST=0
@@ -1632,7 +1637,6 @@ C     WHEN FINISHED, EXITT
                   STI=0
                   CALL EXITT(1)
               END IF
-          ELSE
           END IF
 
           IF(IN.EQ.5.AND.CMDLINE(1:5).NE.'BATCH') THEN
@@ -1647,7 +1651,7 @@ C     WHEN FINISHED, EXITT
               open(unit=131,file=trim(HOME)//'plotdata/breakblack.txt')
               open(unit=150,file=trim(HOME)//'drawcmd3.txt')
 
-              CALL USERINPT2(CMDNO)
+              CALL userinput(CMDNO)
 
               close(115)
               close(116)
@@ -2340,42 +2344,136 @@ C
           RETURN
       END
 
-      SUBROUTINE CROSS_PRODUCT_C(XP,YP,ZP,X1,Y1,Z1,X2,Y2,Z2)
-c     USES A C-UTILITY.C ROUTINE
-          IMPLICIT NONE
-!      INTEGER CrossProduct
-c     ml_external CrossProduct
-!      INTEGER N
-          DOUBLE PRECISION A(0:2),B(0:2),C(0:2)
-          DOUBLE PRECISION X1,Y1,Z1,X2,Y2,Z2,XP,YP,ZP
-          A(0)=X1
-          A(1)=Y1
-          A(2)=Z1
-          B(0)=X2
-          B(1)=Y2
-          B(2)=Z2
-          C(0)=XP
-          C(1)=YP
-          C(2)=ZP
-c     N=CrossProduct(A,B,C)
-          XP=C(0)
-          YP=C(1)
-          ZP=C(2)
-          RETURN
-      END
+      subroutine userinput(ncmd)
 
-      SUBROUTINE CROSS_PRODUCT(XP,YP,ZP,X1,Y1,Z1,X2,Y2,Z2)
-          IMPLICIT NONE
-          DOUBLE PRECISION X1,Y1,Z1,X2,Y2,Z2,XP,YP,ZP
-          XP=(Y1*Z2)-(Z1*Y2)
-          YP=(Z1*X2)-(X1*Z2)
-          ZP=(X1*Y2)-(Y1*X2)
-          RETURN
-      END
+          implicit none
 
-      SUBROUTINE DOT_PRODUCT(DP,X1,Y1,Z1,X2,Y2,Z2)
-          IMPLICIT NONE
-          DOUBLE PRECISION X1,Y1,Z1,X2,Y2,Z2,DP
-          DP=(X1*X2)+(Y1*Y2)+(Z1*Z2)
-          RETURN
-      END
+          include 'datmai.inc'
+
+          character KKDP*3
+          integer ncmd
+
+          call SELECTKOKO(KKDP)
+
+          write (*,'(i0,a)',advance='no') ncmd,':'//KKDP//'> '
+
+!      call disphistory(KKDP,I,INPUT)  !If you use history, remove ! this line
+          read (*,'(a)') INPUT
+
+          WC='        '
+
+          call upper_case(INPUT)
+
+          if (INPUT.eq.'') then
+              INPUT=' '
+          endif
+
+          if (ECH.EQ.1) then
+              OUTLYNE='> '//trim(INPUT)
+              call SHOWIT(1)
+          end if
+
+          call PROCES
+
+          return
+      end
+
+
+      subroutine disphistory(KKDP,I,INPUT0)
+          implicit none
+
+          include 'datmai.inc'
+
+          character KKDP*3,HISTORY*15,INPUT0*15
+          CHARACTER :: CR = CHAR(13)
+          integer KEY0,KEY1,KEY2,I,HISTNO
+          logical f_exist
+
+          KEY0=0
+          KEY1=0
+          KEY2=0
+
+          call SYS_KEYSET(1)
+
+          HISTNO=I
+          HISTORY=""
+
+          if (I.eq.1) HISTNO=1
+
+          !INPUT must be charactor
+
+          do while (KEY0.lt.32)
+
+              call SYS_KEYIN(KEY0)
+
+              if (KEY0.eq.27) then
+                  call SYS_KEYIN(KEY1)
+                  call SYS_KEYIN(KEY2)
+
+                  if ((KEY2.eq.67).or.(KEY2.eq.68)) continue
+
+                  if (KEY2.eq.65) then !Up Arrow
+                      HISTNO=HISTNO-1
+                      if (HISTNO.le.0) HISTNO=I-1
+                      if (I.eq.1) HISTNO=1
+                  endif
+                  if (KEY2.eq.66) then !Down Arrow
+                      HISTNO=HISTNO+1
+                      if (HISTNO.ge.I) HISTNO=1
+                      if (I.eq.1) HISTNO=I
+                  endif
+
+                  inquire(file=trim(HOME)//'HISTORY.DAT', exist=f_exist)
+
+                  if (f_exist.eqv..true.) then
+                      open(170,file=trim(HOME)//'HISTORY.DAT',status='old',
+     &                access='direct',recl=15,form='formatted')
+                  else
+                      open(170,file=trim(HOME)//'HISTORY.DAT',status='new',
+     &                access='direct',recl=15,form='formatted')
+                      write(170,'(A15)',rec=1) "NO INPUT"
+                  endif
+
+                  read(170,'(A15)',rec=HISTNO) HISTORY
+                  close(170)
+
+                  write(6,'(A$)') CR//'               '
+                  write(6,'(A$)') CR//KKDP//'> '//trim(HISTORY)
+
+              endif
+
+              if (KEY0.eq.10) then
+                  call SYS_KEYSET(0)
+                  write(6,'(A)') CR//KKDP//'> '//HISTORY
+                  INPUT=HISTORY
+                  return
+              end if
+
+              if (KEY0.eq.127) then
+                  call SYS_KEYSET(0)
+                  write(6,'(A$)') CR//'               '
+                  write(6,'(A)') CR//KKDP//'> '
+                  INPUT=""
+                  return
+              end if
+
+          end do
+
+          call SYS_KEYSET(0)
+
+          write(6,'(A$)') CR//KKDP//'> '//char(KEY0)
+          read(5,'(a$)') INPUT0
+          INPUT=char(KEY0)//INPUT0
+
+          open(170,file=trim(HOME)//'HISTORY.DAT',
+     &    access='direct',recl=15,form='formatted')
+
+          if (INPUT.ne."") then
+              write(170,'(A15)',rec=I) INPUT
+              I=I+1
+          endif
+
+          close(170)
+
+          return
+      end

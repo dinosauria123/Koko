@@ -157,3 +157,22 @@ C     SUB RANDMM.FOR
           REG(10) = GASDEV() ! normal random # in reg(10)
           RETURN
       END
+
+
+      SUBROUTINE CROSS_PRODUCT(XP,YP,ZP,X1,Y1,Z1,X2,Y2,Z2)
+          IMPLICIT NONE
+          DOUBLE PRECISION X1,Y1,Z1,X2,Y2,Z2,XP,YP,ZP
+          XP=(Y1*Z2)-(Z1*Y2)
+          YP=(Z1*X2)-(X1*Z2)
+          ZP=(X1*Y2)-(Y1*X2)
+          RETURN
+      END
+
+      
+      SUBROUTINE DOT_PRODUCT(DP,X1,Y1,Z1,X2,Y2,Z2)
+          IMPLICIT NONE
+          DOUBLE PRECISION X1,Y1,Z1,X2,Y2,Z2,DP
+          DP=(X1*X2)+(Y1*Y2)+(Z1*Z2)
+          RETURN
+      END
+      
