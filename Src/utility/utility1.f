@@ -2115,7 +2115,7 @@ C        PRINT 3
                   END IF
 C       DATA DOES EXIST TO PRINT
                   DO I=1,NROW
-                      WRITE(OUTLYNE_LONG,1124) TABL(I,1),TABL(I,2)
+                      WRITE(OUTLYNE,1124) TABL(I,1),TABL(I,2)
      1                ,TABL(I,3),TABL(I,4),TABL(I,5),TABL(I,6),TABL(I,7)
      2                ,TABL(I,8),TABL(I,9)
                       CALL SHOWIT(20)
