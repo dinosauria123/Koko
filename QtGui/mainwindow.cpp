@@ -71,7 +71,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     connect(table, SIGNAL(cellClicked(int,int)), this, SLOT(slot_lensInfo(int,int)));
 
-    proc->start(hdir+"/koko-cli"); //For Linux, MacOSX
+    proc->start(hdir+"/koko-cli"); //For Linux, MacOSXcmdline
 //    proc->start("/data/data/com.install.kods/lib/libkods.so");   //For Android
     proc->write("RTG ALL\n");
     ReadFileToTable(ldir+"/CURLENS/LENSTEXT.DAT");
@@ -112,6 +112,7 @@ void MainWindow::slot_lensInfo(int row,int col)
    tabletext = QString("Surface type:");
    tableitem = table->item(row,0);
    lensPara -> append("Surface No." + QString::number(row));
+   qDebug()<<tableitem->text();
    if (tableitem -> text() == ""){
         tabletext = QString("Surface type:Spherical");
    }
@@ -1583,10 +1584,15 @@ void MainWindow::slot_actionInsert_surface()
 
     if (row != 0){
         table->insertRow(row);              //insert row to GUI table
+        table->setItem(row,0,new QTableWidgetItem(""));
         table->setItem(row,1,new QTableWidgetItem("inf"));
         table->setItem(row,2,new QTableWidgetItem("0"));
         table->setItem(row,3,new QTableWidgetItem("AIR"));
         tableitem=table->item(row,3);
+        ccv.insert(row,1," ");
+        asphv.insert(row,1," ");
+        asph2v.insert(row,1," ");
+        tiltv.insert(row,1," ");
 //        tableitem->setFlags(Qt::ItemIsEnabled);
         nol++;
     }
@@ -1621,6 +1627,10 @@ void MainWindow::slot_actionDelete_surface()
     if ((row != 0)&&(row != nol-1)){
         table->removeRow(row);              //delete row from GUI table
         nol--;
+        ccv.remove(row,1);
+        asphv.remove(row,1);
+        asph2v.remove(row,1);
+        tiltv.remove(row,1);
     }
     QStringList label;
     for (int i=0; i<=nol-1; i++){
@@ -2087,7 +2097,7 @@ void MainWindow::leaveEvent(QEvent * event){    //Release input when event happe
 
 void MainWindow::enterEvent(QEvent * event){    //Grab input when event finished
 //       qDebug() << "Enter event";
-       cmdLine->grabKeyboard();
+//       cmdLine->grabKeyboard();
        QWidget::enterEvent(event);
 }
 
