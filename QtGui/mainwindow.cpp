@@ -1394,18 +1394,32 @@ void MainWindow::slot_actionNew()
 
     dialog5 = new NewDialog();
     dialog5->exec();
-/*
-    if (dialog3->Button3 == 1024){
+    if (dialog5->Button == 1024){
 
-    proc->write("\n");
-    proc->write("U L\n");
-    proc->write("LI "+dialog3->LensIdentifier.toLatin1()+" \n");
-    proc->write("EOS\n");
+         qDebug()<< dialog5->LensIdentifier.toLatin1();
+         qDebug()<< dialog5->units.toLatin1();
+         qDebug()<< dialog5->say.toLatin1();
+         qDebug()<< dialog5->scyfang.toLatin1();
 
-    proc->write("LI\n");
+         proc->write("\n");
+         proc->write("LENS\n");
+         proc->write("LI "+dialog5->LensIdentifier.toLatin1()+" \n");
+         proc->write("UNITS "+dialog5->units.toLatin1()+" \n");
+         proc->write("SAY "+dialog5->say.toLatin1()+" \n");
+         proc->write("SCY FANG "+dialog5->scyfang.toLatin1()+" \n");
+         proc->write("TH 1.0E20\n");
+         proc->write("AIR\n");
+         proc->write("REFS\n");
+         proc->write("AIR\n");
+         proc->write("TH 1.0E20\n");
+         proc->write("AIR\n");
+         proc->write("EOS\n");
+         proc->write("RTG ALL\n");
+         proc->write("LENSSAVE\n");
 
+         delay();
+         ReadFileToTable(ldir+"/LENSES/LENS.PRG");
     }
-*/
 }
 
 void MainWindow::slot_actionOpen()
