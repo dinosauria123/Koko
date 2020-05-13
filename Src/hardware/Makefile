@@ -5,7 +5,7 @@
 #
 
 FSRC = hardwar1.F
-fSRC = hardwar2.f hardwar3.f
+fSRC = hardwar2.f
 
 FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o)
 

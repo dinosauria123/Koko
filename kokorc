@@ -1,0 +1,8 @@
+; Configuration file example for Koko
+;
+[directories]
+    home = /HOME/ulfg/KODS
+    temp = /tmp
+
+[graphics]
+    viewer = /usr/bin/gnuplot

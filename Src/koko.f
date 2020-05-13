@@ -27,6 +27,8 @@
 
           USE GLOBALS
           USE NSSMOD
+          USE opsys
+          USE configfile
 
           IMPLICIT NONE
 
@@ -123,7 +125,6 @@
           COMMON/OPENGR/GROPEN
 
           LOGICAL ITERROR
-          INTEGER NCHAR
 
           INCLUDE 'datlen.inc'
           INCLUDE 'datcfg.inc'
@@ -134,19 +135,60 @@
           INCLUDE 'datsp1.inc'
           INCLUDE 'dathgr.inc'
 
-! look up user home
-          call get_environment_variable("KODS_HOME", HOME, NCHAR)
-          IF (NCHAR == 0) HOME = '/usr/local/KODS/'
+          LOGICAL has_userhome, has_kodsdir
 
-! parse configuration file, create one if none is found
-
+          ! for configuration file
+          CHARACTER(len=256) :: cfg_file, test_file
+          TYPE(CFG_t)        :: koko_cfg
           
-! name of graphics display program
-         BMPREADR='gnuplot'
+!--- Installation Options ----------------------------------
+          
+          ! first look up user home directory
+          CALL user_home_directory(has_userhome, USERHOME)
 
-! process command line options
-         
-! start initializing system
+          ! check if the KODS directory is in the user's home directory
+          IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
+             CALL dir_path_append(HOME, USERHOME, "KODS")
+          END IF
+
+          ! set directory for temporary files
+          CALL set_kods_temp_dir(TMPDIR)
+          IF (len_TRIM(TMPDIR) == 0) THEN
+             TMPDIR = HOME ! last resort
+          END IF
+          
+          ! parse the configuration file
+          IF ( has_userhome ) THEN
+             CALL dir_path_append(cfg_file, USERHOME, '.kokorc')
+             IF ( file_exists(cfg_file) ) THEN
+                ! define config default values
+                CALL CFG_add(koko_cfg, "directories%home", HOME, "Koko lib directory")
+                CALL CFG_add(koko_cfg, "directories%temp", TMPDIR, "Koko temp directory")
+                CALL CFG_add(koko_cfg, "graphics%viewer", "gnuplot", "Koko graphics viewer")
+                
+                CALL CFG_read_file(koko_cfg, cfg_file)
+
+                ! update config variables from file
+                CALL CFG_get(koko_cfg, "directories%home", HOME)
+                CALL CFG_get(koko_cfg, "directories%temp", TMPDIR)
+                CALL CFG_get(koko_cfg, "graphics%viewer",  BMPREADR)
+             END IF
+          END IF
+
+          ! error check
+          CALL dir_path_append(test_file, HOME, "README_DATA")
+          INQUIRE(file = test_file, exist = has_kodsdir)
+          IF ( .NOT. has_kodsdir ) THEN
+             WRITE (*,*) ' '
+             WRITE (*,*) 'Fatal error: KODS library directory not found.'
+             WRITE (*,*) ' '
+             STOP 1
+          END IF
+
+          ! HOME needs to terminate with (back-) slash ...
+          CALL add_dir_slash( HOME )
+          
+          ! start initializing Koko
           CALL MY_NDPEXC
 
 !     NO NSS SURFACES
@@ -270,7 +312,7 @@
           CALL UPPER_CASE(COMLINE)
           CMDLINE(1:127)=COMLINE(1:127)
 !     IF(BFLAG) CMDLINE(1:5)='BATCH'
-          IF(CMDLINE(1:5).NE.'BATCH') CALL SETTEXTSCREEN
+          IF(CMDLINE(1:5).NE.'BATCH') CALL GREETING
 !
 !        CALL MY_NDPEXC
 !
@@ -2356,136 +2398,153 @@
       END SUBROUTINE PROGSIZE
 
       
-      subroutine userinput(ncmd)
+      SUBROUTINE userinput(ncmd)
 
-          implicit none
+          IMPLICIT NONE
 
-          include 'datmai.inc'
+          INCLUDE 'datmai.inc'
 
-          integer ncmd
-          character KKDP*3
+          INTEGER ncmd
+          CHARACTER KKDP*3
 
-          call SELECTKOKO(KKDP)
+          CALL SELECTKOKO(KKDP)
 
-          write (*,'(a,i0,a)',advance='no') ' ',ncmd,':'//KKDP//'> '
+          WRITE (*,'(a,i0,a)',advance='no') ' ',ncmd,':'//KKDP//'> '
 
 !      call disphistory(KKDP,I,INPUT)  !If you use history, remove ! this line
-          read (*,'(a)') INPUT
+          READ (*,'(a)') INPUT
 
           WC='        '
 
-          call upper_case(INPUT)
+          CALL upper_case(INPUT)
 
-          if (INPUT.eq.'') then
+          IF (INPUT.EQ.'') THEN
               INPUT=' '
-          end if
+          END IF
 
-          if (ECH.EQ.1) then
-              OUTLYNE='> '//trim(INPUT)
-              call SHOWIT(1)
-          end if
+          IF (ECH.EQ.1) THEN
+              OUTLYNE='> '//TRIM(INPUT)
+              CALL SHOWIT(1)
+          END IF
 
-          call PROCES
+          CALL PROCES
 
-      end subroutine userinput
+      END SUBROUTINE userinput
 
 
-      subroutine disphistory(KKDP,I,INPUT0)
-          implicit none
+      SUBROUTINE disphistory(KKDP,I,INPUT0)
+          IMPLICIT NONE
 
-          include 'datmai.inc'
+          INCLUDE 'datmai.inc'
 
-          character KKDP*3,HISTORY*15,INPUT0*15
+          CHARACTER KKDP*3,HISTORY*15,INPUT0*15
           CHARACTER :: CR = CHAR(13)
-          integer KEY0,KEY1,KEY2,I,HISTNO
-          logical f_exist
+          INTEGER KEY0,KEY1,KEY2,I,HISTNO
+          LOGICAL f_exist
 
           KEY0=0
           KEY1=0
           KEY2=0
 
-          call SYS_KEYSET(1)
+          CALL SYS_KEYSET(1)
 
           HISTNO=I
           HISTORY=""
 
-          if (I.eq.1) HISTNO=1
+          IF (I.EQ.1) HISTNO=1
 
           !INPUT must be charactor
 
-          do while (KEY0.lt.32)
+          DO WHILE (KEY0.LT.32)
 
-              call SYS_KEYIN(KEY0)
+              CALL SYS_KEYIN(KEY0)
 
-              if (KEY0.eq.27) then
-                  call SYS_KEYIN(KEY1)
-                  call SYS_KEYIN(KEY2)
+              IF (KEY0.EQ.27) THEN
+                  CALL SYS_KEYIN(KEY1)
+                  CALL SYS_KEYIN(KEY2)
 
-                  if ((KEY2.eq.67).or.(KEY2.eq.68)) continue
+                  IF ((KEY2.EQ.67).OR.(KEY2.EQ.68)) CONTINUE
 
-                  if (KEY2.eq.65) then !Up Arrow
+                  IF (KEY2.EQ.65) THEN !Up Arrow
                       HISTNO=HISTNO-1
-                      if (HISTNO.le.0) HISTNO=I-1
-                      if (I.eq.1) HISTNO=1
-                  endif
-                  if (KEY2.eq.66) then !Down Arrow
+                      IF (HISTNO.LE.0) HISTNO=I-1
+                      IF (I.EQ.1) HISTNO=1
+                  ENDIF
+                  IF (KEY2.EQ.66) THEN !Down Arrow
                       HISTNO=HISTNO+1
-                      if (HISTNO.ge.I) HISTNO=1
-                      if (I.eq.1) HISTNO=I
-                  endif
+                      IF (HISTNO.GE.I) HISTNO=1
+                      IF (I.EQ.1) HISTNO=I
+                  ENDIF
 
-                  inquire(file=trim(HOME)//'HISTORY.DAT', exist=f_exist)
+                  INQUIRE(file=TRIM(HOME)//'HISTORY.DAT', exist=f_exist)
 
-                  if (f_exist.eqv..true.) then
-                      open(170,file=trim(HOME)//'HISTORY.DAT',status='old',
+                  IF (f_exist.EQV..TRUE.) THEN
+                      OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',status='old',
      &                access='direct',recl=15,form='formatted')
-                  else
-                      open(170,file=trim(HOME)//'HISTORY.DAT',status='new',
+                  ELSE
+                      OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',status='new',
      &                access='direct',recl=15,form='formatted')
-                      write(170,'(A15)',rec=1) "NO INPUT"
-                  endif
+                      WRITE(170,'(A15)',rec=1) "NO INPUT"
+                  ENDIF
 
-                  read(170,'(A15)',rec=HISTNO) HISTORY
-                  close(170)
+                  READ(170,'(A15)',rec=HISTNO) HISTORY
+                  CLOSE(170)
 
-                  write(6,'(A$)') CR//'               '
-                  write(6,'(A$)') CR//KKDP//'> '//trim(HISTORY)
+                  WRITE(6,'(A$)') CR//'               '
+                  WRITE(6,'(A$)') CR//KKDP//'> '//TRIM(HISTORY)
 
-              endif
+              ENDIF
 
-              if (KEY0.eq.10) then
-                  call SYS_KEYSET(0)
-                  write(6,'(A)') CR//KKDP//'> '//HISTORY
+              IF (KEY0.EQ.10) THEN
+                  CALL SYS_KEYSET(0)
+                  WRITE(6,'(A)') CR//KKDP//'> '//HISTORY
                   INPUT=HISTORY
-                  return
-              end if
+                  RETURN
+              END IF
 
-              if (KEY0.eq.127) then
-                  call SYS_KEYSET(0)
-                  write(6,'(A$)') CR//'               '
-                  write(6,'(A)') CR//KKDP//'> '
+              IF (KEY0.EQ.127) THEN
+                  CALL SYS_KEYSET(0)
+                  WRITE(6,'(A$)') CR//'               '
+                  WRITE(6,'(A)') CR//KKDP//'> '
                   INPUT=""
-                  return
-              end if
+                  RETURN
+              END IF
 
-          end do
+          END DO
 
-          call SYS_KEYSET(0)
+          CALL SYS_KEYSET(0)
 
-          write(6,'(A$)') CR//KKDP//'> '//char(KEY0)
-          read(5,'(a$)') INPUT0
-          INPUT=char(KEY0)//INPUT0
+          WRITE(6,'(A$)') CR//KKDP//'> '//CHAR(KEY0)
+          READ(5,'(a$)') INPUT0
+          INPUT=CHAR(KEY0)//INPUT0
 
-          open(170,file=trim(HOME)//'HISTORY.DAT',
+          OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',
      &    access='direct',recl=15,form='formatted')
 
-          if (INPUT.ne."") then
-              write(170,'(A15)',rec=I) INPUT
+          IF (INPUT.NE."") THEN
+              WRITE(170,'(A15)',rec=I) INPUT
               I=I+1
-          endif
+          ENDIF
 
-          close(170)
+          CLOSE(170)
 
-          return
-      end subroutine disphistory
+          RETURN
+      END SUBROUTINE disphistory
 
+
+      SUBROUTINE GREETING
+
+        include 'buildinfo.inc'      
+
+        write (*,*)
+        write (*,*) 'Koko Optical Design Software (KODS)'
+        write (*,*)
+        write (*,*) 'This is free software. There is ABSOLUTELY NO WARRANTY, '
+        write (*,*) 'not even for merchantability or fitness for a particular purpose.'
+        write (*,*) 'See COPYING, LICENSE, and AUTHORS in the source distribution for details.'
+        write (*,*) trim(buildstr)
+        write (*,*)
+        
+        RETURN
+      END SUBROUTINE GREETING
+      
