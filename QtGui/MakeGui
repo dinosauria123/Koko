@@ -16,4 +16,5 @@ clean:
 	rm -f Makefile KODS_GUI
 
 install:
+	mkdir -p $(PREFIX)/bin
 	install -m 755 KODS_GUI $(PREFIX)/bin/koko-gui

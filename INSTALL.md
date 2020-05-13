@@ -7,20 +7,20 @@ installation instructions currently apply to Linux only.
 Prerequisites
 -------------
 
-* A __Fortran 90__ compiler such as gfortran.
-* An __ANSI C__ compiler such as gcc.
-* The Make tool, typically gmake on 
-* The __gnuplot__ plotting software.
+* A  **Fortran 95** compiler such as gfortran.
+* An **ANSI C** compiler such as gcc.
+* The **Make** tool, typically gmake on Linux
+* The **gnuplot** plotting software.
   (<https://sourceforge.net/projects/gnuplot>), which is included with
   all Linux distributions.
 * For the graphical user interface an installation of the
-  cross-platform development framework Qt5 (<https://www.qt.io), with
+  cross-platform development framework **Qt5** (<https://www.qt.io), with
   development libraries, is required. The Qt libraries are included
   with all Linux distributions.
 
 
-Building Koko with Command Line Interface
------------------------------------------
+Building Koko
+-------------
 
 In the top level directory ./Koko that holds the source code, at
 the command shell prompt, type
@@ -52,22 +52,67 @@ by specifying the directory prefix during installation:
 
     make PREFIX=/opt install
 
-When an installation directory prefix other than '/usr/local' was
-used, the location of the KODS data directory can be specified by
-setting the value of the environment variable __KODS_HOME__ to the
-data directory. For example, when the bash shell is used, the command
 
-    export KODS_HOME=/home/user
+Setting up the KODS Data Directories
+------------------------------------
 
-can be added either to the system-wide file '/etc/bash.bashrc' or to
-the file '.bashrc' in a user's home directory.  This not only allows
-the installation of the program data in a non-default directory, but
-it also allows every user to maintain and change their own data
-directory.
+Koko was originally developed for single-user MS-DOS and Windows
+computers, and it (still) sits uneasily with modern operating
+systems. For example, the directory tree containing program data,
+e.g. glass data, also contains directories that must be
+writable. Program data for Koko must be installed by every user into a
+user-writable directory. This can be done even without compiling
+Koko simply by executing
+
+    make install-data
+
+in the Koko top level directory. This will create a directory named
+"KODS" in the home directory (if it does not exist) and then the
+program data will be copied into this directory. Should a different
+location for the program data be desired, the data can be installed
+with
+
+    make DATAPREFIX=~/some/directory install-data
 
 
-Building the Graphical User Interface
--------------------------------------
+Configuring Koko
+----------------
+
+When the program data for Koko are stored in a non-standard location,
+this location must be defined in the Koko configuration file. When
+Koko is started, the program reads a configuration file named
+".kokorc" in a user's home directory, which is defined in the
+environment variable HOME in unix, and in the environment variables
+HOMEDRIVE and HOMEDIR in Windows. An example configuration file can be
+found in the top level directory of the Koko source distribution. The
+configuration file has the following form:
+
+<pre>
+; Configuration file example for Koko
+;
+[directories]
+    home = /HOME/ulfg/KODS
+    temp = /tmp
+
+[graphics]
+    viewer = /usr/bin/gnuplot
+</pre>
+
+In the configuration file the location of the Koko data directory
+("home" in the configuration file), and a directory for temporary data
+can be defined. The viewer for graphical output from Koko can also be
+specified in the configuration file. Comment lines beginning with ;
+are ignored in the configuration file.
+
+The configuration can also be changed temporarily by specifiying the
+home directory on the Koko command line. For more details type:
+
+<pre>
+koko-cli --help
+</pre>
+
+Building the Graphical User Interface Separately
+------------------------------------------------
 
 Change to the __./QtGui__ directory and create the build files by
 issuing the

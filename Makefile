@@ -6,6 +6,11 @@
 ifndef PREFIX
   PREFIX = /usr/local
 endif
+
+ifndef DATAPREFIX
+  DATAPREFIX = ${HOME}
+endif	     
+
 export PREFIX
 
 # check variables for sub-makes
@@ -26,12 +31,15 @@ all:
 	make -C ./Src
 	make -C ./QtGui -f MakeGui koko-gui
 
-# install everything
+# install executables
 install:
 	make -C ./Src install
 	make -C ./QtGui -f MakeGui install
-	mkdir -p $(PREFIX)/KODS
-	cd ./Libs && cp -R * $(PREFIX)/KODS
+
+# install data
+install-data:
+	mkdir -p $(DATAPREFIX)/KODS
+	cd ./Libs && cp -R * $(DATAPREFIX)/KODS
 
 # clean up
 clean:

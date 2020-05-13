@@ -73,4 +73,5 @@ clean:
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 
 install:
+	mkdir -p $(PREFIX)/bin
 	install -m 755 koko-cli $(PREFIX)/bin
