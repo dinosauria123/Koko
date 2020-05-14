@@ -29,6 +29,7 @@
           USE NSSMOD
           USE opsys
           USE configfile
+          USE getoptions
 
           IMPLICIT NONE
 
@@ -141,7 +142,7 @@
           CHARACTER(len=256) :: cfg_file, test_file
           TYPE(CFG_t)        :: koko_cfg
           
-!--- Installation Options ----------------------------------
+!--- Configuration Options ----------------------------------
           
           ! first look up user home directory
           CALL user_home_directory(has_userhome, USERHOME)
@@ -185,6 +186,26 @@
              STOP 1
           END IF
 
+!--- Command Line Options ----------------------------------
+
+          IF ( command_argument_count() > 0 ) THEN
+             DO
+                SELECT CASE( getopt("bdht:") )
+                CASE (char(0))
+                   EXIT
+                CASE ('b')
+                   BATCHFILE = optarg
+                CASE ('d')
+                   HOME = optarg
+                CASE ('h')
+                   CALL print_usage()
+                   STOP
+                CASE ('t')
+                   TMPDIR = optarg
+                END SELECT
+             END DO
+          END IF
+          
           ! HOME needs to terminate with (back-) slash ...
           CALL add_dir_slash( HOME )
           
@@ -2548,3 +2569,14 @@
         RETURN
       END SUBROUTINE GREETING
       
+
+      SUBROUTINE print_usage()
+
+        write (*,*) "Usage: koko-cli [-h] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
+        write (*,*) "Options and arguments:"
+        write (*,*) " -h            :  print this help message"
+        write (*,*) " -d <datadir>  :  set data directory for KODS"
+        write (*,*) " -t <tempdir>  :  set temporary file directory"
+        write (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
+        
+      END SUBROUTINE print_usage

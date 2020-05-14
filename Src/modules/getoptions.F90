@@ -59,7 +59,7 @@ contains
     character function substr( str, i, j )
         ! arguments
         character(len=*), intent(in):: str
-        integer, intent(in):: i, j
+        integer, intent(in) :: i, j
 
         if ( 1 <= i .and. i <= j .and. j <= len(str)) then
             substr = str(i:j)
@@ -167,7 +167,7 @@ contains
         character(len=*), intent(in):: optstring, arg
 
         ! local variables
-        integer:: i, arglen
+        integer :: i, arglen
 
         arglen = len( trim( arg ))
         optopt = arg(grpind:grpind)

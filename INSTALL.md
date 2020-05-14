@@ -108,7 +108,7 @@ The configuration can also be changed temporarily by specifiying the
 home directory on the Koko command line. For more details type:
 
 <pre>
-koko-cli --help
+koko-cli  -h
 </pre>
 
 Building the Graphical User Interface Separately
