@@ -41,7 +41,7 @@ COBJ = $(CSRC:.c=.o)
 FOBJ = $(fSRC:.f=.o) 
 
 # targets
-all: buildinfo modules libraries koko-cli
+all: buildinfo libdir modules libraries koko-cli
 
 .PHONY: modules
 modules:
@@ -65,10 +65,13 @@ buildinfo:
 %.o: %.c
 	$(CC) -c $(CFLAGS) $<
 
+libdir:
+	mkdir -p ./lib
 
 clean:
 	rm -f *.o *~ koko-cli buildinfo.inc
 	rm -f ./lib/lib*.a
+	rmdir ./lib
 	make -C modules clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 
