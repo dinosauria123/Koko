@@ -6,3 +6,6 @@
 
 [graphics]
     viewer = /usr/bin/gnuplot
+
+[text]
+    editor = vi

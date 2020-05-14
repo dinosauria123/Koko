@@ -1137,9 +1137,8 @@ C HANDEL PRINTING OF NAME OF CURRENT DEVICE
 C
 C     OUTPUT TP
 C
-C
           IF(WQ.EQ.'TP') THEN
-              IF(CMDLINE(1:5).EQ.'BATCH') RETURN
+              IF( batchmode ) RETURN
               IF(IN.NE.8) CALL CLOSE_FILE(8,1)
               IF(IN.NE.9) CALL CLOSE_FILE(9,1)
               IF(IN.NE.10)CALL CLOSE_FILE(10,1)

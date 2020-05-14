@@ -62,8 +62,7 @@
           COMMON/TOPBOT/ATTOP,ATBOT
 
           CHARACTER MCNAM1*8,FILNAM*10,DOSKEY(1:100)*140,
-     1    DDDAT*10,TTTIM*8
-     2    ,DMNAM*10,STRUC*140,AI4*4,COMLINE*140
+     1    DDDAT*10,TTTIM*8,DMNAM*10,STRUC*140,AI4*4
 
           COMMON/JKSTRUC/STRUC
 
@@ -141,6 +140,10 @@
           ! for configuration file
           CHARACTER(len=256) :: cfg_file, test_file
           TYPE(CFG_t)        :: koko_cfg
+
+          ! for command line options
+          character          :: ch
+          logical            :: quiet
           
 !--- Configuration Options ----------------------------------
           
@@ -163,9 +166,10 @@
              CALL dir_path_append(cfg_file, USERHOME, '.kokorc')
              IF ( file_exists(cfg_file) ) THEN
                 ! define config default values
-                CALL CFG_add(koko_cfg, "directories%home", HOME, "Koko lib directory")
-                CALL CFG_add(koko_cfg, "directories%temp", TMPDIR, "Koko temp directory")
-                CALL CFG_add(koko_cfg, "graphics%viewer", "gnuplot", "Koko graphics viewer")
+                CALL CFG_add(koko_cfg, "directories%home", HOME,      "Koko lib directory")
+                CALL CFG_add(koko_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
+                CALL CFG_add(koko_cfg, "graphics%viewer",  "gnuplot", "Koko graphics viewer")
+                CALL CFG_add(koko_cfg, "text%editor",      "vi",      "Koko text editor")
                 
                 CALL CFG_read_file(koko_cfg, cfg_file)
 
@@ -173,6 +177,7 @@
                 CALL CFG_get(koko_cfg, "directories%home", HOME)
                 CALL CFG_get(koko_cfg, "directories%temp", TMPDIR)
                 CALL CFG_get(koko_cfg, "graphics%viewer",  BMPREADR)
+                CALL CFG_get(koko_cfg, "text%editor",      TXTEDITOR)
              END IF
           END IF
 
@@ -188,20 +193,42 @@
 
 !--- Command Line Options ----------------------------------
 
+          quiet     = .FALSE.
+          batchmode = .FALSE.
+          
           IF ( command_argument_count() > 0 ) THEN
              DO
-                SELECT CASE( getopt("bdht:") )
+                ch = getopt("bdhqt:")
+                SELECT CASE( ch )
                 CASE (char(0))
                    EXIT
                 CASE ('b')
+                   IF ( len_TRIM(optarg) == 0 ) THEN
+                      WRITE (*,*) "Missing argument for command option -b"
+                      STOP
+                   END IF
+                   batchmode = .TRUE.
                    BATCHFILE = optarg
                 CASE ('d')
+                   IF ( len_TRIM(optarg) == 0 ) THEN
+                      WRITE (*,*) "Missing argument for command option -d"
+                      STOP
+                   END IF
                    HOME = optarg
                 CASE ('h')
                    CALL print_usage()
                    STOP
                 CASE ('t')
+                   IF ( len_TRIM(optarg) == 0 ) THEN
+                      WRITE (*,*) "Missing argument for command option -t"
+                      STOP
+                   END IF
                    TMPDIR = optarg
+                CASE ('q' )
+                   quiet = .TRUE.
+                CASE default
+                   WRITE (*,*) "Unrecognized command flag -"//ch
+                   STOP
                 END SELECT
              END DO
           END IF
@@ -209,8 +236,7 @@
           ! HOME needs to terminate with (back-) slash ...
           CALL add_dir_slash( HOME )
           
-          ! start initializing Koko
-          CALL MY_NDPEXC
+!--- Initialize Koko ---------------------------------------
 
 !     NO NSS SURFACES
           SYSTEM1(102)=0.0D0
@@ -293,23 +319,22 @@
 !       SET NODRAW AND NOWMF TO DEFAULTS
           NODRAW=.FALSE.
           NOWMF=.TRUE.
-!
+
           HALTING=.FALSE.
-!
+
 !     INITIALIZE THE NIM/MAX REGISTERS
           MIN_REG(1:100)=1.0D300
           MAX_REG(1:100)=-1.0D300
           MAXNEUTRAL=50000
           COHERENCE_FACTOR=0.0D0
-!     BFLAG=.FALSE.
-!     CALL FORCE_BATCH(BFLAG)
-!
+
           CHRSHIFTEXT=.FALSE.
-!
+
           SCFAY=1.0D0
           SCFAX=1.0D0
           SCFAYP=1.0D0
           SCFAXP=1.0D0
+
 !     ASSIGN 3D LINE DEFAULT VALUES
           LX1=0.0D0
           LY1=0.0D0
@@ -317,26 +342,18 @@
           LX2=0.0D0
           LY2=0.0D0
           LZ2=0.0D0
-!
-! Batch start
 
-          CALL MY_GETCL
           DLEICA(0)=.TRUE.
           DLEICA(1:10)=.TRUE.
           GLEICA(1:10)=.TRUE.
-!
+
 !     SET FOR FAR OBJECTS IN DOTF/GOTF
           NEAR_FAR=1
-!
-          CMDLINE=(CMDLINE(2:127)//' ')
-          COMLINE(1:127)=CMDLINE(1:127)
-          CALL UPPER_CASE(COMLINE)
-          CMDLINE(1:127)=COMLINE(1:127)
-!     IF(BFLAG) CMDLINE(1:5)='BATCH'
-          IF(CMDLINE(1:5).NE.'BATCH') CALL GREETING
-!
-!        CALL MY_NDPEXC
-!
+
+          IF ( .not. quiet ) THEN
+             CALL GREETING
+          END IF
+
           OPTM_INIT=1
 !
 !     LIN/LOG PSF SCALING
@@ -754,7 +771,7 @@
 !       30,31,32,33,34,35,36,37,38,39
 !       40,41,42 USED BY WINTERACTER
 !       43
-!       44 IS FOR INPUT FROM FILE BATCH.DAT
+!       44 IS FOR INPUT FROM BATCH FILE
 !       45 AND 46 ARE FOR THE GRIDAPD AND GRID OPD FILES CREATED BY
 !       47,49
 !       48 FOR NSS RAY HISTORY FILE AND ALSO FOR RAYHIST.DAT FOR SEQUENTIAL RAY HISTORIES
@@ -1342,16 +1359,16 @@
           OUT = 6
           ECH = 0
 !       INITIALIZE MEMORY REGISTERS TO ZERO (REG)
-!
+
           REG(1:50)=0.0D0
 !       INITIALIZE THE GENERAL PURPOSE CHARACTER REGISTERS TO ZERO
           AGPREG(1:100000)=' '
           GPREG(1:100000)=0.0D0
-!
+
 !       BEFORE THE MAIN READ STATEMENT, CHECK IF
 !       A DEFAULTS.DAT FILE EXISTS. IF SO, READ AND PROCESS THE
 !       INSTRUCTIONS THERE.
-!
+
 
           OPEN(UNIT=16,ACCESS='SEQUENTIAL',
      1    BLANK='NULL',FORM='FORMATTED',FILE=trim(HOME)//'DEFAULTS.DAT',
@@ -1586,13 +1603,12 @@
               END IF
  669          CONTINUE
           END IF
-!
-!
-          IF(CMDLINE(1:5).EQ.'BATCH') THEN
+
+          IF( batchmode ) THEN
               EXIS44=.FALSE.
               OPEN44=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'BATCH.DAT',EXIST=EXIS44)
-              INQUIRE(FILE=trim(HOME)//'BATCH.DAT',OPENED=OPEN44)
+              INQUIRE(FILE=BATCHFILE, EXIST=EXIS44)
+              INQUIRE(FILE=BATCHFILE, OPENED=OPEN44)
 
               IF (.not.EXIS44) THEN
 
@@ -1710,10 +1726,10 @@
               END IF
           END IF
 
-          IF(IN.EQ.5.AND.CMDLINE(1:5).NE.'BATCH') THEN
+          IF ( IN == 5 .AND. len_trim(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
 
-              open(unit=115,file=trim(HOME)//'plotdata/yellow.txt')
+              open(unit=115,file=trim(HOME)//'plotdata/yellow.txt')   ! ???
               open(unit=116,file=trim(HOME)//'plotdata/magenta.txt')
               open(unit=117,file=trim(HOME)//'plotdata/red.txt')
               open(unit=118,file=trim(HOME)//'plotdata/cyan.txt')
@@ -1734,7 +1750,7 @@
 
               GO TO 1
           END IF
-!
+
           IF(IN.NE.5) THEN
 !       IN NOT EQUAL TO 5, USE A LOOP TO READ FROM DISK
 !
@@ -1828,7 +1844,7 @@
               CALL CLOSE_FILE(IN,1)
           END IF
           IF(IN.NE.8.AND.IN.NE.9.AND.IN.NE.97) IN=5
-!
+
           IF(IN.EQ.8) THEN
               IN=5
               LASTFIL=OFILN
@@ -1862,14 +1878,10 @@
           OUTLYNE='THE INPUT FILE HAS BEEN DELETED'
           CALL SHOWIT(1)
           CALL CLOSE_FILE(16,0)
-          GO TO 1
-! 991    FORMAT(A79)
-! 992    FORMAT(A79)
-! 223    FORMAT(A79)
-! 224    FORMAT(A79)
-! 115    FORMAT(A78)
- 100      FORMAT(A140)
-! 105    FORMAT(A80)
+          GO TO 1  ! process next command
+
+100       FORMAT(A140)
+
  9889     OUTLYNE='AN INPUT FILE ERROR WAS DETECTED'
           CALL SHOWIT(1)
           OUTLYNE='THE INPUT FILE HAS BEEN DELETED'
@@ -1879,7 +1891,7 @@
           IN=5
           LASTFIL=OFILN
           OFILN='            '
-          GO TO 1 ! process next command
+          GO TO 1  ! process next command
 
       END PROGRAM KOKO
 
@@ -1992,327 +2004,327 @@
           RAYX(1)    =0.0D0
           RAYX(1+41) =0.0D0
           RAYX(1+82) =0.0D0
-!
+
           RAYX(2)    =0.0D0
           RAYX(2+41) =0.0D0
           RAYX(2+82) =0.0D0
-!
+
           RAYX(3)    =0.0D0
           RAYX(3+41) =0.0D0
           RAYX(3+82) =0.0D0
-!
+
           RAYX(4)    =1.0D0
           RAYX(4+41) =1.0D0
           RAYX(4+82) =1.0D0
-!
+
           RAYX(5)    =-1.0D0
           RAYX(5+41) =-1.0D0
           RAYX(5+82) =-1.0D0
-!
+
           RAYX(6)    =0.0D0
           RAYX(6+41) =0.0D0
           RAYX(6+82) =0.0D0
-!
+
           RAYX(7)    =0.0D0
           RAYX(7+41) =0.0D0
           RAYX(7+82) =0.0D0
-!
+
           RAYX(8)    =0.866D0
           RAYX(8+41) =0.866D0
           RAYX(8+82) =0.866D0
-!
+
           RAYX(9)    =-0.866D0
           RAYX(9+41) =-0.866D0
           RAYX(9+82) =-0.866D0
-!
+
           RAYX(10)    =0.0D0
           RAYX(10+41) =0.0D0
           RAYX(10+82) =0.0D0
-!
+
           RAYX(11)    =0.0D0
           RAYX(11+41) =0.0D0
           RAYX(11+82) =0.0D0
-!
+
           RAYX(12)    =0.707D0
           RAYX(12+41) =0.707D0
           RAYX(12+82) =0.707D0
-!
+
           RAYX(13)    =-0.707D0
           RAYX(13+41) =-0.707D0
           RAYX(13+82) =-0.707D0
-!
+
           RAYX(14)    =0.0D0
           RAYX(14+41) =0.0D0
           RAYX(14+82) =0.0D0
-!
+
           RAYX(15)    =0.0D0
           RAYX(15+41) =0.0D0
           RAYX(15+82) =0.0D0
-!
+
           RAYX(16)    =0.5D0
           RAYX(16+41) =0.5D0
           RAYX(16+82) =0.5D0
-!
+
           RAYX(17)    =-0.5D0
           RAYX(17+41) =-0.5D0
           RAYX(17+82) =-0.5D0
-!
+
           RAYX(18)    =1.0D0
           RAYX(18+41) =1.0D0
           RAYX(18+82) =1.0D0
-!
+
           RAYX(19)    =-1.0D0
           RAYX(19+41) =-1.0D0
           RAYX(19+82) =-1.0D0
-!
+
           RAYX(20)    =1.0D0
           RAYX(20+41) =1.0D0
           RAYX(20+82) =1.0D0
-!
+
           RAYX(21)    =-1.0D0
           RAYX(21+41) =-1.0D0
           RAYX(21+82) =-1.0D0
-!
+
           RAYX(22)    =0.866D0
           RAYX(22+41) =0.866D0
           RAYX(22+82) =0.866D0
-!
+
           RAYX(23)    =-0.866D0
           RAYX(23+41) =-0.866D0
           RAYX(23+82) =-0.866D0
-!
+
           RAYX(24)    =0.866D0
           RAYX(24+41) =0.866D0
           RAYX(24+82) =0.866D0
-!
+
           RAYX(25)    =-0.866D0
           RAYX(25+41) =-0.866D0
           RAYX(25+82) =-0.866D0
-!
+
           RAYX(26)    =0.707D0
           RAYX(26+41) =0.707D0
           RAYX(26+82) =0.707D0
-!
+
           RAYX(27)    =-0.707D0
           RAYX(27+41) =-0.707D0
           RAYX(27+82) =-0.707D0
-!
+
           RAYX(28)    =0.707D0
           RAYX(28+41) =0.707D0
           RAYX(28+82) =0.707D0
-!
+
           RAYX(29)    =-0.707D0
           RAYX(29+41) =-0.707D0
           RAYX(29+82) =-0.707D0
-!
+
           RAYX(30)    =0.5D0
           RAYX(30+41) =0.5D0
           RAYX(30+82) =0.5D0
-!
+
           RAYX(31)    =-0.5D0
           RAYX(31+41) =-0.5D0
           RAYX(31+82) =-0.5D0
-!
+
           RAYX(32)    =0.5D0
           RAYX(32+41) =0.5D0
           RAYX(32+82) =0.5D0
-!
+
           RAYX(33)    =-0.5D0
           RAYX(33+41) =-0.5D0
           RAYX(33+82) =-0.5D0
-!
+
           RAYX(34)    =0.612D0
           RAYX(34+41) =0.612D0
           RAYX(34+82) =0.612D0
-!
+
           RAYX(35)    =-0.612D0
           RAYX(35+41) =-0.612D0
           RAYX(35+82) =-0.612D0
-!
+
           RAYX(36)    =0.612D0
           RAYX(36+41) =0.612D0
           RAYX(36+82) =0.612D0
-!
+
           RAYX(37)    =-0.612D0
           RAYX(37+41) =-0.612D0
           RAYX(37+82) =-0.612D0
-!
+
           RAYX(38)    =0.354D0
           RAYX(38+41) =0.354D0
           RAYX(38+82) =0.354D0
-!
+
           RAYX(39)    =-0.354D0
           RAYX(39+41) =-0.354D0
           RAYX(39+82) =-0.354D0
-!
+
           RAYX(40)    =0.354D0
           RAYX(40+41) =0.354D0
           RAYX(40+82) =0.354D0
-!
+
           RAYX(41)    =-0.354D0
           RAYX(41+41) =-0.354D0
           RAYX(41+82) =-0.354D0
-!
+
           RAYY(1)    =0.0D0
           RAYY(1+41) =0.0D0
           RAYY(1+82) =0.0D0
-!
+
           RAYY(2)    =1.0D0
           RAYY(2+41) =1.0D0
           RAYY(2+82) =1.0D0
-!
+
           RAYY(3)    =-1.0D0
           RAYY(3+41) =-1.0D0
           RAYY(3+82) =-1.0D0
-!
+
           RAYY(4)    =0.0D0
           RAYY(4+41) =0.0D0
           RAYY(4+82) =0.0D0
-!
+
           RAYY(5)    =0.0D0
           RAYY(5+41) =0.0D0
           RAYY(5+82) =0.0D0
-!
+
           RAYY(6)    =0.866D0
           RAYY(6+41) =0.866D0
           RAYY(6+82) =0.866D0
-!
+
           RAYY(7)    =-0.866D0
           RAYY(7+41) =-0.866D0
           RAYY(7+82) =-0.866D0
-!
+
           RAYY(8)    =0.0D0
           RAYY(8+41) =0.0D0
           RAYY(8+82) =0.0D0
-!
+
           RAYY(9)    =0.0D0
           RAYY(9+41) =0.0D0
           RAYY(9+82) =0.0D0
-!
+
           RAYY(10)    =0.707D0
           RAYY(10+41) =0.707D0
           RAYY(10+82) =0.707D0
-!
+
           RAYY(11)    =-0.707D0
           RAYY(11+41) =-0.707D0
           RAYY(11+82) =-0.707D0
-!
+
           RAYY(12)    =0.0D0
           RAYY(12+41) =0.0D0
           RAYY(12+82) =0.0D0
-!
+
           RAYY(13)    =0.0D0
           RAYY(13+41) =0.0D0
           RAYY(13+82) =0.0D0
-!
+
           RAYY(14)    =0.5D0
           RAYY(14+41) =0.5D0
           RAYY(14+82) =0.5D0
-!
+
           RAYY(15)    =-0.5D0
           RAYY(15+41) =-0.5D0
           RAYY(15+82) =-0.5D0
-!
+
           RAYY(16)    =0.0D0
           RAYY(16+41) =0.0D0
           RAYY(16+82) =0.0D0
-!
+
           RAYY(17)    =0.0D0
           RAYY(17+41) =0.0D0
           RAYY(17+82) =0.0D0
-!
+
           RAYY(18)    =1.0D0
           RAYY(18+41) =1.0D0
           RAYY(18+82) =1.0D0
-!
+
           RAYY(19)    =1.0D0
           RAYY(19+41) =1.0D0
           RAYY(19+82) =1.0D0
-!
+
           RAYY(20)    =-1.0D0
           RAYY(20+41) =-1.0D0
           RAYY(20+82) =-1.0D0
-!
+
           RAYY(21)    =-1.0D0
           RAYY(21+41) =-1.0D0
           RAYY(21+82) =-1.0D0
-!
+
           RAYY(22)    =0.866D0
           RAYY(22+41) =0.866D0
           RAYY(22+82) =0.866D0
-!
+
           RAYY(23)    =0.866D0
           RAYY(23+41) =0.866D0
           RAYY(23+82) =0.866D0
-!
+
           RAYY(24)    =-0.866D0
           RAYY(24+41) =-0.866D0
           RAYY(24+82) =-0.866D0
-!
+
           RAYY(25)    =-0.866D0
           RAYY(25+41) =-0.866D0
           RAYY(25+82) =-0.866D0
-!
+
           RAYY(26)    =0.707D0
           RAYY(26+41) =0.707D0
           RAYY(26+82) =0.707D0
-!
+
           RAYY(27)    =0.707D0
           RAYY(27+41) =0.707D0
           RAYY(27+82) =0.707D0
-!
+
           RAYY(28)    =-0.707D0
           RAYY(28+41) =-0.707D0
           RAYY(28+82) =-0.707D0
-!
+
           RAYY(29)    =-0.707D0
           RAYY(29+41) =-0.707D0
           RAYY(29+82) =-0.707D0
-!
+
           RAYY(30)    =0.5D0
           RAYY(30+41) =0.5D0
           RAYY(30+82) =0.5D0
-!
+
           RAYY(31)    =0.5D0
           RAYY(31+41) =0.5D0
           RAYY(31+82) =0.5D0
-!
+
           RAYY(32)    =-0.5D0
           RAYY(32+41) =-0.5D0
           RAYY(32+82) =-0.5D0
-!
+
           RAYY(33)    =-0.5D0
           RAYY(33+41) =-0.5D0
           RAYY(33+82) =-0.5D0
-!
+
           RAYY(34)    =0.612D0
           RAYY(34+41) =0.612D0
           RAYY(34+82) =0.612D0
-!
+
           RAYY(35)    =0.612D0
           RAYY(35+41) =0.612D0
           RAYY(35+82) =0.612D0
-!
+
           RAYY(36)    =-0.612D0
           RAYY(36+41) =-0.612D0
           RAYY(36+82) =-0.612D0
-!
+
           RAYY(37)    =-0.612D0
           RAYY(37+41) =-0.612D0
           RAYY(37+82) =-0.612D0
-!
+
           RAYY(38)    =0.354D0
           RAYY(38+41) =0.354D0
           RAYY(38+82) =0.354D0
-!
+
           RAYY(39)    =0.354D0
           RAYY(39+41) =0.354D0
           RAYY(39+82) =0.354D0
-!
+
           RAYY(40)    =-0.354D0
           RAYY(40+41) =-0.354D0
           RAYY(40+82) =-0.354D0
-!
+
           RAYY(41)    =-0.354D0
           RAYY(41+41) =-0.354D0
           RAYY(41+82) =-0.354D0
@@ -2384,9 +2396,9 @@
 
       
       SUBROUTINE PROGSIZE
+
           IMPLICIT NONE
-!        INTEGER N
-!        CHARACTER*127 CLINE
+
           INCLUDE 'datlen.inc'
           INCLUDE 'datcfg.inc'
           INCLUDE 'datmac.inc'
@@ -2395,6 +2407,7 @@
           INCLUDE 'datspd.inc'
           INCLUDE 'datsp1.inc'
           INCLUDE 'dathgr.inc'
+          
           WRITE(OUTLYNE,*)'         MAXIMUM LENS SURFACES = ',MAXSUR-1
           CALL SHOWIT(1)
           WRITE(OUTLYNE,*)'      MAXIMUM NUMBER OF MACROS = ',MAXMAC
@@ -2555,16 +2568,16 @@
 
       SUBROUTINE GREETING
 
-        include 'buildinfo.inc'      
+        INCLUDE 'buildinfo.inc'      
 
-        write (*,*)
-        write (*,*) 'Koko Optical Design Software (KODS)'
-        write (*,*)
-        write (*,*) 'This is free software. There is ABSOLUTELY NO WARRANTY, '
-        write (*,*) 'not even for merchantability or fitness for a particular purpose.'
-        write (*,*) 'See COPYING, LICENSE, and AUTHORS in the source distribution for details.'
-        write (*,*) trim(buildstr)
-        write (*,*)
+        WRITE (*,*)
+        WRITE (*,*) 'Koko Optical Design Software (KODS)'
+        WRITE (*,*)
+        WRITE (*,*) 'This is free software. There is ABSOLUTELY NO WARRANTY, '
+        WRITE (*,*) 'not even for merchantability or fitness for a particular purpose.'
+        WRITE (*,*) 'See COPYING, LICENSE, and AUTHORS in the source distribution for details.'
+        WRITE (*,*) TRIM(buildstr)
+        WRITE (*,*)
         
         RETURN
       END SUBROUTINE GREETING
@@ -2572,11 +2585,12 @@
 
       SUBROUTINE print_usage()
 
-        write (*,*) "Usage: koko-cli [-h] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
-        write (*,*) "Options and arguments:"
-        write (*,*) " -h            :  print this help message"
-        write (*,*) " -d <datadir>  :  set data directory for KODS"
-        write (*,*) " -t <tempdir>  :  set temporary file directory"
-        write (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
+        WRITE (*,*) "Usage: koko-cli [-h] [-q] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
+        WRITE (*,*) "Options and arguments:"
+        WRITE (*,*) " -h            :  print this help message"
+        WRITE (*,*) " -d <datadir>  :  set data directory for KODS"
+        WRITE (*,*) " -t <tempdir>  :  set temporary file directory"
+        WRITE (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
+        WRITE (*,*) " -q            :  run quietly, without printing the greeting"
         
       END SUBROUTINE print_usage

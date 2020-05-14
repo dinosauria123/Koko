@@ -26,42 +26,32 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE FORCE_BATCH(BFLAG)
           LOGICAL BFLAG
           BFLAG=.TRUE.
-          RETURN
-      END
+      END SUBROUTINE FORCE_BATCH
 
 
       SUBROUTINE MYDATE(DDATE)
-C
+
           IMPLICIT NONE
-C
           CHARACTER DDATE*10
-C
           CHARACTER FDATE*8,FTIME*10,FZONE*5
-C
           INTEGER FVALUE(8)
-C
+
           CALL MY_DATE_AND_TIME(FDATE,FTIME,FZONE,FVALUE)
-C
           DDATE=FDATE(5:6)//'-'//FDATE(7:8)//'-'//FDATE(1:4)
-C
-          RETURN
-      END
+
+      END SUBROUTINE MYDATE
 
 
       SUBROUTINE MYTIME(TTIME)
-C
-          IMPLICIT NONE
-C
-          INTEGER FVALUE(8)
 
+          IMPLICIT NONE
+          INTEGER FVALUE(8)
           CHARACTER TTIME*8,FTIME*10,FZONE*5,FDATE*8
 
           CALL MY_DATE_AND_TIME(FDATE,FTIME,FZONE,FVALUE)
-
           TTIME=FTIME(1:2)//':'//FTIME(3:4)//':'//FTIME(5:6)
-C
-          RETURN
-      END
+
+      END SUBROUTINE MYTIME
 
 
       SUBROUTINE NOBLANK(OLYNE)
@@ -78,8 +68,7 @@ C
                   LLL=LLL-1
               END IF
           END DO
-          RETURN
-      END
+      END SUBROUTINE NOBLANK
 
 
 C SUB MY_DIR.INC
@@ -88,37 +77,34 @@ C SUB MY_DIR.INC
           CHARACTER STRINGER*80
           INTEGER N
           CALL JYSTEM10(STRINGER(1:N),N)
-          RETURN
-      END
+      END SUBROUTINE MY_DIR
 
 
       SUBROUTINE MACPAUSE
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
           CALL MY_IGRPAUSE
-          RETURN
-      END
+      END SUBROUTINE MACPAUSE
 
 
       SUBROUTINE MY_IGRPAUSE
           IMPLICIT NONE
           CHARACTER KKDP*3
-!      CALL PUT_PROMPT('Press any key to continue...',28)
-!      CALL GET_RESPONSE(RESPONSE,80)
-          CALL SELECTKOKO(KKDP)
-!      CALL PUT_PROMPT(KKDP,3)
-      END
 
-C
+          CALL SELECTKOKO(KKDP)
+
+      END SUBROUTINE MY_IGRPAUSE
+
+
       SUBROUTINE CBREAK
-C     CONTROL BREAK SUBROUTINE
+C     CONTROL BREAK
           LOGICAL LBLHT
           INTEGER IICODE
-C
+
           COMMON/JKA/LBLHT
-C
+
           INCLUDE 'datmai.inc'
-C
+
           IICODE=-999
           LBLHT=.FALSE.
           CALL MY_INKEYEVENTIMM(IICODE)
@@ -126,8 +112,7 @@ C
               LBLHT=.TRUE.
           END IF
           IICODE=-999
-          RETURN
-      END
+      END SUBROUTINE CBREAK
 
 
       SUBROUTINE CLOSE_FILE(UNITT,STAT)
@@ -135,20 +120,17 @@ C
 C     THIS SUBROUTINE IS CALLED TO CLOSE OPEN FILES
 C
           IMPLICIT NONE
-C
           INTEGER UNITT,STAT
-C
           LOGICAL UNITOPEN
-C
           CHARACTER*80 FILE_NAME
-C
+
           INCLUDE 'datmai.inc'
-C
+
 C     STAT = 1 MEANS 'KEEP'
 C     STAT = 0 MEANS 'DELETE'
-C
+
           ALLSTOP=.FALSE.
-C
+
           FILE_NAME='UNNAMED'
           INQUIRE(UNIT=UNITT,NAME=FILE_NAME)
 
@@ -184,9 +166,7 @@ C
      1    ,' before proceeding.'
           CALL SHOWIT(1)
           CALL MACFAL
-          RETURN
-          RETURN
-      END
+      END SUBROUTINE CLOSE_FILE
 
 
       SUBROUTINE EXIST_FILE(FILE_NAME,FEXIST)
@@ -194,17 +174,14 @@ C
 C     THIS SUBROUTINE IS CALLED TO TEST IF A FILE EXISTS
 C
           IMPLICIT NONE
-C
           LOGICAL FEXIST
-C
           CHARACTER*80 FILE_NAME
-C
+
           INCLUDE 'datmai.inc'
-C
+
           FEXIST=.FALSE.
           INQUIRE(FILE=trim(HOME)//FILE_NAME,EXIST=FEXIST)
-          RETURN
-      END
+      END SUBROUTINE EXIST_FILE
 
 
       SUBROUTINE OPEN_FILE(FILE_NAME,FOPEN)
@@ -212,32 +189,26 @@ C
 C     THIS SUBROUTINE IS CALLED TO TEST IF A FILE IS OPEN OR CLOSED
 C
           IMPLICIT NONE
-C
           LOGICAL FOPEN
-C
           CHARACTER*80 FILE_NAME
-C
+
           INCLUDE 'datmai.inc'
-C
+
           FOPEN=.FALSE.
           INQUIRE(FILE=trim(HOME)//FILE_NAME,OPENED=FOPEN)
-          RETURN
-      END
-
+      END SUBROUTINE OPEN_FILE
 
 
       SUBROUTINE SEETIM
-C
+
           IMPLICIT NONE
-C
           INTEGER BASE,IVAL
-C
           REAL RESULT
-C
+
           COMMON/TIMMER/BASE
-C
+
           INCLUDE 'datmai.inc'
-C
+
           IVAL=10
           CALL MY_TIMER(IVAL)
           RESULT=IVAL-BASE
@@ -245,8 +216,7 @@ C
  100      FORMAT(
      1    'ELAPSED TIME SINCE TIMER RESET = (',G11.4,') SECONDS')
           CALL SHOWIT(0)
-          RETURN
-      END
+      END SUBROUTINE SEETIM
 
 
       SUBROUTINE SETTIM
@@ -255,55 +225,21 @@ C
           COMMON/TIMMER/BASE
           I=0
           CALL MY_TIMER(I)
-          RETURN
-      END
-
-
-      SUBROUTINE MY_GETCL
-          IMPLICIT NONE
-          INCLUDE 'datmai.inc'
-          CHARACTER COMLINE*127
-          COMLINE=AA//AA//AA//AA//AA//AA//'       '
-          CMDLINE=AA//AA//AA//AA//AA//AA//'       '
-!      CALL IOsArgument(1,COMLINE)
-          CMDLINE(1:127)=' '//COMLINE(1:126)
-          RETURN
-      END
-
-
-      SUBROUTINE MY_GETCL2(COMLINE)
-          IMPLICIT NONE
-          INCLUDE 'datmai.inc'
-!      INTEGER N
-          CHARACTER COMLINE*127
-          COMLINE=AA//AA//AA//AA//AA//AA//'       '
-          CMDLINE=AA//AA//AA//AA//AA//AA//'       '
-!      CALL IOsArgument(1,COMLINE)
-          read(5,*) COMLINE
-          CMDLINE(1:127)=' '//COMLINE(1:126)
-          RETURN
-      END
-
-
-      SUBROUTINE MY_NDPEXC
-C     LAHEY ONLY
-C     CALL NDPEXC()
-          RETURN
-      END
+      END SUBROUTINE SETTIM
 
 
 C SUB EDITOR.INC
       SUBROUTINE EDITOR
+
+          USE GLOBALS
+
           IMPLICIT NONE
-C
-          LOGICAL FEXIST,PEXIST
-C
-          CHARACTER AS*80
-C
-          INTEGER I,N2,ITEM
-C
           INCLUDE 'datmai.inc'
-C
+
+          LOGICAL FEXIST,PEXIST
+          CHARACTER AS*80
+          INTEGER I,N2,ITEM
+
           IF(SN.EQ.1.OR.SQ.EQ.1) THEN
               OUTLYNE='"EDIT" ONLY TAKES STRING INPUT'
               CALL SHOWIT(1)
@@ -316,11 +252,11 @@ C
           IF(SST.EQ.0) THEN
               OUTLYNE='NO FILE NAME WAS ISSUED WITH "EDIT"'
               CALL SHOWIT(1)
-              OUTLYNE='EDITING THE DEFAULT FILE "EDITTEXT.DAT"'
+              OUTLYNE='EDITING THE DEFAULT FILE "text.dat"'
               CALL SHOWIT(1)
-              WS(1:12)='EDITTEXT.DAT'
+              WS(1:12)='text.dat'
           END IF
-C
+
           CALL CLOSE_FILE(7,1)
           CALL CLOSE_FILE(8,1)
           CALL CLOSE_FILE(9,1)
@@ -357,27 +293,22 @@ C
               CLOSE(47 )
           END IF
           ITEM=ID_SYSTEM
-!      IF(ITEM.EQ.3)
-!     1CALL JYSTEM('START EDFILE.EXE 1'//AS(1:N2),N2+18)
-          call system('vi '//AS(1:N2))
-!      IF(ITEM.EQ.4)
-!     1CALL JYSTEM('CMD.EXE /c EDFILE.EXE 1'//AS(1:N2),N2+23)
-          RETURN
-      END
+          call system(trim(TXTEDITOR)//AS(1:N2))
+      END SUBROUTINE EDITOR
 
 
 C SUB OPENTSTP.INC
       SUBROUTINE OPENTSTP(FILENAME)
+
+          USE GLOBALS
           IMPLICIT NONE
 
           LOGICAL FEXIST,PEXIST
-C
           CHARACTER AS*19,FILENAME*19
-C
           INTEGER I,N2
-C
+
           INCLUDE 'datmai.inc'
-C
+
           CALL CLOSE_FILE(7,1)
           CALL CLOSE_FILE(8,1)
           CALL CLOSE_FILE(9,1)
@@ -396,14 +327,6 @@ C
               END IF
           END DO
  20       CONTINUE
-          PEXIST=.FALSE.
-          INQUIRE(FILE='/usr/bin/vi',EXIST=PEXIST)
-          IF(PEXIST) THEN
-          ELSE
-              OUTLYNE='THE "vi" PROGRAM IS MISSING'
-              CALL SHOWIT(1)
-              RETURN
-          END IF
 
           FEXIST=.FALSE.
           INQUIRE(FILE=AS(1:N2),EXIST=FEXIST)
@@ -413,49 +336,27 @@ C
      2          ,STATUS='UNKNOWN')
               CLOSE(47 )
           END IF
-!      CALL JYSTEM('START EDFILE.EXE 4'//AS(1:N2),N2+18)
-          call system('vi '//AS(1:N2))
-          RETURN
-      END
+          call system(trim(TXTEDITOR)//AS(1:N2))
+      END SUBROUTINE OPENTSTP
 
 
       SUBROUTINE JYSTEM(STRING,N)
           IMPLICIT NONE
-!      INTEGER ITEM
           INTEGER N
           CHARACTER STRING*(*)
           INCLUDE 'datmai.inc'
-!      ITEM=ID_SYSTEM
-!      IF(ITEM.EQ.3)
-!     1CALL MY_SYSTEM1('COMMAND.COM /c '//STRING(1:N),(N+15))
-!      IF(ITEM.EQ.4)
           CALL MY_SYSTEM1(STRING(1:N),(N+11))
           RETURN
-      END
+      END SUBROUTINE JYSTEM
 
 
       SUBROUTINE JYSTEM10(STRING,N)
           IMPLICIT NONE
           INTEGER N
-!      INTEGER ITEM
           CHARACTER STRING*(*)
           INCLUDE 'datmai.inc'
-!      ITEM=ID_SYSTEM
-!      IF(N.LE.0) THEN
-!      IF(ITEM.EQ.3)
-!     1CALL MY_SYSTEM2('COMMAND.COM /k ',15)
-!      IF(ITEM.EQ.4)
-!     1CALL MY_SYSTEM2('CMD.EXE /k ',11)
-!                        ELSE
-!      IF(ITEM.EQ.3)
           CALL MY_SYSTEM2(STRING(1:N),(N+11))
-!      IF(ITEM.EQ.4)
-!     1CALL MY_SYSTEM2('CMD.EXE /k '//STRING(1:N),(N+11))
-
-          !                       END IF
-
-          RETURN
-      END
+      END SUBROUTINE JYSTEM10
 
 
       FUNCTION MY_LEN(STRING)
@@ -464,15 +365,14 @@ C
           INTEGER MY_LEN
           MY_LEN=LEN_TRIM(STRING)
           RETURN
-      END
+      END FUNCTION MY_LEN
 
 
       SUBROUTINE DRAWIT
           USE GLOBALS
           IMPLICIT NONE
           CALL GRADRAW
-          RETURN
-      END
+      END SUBROUTINE DRAWIT
 
 
       SUBROUTINE GRADRAW
@@ -482,8 +382,7 @@ C
           OPEN(UNIT=28
      1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
      2    ,RECL=(NRECL*42),STATUS='UNKNOWN')
-          RETURN
-      END
+      END SUBROUTINE GRADRAW
 
 
       SUBROUTINE MY_SETCHARASPECT(J_X,J_Y)
@@ -533,26 +432,20 @@ C
      1    CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1500     FORMAT(E15.7,E15.7,11X)
-          RETURN
-      END
+      END SUBROUTINE MY_SETCHARASPECT
 
 
       SUBROUTINE PDRAW
-C
+
           IMPLICIT NONE
 C
 C       THIS SUB DOES THE DRAW COMMAND
 C
           CHARACTER DRWNAM*11,plotcommand*80
-!        integer status
-C
           COMMON/DRWTAG/DRWNAM
-C
-!        LOGICAL OPPLT
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'dathgr.inc'
-
 
 C       CHECK SYNTAX
           IF(SST.EQ.1.OR.SN.EQ.1.OR.SQ.EQ.1) THEN
@@ -597,20 +490,20 @@ C       CHECK SYNTAX
           call system("killall AquaTerm")
 #endif
           RETURN
-      END
+      END SUBROUTINE PDRAW
 
       SUBROUTINE LDRAW
+        
           USE GLOBALS
-C
           IMPLICIT NONE
 C
 C       THIS SUB DOES THE LISTDRAW COMMAND
 C
-!        CHARACTER STRING42*47
           INTEGER I
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'dathgr.inc'
+
           OPEN28=.FALSE.
           INQUIRE(UNIT=28,OPENED=OPEN28)
           IF(OPEN28) CALL MY_ENDPLT
@@ -620,18 +513,16 @@ C
               CALL SHOWIT(1)
  10           FORMAT(A42)
           END DO
-          RETURN
-      END
+      END SUBROUTINE LDRAW
 
 
       SUBROUTINE NODRAWW
-C
+
           IMPLICIT NONE
-C
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'dathgr.inc'
-C
+          
 C       CHECK SYNTAX
           IF(STI.EQ.1) THEN
               IF(NODRAW)
@@ -655,17 +546,16 @@ C       CHECK SYNTAX
           IF(WC.EQ.'YESDRAW') NODRAW=.FALSE.
           IF(WC.EQ.'NODRAW') NODRAW=.TRUE.
           RETURN
-      END
+      END SUBROUTINE NODRAWW
 
 
       SUBROUTINE NOWMFF
-C
+
           IMPLICIT NONE
-C
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'dathgr.inc'
-C
+
 C       CHECK SYNTAX
           IF(STI.EQ.1) THEN
               IF(NOWMF)
@@ -689,7 +579,7 @@ C       CHECK SYNTAX
           IF(WC.EQ.'YESWMF') NOWMF=.FALSE.
           IF(WC.EQ.'NOWMF') NOWMF=.TRUE.
           RETURN
-      END
+      END SUBROUTINE NOWMFF
 
 
       SUBROUTINE GRAOUT
@@ -699,18 +589,15 @@ C
 C       THIS SUB DOES THE GRAOUT COMMAND
 C
           CHARACTER GRFILN*12,CEELINE*14,DRWNAM*11,JK_TAG*2
-C
+
           COMMON/DRWTAG/DRWNAM
-C
+
           INTEGER I,J
-C
           LOGICAL DEVOK
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
-
-          USERHOME = "~"
 
           OPEN28=.FALSE.
           INQUIRE(UNIT=28,OPENED=OPEN28)
@@ -719,28 +606,13 @@ C
           OPEN(UNIT=28
      1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
      2    ,RECL=(NRECL*42),STATUS='UNKNOWN')
-C
+
 C       CHECK SYNTAX
           DEVOK=.FALSE.
           IF(SQ.EQ.0) SST=0
           IF(WQ.EQ.'COLOR   ') SST=0
           IF(SQ.EQ.0) DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLOR   ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'WMF     ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'EMF     ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'AMF     ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLWMF  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLEMF  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLAMF  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'PCX     ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLPCX  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'BMP     ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLBMP  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'CBMP    ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'COLCBMP ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'EPS     ') DEVOK=.TRUE.
           IF(WQ.EQ.'COLEPS  ') DEVOK=.TRUE.
-!            IF(WQ.EQ.'REPLAY  ') DEVOK=.TRUE.
           if(WQ.EQ.'JPG     ') DEVOK=.TRUE.
           if(WQ.EQ.'PDF     ') DEVOK=.TRUE.
           IF(.NOT.DEVOK) THEN
@@ -874,26 +746,11 @@ C     PROCEED
           END IF
           JK_TAG='00'
 
-!      IF(WQ.EQ.'        ')  JK_TAG='01'
-!      IF(WQ.EQ.'COLOR   ')  JK_TAG='02'
-!      IF(WQ.EQ.'WMF     ')  JK_TAG='03'
-!      IF(WQ.EQ.'EMF     ')  JK_TAG='13'
-!      IF(WQ.EQ.'AMF     ')  JK_TAG='23'
-!      IF(WQ.EQ.'COLWMF  ')  JK_TAG='04'
-!      IF(WQ.EQ.'REPLAY  ')  JK_TAG='34'
-!      IF(WQ.EQ.'COLEMF  ')  JK_TAG='14'
-!      IF(WQ.EQ.'COLAMF  ')  JK_TAG='24'
-!      IF(WQ.EQ.'PCX     ')  JK_TAG='06'
-!      IF(WQ.EQ.'COLPCX  ')  JK_TAG='07'
-!      IF(WQ.EQ.'BMP     ')  JK_TAG='08'
-!      IF(WQ.EQ.'COLBMP  ')  JK_TAG='09'
-!      IF(WQ.EQ.'CBMP    ')  JK_TAG='18'
-!      IF(WQ.EQ.'COLCBMP ')  JK_TAG='19'
-!      IF(WQ.EQ.'EPS     ')  JK_TAG='31'
           IF(WQ.EQ.'COLEPS  ')  JK_TAG='32'
           if(WQ.EQ.'JPG     ')  JK_TAG='33'
           if(WQ.EQ.'PDF     ')  JK_TAG='34'
           CLOSE(28)
+
           INQUIRE(FILE=trim(HOME)//'NEUTRAL.DAT',EXIST=EXIS28)
           IF(.NOT.EXIS28) THEN
 C     MESSAGE THAT NO FILE EXISTS TO DRAW
@@ -904,42 +761,6 @@ C     MESSAGE THAT NO FILE EXISTS TO DRAW
               CALL MACFAL
               RETURN
           END IF
-!      IF(JK_TAG.EQ.'01') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT TO WINDOWS PRINT MANAGER...'
-!      IF(JK_TAG.EQ.'02') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT TO WINDOWS PRINT MANAGER...'
-!      IF(JK_TAG.EQ.'03') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT WINDOWS METAFILE '//GRFILN
-!      IF(JK_TAG.EQ.'13') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT ENHANCED WINDOWS METAFILE '
-!     2//GRFILN
-!      IF(JK_TAG.EQ.'23') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT ALDUS PLACEABLE WINDOWS'
-!     2//' METAFILE '//GRFILN
-!      IF(JK_TAG.EQ.'04') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT WINDOWS METAFILE '//GRFILN
-!      IF(JK_TAG.EQ.'14') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT ENHANCED WINDOWS METAFILE '
-!     2//GRFILN
-!      IF(JK_TAG.EQ.'24') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT ALDUS PLACEABLE WINDOWS'
-!     2//' METAFILE '//GRFILN
-!      IF(JK_TAG.EQ.'06') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT TO PCX FILE '//GRFILN
-!      IF(JK_TAG.EQ.'07') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT TO PCX FILE '//GRFILN
-!      IF(JK_TAG.EQ.'08') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT TO BMP FILE '//GRFILN
-!      IF(JK_TAG.EQ.'09') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT TO BMP FILE '
-!     &//trim(USERHOME)//'/'//trim(GRFILN)
-!      IF(JK_TAG.EQ.'18') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT TO COMPRESSED BMP FILE '//GRFILN
-!      IF(JK_TAG.EQ.'19') OUTLYNE=
-!     1'COLOR GRAPHICS BEING SENT TO COMPRESSED BMP FILE '
-!     2//GRFILN
-!      IF(JK_TAG.EQ.'31') OUTLYNE=
-!     1'MONOCHROME GRAPHICS BEING SENT TO EPS FILE '//GRFILN
           IF(JK_TAG.EQ.'32') OUTLYNE=
      1    'COLOR GRAPHICS BEING SENT TO EPS FILE '
      2    //trim(USERHOME)//'/'//trim(GRFILN)
@@ -995,30 +816,25 @@ C     MESSAGE THAT NO FILE EXISTS TO DRAW
      1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
      2    ,RECL=(NRECL*42),STATUS='UNKNOWN')
           RETURN
-      END
+      END SUBROUTINE GRAOUT
 
 
       SUBROUTINE PLSTAT
-C
+
           IMPLICIT NONE
-C
-C       THIS SUBROUTINE RETURNS THE NUMBER OF PLOTS
-C       CURRENTLY ON FILE IN THE PLOT LIBRARAY
-C
-C
+
+C       RETURNS THE NUMBER OF PLOTS CURRENTLY
+C       ON FILE IN THE PLOT LIBRARAY
+
           INTEGER I,J,K,II
-C
           LOGICAL EXISJK
-C
           CHARACTER DATA*80
-C
+
           COMMON/DATA/I,J,K,II
-C
+
           INCLUDE 'datmai.inc'
-C
-C       OPEN UNIT 20 FOR I/O
-C
-C       ***************************************************************
+
+C         OPEN UNIT 20 FOR I/O
           EXISJK=.FALSE.
           INQUIRE(FILE=trim(LIBPLO)//'PLIB.DAT',EXIST=EXISJK)
           IF(.NOT.EXISJK) THEN
@@ -1028,65 +844,59 @@ C       ***************************************************************
               CALL SHOWIT(1)
               CALL MACFAL
               RETURN
-          ELSE
-C       PROCEED
           END IF
-C       ***************************************************************
+
+C       PROCEED
           OPEN(UNIT=24,ACCESS='DIRECT',FILE=trim(LIBPLO)//'PLIB.DAT',
      1    FORM='UNFORMATTED',RECL=(90*NRECL),STATUS='UNKNOWN')
           J=0
           K=0
-          DO 10 I=1,999
+          DO I=1,999
               READ(UNIT=24,REC=I) II,DATA
               IF(II.NE.0) THEN
 C       FOUND A STORED LENS
                   J=J+1
-              ELSE
               END IF
- 10       CONTINUE
-C
+          END DO
+
           K=999-J
 C       CLOSE UNIT 24 TO I/O
-C
-          CLOSE(24 )
-C
+          CLOSE(24)
+
           WRITE(OUTLYNE,450) J
           CALL SHOWIT(1)
  450      FORMAT(I3,' PLOTS ON FILE.')
           WRITE(OUTLYNE,460) K
           CALL SHOWIT(1)
  460      FORMAT('ROOM FOR ',I3,' MORE PLOTS IN PLOT LIBRARY')
-C
+
           RETURN
-      END
+      END SUBROUTINE PLSTAT
 
 
 C FUNCTION WVWT.INC
 
       FUNCTION WVWT(IIX,IIY,ERROR)
-C
+
           IMPLICIT NONE
-C
-C       THIS FUNCTION PLACES A WAVELENGTH/SPECTRAL WEIGHT
+
+C       PLACES A WAVELENGTH/SPECTRAL WEIGHT
 C       BOXED CAPTION ON A PLOT WITH THE UPPER LEFT HAND CORNER
 C       OF THE BOX AT VDC IIX AND IIY
-C
+
           CHARACTER NNTT1*80,NNTT2*80,NNTT3*80,B*80
-C
           REAL WAVER,WAITR
-C
           LOGICAL ERROR
-C
           INTEGER COLPAS,WVWT,I,IIX,IIY,IIIY,NT1ANG,NT1SIZ
           INTEGER NB1,NB2
           integer IIX2,IIY2
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
 
           WVWT=0
-C
+
           ERROR=.FALSE.
           IF(DEVTYP.NE.1.OR..NOT.PLEXIS.OR..NOT.GRASET) THEN
               ERROR=.TRUE.
@@ -1107,15 +917,12 @@ C     DROP PEN, DRAW BOX FOR LEGEND OF PLTDOTF PLTGOTF
           CALL MY_PLOT(IIX+2850,IIY-1600,1,0,0,10000,0,7000)
           CALL MY_PLOT(IIX+2850,IIY,1,0,0,10000,0,7000)
           CALL MY_PLOT(IIX,IIY,1,0,0,10000,0,7000)
-C
-!      IIX=IIX+150
+
           IIX2=IIX+150
-!      IIY=IIY-150
           IIY2=IIY-150
           COLPAS=COLLBL
           CALL MY_COLTYP(COLPAS)
 
-C
           DO I=1,10
               IF(I.EQ.1) THEN
                   WAVER=REAL(SYSTEM1(1))
@@ -1263,22 +1070,15 @@ C     AND WRITE THE STRING
               IF(I.EQ.9)  IIIY=1200
               IF(I.EQ.10) IIIY=1350
               CALL MY_SETCHARASPECT(1.25,1.25)
-!      CALL MY_PLOT(IIX,IIY-IIIY,0,0,0,10000,0,7000)
               CALL MY_PLOT(IIX2,IIY2-IIIY,0,0,0,10000,0,7000)
-!      CALL MY_JUSTSTRING(IIX,IIY-IIIY,NNTT1(1:17),NT1ANG,NT1SIZ,3,3)
               CALL MY_JUSTSTRING(IIX2,IIY2-IIIY,NNTT1(1:17),NT1ANG,NT1SIZ,3)
               IF(WAVER.NE.0.0) THEN
                   IF(WAVER.GT.99.9) THEN
                       CALL MY_SETCHARASPECT(1.5,1.5)
                       CALL MY_SETFONT(2,0)
                       NNTT3='m'
-!      CALL MY_PLOT(IIX+1300,IIY-IIIY,0,0,0,10000,0,7000)
                       CALL MY_PLOT(IIX2+1300,IIY2-IIIY,0,0,0,10000,0,7000)
-!      CALL MY_JUSTSTRING(IIX+1300,IIY-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,
-!     &3,3)
-                      CALL MY_JUSTSTRING(IIX2+1300,IIY2-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,
-     1                3)
-
+                      CALL MY_JUSTSTRING(IIX2+1300,IIY2-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,3)
                       CALL MY_SETFONT(1,0)
                       CALL MY_SETCHARASPECT(1.25,1.25)
                   END IF
@@ -1286,54 +1086,40 @@ C     AND WRITE THE STRING
                       CALL MY_SETCHARASPECT(1.5,1.5)
                       CALL MY_SETFONT(2,0)
                       NNTT3='m'
-!      CALL MY_PLOT(IIX+1200,IIY-IIIY,0,0,0,10000,0,7000)
                       CALL MY_PLOT(IIX2+1200,IIY2-IIIY,0,0,0,10000,0,7000)
-!      CALL MY_JUSTSTRING(IIX+1200,IIY-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,
-!     13,3)
-                      CALL MY_JUSTSTRING(IIX2+1200,IIY2-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,
-     1                3)
+                      CALL MY_JUSTSTRING(IIX2+1200,IIY2-IIIY,NNTT3(1:1),NT1ANG,NT1SIZ,3)
                       CALL MY_SETFONT(1,0)
                       CALL MY_SETCHARASPECT(1.25,1.25)
                   END IF
               END IF
-!      CALL MY_PLOT(IIX+1500,IIY-IIIY,0,0,0,10000,0,7000)
               CALL MY_PLOT(IIX2+1500,IIY2-IIIY,0,0,0,10000,0,7000)
-!      CALL MY_JUSTSTRING(IIX+1500,IIY-IIIY,NNTT2(1:16),NT1ANG,NT1SIZ,
-!     &3,3)
-              CALL MY_JUSTSTRING(IIX2+1500,IIY2-IIIY,NNTT2(1:16),NT1ANG,NT1SIZ,
-     1        3)
+              CALL MY_JUSTSTRING(IIX2+1500,IIY2-IIIY,NNTT2(1:16),NT1ANG,NT1SIZ,3)
               CALL MY_SETCHARASPECT(1.5,1.5)
-C
+
           END DO
-C
-C     RESTORE STARTING VALUES
-!      IIX=IIX-150
-!      IIY=IIY+150
           RETURN
 180       FORMAT(G10.4)
 200       FORMAT(A10)
 181       FORMAT(F8.5)
 201       FORMAT(A8)
-      END
+      END FUNCTION WVWT
 
 
       SUBROUTINE IPF
-C
+
           IMPLICIT NONE
 C
-C       THIS SUBROUTINE INITIALIZES OR BLANKS OUT THE CURRENT
+C       INITIALIZES OR BLANKS OUT THE CURRENT
 C       PLOT LIBRARY DIRECTORY.
 C
           INTEGER I,II,N,III
-C
           LOGICAL EXISJK,OPENJK
-C
           CHARACTER BLANK*80,FN*10,AN*3
-C
+
           INCLUDE 'datmai.inc'
-C
+
           BLANK=AA//AA//AA//AA
-C
+
           OPEN(UNIT=24,ACCESS='DIRECT',FILE=trim(LIBPLO)//'PLIB.DAT',FORM=
      1    'UNFORMATTED',RECL=(90*NRECL),STATUS='UNKNOWN')
           CLOSE(24,STATUS='DELETE')
@@ -1361,16 +1147,16 @@ C
 C
           II=0
           III=0
-          DO 25 I=1,999
+          DO I=1,999
               WRITE(UNIT=24,REC=I)II,BLANK,III
- 25       CONTINUE
-C
+          END DO
+
           CLOSE(24 )
-C
+
           OUTLYNE='PLOT LIBRARY INITIALIZED'
           CALL SHOWIT(1)
           RETURN
-      END
+      END SUBROUTINE IPF
 
 
       SUBROUTINE MY_INIPLT
@@ -1378,16 +1164,17 @@ C
           IMPLICIT NONE
           INTEGER ALLOERR
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-!      INTEGER II1,II2,II3,II4,II5,II6,II7,II8
           CHARACTER STRINGER*1,NEUTLINE*42
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+
           CALL CLOSE_FILE(28,0)
           DEALLOCATE(NEUTARRAY,STAT=ALLOERR)
-C
+
           CALL MY_DEL_NEUT
           ALLOCATE(NEUTARRAY(1:MAXNEUTRAL),STAT=ALLOERR)
-C
+
 C     NOW OPEN NEW FILE NEUTRAL.DAT FOR OUTPUT, IT IS CURRENTLY EMPTY
 C
           OPEN(UNIT=28
@@ -1428,23 +1215,22 @@ C
 
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_INIPLT
 
 
-      SUBROUTINE
-     1PLOT_CONTOUR_OPD(PCOUNT,CON_ARRAY,NSTEP,IU,OPDPEAK,OPDPIT)
+      SUBROUTINE PLOT_CONTOUR_OPD(PCOUNT,CON_ARRAY,NSTEP,IU,OPDPEAK,OPDPIT)
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I,J,IU
           INTEGER NSTEP,PCOUNT,CON_ARRAY
           DIMENSION CON_ARRAY(1:PCOUNT,1:PCOUNT)
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-!      INTEGER II1,II2,II3,II4,II5,II6,II7,II8
           CHARACTER STRINGER*1,NEUTLINE*42
           REAL OPDPEAK,OPDPIT
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
-C
+
           I1=PCOUNT
           I2=NSTEP
           I3=0
@@ -1477,7 +1263,7 @@ C
           IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
      1    CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
-C
+
           NEUTTOTAL=NEUTTOTAL+1
           STRINGER='O'
           WRITE(NEUTLINE,1011) STRINGER,OPDPEAK,OPDPIT
@@ -1522,26 +1308,24 @@ C
               END DO
           END DO
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
-! 1001 FORMAT(A42)
+
 C     NOW WRITE THE ARRAY VALUES
           IU=1
           RETURN
-      END
+      END SUBROUTINE PLOT_CONTOUR_OPD
 
 
-      SUBROUTINE
-     1PLOT_CONTOUR_APD(PCOUNT,CON_ARRAY,NSTEP,IU)
+      SUBROUTINE PLOT_CONTOUR_APD(PCOUNT,CON_ARRAY,NSTEP,IU)
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I,J,IU
           INTEGER NSTEP,PCOUNT,CON_ARRAY
           DIMENSION CON_ARRAY(1:PCOUNT,1:PCOUNT)
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-!      INTEGER II1,II2,II3,II4,II5,II6,II7,II8
           CHARACTER STRINGER*1,NEUTLINE*42
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
-C
+
           I1=PCOUNT
           I2=NSTEP
           I3=0
@@ -1612,23 +1396,22 @@ C
           END DO
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
 
-! 1001 FORMAT(A42)
 C     NOW WRITE THE ARRAY VALUES
           IU=2
           RETURN
-      END
+      END SUBROUTINE PLOT_CONTOUR_APD
 
 
       SUBROUTINE MY_ENDPLT
           USE GLOBALS
           IMPLICIT NONE
-!      INTEGER I
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-!      INTEGER II1,II2,II3,II4,II5,II6,II7,II8
           CHARACTER STRINGER*1,NEUTLINE*80
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
+          
           EXIS28=.FALSE.
           OPEN28=.FALSE.
           INQUIRE(FILE=trim(HOME)//'NEUTRAL.DAT',EXIST=EXIS28)
@@ -1668,7 +1451,6 @@ C     NOW WRITE THE ARRAY VALUES
                   IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
      1            CALL RESIZE_NEUT
                   NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
-! 1000 FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
               ELSE
                   WRITE(NEUTLINE,2000) NEUTTOTAL
                   NEUTARRAY(1)=NEUTLINE
@@ -1678,7 +1460,7 @@ C     NOW WRITE THE ARRAY VALUES
           F34=0
           MSG=.TRUE.
           RETURN
-      END
+      END SUBROUTINE MY_ENDPLT
 
       SUBROUTINE MY_MARKER(II1,II2,II3,II4)
           USE GLOBALS
@@ -1722,8 +1504,9 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_MARKER
 
+        
       SUBROUTINE MY_JUSTSTRING(II1,II2,C1,II3,II4,II5)
           USE GLOBALS
           IMPLICIT NONE
@@ -1823,7 +1606,7 @@ C     NOW WRITE THE ARRAY VALUES
 
  5000     FORMAT(A20,22X)
           RETURN
-      END
+      END SUBROUTINE MY_JUSTSTRING
 
 
       SUBROUTINE MY_COLTYP(COLPAS)
@@ -1832,9 +1615,10 @@ C     NOW WRITE THE ARRAY VALUES
           CHARACTER STRINGER*1,NEUTLINE*42
           INTEGER COLPAS
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-!      INTEGER II1,II2,II3,II4,II5,II6,II7,II8
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+
           I1=COLPAS
           I2=0
           I3=0
@@ -1869,7 +1653,7 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_COLTYP
 
 
       SUBROUTINE MY_SETPAL(II1)
@@ -1878,8 +1662,10 @@ C     NOW WRITE THE ARRAY VALUES
           CHARACTER STRINGER*1,NEUTLINE*42
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
           INTEGER II1
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+          
           I1=(II1)
           I2=0
           I3=0
@@ -1914,7 +1700,7 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_SETPAL
 
       SUBROUTINE MY_SETFONT(II1,II2)
           USE GLOBALS
@@ -1922,8 +1708,10 @@ C     NOW WRITE THE ARRAY VALUES
           CHARACTER STRINGER*1,NEUTLINE*42
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
           INTEGER II1,II2
+          
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+          
           I1=II1
           I2=II2
           I3=0
@@ -1958,7 +1746,8 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_SETFONT
+        
 
       SUBROUTINE MY_PLOT(II1,II2,II3,II4,II5,II6,II7,II8)
           USE GLOBALS
@@ -1966,8 +1755,10 @@ C     NOW WRITE THE ARRAY VALUES
           CHARACTER STRINGER*1,NEUTLINE*42
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
           INTEGER II1,II2,II3,II4,II5,II6,II7,II8
+
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+          
           I1=(II1)
           I2=(II2)
           I3=(II3)
@@ -2006,16 +1797,19 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_PLOT
 
+      
       SUBROUTINE MY_PLOTC(II1,II2,II3,II4,II5,II6,II7,II8)
           USE GLOBALS
           IMPLICIT NONE
           CHARACTER STRINGER*1,NEUTLINE*42
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
           INTEGER II1,II2,II3,II4,II5,II6,II7,II8
+          
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
+          
           I1=(II1)
           I2=(II2)
           I3=(II3)
@@ -2054,18 +1848,18 @@ C     NOW WRITE THE ARRAY VALUES
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
-      END
+      END SUBROUTINE MY_PLOTC
 
+        
       SUBROUTINE PLTSYM
-C
+
           IMPLICIT NONE
 C
 C       THIS ROUTINE DOES THE PLOT SYMBOL COMMAND AT THE CMD LEVEL
-C
+
           CHARACTER SYM*31
-C
           INTEGER COLPAS,IXPPEE,IYPPEE
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
 C
@@ -2145,43 +1939,39 @@ C       CHECK SYNTAX
               IF(.NOT.PLEXIS) PLEXIS=.TRUE.
               CALL MY_MARKER(SYMB,SYMSIZ,IXPPEE,IYPPEE)
               RETURN
-          ELSE
-C       NOT PLOT SYMBOL
           END IF
           RETURN
-      END
+      END SUBROUTINE PLTSYM
 
 
       SUBROUTINE PSTART
-C
+
           IMPLICIT NONE
 C
 C       THIS PROGRAM CONTROLS THE ALL PLOTTING INITIALIZATION
 C
           CHARACTER BLANK*80
-c
+
           INTEGER LLX,LLY,URX,URY,COLBACC
           COMMON/VIEWER/LLX,LLY,URX,URY
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
-C
+
           BLANK=AA//AA//AA//AA
-C
+
           PLEXIS=.FALSE.
           IF(DEVTYP.EQ.1) THEN
 C       PROCEED
-              PPLI(1:60)=LI(1:60)
-!        CALL IGRLINEWIDTH(1,1,.1)
-              CALL MY_INIPLT
-C
-              LLX=-10
-              LLY=-10
-              URX=10010
-              URY=7010
-C
-C
+          PPLI(1:60)=LI(1:60)
+          CALL MY_INIPLT
+
+          LLX=-10
+          LLY=-10
+          URX=10010
+          URY=7010
+
 C     LIGHT BLUE (DEFAULT) BACKGROUND
 C     DOES IT NEED TO CHANGE ?
 C     WHITE BACKGROUND         COLBAC=0
@@ -2216,11 +2006,11 @@ C       NOT A VALID DEVICE TYPE
           CALL SHOWIT(1)
           CALL MACFAL
           RETURN
-      END
+      END SUBROUTINE PSTART
 
 
       SUBROUTINE PSTOP
-C
+
           IMPLICIT NONE
 C
 C       THIS PROGRAM STOPS GRAPHIC OUTPUT
@@ -2228,7 +2018,7 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
-C
+
 C       STOP PLOTTING
           F34=0
           MSG=.FALSE.
@@ -2237,8 +2027,9 @@ C       STOP PLOTTING
           PLEXIS=.FALSE.
           MSG=.TRUE.
           RETURN
-      END
+      END SUBROUTINE PSTOP
 
+      
       SUBROUTINE COLORS
 C
 C               COLORS AND THEIR INTEGER CODES
@@ -2264,15 +2055,13 @@ C
 C
 C       THIS IS SUBROUTINE COLORS. THIS IS THE SUBROUTINE WHICH
 C       SETS THE PROGRAM COLORS.
-C
+
           INTEGER COLANS
-C
-!      CHARACTER JK_AICOL*2,COLCMD*11
-C
+
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
-C
+
           IF(STI.EQ.0) THEN
 C     NO QUERRY
               IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1.OR.SST.EQ.1) THEN
@@ -2317,11 +2106,11 @@ C     WQ WAS RESET
 C     WQ WAS NOT RESET
               END IF
               IF(WQ.EQ.'RESET') THEN
-C
+
                   CALL MY_INIPLT
-C
+
 C     RESETTING PROGRAM COLORS TO DEFAULTS
-C
+
                   COLDEF=15
                   COLRAY=15
                   COLCLP=3
@@ -2330,7 +2119,7 @@ C
                   COLPRO=1
                   COLAXS=15
                   COLBAC=0
-C
+
                   COLR1=15
                   COLR2=12
                   COLR3=2
@@ -2341,13 +2130,12 @@ C
                   COLR8=7
                   COLR9=8
                   COLR10=9
-C
+
                   COLFRM=15
                   COLLBL=15
                   COLSPE=15
                   COLPEN=15
                   RETURN
-              ELSE
               END IF
               IF(WQ.NE.'RAYS'.AND.WQ.NE.'CLAP'.AND.WQ.NE.'COBS'.AND.
      1        WQ.NE.'EDGE'.AND.WQ.NE.'PROF'.AND.WQ.NE.'AXIS'.AND.
@@ -2364,7 +2152,6 @@ C
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
               END IF
               IF(INT(W1).LT.-1.OR.INT(W1).GT.16) THEN
                   OUTLYNE=
@@ -2374,7 +2161,6 @@ C
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
               END IF
 C
 C     PROCEED WITH SETTING OF COLORS
@@ -2397,7 +2183,7 @@ C     PROCEED WITH SETTING OF COLORS
               IF(WQ.EQ.'WAV10') COLR10=INT(W1)
               IF(WQ.EQ.'FRAM') COLFRM=INT(W1)
               IF(WQ.EQ.'LABL') COLLBL=INT(W1)
-C
+
               IF(WQ.EQ.'GBAC')  THEN
                   IF(W1.LT.-1.0D0.OR.W1.GT.15.0D0) THEN
                       OUTLYNE=
@@ -2415,9 +2201,9 @@ C     NOT GBAC
               END IF
               IF(WQ.EQ.'SPEC') COLSPE=INT(W1)
               IF(WQ.EQ.'PEN') COLPEN=INT(W1)
-C
+
               RETURN
-C
+
           ELSE
 C     QUERRY IS IMPLEMENTED HERE
 C     CASE OF "COLORSET ?"
@@ -2426,8 +2212,6 @@ C     CASE OF "COLORSET ?"
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
-C     SQ NOT 0
               END IF
 C     IS SQ=1 ?
               IF(SQ.EQ.1) THEN
@@ -2446,7 +2230,6 @@ C     IS SQ=1 ?
                       CALL SHOWIT(1)
                       CALL MACFAL
                       RETURN
-                  ELSE
                   END IF
 C     QUALIFIER OK
                   IF(WQ.EQ.'RAYS') COLANS=COLRAY
@@ -2474,13 +2257,11 @@ C     QUALIFIER OK
                   WRITE(OUTLYNE,100)WQ(1:4),COLANS
                   CALL SHOWIT(1)
                   RETURN
-              ELSE
-C     SQ NOT 1
               END IF
           END IF
           RETURN
-C
-      END
+
+      END SUBROUTINE COLORS
 
 
       SUBROUTINE MY_DEL_NEUT
@@ -2502,7 +2283,7 @@ C
           END IF
           DEALLOCATE(NEUTARRAY,STAT=ALLOERR)
           RETURN
-      END
+      END SUBROUTINE MY_DEL_NEUT
 
 
       SUBROUTINE RESIZE_NEUT
@@ -2526,7 +2307,7 @@ C     THIS ROUTINE DOUBLES THE SIZE OF NEUTARRAY IF NEEDED
           END DO
           DEALLOCATE(NEUTTEMP,STAT=ALLOERR)
           RETURN
-      END
+      END SUBROUTINE RESIZE_NEUT
 
 
       SUBROUTINE PLIBRY
@@ -2540,33 +2321,27 @@ C
           CHARACTER DATA*80,STRINGER*1,
      1    LLIP*80,DDATE*10,TTIME*8,AN*3,NEUTLINE*42
      2    ,FN*10,NM*8,TTTIM*8,DDDAT*10,DRWNAM*11
-C
+
           COMMON/DRWTAG/DRWNAM
-C
+
           CHARACTER PFILENAME*90,C1A*20,C1B*20,C1C*20,C1D*20
-C
+
           COMMON/STRNGR/DDDAT,TTTIM,NM,FN
-C
+
           LOGICAL EXISJK
-C
           REAL JJ1,JJ2
-C
           INTEGER SING,LCNT,I,II,J,N,PFCOUNTER,I1,I2,I3,I4,I5,I6,I7,
      1    I8,ALLOERR,JJ
-C
           INTEGER DUMTOT,FLG(0:20),ALL
-C
+
           COMMON/FFL/FLG
-C
+
           INCLUDE 'datlen.inc'
           INCLUDE 'datmai.inc'
           INCLUDE 'dathgr.inc'
-C
-C       SET ALL=0
+
           ALL=0
-C       SET SING=0
           SING=0
-C
 C
 C*************************************************************
 C       SPECIFIC CHECKS FOR PLIB P
@@ -2609,7 +2384,7 @@ C       INPUT OK
               ELSE
               END IF
               IF(S2.EQ.1) THEN
-C
+
                   IF(W1.GE.W2) THEN
                       OUTLYNE=
      1                  'NUMERIC WORD 1 MUST BE LESS THAN NUMERIC WORD 2'
@@ -2622,17 +2397,13 @@ C
                   END IF
               ELSE
 C       NW2 IS BLANK
-C       SET SING=1
                   SING=1
               END IF
 C       IS NW1 AND NW2 DEFAULT
               IF(DF1.EQ.1.AND.DF2.EQ.1) THEN
 C       NO NUMERIC INPUT, SET THE ALL VARIABLE TO 1
                   ALL=1
-              ELSE
               END IF
-          ELSE
-C       NOT PLIB P
           END IF
 C**********************************************************
 C       SPECIFIC CHECKS FOR PLIB PUT
@@ -3306,20 +3077,18 @@ C       DUMP THE LIBRARY FILE
                   END IF
  8191         CONTINUE
               RETURN
-C
-          ELSE
-C       NOT PLIB DEL
-          END IF
-      END
 
-C
+          END IF
+       END SUBROUTINE PLIBRY
+
+
       SUBROUTINE MY_DATE_AND_TIME(FDATE,FTIME,FZONE,FVALUE)
           IMPLICIT NONE
           CHARACTER FDATE*8,FTIME*10,FZONE*5
           INTEGER FVALUE(8)
           CALL DATE_AND_TIME(FDATE,FTIME,FZONE,FVALUE)
           RETURN
-      END
+      END SUBROUTINE MY_DATE_AND_TIME
 
 
       SUBROUTINE MY_TIMER(I)
@@ -3331,8 +3100,6 @@ C
           COMMON/TIMMER/BASE
           INTEGER I
 
-!        ITEM15=15
-!        CALL InfoOpSystem(ITEM15)
           call MY_DATE_AND_TIME(FDATE,FTIME,FZONE,FVALUE)
 
           IF(I.EQ.0) THEN
@@ -3346,7 +3113,7 @@ C       RETURN CURRENT VALUE OF ITEM15 IN MILLISECONDS
           END IF
 
           RETURN
-      END
+      END SUBROUTINE MY_TIMER
 
 
       SUBROUTINE SHOWIT(II)
@@ -3361,23 +3128,18 @@ C     OPERATIONS, USED ONLY IN LENO
 C     II=11 MEANS II=10 BUT NO STRIP OPERATIONS, USED ONLY IN LENO
 C
           IMPLICIT NONE
-C
 
           CHARACTER JK_J1*20,BFRM*3,JK_BLLIN*140,OLYNE*140,A1*1,A2*2,A3*3
-C
           CHARACTER FFORM*10
-C
           CHARACTER*153 STRIPOUT
-C
           INTEGER II,I,OUTY,LL,MY_LEN,IPASS1
-C
           LOGICAL OPENOUT
-C
+
           COMMON/SHOWME/BFRM
-C
+
           INCLUDE 'datmai.inc'
           EXTERNAL MY_LEN
-C
+
           I=II
 C       ADDED 1/20/2004
           IF(OUTLYNE(1:1).EQ.' ') OUTLYNE(1:139)=OUTLYNE(2:139)//' '
@@ -3399,12 +3161,12 @@ C       ADDED 1/20/2004
               FFORM=TRIM('A'//A3)
           END IF
           FFORM='('//TRIM(FFORM)//')'
-C
+
 C     NO OUTPUT CAN EVER BE DONE TO 0 OR 1 WHEN OUTPUT NULL IS IN EFFECT
           IF(I.EQ.1.AND.OUT.EQ.98.OR.I.EQ.0.AND.OUT.EQ.98) RETURN
-C
+
           IF(I.EQ.3) I=1
-C
+
           IF(F15.EQ.1) THEN
 C     CHANGING CONFIGS, NO SCREEN OUTPUT
               IF(I.EQ.0.AND.OUT.EQ.6.OR.
@@ -3416,14 +3178,14 @@ C     CHANGING CONFIGS, NO SCREEN OUTPUT
      6           I.EQ.5.OR.I.EQ.10.AND.OUT.EQ.6
      7           .OR.I.EQ.10.AND.OUT.EQ.6) RETURN
           END IF
-C
+
           IF(I.EQ.20) THEN
 C       OUTPUT INTENDED FOR UNIT=OUT (256 COL), UNIT 97
 C       USED ONLY IN COMMA DELIMITED TABLE OUTPUT
               WRITE(97,2000) OUTLYNE(1:256)
  2000         FORMAT(A256)
           END IF
-C
+
           IF(I.EQ.10) THEN
               I=0
               STRIPOUT=OUTLYNE
@@ -3440,15 +3202,15 @@ C
               I=0
           END IF
 C
-C     IF SHOWIT GETS CALLED WHILE READING IN A LENS, DON'T DO
+C     IF SHOWIT GETS CALLED WHILE READING IN A LENS, DO NOT DO
 C     ANYTHING, JUST RETURN
           IF(IN.EQ.99.AND.OUT.EQ.99) RETURN
-C
+
           JK_J1='                    '
           JK_BLLIN=JK_J1//JK_J1//JK_J1//JK_J1//JK_J1//JK_J1//JK_J1
-C
+
           IF(OUT.EQ.69) WRITE(97,FMT=FFORM) OLYNE
-C
+
           IF(I.EQ.3) OUTY=6
           IF(I.NE.3) OUTY=OUT
           OPENOUT=.FALSE.
@@ -3465,20 +3227,18 @@ C     139 COL OUTPUT
                   I=2
               END IF
           END IF
-C
+
           IF(I.EQ.0) THEN
 C       OUTPUT INTENDED FOR UNIT=OUT (79 COL)
               IF(OUT.EQ.6.OR.OUT.EQ.69.OR.OUT.EQ.7) THEN
                   IF(OUT.EQ.6.OR.OUT.EQ.69) THEN
                       IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
                       WRITE(OUT,FMT=FFORM) OUTLYNE
                   ELSE
 C     OUT IS NOT 6
                       WRITE(OUTY,FMT=FFORM) OLYNE
                       IF(OUTY.EQ.6) THEN
                           IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
                           WRITE(OUT,*) OUTLYNE
                       END IF
                   END IF
@@ -3499,14 +3259,12 @@ C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
                   LL=MY_LEN(OUTLYNE)
                   LL=131
                   IF(OUT.EQ.6.OR.OUT.EQ.69) THEN
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:LL),LL)
                       WRITE(OUT,*) OUTLYNE
                   ELSE
                       LL=MY_LEN(OUTLYNE)
                       WRITE(OUTY,FFORM) OLYNE
                       IF(OUTY.EQ.6) THEN
                           IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
                           WRITE(OUT,*) OUTLYNE
                       END IF
                   END IF
@@ -3516,7 +3274,6 @@ C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
                       WRITE(OUTY,FMT=FFORM) OLYNE
                       IF(OUTY.EQ.6) THEN
                           IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
                           WRITE(OUT,*) OUTLYNE
                       END IF
                       LL=MY_LEN(OUTLYNE)
@@ -3525,31 +3282,28 @@ C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
-C
+
           IF(I.EQ.5) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN ONLY (UNIT 6 EXCLUSIVELY)
               IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
               WRITE(OUT,*) OUTLYNE
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
-C
+
           IF(I.EQ.1) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN ONLY
               IPASS1=79
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:IPASS1),IPASS1)
               WRITE(OUT,*) OUTLYNE
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
           IF(I.EQ.4) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
-!        Call MY_IWinOutStringXYSCROLL(OUTLYNE(1:FLEN),FLEN)
               WRITE(OUT,*) OUTLYNE
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
           IF(I.NE.5) OUTLYNE=JK_BLLIN
           RETURN
-      END
+      END SUBROUTINE SHOWIT

@@ -1,6 +1,10 @@
 To Do List for KODS
 ===================
 
+- replace any hardcoded commands
+
+- sort out MY_GETCL*, JYSTEM* and MY_SYSTEM* subroutine messes
+
 - read .agf glass data files directly
 
 - fix utility/utility7.f:lwrite
