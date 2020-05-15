@@ -1287,6 +1287,7 @@ C       COMMANDS (PIKD)
       END
 
       SUBROUTINE RE_DISPLAY_LENS(YESEOS)
+          USE opsys
           USE GLOBALS
           IMPLICIT NONE
           INCLUDE 'datlen.inc'
@@ -1300,8 +1301,7 @@ C       COMMANDS (PIKD)
           CALL LNSEOS
           REST_KDP(21)=RESTINPT(21)
           SAVE_KDP(21)=SAVEINPT(21)
-!        CALL MY_CLS
-          call system('clear')
+          CALL shell_command('clear')
           REST_KDP(21)=RESTINPT(21)
           IF(.NOT.YESEOS) THEN
               SAVE_KDP(21)=SAVEINPT(21)

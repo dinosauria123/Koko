@@ -1437,7 +1437,8 @@ C      IF(J.EQ.NEUTTOTAL+1) THEN
 c
 c     Draw 2D OPD CONTOUR PLOT
 c
-!      USE WINTERACTER
+          USE opsys
+          USE GLOBALS
 c
           IMPLICIT NONE
 
@@ -1509,25 +1510,15 @@ C
 200           FORMAT(A8)
               KEYSTR(IC) =TRIM(ASTEP_VAL)//' = '//CHAR(64+IC)
               STEP_VAL=STEP_VAL+RSTEP
-!          CALL IPgStyle(IC,MOD(IC,7),6,IC,ICC*16,ICC*16)
-!          CALL IPgContourLabel(IC,CHAR(64+IC))
 
-              call contlabel(26.0,real(10.0+IC),KEYSTR(IC))
-
-              call drawcmdsave2
+              CALL contlabel(26.0,real(10.0+IC),KEYSTR(IC))
+              CALL drawcmdsave2
 
           END DO
 c
 c  generate contour plot
 c
-!      CALL IGrCharSize(1.0,0.5)
-!      CALL IPgBorder()
-!      CALL IPgContour2Reg(ZDATA,NX,NY,ZCONT)
-c
-!      CALL IPgKeyAll(KEYSTR,'B')
-
-          call system('/usr/bin/gnuplot '//trim
-     1    (HOME)//'drawcmd.txt')
+          CALL shell_command(trim(BMPREADR)//" "//trim(HOME)//"drawcmd.txt")
 
           RETURN
       END SUBROUTINE DrawContour_OPD
@@ -1538,25 +1529,23 @@ c
 c
 c     Draw 2D APD CONTOUR CONTOUR
 c
-!      USE WINTERACTER
+          USE opsys
+          USE GLOBALS
 c
           IMPLICIT NONE
 
           include 'datmai.inc'
 
           INTEGER ICC,NX,NY,CON_ARRAY,ZSTEP,ALLOERR
-!      INTEGER ICC,NX,NY,CON_ARRAY,ZSTEP,NZSTEP,ALLOERR
           REAL ZCONT
           CHARACTER*7 KEYSTR*80
           DIMENSION ZCONT(:),KEYSTR(:)
           ALLOCATABLE :: ZCONT,KEYSTR
           DIMENSION CON_ARRAY(1:NX,1:NY)
 
-c
           REAL            , DIMENSION(NX,NY)       :: ZDATA
           INTEGER         , DIMENSION(2)           :: NVAL
           INTEGER                                  :: IX,IY,IC
-!      REAL                                     :: X,Y
 c
           ZSTEP=11
 
@@ -1575,7 +1564,6 @@ c
           DO IC = 1,ZSTEP
               ZCONT(IC) = REAL(IC)
           END DO
-
 c
 c
 c  In this example, declared size of data array and
@@ -1583,8 +1571,6 @@ c  size of plot are the same.
 c
           NVAL(1) = NX
           NVAL(2) = NY
-!      CALL IPgNewGraph(ZSTEP,NVAL,' ','2','C')
-!      CALL IPgArea(0.1,0.214,0.5,0.786)
 c
 c
 c  Set up simple strings for the key and assign
@@ -1599,34 +1585,15 @@ c          IF((ICC*16).GE.0.AND.(ICC*16).LE.15) icc=icc+1
 c     1(ICC*16).GE.208.AND.(ICC*16).LE.223) ICC=ICC+1
               WRITE(KEYSTR(IC),100) REAL(IC-1)/10.0
  100          FORMAT('I = ',F3.1)
-!          CALL IPgStyle(IC,MOD(IC,7),6,IC,ICC*16,ICC*16)
 
-              call contlabel(26.0,real(9.0+IC),KEYSTR(IC))
-              call drawcmdsave2
+              CALL contlabel(26.0,real(9.0+IC),KEYSTR(IC))
+              CALL drawcmdsave2
 
           END DO
-!          CALL IPgContourLabel(1,'0')
-!          CALL IPgContourLabel(2,'.1')
-!          CALL IPgContourLabel(3,'.2')
-!          CALL IPgContourLabel(4,'.3')
-!          CALL IPgContourLabel(5,'.4')
-!          CALL IPgContourLabel(6,'.5')
-!          CALL IPgContourLabel(7,'.6')
-!          CALL IPgContourLabel(8,'.7')
-!          CALL IPgContourLabel(9,'.8')
-!          CALL IPgContourLabel(10,'.9')
-!          CALL IPgContourLabel(11,'1')
 c
 c  generate contour plot
 c
-!      CALL IGrCharSize(1.0,1.0)
-!      CALL IPgBorder()
-!      CALL IPgContour2Reg(ZDATA,NX,NY,ZCONT)
-c
-!      CALL IPgKeyAll(KEYSTR,'B')
-
-          call system('/usr/bin/gnuplot '//trim
-     1    (HOME)//'drawcmd.txt')
+          call shell_command(trim(BMPREADR)//" "//trim(HOME)//"drawcmd.txt")
 
           RETURN
       END SUBROUTINE DrawContour_APD
@@ -1655,65 +1622,11 @@ c
           IF(ID.EQ.6) THEN
 !      ID=INFOOPSYSTEM1(16)
           ELSE
-              ID=1000
+             ID=1000
           END IF
-          RETURN
       END
 
-      SUBROUTINE MY_SYSTEM1(ABLE,N)
-!      USE WINTERACTER
-          IMPLICIT NONE
-          INTEGER N
-          INCLUDE 'datmai.inc'
-          CHARACTER*(*) ABLE
-          ABLE=TRIM(ABLE)
-          N=LEN(ABLE)
-!      CALL IOSCOMMAND(ABLE(1:N),3)
-          call system(ABLE(1:N))
-          RETURN
-      END
-C
-      SUBROUTINE MY_SYSTEM2(ABLE,N)
-!      USE WINTERACTER
-          IMPLICIT NONE
-          INTEGER N
-          INCLUDE 'datmai.inc'
-          CHARACTER*(*) ABLE
-          N=LEN(ABLE)
-C       TEST SINCE ERROR ON TRIM AND LEN WITH IVF COMPILER, 1/4/07
-C       write(outlyne,*) able(1:70)
-C       CALL SHOWIT(1)
-C       CALL MACPAUSE
-C       CALL SHOWIT(1)
-C       CALL MACPAUSE
-!      CALL IOSCOMMAND(ABLE(1:N),2)
-          call system("xterm "//ABLE(1:N))
-          write(*,*)
-          RETURN
-      END
-C
-      SUBROUTINE MY_COPYFILE(FROMFILE,TOFILE)
-!      USE WINTERACTER
-          IMPLICIT NONE
-          CHARACTER FROMFILE*(*),TOFILE*(*)
-!      CALL IOSCOPYFILE(TRIM(FROMFILE),TRIM(TOFILE))
-          call system( 'cp '//TRIM(FROMFILE)//' '//TRIM(TOFILE))
-          RETURN
-      END
 
-      SUBROUTINE MY_DELETE_FILE(FILENAME)
-!      USE WINTERACTER
-          IMPLICIT NONE
-          CHARACTER FILENAME*(*)
-!      CALL IOSDELETEFILE(TRIM(FILENAME))
-          logical fexist
-          include 'datmai.inc'
-
-          inquire (file=trim(HOME)//FILENAME,exist=fexist)
-          if (fexist) call system('rm '//trim(HOME)//TRIM(FILENAME))
-          RETURN
-      END
-C
       SUBROUTINE MY_INKEYEVENTIMM(N)
           !     USE WINTERACTER
           IMPLICIT NONE
@@ -1730,42 +1643,6 @@ C
           RETURN
       END
 
-!      SUBROUTINE PUT_PROMPT(LINE,N)
-!      USE WINTERACTER
-!      IMPLICIT NONE
-!      CHARACTER LINE*(*)
-!      INTEGER N
-!      CALL WEditPutCommand('')
-!      CALL WEditPrompt(LINE(1:N))
-!                        RETURN
-!                        END
-
-!        SUBROUTINE GET_RESPONSE(RESPONSE,N)
-C
-
-!                                RETURN
-!                                END
-C
-      SUBROUTINE MY_MKDIR(DIRNAMM)
-!      USE WINTERACTER
-          IMPLICIT NONE
-          CHARACTER DIRNAMM*(*)
-          logical fexist
-          include 'datmai.inc'
-!      CALL IOSDIRMAKE(DIRNAMM)
-          inquire (file=DIRNAMM,exist=fexist)
-          if (fexist) return
-          call system('mkdir '//DIRNAMM)
-          RETURN
-      END
-
-!      SUBROUTINE MY_SHORT_PAUSE(I)
-!      USE WINTERACTER
-!      IMPLICIT NONE
-!      INTEGER I
-!      CALL IOSWAIT(I)
-!                   RETURN
-      !                  END
 
       SUBROUTINE MY_INFOINPUT(I)
 !      USE WINTERACTER

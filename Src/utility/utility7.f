@@ -1046,7 +1046,10 @@ C
 
 
 C SUB MYSYS.FOR
-      SUBROUTINE MYSYS
+          SUBROUTINE MYSYS
+
+          USE opsys
+            
           IMPLICIT NONE
           CHARACTER WWSS*80
 C
@@ -1085,7 +1088,7 @@ C
                   WWSS(I:I)=' '
               END DO
               WWSS(1:N)=WS(1:N)
-              CALL JYSTEM(WWSS(1:N),N)
+              CALL shell_command( WWSS )
           END IF
           IF(WC(1:1).EQ.'W') THEN
               IF(STI.EQ.1) THEN
@@ -1118,7 +1121,7 @@ C
                   WWSS(I:I)=' '
               END DO
               WWSS(1:N)=WS(1:N)
-              CALL JYSTEM10(WWSS(1:N),N)
+              CALL shell_command( WWSS )
           END IF
           RETURN
       END

@@ -24,7 +24,7 @@ C/
 C///////////////////////////////////////////////////////////////////////
 
       SUBROUTINE READIMAGEARRAY(II,WRD1)
-!        USE WINTERACTER
+
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I,J,K,L,INFO(3),NX,NY,II
@@ -38,7 +38,6 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
           ALLOCATABLE :: ABMPDATA24
 
-!        CALL IGrFileInfo(TRIM(BMPFILE),INFO,3)
           call bmpinfo(BMPFILE,INFO)
 
           IF(II.EQ.1) THEN
@@ -147,15 +146,11 @@ C       READ OBJECT
               IF(NUMCOLORS.EQ.1) THEN
                   L=1
                   IERROR=0
-!        CALL IGrLoadImageData(TRIM(BMPFILE),ABMPDATA24)
-!        IERROR=INFOERROR(2)
-!        IF(IERROR.NE.0) THEN
 
                   call loadbmp(BMPFILE,ABMPDATA24)
 
                   DO K=1,OBJNY
                       DO J=1,OBJNX
-!        CALL WRGBsplit(ABMPDATA24(L),IR,IG,IB)
                           call RGBsplit(ABMPDATA24,L,IR,IB,IG)
                           IOBJECTV(J,K,3)=DBLE(IR)
                           IOBJECTV(J,K,1)=DBLE(IG)
@@ -167,16 +162,11 @@ C       READ OBJECT
               IF(NUMCOLORS.EQ.3) THEN
                   L=1
                   IERROR=0
-!        CALL IGrLoadImageData(TRIM(BMPFILE),ABMPDATA24)
-!        IERROR=INFOERROR(2)
-!        IF(IERROR.NE.0) THEN
 
                   call loadbmp(BMPFILE,ABMPDATA24)
 
                   DO K=1,OBJNY
                       DO J=1,OBJNX
-!        CALL WRGBsplit(ABMPDATA24(L),IR,IG,IB)
-
                           call RGBsplit(ABMPDATA24,L,IR,IB,IG)
                           IOBJECTV(J,K,3)=DBLE(IR)
                           IOBJECTV(J,K,1)=DBLE(IG)
@@ -192,17 +182,11 @@ C       READ IMAGE
               IF(NUMCOLORS.EQ.1) THEN
                   L=1
                   IERROR=0
-!        CALL IGrLoadImageData(TRIM(BMPFILE),ABMPDATA24)
-!        IERROR=INFOERROR(2)
-!        IF(IERROR.NE.0) THEN
-!        IERROR=INFOERROR(1)
 
                   call loadbmp(BMPFILE,ABMPDATA24)
 
                   DO K=1,IMGNY
                       DO J=1,IMGNX
-!        CALL WRGBsplit(ABMPDATA24(L),IR,IG,IB)
-
                           call RGBsplit(ABMPDATA24,L,IR,IB,IG)
                           IIMAGEV(J,K,3,1)=DBLE(IR)
                           IIMAGEV(J,K,1,1)=DBLE(IG)
@@ -214,16 +198,11 @@ C       READ IMAGE
               IF(NUMCOLORS.EQ.3) THEN
                   L=1
                   IERROR=0
-!        CALL IGrLoadImageData(TRIM(BMPFILE),ABMPDATA24)
-                  !       IERROR=INFOERROR(2)
-!        IF(IERROR.NE.0) THEN
 
                   call loadbmp(BMPFILE,ABMPDATA24)
 
                   DO K=1,IMGNY
                       DO J=1,IMGNX
-!        CALL WRGBsplit(ABMPDATA24(L),IR,IG,IB)
-
                           call RGBsplit(ABMPDATA24,L,IR,IB,IG)
                           IIMAGEV(J,K,3,1)=DBLE(IR)
                           IIMAGEV(J,K,1,1)=DBLE(IG)
@@ -239,7 +218,7 @@ C       READ IMAGE
 
 
       SUBROUTINE PLOTIMAGEARRAY(I,LENBMP,TRIMMER)
-!        USE WINTERACTER
+          USE opsys
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I,J,K,L
@@ -274,15 +253,11 @@ C       PLOT OBJECT
                           L=L+1
                       END DO
                   END DO
-!        CALL MY_SYSTEM2('DEL PLOTBMP.BMP',15)
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,OBJNX,OBJNY)
-                  call system('rm '//trim(HOME)//'PLOTBMP.BMP')
 
-                  call savebmp(BMPFILE,BMPDATA24)
-                  call plotbmp(BMPFILE)
+                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL plotbmp(BMPFILE)
 
-!        CALL MY_SYSTEM2(TRIM(BMPREADR)//' '//trim(HOME)//
-!     1 'PLOTBMP.TXT')
               END IF
               IF(NUMCOLORS.EQ.3) THEN
                   L=1
@@ -302,21 +277,13 @@ C       PLOT OBJECT
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
                           BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
                           BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
-
-!     1  (256*INT(((IOBJECTV(J,K,1)))/PEAKER))+
-!     2  (256*256*INT(((IOBJECTV(J,K,2)))/PEAKER))
                           L=L+3
                       END DO
                   END DO
 
-!        CALL MY_SYSTEM2('del PLOTBMP.BMP',15)
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,OBJNX,OBJNY)
-!        CALL MY_SYSTEM2(TRIM(BMPREADR)//' '//trim(HOME)//
-!     1 'PLOTBMP.TXT')
-
-                  call system('rm '//trim(HOME)//'PLOTBMP.BMP')
-                  call savebmp(BMPFILE,BMPDATA24)
-                  call plotbmp(BMPFILE)
+                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL plotbmp(BMPFILE)
 
               END IF
 
@@ -332,16 +299,10 @@ C       PLOT IMAGE
                           L=L+1
                       END DO
                   END DO
-!        CALL MY_SYSTEM2('del PLOTBMP.BMP',15)
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,
-!     1  IMGNX-(2*INT(TRIMMER))
-!     1 ,IMGNY-(2*INT(TRIMMER)))
-!        CALL MY_SYSTEM2(TRIM(BMPREADR)//' '//trim(HOME)//
-!     1 'PLOTBMP.TXT')
 
-                  call system('rm '//trim(HOME)//'PLOTBMP.BMP')
-                  call savebmp(BMPFILE,BMPDATA24)
-                  call plotbmp(BMPFILE)
+                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL plotbmp(BMPFILE)
 
               END IF
 
@@ -349,27 +310,16 @@ C       PLOT IMAGE
                   L=1
                   DO K=1+INT(TRIMMER),IMGNY-INT(TRIMMER)
                       DO J=1+INT(TRIMMER),IMGNX-INT(TRIMMER)
-!        BMPDATA24(L)=INT(((IIMAGEV(J,K,3,1))))+
-!     1  (256*INT(((IIMAGEV(J,K,1,1)))))+
-!     2  (256*256*INT(((IIMAGEV(J,K,2,1)))))
-!        L=L+1
-
                           BMPDATA24(L)=int(((IIMAGEV(J,K,3,1))))
                           BMPDATA24(L+1)=int(((IIMAGEV(J,K,2,1))))
                           BMPDATA24(L+2)=int(((IIMAGEV(J,K,1,1))))
                           L=L+3
                       END DO
                   END DO
-!        CALL MY_SYSTEM2('del PLOTBMP.BMP',15)
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,
-!     1  IMGNX-(2*INT(TRIMMER))
-!     1 ,IMGNY-(2*INT(TRIMMER)))
-!        CALL MY_SYSTEM2(TRIM(BMPREADR)//' '//trim(HOME)//
-!     1 'PLOTBMP.TXT')
 
-                  call system('rm '//trim(HOME)//'PLOTBMP.BMP')
-                  call savebmp(BMPFILE,BMPDATA24)
-                  call plotbmp(BMPFILE)
+                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL plotbmp(BMPFILE)
 
               END IF
 
@@ -379,7 +329,7 @@ C       PLOT IMAGE
 
 
       SUBROUTINE WRITEIMAGEARRAY(I,LENBMP)
-!        USE WINTERACTER
+
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I,J,K,L
@@ -409,8 +359,6 @@ C       PLOT OBJECT
                           L=L+1
                       END DO
                   END DO
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,OBJNX,OBJNY)
-C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
               END IF
 
               IF(NUMCOLORS.EQ.3) THEN
@@ -427,18 +375,12 @@ C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
                   IF(PEAKER.GT.255.0D0) PEAKER=PEAKER/255.0D0
                   DO K=1,OBJNY
                       DO J=1,OBJNX
-!        BMPDATA24(L)=INT(((IOBJECTV(J,K,L))/PEAKER))+
-!     1  (256*INT(((IOBJECTV(J,K,L)))/PEAKER))+
-!     2  (256*256*INT(((IOBJECTV(J,K,L)))/PEAKER))
-
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
                           BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
                           BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
                           L=L+3
                       END DO
                   END DO
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,OBJNX,OBJNY)
-C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
                   call savebmp(BMPFILE,BMPDATA24)
               END IF
 
@@ -454,18 +396,11 @@ C       PLOT IMAGE
                           L=L+1
                       END DO
                   END DO
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,IMGNX,IMGNY)
-C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
               END IF
               IF(NUMCOLORS.EQ.3) THEN
                   L=1
                   DO K=1,IMGNY
                       DO J=1,IMGNX
-!        BMPDATA24(L)=INT(((IIMAGEV(J,K,3,1))))+
-!     1  (256*INT(((IIMAGEV(J,K,1,1)))))+
-!     2  (256*256*INT(((IIMAGEV(J,K,2,1)))))
-!        L=L+1
-
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
                           BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
                           BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
@@ -473,11 +408,8 @@ C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
 
                       END DO
                   END DO
-!        CALL IGrSaveImageData(TRIM(BMPFILE),BMPDATA24,IMGNX,IMGNY)
-C       CALL MY_SYSTEM2(TRIM(BMPREADR)//' PLOTBMP.BMP',80)
                   call savebmp(BMPFILE,BMPDATA24)
               END IF
-
           END IF
           RETURN
       END

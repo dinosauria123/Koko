@@ -638,30 +638,26 @@ C       UNIT NOT 7, DON'T DO ANYTHING, JUST RETURN.
 
 C SUB EXITT.FOR
       SUBROUTINE EXITT(CLSCODE)
+          USE opsys
           USE GLOBALS
-C
+
           IMPLICIT NONE
-C
           INTEGER CLSCODE,ALLOERR
-C
           INTEGER IEND,OLDOUT,OLDSQ,IPASS1,IPASS2,I
-C
           CHARACTER WCOLD*8,AI4*4
-C
           REAL*8 SYS50,SYS56,RPASS1,RPASS2,RPASS3
-C
           LOGICAL OPEN63
      1    ,OPEN32,EXIS32,EXIS63
      2    ,EXIS70,EXIS72,EXIS94,EXIS95,EXIS96,LPASS1,LPASS2
 
           LOGICAL ITERROR
-C
+
           INCLUDE 'datlen.inc'
           INCLUDE 'datcfg.inc'
           INCLUDE 'datmai.inc'
           INCLUDE 'datsub.inc'
           INCLUDE 'datmac.inc'
-C
+
           IF(SST.EQ.1.OR.SQ.EQ.1.OR.SN.EQ.1) THEN
               OUTLYNE='"EXIT" OR "EXI" TAKES NO EXPLICIT INPUT'
               CALL SHOWIT(5)
@@ -882,7 +878,7 @@ C
      2    ,FORM='UNFORMATTED',ACCESS='DIRECT'
      3    ,RECL=(NRECL*42),STATUS='UNKNOWN')
           CALL CLOSE_FILE(27,0)
-          CALL MY_DELETE_FILE('REPLAY.WMF')
+          CALL os_delete('REPLAY.WMF')
           STOP
       END
 

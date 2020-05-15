@@ -203,14 +203,14 @@
                 CASE (char(0))
                    EXIT
                 CASE ('b')
-                   IF ( len_TRIM(optarg) == 0 ) THEN
+                   IF ( len_trim(optarg) == 0 ) THEN
                       WRITE (*,*) "Missing argument for command option -b"
                       STOP
                    END IF
                    batchmode = .TRUE.
                    BATCHFILE = optarg
                 CASE ('d')
-                   IF ( len_TRIM(optarg) == 0 ) THEN
+                   IF ( len_trim(optarg) == 0 ) THEN
                       WRITE (*,*) "Missing argument for command option -d"
                       STOP
                    END IF
@@ -219,7 +219,7 @@
                    CALL print_usage()
                    STOP
                 CASE ('t')
-                   IF ( len_TRIM(optarg) == 0 ) THEN
+                   IF ( len_trim(optarg) == 0 ) THEN
                       WRITE (*,*) "Missing argument for command option -t"
                       STOP
                    END IF
@@ -369,7 +369,7 @@
           NOCOBSPSF=.FALSE.
           
 !     INITIALIZE PROGRAM RANDOM NUMBER GENERATOR
-          call random_seed() ! Fortran RNG, new sequence
+          CALL random_seed() ! Fortran RNG, new sequence
 !
 !     ADDED 1/12/99
           CARTMAN=.TRUE.

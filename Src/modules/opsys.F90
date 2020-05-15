@@ -23,15 +23,15 @@
 !/
 !///////////////////////////////////////////////////////////////////////
 
-module opsys
+MODULE opsys
 
   ! Provides platform-independent access to operating system services
   !
   ! Ulf GRIESMANN, May 2020
 
-contains
+CONTAINS
 
-  subroutine user_home_directory( has_homedir, homedir )
+  SUBROUTINE user_home_directory( has_homedir, homedir )
 
     ! returns the home directory of the user running Koko
     !
@@ -40,47 +40,48 @@ contains
     ! homedir :      the fully qualified path of the home directory,
     !                including, in Windows, the home drive.
     
-    character(len=*), intent(out) :: homedir
-    logical, intent(out)          :: has_homedir
+    CHARACTER(len=*), INTENT(out) :: homedir
+    LOGICAL, INTENT(out)          :: has_homedir
     
-    integer            :: status, length
+    INTEGER            :: status, length
 
 # if defined( WINDOWS )
-    character(len=4)   :: homedrive
-    character(len=256) :: homepath
+    CHARACTER(len=4)   :: homedrive
+    CHARACTER(len=256) :: homepath
 #endif
     
 #if defined( LINUX ) || defined( MACOSX )
-    call get_environment_variable("HOME", homedir, length, status)
-    if (status .ne. 0) then
+    CALL get_environment_VARIABLE("HOME", homedir, length, status)
+    IF (status .NE. 0) THEN
        homedir = " "
-       has_homedir = .false.
-    else
-       has_homedir = .true.
-    end if
+       has_homedir = .FALSE.
+    ELSE
+       has_homedir = .TRUE.
+    END IF
 #endif
 
 #if defined( WINDOWS )
-    call get_environment_variable("HOMEDRIVE", homedrive, length, status)
-    if (status .ne. 0) then
-       has_homedir = .false.
-       return
-    end if
+    CALL get_environment_VARIABLE("HOMEDRIVE", homedrive, length, status)
+    IF (status .NE. 0) THEN
+       has_homedir = .FALSE.
+       RETURN
+    END IF
     
-    call get_environment_variable("HOMEPATH", homepath, length, status)
-    if (status .ne. 0) then
-       has_homedir = .false.
-       return
-    end if
+    CALL get_environment_VARIABLE("HOMEPATH", homepath, length, status)
+    IF (status .NE. 0) THEN
+       has_homedir = .FALSE.
+       RETURN
+    END IF
 
-    homedir = trim(homedrive)//trim(homepath)
-    has_homedir = .true.
+    homedir = TRIM(homedrive)//TRIM(homepath)
+    has_homedir = .TRUE.
 #endif
     
-  end subroutine user_home_directory
+  END SUBROUTINE user_home_directory
 
 
-  logical function kods_dir_exists( topdir )
+  !----------------------------------------------------------
+  LOGICAL FUNCTION kods_dir_exists( topdir )
 
     ! Checks if the data directory for KODS exists. Since the
     ! Fortran 'inquire' function cannot check for the existence of
@@ -93,36 +94,39 @@ contains
     ! OUTPUT
     ! returns T if the directory exists, F otherwise
 
-    character(len=*), intent(in) :: topdir
-    character(len=256)           :: testfile
+    CHARACTER(len=*), INTENT(in) :: topdir
+    CHARACTER(len=256)           :: testfile
     
 #if defined( LINUX ) || defined( MACOSX )
-    testfile = trim(topdir)//"/KODS/README_DATA"
+    testfile = TRIM(topdir)//"/KODS/README_DATA"
 #endif    
 
 #if defined( WINDOWS )
-    testfile = trim(topdir)//"\KODS\README_DATA"
+    testfile = TRIM(topdir)//"\KODS\README_DATA"
 #endif    
 
-    inquire(file = testfile, exist = kods_dir_exists)
+    INQUIRE(file = testfile, exist = kods_dir_exists)
     
-  end function kods_dir_exists
+  END FUNCTION kods_dir_exists
 
 
-  logical function file_exists( fname )
+  !----------------------------------------------------------
+  
+  LOGICAL FUNCTION file_exists( fname )
 
     ! A function the check for the existence of a file;
     ! makes the inquire statement easier to use in logical
     ! expressions
 
-    character(len=*), intent(in) :: fname
+    CHARACTER(len=*), INTENT(in) :: fname
 
-    inquire(file = fname, exist = file_exists)
+    INQUIRE(file = fname, exist = file_exists)
     
-  end function file_exists
+  END FUNCTION file_exists
   
 
-  subroutine dir_path_append(fullpath, partpath, pathitem)
+  !----------------------------------------------------------
+  SUBROUTINE dir_path_append(fullpath, partpath, pathitem)
 
     ! A platform-independent way to append a directory to a path
     !
@@ -133,54 +137,157 @@ contains
     ! OUTPUT
     ! fullpath :  the concatenated path name
 
-    character(len=*), intent(in)  :: partpath, pathitem
-    character(len=*), intent(out) :: fullpath
+    CHARACTER(len=*), INTENT(in)  :: partpath, pathitem
+    CHARACTER(len=*), INTENT(out) :: fullpath
 
 #if defined( LINUX ) || defined( MACOSX )
-    fullpath = trim(partpath)//"/"//trim(pathitem)
+    fullpath = TRIM(partpath)//"/"//TRIM(pathitem)
 #endif
 
 #if defined( WINDOWS )
-    fullpath = trim(partpath)//"\\"//trim(pathitem)
+    fullpath = TRIM(partpath)//"\\"//TRIM(pathitem)
 #endif
     
-  end subroutine dir_path_append
+  END SUBROUTINE dir_path_append
 
 
-  subroutine set_kods_temp_dir( tmpdir )
+  !----------------------------------------------------------
+  SUBROUTINE set_kods_temp_dir( tmpdir )
 
     ! Returns a directory for storing temporary files
 
-    character(len=*), intent(out) :: tmpdir
-    character(len=256)            :: tdir
-    integer                       :: length, status
+    CHARACTER(len=*), INTENT(out) :: tmpdir
+    CHARACTER(len=256)            :: tdir
+    INTEGER                       :: length, status
 
     ! first check environment variables
-    call get_environment_variable("TEMP", tdir, length, status)
-    if (status == 0) then
+    CALL get_environment_VARIABLE("TEMP", tdir, length, status)
+    IF (status == 0) THEN
        tmpdir(1:length) = tdir(1:length)
-    else       
+    ELSE       
 #if defined( LINUX ) || defined( MACOSX )
        tmpdir = "/tmp" ! fallback
 #endif
-    end if
+    END IF
 
-  end subroutine set_kods_temp_dir
+  END SUBROUTINE set_kods_temp_dir
 
 
-  subroutine add_dir_slash( dirname )
+  !----------------------------------------------------------
+  SUBROUTINE add_dir_slash( dirname )
 
     ! adds a (back-) slash to a directory name
 
-    character(len=*), intent(inout) :: dirname
+    CHARACTER(len=*), INTENT(inout) :: dirname
 
 #if defined( LINUX ) || defined( MACOSX )
-    dirname = trim(dirname)//"/"
+    dirname = TRIM(dirname)//"/"
 #endif
 #if defined( WINDOWS )
-    dirname = trim(dirname)//"\\"
+    dirname = TRIM(dirname)//"\\"
 #endif
     
-  end subroutine add_dir_slash
+  END SUBROUTINE add_dir_slash
+
   
-end module opsys
+  !----------------------------------------------------------
+  SUBROUTINE os_delete( filename )
+
+    ! deletes a file
+
+    CHARACTER(len=*), INTENT(in) :: filename
+    CHARACTER(len=4)             :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "rm"
+#endif
+#if defined( WINDOWS )
+    cmd = "del"
+#endif
+
+    IF ( file_exists(filename) ) THEN
+       CALL shell_command( TRIM(cmd)//" "//TRIM(filename) )
+    END IF
+
+  END SUBROUTINE os_delete
+
+  
+  !----------------------------------------------------------
+  SUBROUTINE os_copy( from_name, to_name )
+
+    ! copies a file
+    
+    CHARACTER(len=*), INTENT(in) :: from_name, to_name
+    CHARACTER(len=8)             :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "cp"
+#endif
+#if defined( WINDOWS )
+    cmd = "copy"
+#endif
+    
+    IF ( file_exists(from_name) ) THEN
+       CALL shell_command( TRIM(cmd)//" "//TRIM(from_name)//" "//TRIM(to_name) )
+    ELSE
+       WRITE (*,*) "File does not exist"
+    END IF
+
+  END SUBROUTINE os_copy
+
+  
+  !----------------------------------------------------------
+  SUBROUTINE os_newdir( dir_name )
+
+    ! creates a new directory
+    
+    CHARACTER(len=*), INTENT(in) :: dir_name
+    CHARACTER(len=12)            :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "mkdir -p"
+#endif
+#if defined( WINDOWS )
+    cmd = "md"
+#endif
+    
+    CALL shell_command( TRIM(cmd)//" "//TRIM(dir_name) )
+
+  END SUBROUTINE os_newdir
+
+  
+  !----------------------------------------------------------
+  SUBROUTINE os_listdir( dir_name )
+
+    ! creates a new directory
+    
+    CHARACTER(len=*), INTENT(in) :: dir_name
+    CHARACTER(len=8)             :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "ls"
+#endif
+#if defined( WINDOWS )
+    cmd = "dir"
+#endif
+    
+    CALL shell_command( TRIM(cmd)//" "//TRIM(dir_name) )
+
+  END SUBROUTINE os_listdir
+
+  
+  !----------------------------------------------------------
+  SUBROUTINE shell_command( command )
+
+    ! a simplified interface to executing a shell command. On unix
+    ! systems the command is passed to 'sh', on Windows systems to
+    ! 'cmd.exe'
+
+    CHARACTER(len=*), INTENT(in) :: command
+    INTEGER                      :: exitstat, cmdstat
+
+    CALL execute_command_LINE(TRIM(command), .TRUE., exitstat, cmdstat)
+    
+  END SUBROUTINE shell_command
+  
+END MODULE opsys

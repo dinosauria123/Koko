@@ -100,12 +100,12 @@ C     ARR(I,1)
            END DO
            
 C     NOW SORT ARRAY ARR BY THE VALUES IN ARR(I,1)
-          call sortdmat(ARR,N,2,1,ier)
-          if (ier > 0) then
+          CALL sortdmat(ARR,N,2,1,ier)
+          IF (ier > 0) THEN
              outlyne = 'Error (shuffle): failed call to sortdmat'
-             call showit(1)
-             call macfal
-          end if
+             CALL showit(1)
+             CALL macfal
+          END IF
       END
 
 

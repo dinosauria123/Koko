@@ -138,11 +138,12 @@ C
 
 
       SUBROUTINE CHADIR
-C
+
+          USE opsys
           IMPLICIT NONE
-C
+
           CHARACTER DIRNAMM*80
-C
+
 C       THIS IS SUBROUTINE CHADIR. IT IS USED TO CHANGE THE NAME
 C       DIRECTORY OF THE LENS LIBRARY, MACRO LIBRARY, TRASMISSION FILES
 C       AND PLOT LIBRARY.
@@ -237,10 +238,10 @@ C       INPUT OK
      &    LIBMAC = trim(HOME)//WQ(1:6)//'/'
           IF(WC.EQ.'TRADIR') LIBTRA = trim(HOME)//WQ(1:6)//'/'
           IF(WC.EQ.'PLTDIR') LIBPLO = trim(HOME)//WQ(1:6)//'/'
+          
 C     DO THE DIRECTORIES EXIST ? IF NOT CREATE THEM
-C
           DIRNAMM=trim(HOME)//TRIM(WQ)
-          CALL MY_MKDIR(DIRNAMM)
+          CALL os_newdir(DIRNAMM)
           IF(WC.EQ.'LENDIR') THEN
               WRITE(OUTLYNE,10) trim(LIBLEN)
               CALL SHOWIT(0)
@@ -271,9 +272,10 @@ C
 
 
       SUBROUTINE LENSLOC
-C
+
+          USE opsys
           IMPLICIT NONE
-C
+
           CHARACTER DIRNAMM*80
 C
 C       THIS IS SUBROUTINE LENSLOC. IT IS USED TO CHANGE THE NAME
@@ -332,7 +334,7 @@ C       WINDOWS
 C     DO THE DIRECTORIES EXIST ? IF NOT CREATE THEM
 C
           DIRNAMM=TRIM(WS)
-          CALL MY_MKDIR(DIRNAMM)
+          CALL os_newdir(DIRNAMM)
           WRITE(OUTLYNE,10)
           CALL SHOWIT(0)
           WRITE(OUTLYNE,11) DIRLEN
@@ -345,10 +347,9 @@ C
 
 
       SUBROUTINE LENSDIR
-C
+      
+          USE opsys
           IMPLICIT NONE
-C
-          CHARACTER DIRNAMM*80
 C
 C       THIS IS SUBROUTINE LENSDIR. IT IS USED TO LIST THE
 C       DIRECTORY FOR LENSSAVE/LENSREST
@@ -383,9 +384,8 @@ C       INPUT OK
 C
 C     LIST THE DIRECTORY
 C
-          DIRNAMM=TRIM('ls '//TRIM(DIRLEN))
-          CALL MY_DIR(DIRNAMM,LEN(DIRNAMM))
-C
+          CALL os_listdir( DIRLEN )
+
           RETURN
  10       FORMAT('THE CURRENT LENS DIRECTORY NAME IS:')
  11       FORMAT(A79)

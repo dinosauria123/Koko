@@ -72,11 +72,11 @@ C///////////////////////////////////////////////////////////////////////
 
 
 C SUB MY_DIR.INC
-      SUBROUTINE MY_DIR(STRINGER,N)
+      SUBROUTINE MY_DIR(STRINGER)
+          USE opsys
           IMPLICIT NONE
           CHARACTER STRINGER*80
-          INTEGER N
-          CALL JYSTEM10(STRINGER(1:N),N)
+          CALL shell_command( STRINGER )
       END SUBROUTINE MY_DIR
 
 
@@ -338,25 +338,6 @@ C
           END IF
           call system(trim(TXTEDITOR)//AS(1:N2))
       END SUBROUTINE OPENTSTP
-
-
-      SUBROUTINE JYSTEM(STRING,N)
-          IMPLICIT NONE
-          INTEGER N
-          CHARACTER STRING*(*)
-          INCLUDE 'datmai.inc'
-          CALL MY_SYSTEM1(STRING(1:N),(N+11))
-          RETURN
-      END SUBROUTINE JYSTEM
-
-
-      SUBROUTINE JYSTEM10(STRING,N)
-          IMPLICIT NONE
-          INTEGER N
-          CHARACTER STRING*(*)
-          INCLUDE 'datmai.inc'
-          CALL MY_SYSTEM2(STRING(1:N),(N+11))
-      END SUBROUTINE JYSTEM10
 
 
       FUNCTION MY_LEN(STRING)
@@ -2311,6 +2292,7 @@ C     THIS ROUTINE DOUBLES THE SIZE OF NEUTARRAY IF NEEDED
 
 
       SUBROUTINE PLIBRY
+          USE opsys
           USE GLOBALS
           IMPLICIT NONE
 C
@@ -2685,7 +2667,7 @@ C
               CLOSE(28 )
               PFILENAME=LIBPLO//FN
               PFCOUNTER=NEUTTOTAL
-              CALL MY_COPYFILE('NEUTRAL.DAT',PFILENAME)
+              CALL os_copy('NEUTRAL.DAT',PFILENAME)
 C
               WRITE(OUTLYNE,470) II
  470          FORMAT('PLOT STORED IN LIBRARY FILE NO. ',I3)
@@ -2758,7 +2740,7 @@ C
               PFILENAME=LIBPLO//FN
               PFCOUNTER=NEUTTOTAL
               CALL MY_DEL_NEUT
-              CALL MY_COPYFILE(PFILENAME,'NEUTRAL.DAT')
+              CALL os_copy(PFILENAME,'NEUTRAL.DAT')
  5            CONTINUE
               OPEN28=.FALSE.
               EXIS28=.FALSE.

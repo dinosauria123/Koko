@@ -24,7 +24,9 @@ C/
 C///////////////////////////////////////////////////////////////////////
 
 C SUB CMDER.FOR
-      SUBROUTINE CMDER
+          SUBROUTINE CMDER
+
+          USE opsys
           USE GLOBALS
 C
           IMPLICIT NONE
@@ -1263,7 +1265,7 @@ C               END OF SUBROUTINE EEOM
               END IF
 
               IF(WC.EQ.'CLS') THEN
-                  call system('clear')
+                  CALL shell_command('clear')
                   RETURN
               END IF
 
@@ -4631,6 +4633,7 @@ C       INITIATE MONTE-CARLO ANALYSIS
 
 
       SUBROUTINE DELPSF
+          USE opsys
           USE GLOBALS
           INCLUDE 'datlen.inc'
           INCLUDE 'datmai.inc'
@@ -4639,10 +4642,9 @@ C       INITIATE MONTE-CARLO ANALYSIS
           INCLUDE 'datspd.inc'
           INTEGER ALLOERR
           PSFEXT=.FALSE.
-!        CALL IOSDELETEFILE('PSF.DAT')
-          call MY_DELETE_FILE('PSF.DAT')
-!        CALL IOSDELETEFILE('SPDPSF.DAT')
-          call MY_DELETE_FILE('SPDPSF,DAT')
+
+          call os_delete('PSF.DAT')
+          call os_delete('SPDPSF.DAT')
 
           DEALLOCATE(SPDPSF1,SPDPSF2,SPDPSF3,STAT=ALLOERR)
           DEALLOCATE(IPSF1,IPSF2,IPSF3,STAT=ALLOERR)
