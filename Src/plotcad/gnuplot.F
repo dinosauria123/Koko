@@ -350,28 +350,20 @@ C///////////////////////////////////////////////////////////////////////
       end
 
       SUBROUTINE MAC_EDITOR
+        
+          USE opsys
+          USE GLOBALS
+
           IMPLICIT NONE
+          
           INCLUDE 'datmai.inc'
           INCLUDE 'datmac.inc'
-C
-          RESOLVEIT=.TRUE.
-          call system('vi MAC_EDIT.DAT')
+
+          CALL shell_command(TRIM(TXTEDITOR)//" "//"MAC_EDIT.DAT")
 
           RETURN
       END
 
-
-      subroutine OSCHECK(I)
-
-          implicit none
-          integer I
-
-!      if(system('ver > /dev/null 2>&1').eq.0) I=1        !Windows
-          if(system('uname > /dev/null 2>&1').eq.0) I=2      !Linux(unix)
-          if(system('hostinfo> /dev/null 2>&1').eq.0) I=3   !MacOSX
-
-          return
-      end
 
       subroutine plotbmp(BMPFILE)
 
@@ -504,6 +496,7 @@ C
           return
       end
 
+      
       subroutine bmpinfo(BMPFILE,info)
 
           include 'datmai.inc'
@@ -538,7 +531,6 @@ C
 
           return
       end
-
 
 
       subroutine RGBsplit(ABMPDATA24,L,IR,IB,IG)
