@@ -74,7 +74,7 @@ private:
 
     int nol;
     int NoGlass,NoGlass1,NoGlass2,NoGlass3,NoGlass4,NoGlass5,NoGlass6,NoGlass7,NoGlass8,NoGlass9;
-    int row;
+    int row,row0;
     int column;
     int LF;
     int histnum;

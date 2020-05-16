@@ -55,6 +55,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     histnum=0;
     curhist=histnum;
+    row0=0;
 
     hdir="/usr/local/bin";   //For Linux, MacOSX
 
@@ -118,7 +119,21 @@ void MainWindow::slot_lensInfo(int row,int col)
    qDebug() << row;
    qDebug() << col;
 
-//   table->selectRow(row);
+   for (int i=0; i<=6; i++){                               //Change selected row color
+       if (table->item(row, i)==NULL){
+           table->setItem(row, i, new QTableWidgetItem(" "));
+       }
+       if (table->item(row0, i)==NULL){
+           table->setItem(row0, i, new QTableWidgetItem(" "));
+       }
+       if (row0==row){
+           continue;
+       }
+       else{
+            table->item(row, i)->setBackground(Qt::red);
+            table->item(row0, i)->setBackground(Qt::white);
+       }
+   }
    lensPara -> setText(NULL);
    lensPara -> append(li);
    lensPara -> append("Wavelength (um): "+QString::number(lF)+", "+QString::number(lD)+", "+QString::number(lC));
@@ -143,6 +158,7 @@ void MainWindow::slot_lensInfo(int row,int col)
    if (tiltv[row] != " "){
         lensPara->append(tiltv[row].toLatin1());
    }
+   row0=row;
 }
 
 void MainWindow::addcontextmenu()
@@ -1622,6 +1638,7 @@ void MainWindow::slot_actionInsert_surface()
         tiltv.insert(row,1," ");
 //        tableitem->setFlags(Qt::ItemIsEnabled);
         nol++;
+        row0++;
     }
 
     QStringList label;
@@ -1654,6 +1671,7 @@ void MainWindow::slot_actionDelete_surface()
     if ((row != 0)&&(row != nol-1)){
         table->removeRow(row);              //delete row from GUI table
         nol--;
+        row0--;
         ccv.remove(row,1);
         asphv.remove(row,1);
         asph2v.remove(row,1);
