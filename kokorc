@@ -1,7 +1,7 @@
 ; Configuration file example for Koko
 ;
 [directories]
-    home = /HOME/ulfg/KODS
+    home = /home/ulfg/KODS
     temp = /tmp
 
 [graphics]
