@@ -1,4 +1,3 @@
- OUT FILE /usr/local/KODS/LENSES/TESSER.PRG                                                                                                               
 LENS
 LI,TESSER US1849681 1932 WERTE
 MFG,Manufacturer Name
