@@ -38,11 +38,24 @@
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow( parent )
 {
+    QString home = QDir::homePath(); //    process.terminate();
+
+    QSettings settings(home+"/kokorc", QSettings::IniFormat);
+    settings.setIniCodec(QTextCodec::codecForName("UTF-8"));
+    settings.beginGroup("directories");
+    ldir = settings.value("home", "").toString();
+    QString temp = settings.value("temp", "").toString();
+    settings.beginGroup("graphics");
+    QString viewer = settings.value("viewer", "").toString();
+    settings.beginGroup("text");
+    QString editor = settings.value("editor", "").toString();
+
+    qDebug()<< ldir;
+
 
     histnum=0;
     curhist=histnum;
 
-    ldir="/usr/local/KODS";
     hdir="/usr/local/bin";   //For Linux, MacOSX
 
 //    hdir="/sdcard/KODS";     //For Android
