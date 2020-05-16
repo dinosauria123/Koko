@@ -118,7 +118,7 @@ void MainWindow::slot_lensInfo(int row,int col)
    qDebug() << row;
    qDebug() << col;
 
-   table->selectRow(row);
+//   table->selectRow(row);
    lensPara -> setText(NULL);
    lensPara -> append(li);
    lensPara -> append("Wavelength (um): "+QString::number(lF)+", "+QString::number(lD)+", "+QString::number(lC));
@@ -1995,7 +1995,6 @@ void MainWindow::slot_action_value_entered()
     }
 
     num = table->item(row,column)->text();  //get input value
-
     cmd = "";
     cmd = opr + num + lf;
     input_cmd = cmd.toLatin1();
