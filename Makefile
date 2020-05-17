@@ -31,10 +31,11 @@ all:
 	make -C ./Src
 	make -C ./QtGui -f MakeGui koko-gui
 
-# install executables
+# install executables and system-wide config file
 install:
 	make -C ./Src install
 	make -C ./QtGui -f MakeGui install
+	install -m 644 ./kokorc /etc
 
 # install data
 install-data:
