@@ -51,7 +51,7 @@ CONTAINS
 #endif
     
 #if defined( LINUX ) || defined( MACOSX )
-    CALL get_environment_VARIABLE("HOME", homedir, length, status)
+    CALL get_environment_variable("HOME", homedir, length, status)
     IF (status .NE. 0) THEN
        homedir = " "
        has_homedir = .FALSE.
@@ -61,13 +61,13 @@ CONTAINS
 #endif
 
 #if defined( WINDOWS )
-    CALL get_environment_VARIABLE("HOMEDRIVE", homedrive, length, status)
+    CALL get_environment_variable("HOMEDRIVE", homedrive, length, status)
     IF (status .NE. 0) THEN
        has_homedir = .FALSE.
        RETURN
     END IF
     
-    CALL get_environment_VARIABLE("HOMEPATH", homepath, length, status)
+    CALL get_environment_variable("HOMEPATH", homepath, length, status)
     IF (status .NE. 0) THEN
        has_homedir = .FALSE.
        RETURN
@@ -110,8 +110,7 @@ CONTAINS
   END FUNCTION kods_dir_exists
 
 
-  !----------------------------------------------------------
-  
+  !----------------------------------------------------------  
   LOGICAL FUNCTION file_exists( fname )
 
     ! A function the check for the existence of a file;
@@ -124,6 +123,32 @@ CONTAINS
     
   END FUNCTION file_exists
   
+
+  !----------------------------------------------------------
+  SUBROUTINE sys_config_file(cfgfile)
+    
+    ! Returns the system wide config file name on any platform
+    !
+    ! OUTPUT
+    ! cfgfile :  fully qualified name of the Koko configuration file
+
+    CHARACTER(len=*), INTENT(out) :: cfgfile
+
+# if defined( WINDOWS )
+    INTEGER            :: status, length
+    CHARACTER(len=256) :: programdata
+#endif
+
+#if defined( LINUX ) || defined( MACOSX )
+    cfgfile = "/etc/kokorc"
+#endif
+#if defined( WINDOWS )
+    CALL get_environment_variable("PROGRAMDATA", programdata, length, status)
+    cfgfile = TRIM(programdata)//"\koko\kokorc"
+#endif
+
+  END SUBROUTINE sys_config_file
+
 
   !----------------------------------------------------------
   SUBROUTINE dir_path_append(fullpath, partpath, pathitem)
@@ -161,7 +186,7 @@ CONTAINS
     INTEGER                       :: length, status
 
     ! first check environment variables
-    CALL get_environment_VARIABLE("TEMP", tdir, length, status)
+    CALL get_environment_variable("TEMP", tdir, length, status)
     IF (status == 0) THEN
        tmpdir(1:length) = tdir(1:length)
     ELSE       

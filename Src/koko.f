@@ -138,8 +138,8 @@
           LOGICAL has_userhome, has_kodsdir
 
           ! for configuration file
-          CHARACTER(len=256) :: cfg_file, test_file
-          TYPE(CFG_t)        :: koko_cfg
+          CHARACTER(len=256) :: sys_cfg_file, usr_cfg_file, test_file
+          TYPE(CFG_t)        :: sys_cfg, usr_cfg
 
           ! for command line options
           character          :: ch
@@ -155,29 +155,47 @@
              CALL dir_path_append(HOME, USERHOME, "KODS")
           END IF
 
-          ! set directory for temporary files
+          ! set default directory for temporary files
           CALL set_kods_temp_dir(TMPDIR)
           IF (len_TRIM(TMPDIR) == 0) THEN
              TMPDIR = HOME ! last resort
           END IF
+
+          ! parse the system wide configuration file
+          CALL sys_config_file(sys_cfg_file) ! construct system wide config file name
+          IF ( file_exists(sys_cfg_file) ) THEN
+             ! define config default values
+             CALL CFG_add(sys_cfg, "directories%home", HOME,      "Koko lib directory")
+             CALL CFG_add(sys_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
+             CALL CFG_add(sys_cfg, "graphics%viewer",  "gnuplot", "Koko graphics viewer")
+             CALL CFG_add(sys_cfg, "text%editor",      "vi",      "Koko text editor")
+             
+             CALL CFG_read_file(sys_cfg, sys_cfg_file)
+             
+             ! update config variables from file
+             CALL CFG_get(sys_cfg, "directories%home", HOME)
+             CALL CFG_get(sys_cfg, "directories%temp", TMPDIR)
+             CALL CFG_get(sys_cfg, "graphics%viewer",  BMPREADR)
+             CALL CFG_get(sys_cfg, "text%editor",      TXTEDITOR)
+          END IF
           
-          ! parse the configuration file
+          ! parse the user specific configuration file
           IF ( has_userhome ) THEN
-             CALL dir_path_append(cfg_file, USERHOME, '.kokorc')
-             IF ( file_exists(cfg_file) ) THEN
-                ! define config default values
-                CALL CFG_add(koko_cfg, "directories%home", HOME,      "Koko lib directory")
-                CALL CFG_add(koko_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
-                CALL CFG_add(koko_cfg, "graphics%viewer",  "gnuplot", "Koko graphics viewer")
-                CALL CFG_add(koko_cfg, "text%editor",      "vi",      "Koko text editor")
+             CALL dir_path_append(usr_cfg_file, USERHOME, '.kokorc')
+             IF ( file_exists(usr_cfg_file) ) THEN
+                ! values found in system wide config are now the default
+                CALL CFG_add(usr_cfg, "directories%home", HOME,      "Koko lib directory")
+                CALL CFG_add(usr_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
+                CALL CFG_add(usr_cfg, "graphics%viewer",  BMPREADR,  "Koko graphics viewer")
+                CALL CFG_add(usr_cfg, "text%editor",      TXTEDITOR, "Koko text editor")
                 
-                CALL CFG_read_file(koko_cfg, cfg_file)
+                CALL CFG_read_file(usr_cfg, usr_cfg_file)
 
                 ! update config variables from file
-                CALL CFG_get(koko_cfg, "directories%home", HOME)
-                CALL CFG_get(koko_cfg, "directories%temp", TMPDIR)
-                CALL CFG_get(koko_cfg, "graphics%viewer",  BMPREADR)
-                CALL CFG_get(koko_cfg, "text%editor",      TXTEDITOR)
+                CALL CFG_get(usr_cfg, "directories%home", HOME)
+                CALL CFG_get(usr_cfg, "directories%temp", TMPDIR)
+                CALL CFG_get(usr_cfg, "graphics%viewer",  BMPREADR)
+                CALL CFG_get(usr_cfg, "text%editor",      TXTEDITOR)
              END IF
           END IF
 
