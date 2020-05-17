@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libutility
 
 libutility: $(FOBJ)
-	ar r libutility.a $?
-	ranlib libutility.a
+	ar rs libutility.a $?
 	mv libutility.a ../lib
 
 # gfortan optimizer chokes on this one

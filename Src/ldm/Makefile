@@ -13,8 +13,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libldm
 
 libldm: $(FOBJ)
-	ar r libldm.a $?
-	ranlib libldm.a
+	ar rs libldm.a $?
 	mv libldm.a ../lib
 
 %.o: %.f

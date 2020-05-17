@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libpickup
 
 libpickup: $(FOBJ)
-	ar r libpickup.a $?
-	ranlib libpickup.a
+	ar rs libpickup.a $?
 	mv libpickup.a ../lib
 
 %.o: %.f

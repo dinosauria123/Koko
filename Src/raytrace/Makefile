@@ -14,8 +14,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libraytrace
 
 libraytrace: $(FOBJ)
-	ar r libraytrace.a $?
-	ranlib libraytrace.a
+	ar rs libraytrace.a $?
 	mv libraytrace.a ../lib
 
 %.o: %.f

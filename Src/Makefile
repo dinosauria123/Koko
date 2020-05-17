@@ -13,22 +13,23 @@ ifndef OS
 endif
 
 # compiler flags
-CC = gcc
+CC = gcc         # for now, only support GCC
 FC = gfortran
-CFLAGS = -Wall -g -malign-double
 ifdef DEBUG
   FFLAGS = -g -Wall -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+  CFLAGS = -Wall -g -malign-double
 else
   ifdef NATIVE
     FFLAGS = -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
   else
     FFLAGS = -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
   endif  
+  CFLAGS = -O2 -malign-double
 endif
 IFLAGS = -I../include -I../modules
 
 # needed in sub-make processes
-export IFLAGS FC FFLAGS
+export CC FC IFLAGS FFLAGS
 
 LDIR = -L./lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -Wl,--end-group -lkmod -lm

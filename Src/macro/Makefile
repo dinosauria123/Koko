@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libmacro
 
 libmacro: $(FOBJ)
-	ar r libmacro.a $?
-	ranlib libmacro.a
+	ar rs libmacro.a $?
 	mv libmacro.a ../lib
 
 %.o: %.f

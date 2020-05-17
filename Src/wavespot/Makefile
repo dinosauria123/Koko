@@ -13,8 +13,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libwavespot
 
 libwavespot: $(FOBJ)
-	ar r libwavespot.a $?
-	ranlib libwavespot.a
+	ar rs libwavespot.a $?
 	mv libwavespot.a ../lib
 
 %.o: %.f

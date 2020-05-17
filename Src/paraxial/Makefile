@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libparaxial
 
 libparaxial: $(FOBJ)
-	ar r libparaxial.a $?
-	ranlib libparaxial.a
+	ar rs libparaxial.a $?
 	mv libparaxial.a ../lib
 
 %.o: %.f

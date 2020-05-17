@@ -13,8 +13,7 @@ FOBJ = $(fSRC:.f=.o)
 all: liboptimize
 
 liboptimize: $(FOBJ)
-	ar r liboptimize.a $?
-	ranlib liboptimize.a
+	ar rs liboptimize.a $?
 	mv liboptimize.a ../lib
 
 %.o: %.f

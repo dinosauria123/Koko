@@ -15,8 +15,7 @@ FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o)
 all: libplotcad
 
 libplotcad: $(FOBJ)
-	ar r libplotcad.a $?
-	ranlib libplotcad.a
+	ar rs libplotcad.a $?
 	mv libplotcad.a ../lib
 
 %.o: %.f

@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libconfig
 
 libconfig: $(FOBJ)
-	ar r libconfig.a $?
-	ranlib libconfig.a
+	ar rs libconfig.a $?
 	mv libconfig.a ../lib
 
 %.o: %.f

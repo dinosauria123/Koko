@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libspecsurf
 
 libspecsurf: $(FOBJ)
-	ar r libspecsurf.a $?
-	ranlib libspecsurf.a
+	ar rs libspecsurf.a $?
 	mv libspecsurf.a ../lib
 
 %.o: %.f

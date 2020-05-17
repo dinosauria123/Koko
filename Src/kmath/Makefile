@@ -20,8 +20,7 @@ modules: $(FMOD)
 	 mv *.mod ../modules
 
 libkmath: $(FOBJ)
-	ar r libkmath.a $?
-	ranlib libkmath.a
+	ar rs libkmath.a $?
 	mv libkmath.a ../lib
 
 %.o: %.f

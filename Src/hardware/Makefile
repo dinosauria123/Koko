@@ -13,8 +13,7 @@ FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o)
 all: libhardware
 
 libhardware: $(FOBJ)
-	ar r libhardware.a $?
-	ranlib libhardware.a
+	ar rs libhardware.a $?
 	mv libhardware.a ../lib
 
 %.o: %.F

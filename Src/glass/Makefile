@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libglass
 
 libglass: $(FOBJ)
-	ar r libglass.a $?
-	ranlib libglass.a
+	ar rs libglass.a $?
 	mv libglass.a ../lib
 
 %.o: %.f

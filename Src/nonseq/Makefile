@@ -12,8 +12,7 @@ FOBJ = $(fSRC:.f=.o)
 all: libnonseq
 
 libnonseq: $(FOBJ)
-	ar r libnonseq.a $?
-	ranlib libnonseq.a
+	ar rs libnonseq.a $?
 	mv libnonseq.a ../lib
 
 %.o: %.f

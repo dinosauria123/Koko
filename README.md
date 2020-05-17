@@ -36,5 +36,7 @@ integrated optical and mechanical design capability.
 Copying
 -------
 
-Koko is distributed under the GNU Public License version 3. Manual 
-and tutorials are distributed under the GNU Free Documentation License.
+Koko is distributed under the GNU Public License version 3. Manual and
+tutorials are distributed under the GNU Free Documentation License.
+Some source files have different GPL-compatible licenses; details can
+be found in the file LICENSE.
