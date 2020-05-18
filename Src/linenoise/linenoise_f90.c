@@ -28,7 +28,7 @@
 //
 // Ulf GRIESMANN, May 2020
 
-#include <linenoise.h>
+#include "linenoise.h"
 #include <stdlib.h>
 #include <string.h>
 
