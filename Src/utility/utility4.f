@@ -639,6 +639,7 @@ C       UNIT NOT 7, DON'T DO ANYTHING, JUST RETURN.
 C SUB EXITT.FOR
       SUBROUTINE EXITT(CLSCODE)
           USE opsys
+          USE commandline
           USE GLOBALS
 
           IMPLICIT NONE
@@ -868,7 +869,6 @@ C     CLEAR THE ALLOCATED ARRAY CAPFNIN
           END IF
           CALL CLOSE_FILE(58,0)
 C
-! 10                    CONTINUE
           OPEN(UNIT=28
      1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
      2    ,RECL=(NRECL*42),STATUS='UNKNOWN')
@@ -879,6 +879,12 @@ C
      3    ,RECL=(NRECL*42),STATUS='UNKNOWN')
           CALL CLOSE_FILE(27,0)
           CALL os_delete('REPLAY.WMF')
+
+!    Save the command history file
+          IF ( LEN_TRIM(HISTFILE) > 0 ) THEN
+             CALL savehistory( HISTFILE, LEN_TRIM(HISTFILE) )
+          END IF
+
           STOP
       END
 

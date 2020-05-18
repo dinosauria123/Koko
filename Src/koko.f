@@ -30,6 +30,7 @@
           USE opsys
           USE configfile
           USE getoptions
+          USE commandline
 
           IMPLICIT NONE
 
@@ -253,6 +254,17 @@
           
           ! HOME needs to terminate with (back-) slash ...
           CALL add_dir_slash( HOME )
+          
+!--- Load command history file -----------------------------
+
+          HISTFILE = ' '
+          IF ( has_userhome ) THEN
+             CALL dir_path_append( HISTFILE, USERHOME, ".koko_history")
+             IF ( file_exists( HISTFILE )) THEN
+                CALL loadhistory( HISTFILE, LEN_TRIM(HISTFILE) )
+             END IF
+          END IF
+
           
 !--- Initialize Koko ---------------------------------------
 
@@ -1590,7 +1602,7 @@
               END DO
               CALL CLOSE_FILE(22,1)
               GO TO 667
-! 666            CONTINUE
+
               OPEN(UNIT=22,ACCESS='DIRECT',FILE=trim(LIBLEN)//'LIB.DAT',
      1        FORM='UNFORMATTED',RECL=(84*NRECL),STATUS='UNKNOWN')
               OPEN(UNIT=27,ACCESS='DIRECT',FILE=trim(LIBLEN)//'LIBTAG.DAT',
@@ -1598,7 +1610,8 @@
               CALL CLOSE_FILE(22,0)
               CALL CLOSE_FILE(27,0)
               GO TO 669
- 667          CONTINUE
+
+667           CONTINUE
               OPEN(UNIT=22,ACCESS='DIRECT',FILE=trim(LIBLEN)//'LIB.DAT',
      1        FORM='UNFORMATTED',RECL=(84*NRECL),STATUS='UNKNOWN')
               IF(EXIS27) THEN
@@ -2452,22 +2465,20 @@
       
       SUBROUTINE userinput(ncmd)
 
-          IMPLICIT NONE
+          USE commandline
 
+          IMPLICIT NONE
           INCLUDE 'datmai.inc'
 
           INTEGER ncmd
           CHARACTER KKDP*3
+          CHARACTER prompt*32
+
+          WC = '        '
 
           CALL SELECTKOKO(KKDP)
-
-          WRITE (*,'(a,i0,a)',advance='no') ' ',ncmd,':'//KKDP//'> '
-
-!      call disphistory(KKDP,I,INPUT)  !If you use history, remove ! this line
-          READ (*,'(a)') INPUT
-
-          WC='        '
-
+          WRITE (prompt,'(a,i0,a)') ' ',ncmd,':'//KKDP//'> '
+          CALL nextline( prompt, LEN_TRIM(prompt)+1, INPUT, LEN(INPUT) )
           CALL upper_case(INPUT)
 
           IF (INPUT.EQ.'') THEN
@@ -2482,106 +2493,6 @@
           CALL PROCES
 
       END SUBROUTINE userinput
-
-
-      SUBROUTINE disphistory(KKDP,I,INPUT0)
-          IMPLICIT NONE
-
-          INCLUDE 'datmai.inc'
-
-          CHARACTER KKDP*3,HISTORY*15,INPUT0*15
-          CHARACTER :: CR = CHAR(13)
-          INTEGER KEY0,KEY1,KEY2,I,HISTNO
-          LOGICAL f_exist
-
-          KEY0=0
-          KEY1=0
-          KEY2=0
-
-          CALL SYS_KEYSET(1)
-
-          HISTNO=I
-          HISTORY=""
-
-          IF (I.EQ.1) HISTNO=1
-
-          !INPUT must be charactor
-
-          DO WHILE (KEY0.LT.32)
-
-              CALL SYS_KEYIN(KEY0)
-
-              IF (KEY0.EQ.27) THEN
-                  CALL SYS_KEYIN(KEY1)
-                  CALL SYS_KEYIN(KEY2)
-
-                  IF ((KEY2.EQ.67).OR.(KEY2.EQ.68)) CONTINUE
-
-                  IF (KEY2.EQ.65) THEN !Up Arrow
-                      HISTNO=HISTNO-1
-                      IF (HISTNO.LE.0) HISTNO=I-1
-                      IF (I.EQ.1) HISTNO=1
-                  ENDIF
-                  IF (KEY2.EQ.66) THEN !Down Arrow
-                      HISTNO=HISTNO+1
-                      IF (HISTNO.GE.I) HISTNO=1
-                      IF (I.EQ.1) HISTNO=I
-                  ENDIF
-
-                  INQUIRE(file=TRIM(HOME)//'HISTORY.DAT', exist=f_exist)
-
-                  IF (f_exist.EQV..TRUE.) THEN
-                      OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',status='old',
-     &                access='direct',recl=15,form='formatted')
-                  ELSE
-                      OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',status='new',
-     &                access='direct',recl=15,form='formatted')
-                      WRITE(170,'(A15)',rec=1) "NO INPUT"
-                  ENDIF
-
-                  READ(170,'(A15)',rec=HISTNO) HISTORY
-                  CLOSE(170)
-
-                  WRITE(6,'(A$)') CR//'               '
-                  WRITE(6,'(A$)') CR//KKDP//'> '//TRIM(HISTORY)
-
-              ENDIF
-
-              IF (KEY0.EQ.10) THEN
-                  CALL SYS_KEYSET(0)
-                  WRITE(6,'(A)') CR//KKDP//'> '//HISTORY
-                  INPUT=HISTORY
-                  RETURN
-              END IF
-
-              IF (KEY0.EQ.127) THEN
-                  CALL SYS_KEYSET(0)
-                  WRITE(6,'(A$)') CR//'               '
-                  WRITE(6,'(A)') CR//KKDP//'> '
-                  INPUT=""
-                  RETURN
-              END IF
-
-          END DO
-
-          CALL SYS_KEYSET(0)
-
-          WRITE(6,'(A$)') CR//KKDP//'> '//CHAR(KEY0)
-          READ(5,'(a$)') INPUT0
-          INPUT=CHAR(KEY0)//INPUT0
-
-          OPEN(170,file=TRIM(HOME)//'HISTORY.DAT',
-     &    access='direct',recl=15,form='formatted')
-
-          IF (INPUT.NE."") THEN
-              WRITE(170,'(A15)',rec=I) INPUT
-              I=I+1
-          ENDIF
-
-          CLOSE(170)
-
-          RETURN
-      END SUBROUTINE disphistory
 
 
       SUBROUTINE GREETING

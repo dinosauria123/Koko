@@ -32,7 +32,7 @@ IFLAGS = -I../include -I../modules
 export CC FC IFLAGS FFLAGS
 
 LDIR = -L./lib
-LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -Wl,--end-group -lkmod -lm
+LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
 
 CSRC = sys_keyin.c
 
@@ -52,6 +52,7 @@ modules:
 libraries: $(SUBDIRS)
 $(SUBDIRS):
 	make -C $@
+	make -C linenoise
 
 koko-cli: buildinfo.inc $(COBJ) $(FOBJ)
 	$(FC) -o koko-cli $(FOBJ) $(COBJ) $(LDIR) $(LIBS)
@@ -74,6 +75,7 @@ clean:
 	rm -f ./lib/lib*.a
 	rmdir ./lib
 	make -C modules clean
+	make -C linenoise clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
 
 install:
