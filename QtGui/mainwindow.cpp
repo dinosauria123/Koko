@@ -34,13 +34,21 @@
 #include <QLineEdit>
 #include <QFont>
 #include <QMenu>
+#include <QFileInfo>
 
 MainWindow::MainWindow(QMainWindow *parent)
     : QMainWindow( parent )
 {
-    QString home = QDir::homePath(); //    process.terminate();
+    QString home = QDir::homePath();
 
-    QSettings settings(home+"/kokorc", QSettings::IniFormat);
+    if (QFileInfo(home+"/kokorc").exists()){
+        conf  = home + "/kokorc";
+    }
+    else{
+        conf = "/etc/kokorc";
+    }
+
+    QSettings settings(conf, QSettings::IniFormat);
     settings.setIniCodec(QTextCodec::codecForName("UTF-8"));
     settings.beginGroup("directories");
     ldir = settings.value("home", "").toString();
@@ -50,8 +58,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     settings.beginGroup("text");
     QString editor = settings.value("editor", "").toString();
 
-    qDebug()<< ldir;
-
+    qDebug()<<conf;
 
     histnum=0;
     curhist=histnum;
