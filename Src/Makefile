@@ -34,11 +34,8 @@ export CC FC IFLAGS FFLAGS
 LDIR = -L./lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
 
-CSRC = sys_keyin.c
-
 fSRC = koko.f cmder.f names.f libload.f loadgrida.f saverest.f
 
-COBJ = $(CSRC:.c=.o)
 FOBJ = $(fSRC:.f=.o) 
 
 # targets
@@ -54,8 +51,8 @@ $(SUBDIRS):
 	make -C $@
 	make -C linenoise
 
-koko-cli: buildinfo.inc $(COBJ) $(FOBJ)
-	$(FC) -o koko-cli $(FOBJ) $(COBJ) $(LDIR) $(LIBS)
+koko-cli: buildinfo.inc $(FOBJ)
+	$(FC) -o koko-cli $(FOBJ) $(LDIR) $(LIBS)
 
 .PHONY: buildinfo
 buildinfo:
@@ -63,9 +60,6 @@ buildinfo:
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) -I./include -I./modules $<
-
-%.o: %.c
-	$(CC) -c $(CFLAGS) $<
 
 libdir:
 	mkdir -p ./lib
