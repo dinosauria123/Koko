@@ -43,10 +43,17 @@ all:
 	@echo
 
 # install executables and system-wide config file
-install:
+install: install-exec install-conf
+
+# install executable files only
+install-exec:
+	@echo "Installing executable files ..."
 	make -C ./Src install
 	make -C ./QtGui -f MakeGui install
-	install -m 644 ./kokorc /etc
+
+# install system-wide configuration file
+install-conf:
+	install --backup=numbered -m 644 ./kokorc /etc
 
 # install data
 install-data:

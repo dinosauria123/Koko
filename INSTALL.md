@@ -7,50 +7,59 @@ installation instructions currently apply to Linux only.
 Prerequisites
 -------------
 
-* A  **Fortran 95** compiler such as gfortran.
-* An **ANSI C** compiler such as gcc.
+* A  modern **Fortran** compiler (gfortran).
+* An **C++** compiler (gcc).
 * The **Make** tool, typically gmake on Linux
-* The **gnuplot** plotting software.
-  (<https://sourceforge.net/projects/gnuplot>), which is included with
-  all Linux distributions.
+* The **gnuplot** cross-platform plotting software.
+  (<https://sourceforge.net/projects/gnuplot>)
 * For the graphical user interface an installation of the
   cross-platform development framework **Qt5** (<https://www.qt.io), with
-  development libraries, is required. The Qt libraries are included
-  with all Linux distributions.
+  development libraries, is required.
+* A text editor
 
 
 Building Koko
 -------------
 
-In the top level directory ./Koko that holds the source code, at
-the command shell prompt, type
+First download the sourcecode and unpack the archive or clone the
+github repository.  In the top level directory ./Koko that holds the
+source code, type
 
     make
 
-This will build a version of Koko without debugging information. The
-executable file is called 'koko-cli', the GUI is started with
-'koko-gui'. Debugging information is included in the executable file
-when make is called as follows:
+at the shell prompt. This will build a version of Koko without
+debugging information. The executable file is called **koko-cli**, the
+**koko-gui** is the executable of the GUI. Debugging information is
+included in the executable files when make is called as follows:
 
     make DEBUG=true
 
-Finally, Koko can also be compiled with optimizations for the specific
-of the computer the software is being compiled on using the make
+Finally, Koko can also be compiled with optimizations specific to
+the computer the software is being compiled on using the make
 command
 
     make NATIVE=true
 
-Koko must be installed as super-user (or using sudo) with the command
+Koko can be installed as super-user (or using sudo) with the command
 
     make install
 
-which installs the executables 'koko-cli' and 'koko-gui' in
-'/usr/local/bin' and the program data in the directory
-'/usr/local/KODS'. When a directory prefix other than '/usr/local' is
-desired, e.g. '/opt', then the installation directory can be changed
-by specifying the directory prefix during installation:
+which installs the executables **koko-cli** and **koko-gui** in
+'/usr/local/bin' and copies the system-wide configuration file
+**kokorc** to **/etc**. When the system-wide configuration file exists
+it will be backed up.  Shoul a directory prefix other than
+**/usr/local** be desired, e.g. **/opt**, or even a user's home
+directory, the installation directory can be changed by specifying the
+directory prefix during installation:
 
-    make PREFIX=/opt install
+    make PREFIX=~/bin install
+
+The installation command
+
+    make install-exec
+
+only installs the executable files but does not overwrite an existing
+system-wide configuration file.
 
 
 Setting up the KODS Data Directories
@@ -60,17 +69,17 @@ Koko was originally developed for single-user MS-DOS and Windows
 computers, and it (still) sits uneasily with modern operating
 systems. For example, the directory tree containing program data,
 e.g. glass data, also contains directories that must be
-writable. Program data for Koko must be installed by every user into a
-user-writable directory. This can be done even without compiling
-Koko simply by executing
+writable. Program data for Koko must therefore be installed by every
+user into a user-writable directory. This can be done even without
+compiling Koko simply by executing
 
     make install-data
 
-in the Koko top level directory. This will create a directory named
-"KODS" in the home directory (if it does not exist) and then the
-program data will be copied into this directory. Should a different
-location for the program data be desired, the data can be installed
-with
+**as a normal user, not superuser** in the Koko top level
+directory. This will create a directory named "KODS" in a user's home
+directory (if it does not exist) and the program data will be
+copied into this directory. Should a different location for the
+program data be desired, the data can be installed with
 
     make DATAPREFIX=~/some/directory install-data
 
@@ -80,11 +89,12 @@ Configuring Koko
 
 When the program data for Koko are stored in a non-standard location,
 this location must be defined in the Koko configuration file. When
-Koko is started, the program reads a configuration file named
-".kokorc" in a user's home directory, which is defined in the
-environment variable HOME in unix, and in the environment variables
-HOMEDRIVE and HOMEDIR in Windows. An example configuration file can be
-found in the top level directory of the Koko source distribution. The
+Koko is started, the program first reads the system-wide configuration
+file **kokorc**. Once the system-wide configuration is parsed, a
+configuration file named **.kokorc** in a user's home directory is
+read. This enables every user to temporarily or permanently override
+system-wide defaults.  An example configuration file can be found in
+the top level directory of the Koko source distribution. The
 configuration file has the following form:
 
 <pre>
@@ -99,17 +109,19 @@ configuration file has the following form:
 </pre>
 
 In the configuration file the location of the Koko data directory
-("home" in the configuration file), and a directory for temporary data
+(**home** in the configuration file), and a directory for temporary data
 can be defined. The viewer for graphical output from Koko can also be
 specified in the configuration file. Comment lines beginning with ;
 are ignored in the configuration file.
 
-The configuration can also be changed temporarily by specifiying the
-home directory on the Koko command line. For more details type:
+The configuration can also be changed temporarily by specifiying home
+and temporary directories on the Koko command line. For more details
+type:
 
 <pre>
 koko-cli  -h
 </pre>
+
 
 Building the Graphical User Interface Separately
 ------------------------------------------------
@@ -123,11 +135,11 @@ command at the command prompt, followed by
 
     make
 
-and, which creates the executable file 'koko-gui'. Finally,
+and, which creates the executable file **koko-gui**. Finally,
 
     make install
 
-installs the executable file in '/usr/local/bin'.
+installs the executable file in **/usr/local/bin** (default).
 
 
 Happy Designing !

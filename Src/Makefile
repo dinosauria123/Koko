@@ -66,8 +66,7 @@ libdir:
 
 clean:
 	rm -f *.o *~ koko-cli buildinfo.inc
-	rm -f ./lib/lib*.a
-	rmdir ./lib
+	rm -rf ./lib/lib*.a
 	make -C modules clean
 	make -C linenoise clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
