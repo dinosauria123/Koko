@@ -3,8 +3,8 @@
 # part of Koko
 #
 
-ifndef $(CFLAGS)
-  ifdef $(DEBUG)
+ifndef CFLAGS
+  ifdef DEBUG
     CFLAGS = -g
   else
     CFLAGS = -O2

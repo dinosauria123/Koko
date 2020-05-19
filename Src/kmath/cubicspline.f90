@@ -127,12 +127,15 @@ contains
     !    is less than 2; ier == 2: knots are not monotonic; ier == 3: invalid
     !    IBCBEG or IBCEND arguments.
 
-    integer, parameter :: dp = kind(1.0d0)
-    integer :: n, ier
+    integer, parameter     :: dp = kind(1.0d0)
 
+    integer, intent(in)    :: n, ibcbeg, ibcend
+    integer, intent(out)   :: ier
+    real (dp), intent(in)  :: t(n), y(n), ybcbeg, ybcend
+    real (dp), intent(out) :: ypp(n)
+
+    integer   :: i
     real (dp) :: a1(n), a2(n), a3(n), a4(n), a5(n), b(n)
-    integer :: i, ibcbeg, ibcend
-    real (dp) :: t(n), y(n), ybcbeg, ybcend, ypp(n)
     
     !  Check input
     if ( n <= 1 ) then

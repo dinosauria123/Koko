@@ -52,8 +52,8 @@ subroutine spline(x,y,n, yps,ype, ypp)
   ! call interpolation function
   call spline_cubic_set(n,x,y, 1,yps, 1,ype, ypp, ier)
   
-  if (ier .ne. 0) then
-     call splerror
+  if (ier > 0) then
+     call splerror( ier )
   end if
   
 end subroutine spline
