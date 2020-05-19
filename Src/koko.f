@@ -1572,23 +1572,20 @@
 
 !
 !*******************************************************************
-!               THIS IS THE PROGRAM MAIN READ STATEMENT.
+!               THIS IS THE PROGRAM MAIN READ STATEMENT
 !******************************************************************
 !
 !       THE NEXT FEW STATEMENTS CONTROL THE INPUT LINE
-!       AND THE PROGRAM CURSOR. THEY ARE THE ONLY NON-
-!       ANSI FORTRAN 77 STATEMENTS IN THE PROGRAN.
-!
-          CMDNO = 1 ! # of input commands starts at 1
 
-                           !*******************************
- 1        OLDOUTOLD = OUT  ! Command input loop starts here
-                           !*******************************
-!
+          CMDNO = 0 ! # of input commands starts at 1
+
+ 1        OLDOUTOLD = OUT    ! Command input loop starts here
+          CMDNO = CMDNO + 1  ! increment command counter
+
 !     ALL KEYBOARD AND LATER WINFILE INPUT IS DONE WITH A CALL TO
 !     userinput
 !
-!       FIX THE DOGTAG
+!       FIX THE DOGTAG ???
 !
           EXIS22=.FALSE.
           EXIS27=.FALSE.
@@ -2463,21 +2460,21 @@
       END SUBROUTINE PROGSIZE
 
       
-      SUBROUTINE userinput(ncmd)
+      SUBROUTINE userinput(cmdno)
 
           USE commandline
 
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
 
-          INTEGER ncmd
+          INTEGER cmdno
           CHARACTER KKDP*3
           CHARACTER prompt*32
 
           WC = '        '
 
           CALL SELECTKOKO(KKDP)
-          WRITE (prompt,'(a,i0,a)') ' ',ncmd,':'//KKDP//'> '
+          WRITE (prompt,'(a,i0,a)') ' ',cmdno,':'//KKDP//'> '
           CALL nextline( prompt, LEN_TRIM(prompt)+1, INPUT, LEN(INPUT) )
           CALL upper_case(INPUT)
 

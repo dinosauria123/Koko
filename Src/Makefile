@@ -34,7 +34,7 @@ endif
 IFLAGS = -I../include -I../modules
 
 # needed in sub-make processes
-export CC FC IFLAGS FFLAGS
+export CC FC IFLAGS CFLAGS FFLAGS
 
 LDIR = -L./lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
