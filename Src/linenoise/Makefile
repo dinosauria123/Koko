@@ -3,6 +3,14 @@
 # part of Koko
 #
 
+ifndef $(CFLAGS)
+  ifdef $(DEBUG)
+    CFLAGS = -g
+  else
+    CFLAGS = -O2
+  endif
+endif
+
 # source files
 CPPSRC = wcwidth.cpp ConvertUTF.cpp linenoise.cpp
 CSRC   = linenoise_f90.c

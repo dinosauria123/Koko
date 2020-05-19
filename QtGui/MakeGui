@@ -4,6 +4,10 @@
 # compilation because it contains system specific dependencies.
 #
 
+# default installation directory prefix
+ifndef $(PREFIX)
+  PREFIX=/usr/local
+endif
 
 koko-gui:
 	qmake

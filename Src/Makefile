@@ -12,6 +12,11 @@ ifndef OS
   OS = LINUX
 endif
 
+# default installation directory prefix
+ifndef $(PREFIX)
+  PREFIX=/usr/local
+endif
+
 # compiler flags
 CC = gcc         # for now, only support GCC
 FC = gfortran
