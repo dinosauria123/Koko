@@ -127,8 +127,6 @@ contains
     !    is less than 2; ier == 2: knots are not monotonic; ier == 3: invalid
     !    IBCBEG or IBCEND arguments.
 
-    integer, parameter     :: dp = kind(1.0d0)
-
     integer, intent(in)    :: n, ibcbeg, ibcend
     integer, intent(out)   :: ier
     real (dp), intent(in)  :: t(n), y(n), ybcbeg, ybcend
@@ -231,13 +229,16 @@ contains
        ypp(1) = 0.0_dp
        ypp(2) = 0.0_dp
        
-       ! Solve the linear system.
+    ! Solve the linear system.
     else
 
        call penta ( n, a1, a2, a3, a4, a5, b, ypp )
        
     end if
 
+    ! we got here without error
+    ier = 0
+    
   end subroutine spline_cubic_set
 
 
