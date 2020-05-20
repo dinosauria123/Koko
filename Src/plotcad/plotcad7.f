@@ -341,8 +341,6 @@ C     DO A PLOT NEW
 C
           CALL PLTRST
 C
-C
-C
           FANEXT=.FALSE.
           RIM=.TRUE.
           DEVTYP=1

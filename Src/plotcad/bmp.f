@@ -413,3 +413,145 @@ C       PLOT IMAGE
           END IF
           RETURN
       END
+
+
+      SUBROUTINE loadbmp(BMPFILE,ABMPDATA24)
+
+!     BMP reading routine obtained from
+!     http://www.rhinocerus.net/forum/lang-fortran/93927-read-bmp-into-fortran.html
+
+          INCLUDE 'datmai.inc'
+          INTEGER Maxwidth,Maxheight,irec,iwidth,iheight,i,j,L,ipad
+          PARAMETER(Maxwidth=3220,Maxheight=2415)
+          CHARACTER header(54),cval1
+          CHARACTER*80 BMPFILE
+          INTEGER ABMPDATA24(iwidth*iheight*3)
+          COMMON iwidth,iheight,header,image
+
+          OPEN(114,file=TRIM(BMPFILE),form='unformatted',
+     &    access='direct',recl=1)
+
+          DO irec=1,54
+              READ(114,rec=irec) header(irec)
+          END DO
+
+          IF(ICHAR(header(11)).NE.54.OR.ICHAR(header(29)).ne .
+     &    24.OR.ICHAR(header(31)).NE.0) THEN
+              PRINT*,'sorry, can not handle this file'
+          END IF
+
+          ! get image height and width
+          iheight=ICHAR(header(23))+256*(ICHAR(header(24))
+     &    +256*(ICHAR(header(25))+256*ICHAR(header(26))))
+          iwidth=ICHAR(header(19))+256*(ICHAR(header(20))
+     &    +256*(ICHAR(header(21))+256*ICHAR(header(22))))
+
+          ipad=(Maxwidth-iwidth)*3-((Maxwidth-iwidth)*3/4)*4
+          irec=54
+          L=1
+          DO i=1,iheight*3
+              DO j=1,iwidth
+                  READ(114,rec=irec) cval1
+                  ABMPDATA24(L)=ICHAR(cval1)
+                  L=L+1
+                  irec=irec+1
+              END DO
+          END DO
+
+          CLOSE(114)
+
+          RETURN
+      END
+
+
+      SUBROUTINE savebmp(BMPFILE,BMPDATA24)
+
+          INCLUDE 'datmai.inc'
+          INTEGER Maxwidth,Maxheight,iheight,iwidth,irec,L,I,J
+          PARAMETER(Maxwidth=3220,Maxheight=2415)
+          INTEGER BMPDATA24(iwidth*iheight*3)
+          CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB
+          CHARACTER*80 BMPFILE
+          COMMON iwidth,iheight,header
+
+          OPEN(112,file=TRIM(BMPFILE),form='unformatted',
+     &    access='direct',recl=1)
+
+          DO irec=1,54
+              WRITE(112,rec=irec) header(irec)
+          END DO
+
+          irec=55
+          L=1
+
+          DO I=1,iheight*3
+              DO J=1,iwidth
+                  bmpdataG=CHAR(BMPDATA24(L))
+                  WRITE(112,rec=irec) bmpdataG
+                  bmpdataR=CHAR(BMPDATA24(L+1))
+                  WRITE(112,rec=irec+1) bmpdataR
+                  bmpdataB=CHAR(BMPDATA24(L+2))
+                  WRITE(112,rec=irec+2) bmpdataB
+                  irec=irec+3
+                  IF (L.GE.iheight*iwidth*3-3) EXIT
+                  L=L+3
+              END DO
+          END DO
+
+          CLOSE(112)
+          RETURN
+      END
+
+      
+      SUBROUTINE bmpinfo(BMPFILE,info)
+
+          INCLUDE 'datmai.inc'
+          INTEGER irec,iwidth,iheight
+          INTEGER info(3)
+          CHARACTER header(54)
+          CHARACTER*80 BMPFILE
+          COMMON iwidth,iheight,header
+
+          OPEN(114,file=TRIM(BMPFILE),form='unformatted',
+     &    access='direct',recl=1)
+
+          DO irec=1,54
+              READ(114,rec=irec) header(irec)
+          END DO
+
+          IF(ICHAR(header(11)).NE.54.OR.ICHAR(header(29)).ne .
+     &    24.OR.ICHAR(header(31)).NE.0) THEN
+              PRINT*,'sorry, can not handle this file'
+          END IF
+
+          ! get image height and width
+          info(3)=ICHAR(header(23))+256*(ICHAR(header(24))
+     &    +256*(ICHAR(header(25))+256*ICHAR(header(26))))
+          info(2)=ICHAR(header(19))+256*(ICHAR(header(20))
+     &    +256*(ICHAR(header(21))+256*ICHAR(header(22))))
+
+          iwidth=info(3)
+          iheight=info(2)
+
+          CLOSE(114)
+
+          RETURN
+      END
+
+
+      SUBROUTINE RGBsplit(ABMPDATA24,L,IR,IB,IG)
+
+          INCLUDE 'datmai.inc'
+          INTEGER IR,IB,IG,L,ABMPDATA24
+          DIMENSION ABMPDATA24(iwidth*iheight*3)
+          COMMON iwidth,iheight
+
+          IF (L.GE.iwidth*iheight*3-3) RETURN
+
+          IG=INT(ABMPDATA24(L))
+          IR=INT(ABMPDATA24(L+1))
+          IB=INT(ABMPDATA24(L+2))
+
+          RETURN
+      END
+      
