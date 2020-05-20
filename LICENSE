@@ -31,5 +31,14 @@ License
   The complete text of the GNU General Public License version 3 can be found in
   the `COPYING' file.
 
-  NOTE: Several Fortran 90 modules in Koko/Src/kmath are licensed under
-  the terms of the Lesser GNU Public Library (LGPL).
+  NOTE:
+  Fortran 90 modules cubicspline.f90, random.f90, and svd.f90 in Koko/Src/kmath
+  are licensed under the terms of the Lesser GNU Public License (LGPL). The source
+  code of the DPSORT subroutine is in the Public Domain.
+
+
+Artwork
+-------
+  The Koko artwork is licensed under Creative Commons licenses. Koko icons are in
+  the Public Domain (CC0). The image of the "Koko the Dog" can be distributed only
+  with attribution and share-alike (BY-SA).
