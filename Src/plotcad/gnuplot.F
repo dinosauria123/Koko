@@ -82,74 +82,80 @@ C///////////////////////////////////////////////////////////////////////
       END
 
 
-      SUBROUTINE drawdatasave(I1,I2,I3,I4)
+      subroutine drawdatasave(I1,I2,I3,I4)
 
-          IMPLICIT NONE
-          INTEGER I1,I2,I3,I4
+          implicit none
+          integer I1,I2,I3,I4
 
-          IF (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) THEN
-              RETURN
-          END IF
+          if ((I1.eq.-1).and.(I2.eq.-1)) then
+                  write(130,*)
+                  write(115,*)
+                  write(116,*)
+                  write(117,*)
+                  write(118,*)
+                  return
+          end if              
 
-          IF (I4.EQ.0) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(130,'(2I5)') I1,I2
-              ELSE
-                  WRITE(130,*)
-                  WRITE(130,'(2I5)') I1,I2
-              END IF
-          END IF
+          if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
+              return
+          end if
 
-          IF (I4.EQ.1) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(115,'(2I5)') I1,I2
-              ELSE
-                  WRITE(115,*)
-                  WRITE(115,'(2I5)') I1,I2
-              END IF
-          END IF
+            if (I4.eq.0) then
+              if (I3.eq.1) then
+                  write(130,'(2I5)') I1,I2    !black
+              else
+                  write(130,*)
+                  write(130,'(2I5)') I1,I2
+              end if
+            end if
 
-          IF (I4.EQ.2) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(116,'(2I5)') I1,I2
-              ELSE
-                  WRITE(116,*)
-                  WRITE(116,'(2I5)') I1,I2
+           if (I4.eq.1) then
+              if (I3.eq.1) then
+                  write(115,'(2I5)') I1,I2    !yellow
+              else
+                  write(115,*)
+                  write(115,'(2I5)') I1,I2
+              end if
+            end if
 
-              END IF
-          END IF
+           if (I4.eq.2) then
+              if (I3.eq.1) then
+                  write(116,'(2I5)') I1,I2    !magenta
+              else
+                  write(116,*)
+                  write(116,'(2I5)') I1,I2
+              end if
+           end if
 
-          IF (I4.EQ.3) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(117,'(2I5)') I1,I2
-              ELSE
-                  WRITE(117,*)
-                  WRITE(117,'(2I5)') I1,I2
-              END IF
-          END IF
+           if (I4.eq.3) then
+              if (I3.eq.1) then
+                  write(117,'(2I5)') I1,I2    !red
+              else
+                  write(117,*)
+                  write(117,'(2I5)') I1,I2
+              end if        
+           end if
 
-          IF (I4.EQ.4) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(118,'(2I5)') I1,I2
-              ELSE
-                  WRITE(118,*)
-                  WRITE(118,'(2I5)') I1,I2
+           if (I4.eq.4) then
+              if (I3.eq.1) then
+                  write(118,'(2I5)') I1,I2    !cyan
+              else
+                  write(118,*)
+                  write(118,'(2I5)') I1,I2
+              end if
+            end if
 
-              END IF
-          END IF
+          if (I4.eq.2) then
+              if (I3.eq.1) then
+                  write(131,'(2I5)') I1,I2    !break black
+              else
+                  write(131,*)
+                  write(131,'(2I5)') I1,I2
 
-          IF (I4.EQ.2) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(131,'(2I5)') I1,I2
-              ELSE
-                  WRITE(131,*)
-                  WRITE(131,'(2I5)') I1,I2
-
-              END IF
-          END IF
-
-          RETURN
-      END
+              end if
+          end if
+          return
+      end
 
 
       SUBROUTINE gnuplotlabel(I1,I2,label,I3,I4)

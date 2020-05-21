@@ -5282,6 +5282,8 @@ C
                       ELSE
                       END IF
 C
+                      CALL MY_PLOTC(-1,-1,0,k-1,-10,10010,-10,10010)
+
                       XA1=XA
                       XB1=XB
                       YA1=RRPOS
@@ -5502,6 +5504,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                      CALL MY_PLOTC(-1,-1,0,k-1,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
