@@ -2462,6 +2462,7 @@
       
       SUBROUTINE userinput(cmdno)
 
+          USE strings
           USE commandline
 
           IMPLICIT NONE
@@ -2476,7 +2477,7 @@
           CALL SELECTKOKO(KKDP)
           WRITE (prompt,'(a,i0,a)') ' ',cmdno,':'//KKDP//'> '
           CALL nextline( prompt, LEN_TRIM(prompt)+1, INPUT, LEN(INPUT) )
-          CALL upper_case(INPUT)
+          CALL to_upper(INPUT)
 
           IF (INPUT.EQ.'') THEN
               INPUT=' '

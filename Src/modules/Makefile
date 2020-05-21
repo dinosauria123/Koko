@@ -8,18 +8,19 @@ IFLAGS = -I../include
 
 # module sources
 fSRC   = globals.f nssmod.f
-f90SRC = configfile.f90 getoptions.f90 commandline.f90
+f90SRC = configfile.f90 getoptions.f90 commandline.f90 strings.f90
 F90SRC = opsys.F90
+CSRC   = strings_f90.c
 
 MODS = $(fSRC:.f=.mod) $(f90SRC:.f90=.mod) $(F90SRC:.F90=.mod)
 FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o) $(F90SRC:.F90=.o)
+COBJ = $(CSRC:.c=.o)
 
 # targets
 all: libkmod
 
-libkmod: $(MODS)
-	ar r libkmod.a $(FOBJ)
-	ranlib libkmod.a
+libkmod: $(MODS) $(COBJ)
+	ar rs libkmod.a $(FOBJ) $(COBJ)
 	mv libkmod.a ../lib
 
 %.mod: %.f
@@ -30,6 +31,9 @@ libkmod: $(MODS)
 
 %.mod: %.F90
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
+
+%.o : %.c
+	$(CC) -c $(CFLAGS) $<
 
 clean:
 	rm -f *.mod *.o *~

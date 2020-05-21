@@ -3963,50 +3963,6 @@ C     DEFAULT, SET TO 0
       END
 
 
-
-      SUBROUTINE UPPER
-          IMPLICIT NONE
-C
-          CHARACTER RA(0:6)*140
-C
-          COMMON/FAST7/RA
-          CHARACTER STRUC*140
-          COMMON/JKSTRUC/STRUC
-          INTEGER I,J
-          DO I=1,140
-              J=ICHAR(STRUC(I:I))
-              IF(J.GE.97.AND.J.LE.122)
-     1               STRUC(I:I)=CHAR(J-32)
-          END DO
-          RETURN
-      END
-
-      SUBROUTINE UPPER_CASE(STRUC)
-          IMPLICIT NONE
-          CHARACTER STRUC*80
-          INTEGER I,J
-          DO I=1,80
-              J=ICHAR(STRUC(I:I))
-              IF(J.GE.97.AND.J.LE.122)
-     1               STRUC(I:I)=CHAR(J-32)
-          END DO
-          RETURN
-      END
-
-      SUBROUTINE TOUPPER(STRUC,N)
-          IMPLICIT NONE
-          INTEGER I,J,N
-          CHARACTER STRUC*(N)
-          DO I=1,N
-              J=ICHAR(STRUC(I:I))
-              IF(J.GE.97.AND.J.LE.122)
-     1               STRUC(I:I)=CHAR(J-32)
-          END DO
-          RETURN
-      END
-
-
-
 C SUB PROCES.FOR
       SUBROUTINE PROCES
           USE GLOBALS
@@ -4403,7 +4359,6 @@ C       DO THIS BY CALLING UPPER.FOR
                   END IF
               ELSE
               END IF
-!                CALL UPPER
  89           INSTRC(INSS)=STRUC
           END DO
 C       NEW FEATURE COMPLETE
