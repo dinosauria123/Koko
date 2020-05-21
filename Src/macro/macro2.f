@@ -1856,7 +1856,6 @@ C
           INCLUDE 'datmac.inc'
           INCLUDE 'datmai.inc'
 C
-C
           LFILENAME=""
           IF(STI.EQ.1) THEN
               OUTLYNE=

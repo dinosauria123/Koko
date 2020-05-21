@@ -276,20 +276,15 @@ C
           USE opsys
           IMPLICIT NONE
 
-          CHARACTER DIRNAMM*80
-C
-C       THIS IS SUBROUTINE LENSLOC. IT IS USED TO CHANGE THE NAME
-C       DIRECTORY FOR LENSSAVE/LENSREST
-C
-C               IF THE DIRECORIES DONT EXIST, THEY ARE CREATED
-C               THE NEW NAMES ARE STORED IN THE VARIABLES
+C     THIS IS SUBROUTINE LENSLOC. IT IS USED TO CHANGE THE NAME
+C     DIRECTORY FOR LENSSAVE/LENSREST
 C
           INCLUDE 'datmai.inc'
 C
-C               CHECK FOR PRESENCE OF QUALIFIER OR NUMERIC WORDS
-C               PRINT ERROR AND RETURN IF DISCOVERED.
-C
-C               WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
+C     CHECK FOR PRESENCE OF QUALIFIER OR NUMERIC WORDS
+C     PRINT ERROR AND RETURN IF DISCOVERED.
+     
+C     WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
           IF(STI.EQ.1) THEN
               IF(WC.EQ.'LENSLOC') THEN
                   WRITE(OUTLYNE,10)
@@ -312,7 +307,6 @@ C               WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               CALL SHOWIT(1)
               CALL MACFAL
               RETURN
-          ELSE
           END IF
           IF(SST.EQ.0) THEN
               OUTLYNE=
@@ -322,25 +316,17 @@ C               WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               CALL SHOWIT(1)
               CALL MACFAL
               RETURN
-          ELSE
-          END IF
-C       INPUT OK
-!        IF(ID_SYSTEM.EQ.3.OR.ID_SYSTEM.EQ.4) THEN
-C       WINDOWS
-!        DIRLEN = TRIM(WS)//'\'
-!                        ELSE
-          DIRLEN = TRIM(WS)//'/'
-!                        END IF
-C     DO THE DIRECTORIES EXIST ? IF NOT CREATE THEM
-C
-          DIRNAMM=TRIM(WS)
-          CALL os_newdir(DIRNAMM)
-          WRITE(OUTLYNE,10)
-          CALL SHOWIT(0)
-          WRITE(OUTLYNE,11) DIRLEN
-          CALL SHOWIT(0)
-C
-          RETURN
+           END IF
+
+!     check if we want current directory to be lens directory
+           IF (ws(1:1) .EQ. '.') THEN
+              CALL getcwd(DIRLEN)
+           ELSE
+              DIRLEN = TRIM(WS)
+              CALL add_dir_slash( DIRLEN )
+           END IF
+           RETURN
+           
  10       FORMAT('CURRENT LENS DIRECTORY NAME IS:')
  11       FORMAT(A79)
       END
@@ -367,9 +353,6 @@ C               WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               WRITE(OUTLYNE,11) DIRLEN
               CALL SHOWIT(0)
           END IF
-!                        RETURN
-!                        ELSE
-!                        END IF
           IF(SQ.EQ.1.OR.SST.EQ.1.OR.SN.EQ.1)THEN
               OUTLYNE=
      1        '"LENSDIR" TAKES NO ADDITIONAL INPUT'
@@ -378,7 +361,6 @@ C               WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               CALL SHOWIT(1)
               CALL MACFAL
               RETURN
-          ELSE
           END IF
 C       INPUT OK
 C

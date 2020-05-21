@@ -1,46 +1,46 @@
 To Do List for KODS
 ===================
 
-- replace any hardcoded commands
+- not all input can be made upper case.
+  Prevent directory argument of LENSLOC to be changed to
+  upper case.
 
-- sort out MY_GETCL*, JYSTEM* and MY_SYSTEM* subroutine messes
+- change directory from within Koko
+
+- replace any hardcoded system commands
 
 - read .agf glass data files directly
 
 - fix utility/utility7.f:lwrite
 
 - 'make' does not work well with Fortran 90 modules. Need better
-  build system.
+  build system ?
   
-- random number generators are also from Numerical Recipes;
-  subroutines 'ranran' and 'gasdev' --> replace
-
-- replacement needed for sys_keyin.c (has not copyright)
-
-- remove common block SVD2 (optim10.f and optim3.f)
-
-- variable KODS_EDITOR, or some other way to configure editor
-
 - need icons for app and GUI
-
-- replace all subroutines from "Numerical Recipes"
 
 - eliminate compiler warnings
 
-- use writable USERHOME for files written by Koko
+- separate user writable directories from library directories
 
 - implement Qcon and Qbfs polynomials for aspheric surfaces
 
-- build and installation instructions
-
-- Installation process and installation options
+- ANSI Zernike polynomials with numerically stable implementation
 
 - in hardwar1.F: make setting USERHOME architecture independent
 
 
-Done
-====
+Done List
+=========
 
 - documentation in Open Document format
-
 - removed functions for financial, stock market analysis
+- sort out MY_GETCL*, JYSTEM* and MY_SYSTEM* subroutine messes
+- random number generators are also from Numerical Recipes;
+  subroutines 'ranran' and 'gasdev' --> replace
+- replacement needed for sys_keyin.c (has not copyright)
+- variable KODS_EDITOR, or some other way to configure editor
+- remove common block SVD2 (optim10.f and optim3.f)
+- replace all subroutines from "Numerical Recipes"
+- build and installation instructions
+- Installation process and installation options
+
