@@ -41,8 +41,8 @@ MainWindow::MainWindow(QMainWindow *parent)
 {
     QString home = QDir::homePath();
 
-    if (QFileInfo(home+"/kokorc").exists()){
-        conf  = home + "/kokorc";
+    if (QFileInfo(home+"/.kokorc").exists()){
+        conf  = home + "/.kokorc";
     }
     else{
         conf = "/etc/kokorc";
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QMainWindow *parent)
     settings.beginGroup("text");
     QString editor = settings.value("editor", "").toString();
 
-    qDebug()<<conf;
+    qDebug()<<ldir;
 
     histnum=0;
     curhist=histnum;
