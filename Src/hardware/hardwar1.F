@@ -298,7 +298,7 @@ C SUB OPENTSTP.INC
       
           IMPLICIT NONE
 
-          LOGICAL FEXIST,PEXIST
+          LOGICAL FEXIST
           CHARACTER AS*19,FILENAME*19
           INTEGER I,N2
 
@@ -377,29 +377,11 @@ C
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
           STRINGER='F'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           NEUTTOTAL=NEUTTOTAL+1
@@ -1164,29 +1146,11 @@ C
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
           NEUTTOTAL=1
           STRINGER='A'
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
 
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
@@ -1215,29 +1179,12 @@ C
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           NEUTTOTAL=NEUTTOTAL+1
           STRINGER='K'
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
 
           NEUTTOTAL=NEUTTOTAL+1
@@ -1257,29 +1204,12 @@ C
                   I6=0
                   I7=0
                   I8=0
-                  IF(I1.GT.99999) I1=99999
-                  IF(I2.GT.99999) I2=99999
-                  IF(I3.GT.99999) I3=99999
-                  IF(I4.GT.99999) I4=99999
-                  IF(I5.GT.99999) I5=99999
-                  IF(I6.GT.99999) I6=99999
-                  IF(I7.GT.99999) I7=99999
-                  IF(I8.GT.99999) I8=99999
-                  IF(I1.LT.-9999) I1=-9999
-                  IF(I2.LT.-9999) I2=-9999
-                  IF(I3.LT.-9999) I3=-9999
-                  IF(I4.LT.-9999) I4=-9999
-                  IF(I5.LT.-9999) I5=-9999
-                  IF(I6.LT.-9999) I6=-9999
-                  IF(I7.LT.-9999) I7=-9999
-                  IF(I8.LT.-9999) I8=-9999
+                  CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
                   NEUTTOTAL=NEUTTOTAL+1
                   STRINGER='L'
-                  WRITE(NEUTLINE,1000) STRINGER
-     1            ,I1,I2,I3,I4,I5,I6,I7,I8
+                  WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1            CALL RESIZE_NEUT
+                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
                   NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
               END DO
           END DO
@@ -1310,29 +1240,12 @@ C     NOW WRITE THE ARRAY VALUES
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           NEUTTOTAL=NEUTTOTAL+1
           STRINGER='M'
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
           DO I=1,PCOUNT
               DO J=1,PCOUNT
@@ -1344,29 +1257,12 @@ C     NOW WRITE THE ARRAY VALUES
                   I6=0
                   I7=0
                   I8=0
-                  IF(I1.GT.99999) I1=99999
-                  IF(I2.GT.99999) I2=99999
-                  IF(I3.GT.99999) I3=99999
-                  IF(I4.GT.99999) I4=99999
-                  IF(I5.GT.99999) I5=99999
-                  IF(I6.GT.99999) I6=99999
-                  IF(I7.GT.99999) I7=99999
-                  IF(I8.GT.99999) I8=99999
-                  IF(I1.LT.-9999) I1=-9999
-                  IF(I2.LT.-9999) I2=-9999
-                  IF(I3.LT.-9999) I3=-9999
-                  IF(I4.LT.-9999) I4=-9999
-                  IF(I5.LT.-9999) I5=-9999
-                  IF(I6.LT.-9999) I6=-9999
-                  IF(I7.LT.-9999) I7=-9999
-                  IF(I8.LT.-9999) I8=-9999
+                  CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
                   NEUTTOTAL=NEUTTOTAL+1
                   STRINGER='N'
-                  WRITE(NEUTLINE,1000) STRINGER
-     1            ,I1,I2,I3,I4,I5,I6,I7,I8
+                  WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1            CALL RESIZE_NEUT
+                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
                   NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
               END DO
           END DO
@@ -1404,28 +1300,11 @@ C     NOW WRITE THE ARRAY VALUES
                   I6=0
                   I7=0
                   I8=0
-                  IF(I1.GT.99999) I1=99999
-                  IF(I2.GT.99999) I2=99999
-                  IF(I3.GT.99999) I3=99999
-                  IF(I4.GT.99999) I4=99999
-                  IF(I5.GT.99999) I5=99999
-                  IF(I6.GT.99999) I6=99999
-                  IF(I7.GT.99999) I7=99999
-                  IF(I8.GT.99999) I8=99999
-                  IF(I1.LT.-9999) I1=-9999
-                  IF(I2.LT.-9999) I2=-9999
-                  IF(I3.LT.-9999) I3=-9999
-                  IF(I4.LT.-9999) I4=-9999
-                  IF(I5.LT.-9999) I5=-9999
-                  IF(I6.LT.-9999) I6=-9999
-                  IF(I7.LT.-9999) I7=-9999
-                  IF(I8.LT.-9999) I8=-9999
                   STRINGER='B'
                   WRITE(NEUTLINE,2000) NEUTTOTAL
                   NEUTARRAY(1)=NEUTLINE
  2000             FORMAT(I9,32X)
-                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1            CALL RESIZE_NEUT
+                  IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
                   NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
               ELSE
                   WRITE(NEUTLINE,2000) NEUTTOTAL
@@ -1446,37 +1325,20 @@ C     NOW WRITE THE ARRAY VALUES
           CHARACTER STRINGER*1,NEUTLINE*42
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
-          I1=(II1)
-          I2=(II2)
-          I3=(II3)
-          I4=(II4)
+          I1=II1
+          I2=II2
+          I3=II3
+          I4=II4
           I5=0
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           STRINGER='C'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
@@ -1494,38 +1356,21 @@ C     NOW WRITE THE ARRAY VALUES
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
           EXTERNAL MY_LEN
-          I1=(II1)
-          I2=(II2)
-          I3=(II3)
-          I4=(II4)
-          I5=(II5)
+          I1=II1
+          I2=II2
+          I3=II3
+          I4=II4
+          I5=II5
           I6=MY_LEN(C1)
           LENN=MY_LEN(C1)
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           STRINGER='D'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1) = NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           C1A='                    '
@@ -1603,29 +1448,12 @@ C     NOW WRITE THE ARRAY VALUES
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           STRINGER='E'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
@@ -1642,7 +1470,7 @@ C     NOW WRITE THE ARRAY VALUES
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
           
-          I1=(II1)
+          I1=II1
           I2=0
           I3=0
           I4=0
@@ -1650,34 +1478,18 @@ C     NOW WRITE THE ARRAY VALUES
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           STRINGER='G'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
       END SUBROUTINE MY_SETPAL
 
+      
       SUBROUTINE MY_SETFONT(II1,II2)
           USE GLOBALS
           IMPLICIT NONE
@@ -1696,29 +1508,12 @@ C     NOW WRITE THE ARRAY VALUES
           I6=0
           I7=0
           I8=0
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           STRINGER='H'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
@@ -1735,41 +1530,24 @@ C     NOW WRITE THE ARRAY VALUES
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
           
-          I1=(II1)
-          I2=(II2)
-          I3=(II3)
-          I4=(II4)
-          I5=(II5)
-          I6=(II6)
-          I7=(II7)
-          I8=(II8)
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          I1=II1
+          I2=II2
+          I3=II3
+          I4=II4
+          I5=II5
+          I6=II6
+          I7=II7
+          I8=II8
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           PENPOSX=II1
           PENPOSY=II2
           STRINGER='I'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
           call drawdatasave(I1,I2,I3,I4)
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
@@ -1786,41 +1564,24 @@ C     NOW WRITE THE ARRAY VALUES
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
           
-          I1=(II1)
-          I2=(II2)
-          I3=(II3)
-          I4=(II4)
-          I5=(II5)
-          I6=(II6)
-          I7=(II7)
-          I8=(II8)
-          IF(I1.GT.99999) I1=99999
-          IF(I2.GT.99999) I2=99999
-          IF(I3.GT.99999) I3=99999
-          IF(I4.GT.99999) I4=99999
-          IF(I5.GT.99999) I5=99999
-          IF(I6.GT.99999) I6=99999
-          IF(I7.GT.99999) I7=99999
-          IF(I8.GT.99999) I8=99999
-          IF(I1.LT.-9999) I1=-9999
-          IF(I2.LT.-9999) I2=-9999
-          IF(I3.LT.-9999) I3=-9999
-          IF(I4.LT.-9999) I4=-9999
-          IF(I5.LT.-9999) I5=-9999
-          IF(I6.LT.-9999) I6=-9999
-          IF(I7.LT.-9999) I7=-9999
-          IF(I8.LT.-9999) I8=-9999
+          I1=II1
+          I2=II2
+          I3=II3
+          I4=II4
+          I5=II5
+          I6=II6
+          I7=II7
+          I8=II8
+          CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
           PENPOSX=II1
           PENPOSY=II2
           STRINGER='J'
           NEUTTOTAL=NEUTTOTAL+1
-          WRITE(NEUTLINE,1000) STRINGER
-     1    ,I1,I2,I3,I4,I5,I6,I7,I8
+          WRITE(NEUTLINE,1000) STRINGER,I1,I2,I3,I4,I5,I6,I7,I8
 
           call drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
 
-          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
-     1    CALL RESIZE_NEUT
+          IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
           RETURN
@@ -3279,3 +3040,62 @@ C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
           IF(I.NE.5) OUTLYNE=JK_BLLIN
           RETURN
       END SUBROUTINE SHOWIT
+
+
+      SUBROUTINE check_bounds(I1, I2, I3, I4, I5, I6, I7, I8)
+      !
+      ! ensure that the plot variables I1 .. I8 are within bounds
+      !   -9999 < Ik < 99999
+
+         IMPLICIT NONE
+         INTEGER, INTENT(INOUT) :: I1,I2,I3,I4,I5,I6,I7,I8
+
+         IF (I1 > 99999) THEN
+            I1 = 99999
+         ELSE IF (I1 < -9999) THEN
+            I1 = -9999
+         END IF
+
+         IF (I2 > 99999) THEN
+            I2 = 99999
+         ELSE IF (I2 < -9999) THEN
+            I2 = -9999
+         END IF
+
+         IF (I3 > 99999) THEN
+            I3 = 99999
+         ELSE IF (I3 < -9999) THEN
+            I3 = -9999
+         END IF
+
+         IF (I4 > 99999) THEN
+            I4 = 99999
+         ELSE IF (I4 < -9999) THEN
+            I4 = -9999
+         END IF
+
+         IF (I5 > 99999) THEN
+            I5 = 99999
+         ELSE IF (I5 < -9999) THEN
+            I5 = -9999
+         END IF
+
+         IF (I6 > 99999) THEN
+            I6 = 99999
+         ELSE IF (I6 < -9999) THEN
+            I6 = -9999
+         END IF
+
+         IF (I7 > 99999) THEN
+            I7 = 99999
+         ELSE IF (I7 < -9999) THEN
+            I7 = -9999
+         END IF
+
+         IF (I8 > 99999) THEN
+            I8 = 99999
+         ELSE IF (I8 < -9999) THEN
+            I8 = -9999
+         END IF
+          
+      END SUBROUTINE check_bounds
