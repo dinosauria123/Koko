@@ -68,21 +68,43 @@ CONTAINS
   !------------------------------------------------------
   ! Changes all characters in a string to upper case
   ! without assuming a particular character set or a
-  ! particular locale.
+  ! particular locale. Protects parts of the input string
+  ! enclosed in single quotes.
   !
   ! INPUT/OUTPUT
-  ! str :  a character string
+  ! str     :  a character string
   !
   SUBROUTINE to_upper(str)
 
     CHARACTER(LEN=*), INTENT(INOUT) :: str
-    INTEGER                         :: k
+    LOGICAL                         :: protect
+    INTEGER                         :: k, n
     CHARACTER                       :: ch
 
+    n = 1
+    protect = .FALSE.
+    
     DO k = 1, LEN_TRIM(str)
+       
        ch = str(k:k)
-       str(k:k) = c_toupper( ch )
+
+       ! turn on/off protection when a quote is met
+       IF (ch == "'") THEN
+          protect = .NOT. protect
+          CYCLE
+       END IF
+       
+       IF ( protect ) THEN
+          str(n:n) = ch
+       ELSE
+          str(n:n) = c_toupper( ch )
+       END IF
+
+       n = n + 1
+       
     END DO
+
+    str(n:LEN(str)) = ' '  ! clear string tail
     
   END SUBROUTINE to_upper
 
@@ -90,21 +112,43 @@ CONTAINS
   !------------------------------------------------------
   ! Changes all characters in a string to lower case
   ! without assuming a particular character set or a
-  ! particular locale.
+  ! particular locale. Protects parts of the input string
+  ! enclosed in single quotes.
   !
   ! INPUT/OUTPUT
-  ! str :  a character string
+  ! str     :  a character string
   !
   SUBROUTINE to_lower(str)
 
     CHARACTER(LEN=*), INTENT(INOUT) :: str
-    INTEGER                         :: k
+    LOGICAL                         :: protect
+    INTEGER                         :: k, n
     CHARACTER                       :: ch
 
+    n = 1
+    protect = .FALSE.
+    
     DO k = 1, LEN_TRIM(str)
+       
        ch = str(k:k)
-       str(k:k) = c_tolower( ch )
+
+       ! turn on/off protection when a quote is met
+       IF (ch == "'") THEN
+          protect = .NOT. protect
+          CYCLE
+       END IF
+       
+       IF ( protect ) THEN
+          str(n:n) = ch
+       ELSE
+          str(n:n) = c_tolower( ch )
+       END IF
+
+       n = n + 1
+       
     END DO
+
+    str(n:LEN(str)) = ' '  ! clear string tail
     
   END SUBROUTINE to_lower
   
