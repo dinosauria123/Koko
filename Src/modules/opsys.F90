@@ -166,11 +166,11 @@ CONTAINS
     CHARACTER(len=*), INTENT(out) :: fullpath
 
 #if defined( LINUX ) || defined( MACOSX )
-    fullpath = TRIM(partpath)//"/"//TRIM(pathitem)
+    fullpath = TRIM(partpath)//'/'//TRIM(pathitem)
 #endif
 
 #if defined( WINDOWS )
-    fullpath = TRIM(partpath)//"\\"//TRIM(pathitem)
+    fullpath = TRIM(partpath)//'\'//TRIM(pathitem)
 #endif
     
   END SUBROUTINE dir_path_append
@@ -204,12 +204,21 @@ CONTAINS
     ! adds a (back-) slash to a directory name
 
     CHARACTER(len=*), INTENT(inout) :: dirname
+    CHARACTER                       :: last_char
+    INTEGER                         :: lc
 
+    lc = LEN_TRIM(dirname)
+    last_char = dirname(lc:lc)
+    
 #if defined( LINUX ) || defined( MACOSX )
-    dirname = TRIM(dirname)//"/"
+    IF (last_char /= '/') THEN
+       dirname = TRIM(dirname)//'/'
+    END IF
 #endif
 #if defined( WINDOWS )
-    dirname = TRIM(dirname)//"\\"
+    IF (last_char /= '\') THEN
+       dirname = TRIM(dirname)//'\'
+    END IF
 #endif
     
   END SUBROUTINE add_dir_slash

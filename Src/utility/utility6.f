@@ -295,10 +295,6 @@ C     WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               RETURN
           ELSE
           END IF
-          IF(SST.EQ.0)THEN
-              WS=trim(HOME)//'LENSES'
-              SST=1
-          END IF
           IF(SQ.EQ.1.OR.SN.EQ.1)THEN
               OUTLYNE=
      1        '"LENSLOC" TAKES ONLY STRING INPUT'
@@ -318,13 +314,16 @@ C     WE ARE AT LENS INPUT OR LENS UPDATE LEVEL
               RETURN
            END IF
 
-!     check if we want current directory to be lens directory
-           IF (ws(1:1) .EQ. '.') THEN
+           ! set lens directory
+           IF (ws .EQ. ".") THEN
               CALL getcwd(DIRLEN)
+           ELSE IF (ws .EQ. "~") THEN
+              DIRLEN = trim(HOME)//'LENSES'
            ELSE
               DIRLEN = TRIM(WS)
-              CALL add_dir_slash( DIRLEN )
            END IF
+
+           CALL add_dir_slash( DIRLEN )
            RETURN
            
  10       FORMAT('CURRENT LENS DIRECTORY NAME IS:')
@@ -372,6 +371,8 @@ C
  10       FORMAT('THE CURRENT LENS DIRECTORY NAME IS:')
  11       FORMAT(A79)
       END
+
+
 C SUB DODODO.FOR
       SUBROUTINE DODODO
 C
