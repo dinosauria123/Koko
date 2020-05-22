@@ -232,11 +232,12 @@ C SUB EDITOR.INC
       SUBROUTINE EDITOR
 
           USE GLOBALS
+          USE opsys
 
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
 
-          LOGICAL FEXIST,PEXIST
+          LOGICAL FEXIST
           CHARACTER AS*80
           INTEGER I,N2,ITEM
 
@@ -275,14 +276,6 @@ C
               END IF
           END DO
  20       CONTINUE
-          PEXIST=.FALSE.
-          INQUIRE(FILE='/usr/bin/vi',EXIST=PEXIST)
-          IF(PEXIST) THEN
-          ELSE
-              OUTLYNE='THE "vi" PROGRAM IS MISSING'
-              CALL SHOWIT(1)
-              RETURN
-          END IF
 
           FEXIST=.FALSE.
           INQUIRE(FILE=AS(1:N2),EXIST=FEXIST)
@@ -293,7 +286,7 @@ C
               CLOSE(47 )
           END IF
           ITEM=ID_SYSTEM
-          call system(trim(TXTEDITOR)//AS(1:N2))
+          call shell_command(trim(TXTEDITOR)//" "//AS(1:N2))
       END SUBROUTINE EDITOR
 
 
@@ -301,6 +294,8 @@ C SUB OPENTSTP.INC
       SUBROUTINE OPENTSTP(FILENAME)
 
           USE GLOBALS
+          USE opsys
+      
           IMPLICIT NONE
 
           LOGICAL FEXIST,PEXIST
@@ -336,7 +331,7 @@ C
      2          ,STATUS='UNKNOWN')
               CLOSE(47 )
           END IF
-          call system(trim(TXTEDITOR)//AS(1:N2))
+          call shell_command(trim(TXTEDITOR)//" "//AS(1:N2))
       END SUBROUTINE OPENTSTP
 
 
@@ -2521,7 +2516,6 @@ C       INPUT OK
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
               END IF
               IF(W2.LT.2.0.AND.DF2.NE.1.OR.
      1        W2.GT.999.0.AND.DF2.NE.1) THEN
@@ -2531,7 +2525,6 @@ C       INPUT OK
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
               END IF
               IF(S2.EQ.1) THEN
 C
@@ -2543,11 +2536,9 @@ C
                       CALL SHOWIT(1)
                       CALL MACFAL
                       RETURN
-                  ELSE
                   END IF
               ELSE
 C       NW2 IS BLANK
-C       SET SING=1
                   SING=1
               END IF
 C       IS NW1 AND NW2 DEFAULT
@@ -2558,7 +2549,6 @@ C       IS NW1 AND NW2 DEFAULT
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
-              ELSE
               END IF
           ELSE
 C       NOT PLIB DEL
