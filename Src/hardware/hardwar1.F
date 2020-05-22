@@ -1822,7 +1822,7 @@ C     NOW WRITE THE ARRAY VALUES
           WRITE(NEUTLINE,1000) STRINGER
      1    ,I1,I2,I3,I4,I5,I6,I7,I8
 
-          call drawdatasave(I1,I2,I3,I4)
+          call drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
 
           IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2)
      1    CALL RESIZE_NEUT
