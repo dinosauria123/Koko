@@ -85,16 +85,7 @@ C///////////////////////////////////////////////////////////////////////
       subroutine drawdatasave(I1,I2,I3,I4)
 
           implicit none
-          integer I1,I2,I3,I4
-
-          if ((I1.eq.-1).and.(I2.eq.-1)) then
-                  write(130,*)
-                  write(115,*)
-                  write(116,*)
-                  write(117,*)
-                  write(118,*)
-                  return
-          end if              
+          integer I1,I2,I3,I4            
 
           if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
               return
@@ -144,6 +135,82 @@ C///////////////////////////////////////////////////////////////////////
                   write(118,'(2I5)') I1,I2
               end if
             end if
+
+          if (I4.eq.2) then
+              if (I3.eq.1) then
+                  write(131,'(2I5)') I1,I2    !break black
+              else
+                  write(131,*)
+                  write(131,'(2I5)') I1,I2
+
+              end if
+          end if
+          return
+      end
+
+
+      subroutine drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
+
+          implicit none
+          integer I1,I2,I3,I4,I5,I6,I7,I8
+
+          if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
+              return
+          end if
+          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
+            if (I4.eq.0) then
+              if (I3.eq.1) then
+                  write(130,'(2I5)') I1,I2    !black
+              end if
+            end if
+          else
+                  write(130,*)
+                  write(130,'(2I5)') I1,I2
+          end if
+
+          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
+           if (I4.eq.1) then
+              if (I3.eq.1) then
+                  write(115,'(2I5)') I1,I2    !yellow
+              end if
+           end if
+         else
+                  write(115,*)
+                  write(115,'(2I5)') I1,I2
+          end if
+
+          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
+           if (I4.eq.2) then
+              if (I3.eq.1) then
+                  write(116,'(2I5)') I1,I2    !magenta
+              end if
+           end if
+         else
+                  write(116,*)
+                  write(116,'(2I5)') I1,I2
+         end if
+
+          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
+           if (I4.eq.3) then
+              if (I3.eq.1) then
+                  write(117,'(2I5)') I1,I2    !red
+              end if
+           end if
+          else
+                  write(117,*)
+                  write(117,'(2I5)') I1,I2
+          end if
+
+          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
+           if (I4.eq.4) then
+              if (I3.eq.1) then
+                  write(118,'(2I5)') I1,I2    !cyan
+              end if
+           end if
+          else
+                  write(118,*)
+                  write(118,'(2I5)') I1,I2
+          end if
 
           if (I4.eq.2) then
               if (I3.eq.1) then
