@@ -10,6 +10,11 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = KODS_GUI
 TEMPLATE = app
+RESOURCES += \
+    resources.qrc
+OTHER_FILES += \
+    images \
+   koko.png
 
 
 SOURCES += main.cpp\

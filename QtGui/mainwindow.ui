@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>KODS GUI</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>images/koko.png</normaloff>images/koko.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
