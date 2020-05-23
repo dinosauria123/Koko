@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Categories=Application;Education;
+Encoding=UTF-8
+Name=koko
+Comment=Display window
+Exec=/usr/local/bin/koko-gui
+Icon=/usr/share/icons/hicolor/512x512/apps/koko.png
+Terminal=false

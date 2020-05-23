@@ -51,6 +51,9 @@ install-exec:
 	@echo "==============================="
 	make -C ./Src install
 	make -C ./QtGui -f MakeGui install
+	cp koko.desktop /usr/share/applications/koko.desktop
+	cp ./QtGui/images/koko.png /usr/share/icons/hicolor/512x512/apps/koko.png
+	update-desktop-database
 
 # install system-wide configuration file
 install-conf:
