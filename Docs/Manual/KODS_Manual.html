@@ -2283,9 +2283,12 @@ available in the program HELP menu.</span></p>
 <p class="c39"><span class="c30 c24 c32">CASE
 SENSITIVITY</span><span class="c23">&nbsp;- All program textual
 command input is case insensitive. Input may be in upper or lower
-case. All input is converted to upper case before it is processed.
-The basic input mode of this program is textual. Menus are provided
-for the more commonly used features.</span></p>
+case. By default, all input is converted to upper case before it is
+processed. Strings or substrings in the input can be protected from
+conversion to upper case by enclosing them in single quotes. This
+feature is primarily useful for case sensitive file names, or lens
+identifiers.  The basic input mode of this program is textual. Menus
+are provided` for the more commonly used features.</span></p>
 <p class="c21"></p>
 <p class="c39"><span class=
 "c30 c24 c32">COMMANDS</span><span class="c23">&nbsp;- All program
@@ -22391,14 +22394,15 @@ LENSES</span><span class="c23">&nbsp;- The next four commands
 describe an alternate way to save lens prescriptions when it is not
 desired to use the lens library structure.</span></p>
 <p class="c21"></p>
-<p class="c39"><span class="c11">LENSLOC (6-character directory
-name)</span><span class="c23">&nbsp; - The "LENSLOC" command,
-issued with exactly 6 characters, designates the directory name,
-under the main program directory, wherein lenses will be saved to
-and retrieved from with the next issuances of “LENSSAVE” and
-“LENSREST” commands. Issued with a “?”, the current LENSLOC
-directory name will be displayed. The default lens directory name
-is “LENSES”.</span></p>
+<p class="c39"><span class="c11">LENSLOC (directory
+name)</span><span class="c23">&nbsp; - The "LENSLOC" command
+designates a directory name, wherein lenses will be saved to and
+retrieved from with the next issuances of “LENSSAVE” and “LENSREST”
+commands. Issued with a “?”, the current LENSLOC directory name will
+be displayed. The default lens directory name is “LENSES” located in
+the KODS library directory. The special command form "LENSLOC ." makes
+the current directory the lens directory, whereas the form "LENSLOC ~"
+restores the lens directory to the default.</span></p>
 <hr style="page-break-before:always;display:none;">
 <p class="c21"></p>
 <p class="c39"><span class="c11">LENSDIR</span><span class=
@@ -22409,21 +22413,23 @@ contents of the current lens storage directory.</span></p>
 (filename)</span><span class="c23">&nbsp; - &nbsp;The "LENSSAVE"
 command, issued with a one to eight character file name, causes the
 current lens to be saved as an ASCII file with the file extension
-.PRG into the current lens storage directory. If the "LENSSAVE"
-command is issued with the file name "ABC" for example, the current
-lens will be saved in the file ABC.PRG in the lens storage
-directory. Existing optimization and tolerance definitions are
-automatically saved as well.</span></p>
+.koko into the current lens storage directory (see LIBLOC). If the
+"LENSSAVE" command is issued with the file name ABC for example, the
+current lens will be saved in the file ABC.koko in the lens storage
+directory. When the file name is enclosed in single quotes , 'abc',
+the lens is saved in the file abc.koko.  Existing optimization and
+tolerance definitions are automatically saved as well.</span></p>
 <p class="c21"></p>
 <p class="c39"><span class="c11">LENSREST
 (filename)</span><span class="c23">&nbsp; - &nbsp;The "LENSREST"
-command, issued with a one to eight character file name, causes the
-lens stored in that named ASCII file, in the current lens storage
-directory, to be restored as the current lens. If the "LENSREST"
-command is issued with the file name "ABC" for example, then if the
-file ABC.PRG exists in the current lens storage directory, the lens
-data in that file will become the lens data for the new current
-lens. Previously saved optimization and tolerance definitions are
+command, issued with a file name, causes the lens stored in that named
+ASCII file, in the current lens storage directory, to be restored as
+the current lens. For example, If the "LENSREST" command is issued
+with the file name ABC, then if the file ABC.koko exists in the
+current lens storage directory, the lens data in that file will become
+the lens data for the new current lens. If the lens file name is case
+sensitive, the name must be enclosed in single quotes (see LENSSAVE).
+Previously saved optimization and tolerance definitions are
 automatically reloaded as well.</span></p>
 <p class="c21"></p>
 <p class="c39"><span class="c11">LSAVE
