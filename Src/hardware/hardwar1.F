@@ -57,10 +57,9 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE NOBLANK(OLYNE)
           IMPLICIT NONE
           CHARACTER OLYNE*140
-          INTEGER J,LLL,LL,MY_LEN
-          EXTERNAL MY_LEN
+          INTEGER J,LLL,LL
           INCLUDE 'datmai.inc'
-          LL=MY_LEN(OLYNE)
+          LL=LEN_TRIM(OLYNE)
           LLL=LL
           DO J=LL-1,1,-1
               IF(OLYNE(J:J).EQ.' '.AND.OLYNE(J+1:J+1).EQ.',') THEN
@@ -92,7 +91,6 @@ C SUB MY_DIR.INC
           CHARACTER KKDP*3
 
           CALL SELECTKOKO(KKDP)
-
       END SUBROUTINE MY_IGRPAUSE
 
 
@@ -172,6 +170,7 @@ C     STAT = 0 MEANS 'DELETE'
       SUBROUTINE EXIST_FILE(FILE_NAME,FEXIST)
 C
 C     THIS SUBROUTINE IS CALLED TO TEST IF A FILE EXISTS
+C     IN THE HOME DIRECTORY
 C
           IMPLICIT NONE
           LOGICAL FEXIST
@@ -333,15 +332,6 @@ C
           END IF
           call shell_command(trim(TXTEDITOR)//" "//AS(1:N2))
       END SUBROUTINE OPENTSTP
-
-
-      FUNCTION MY_LEN(STRING)
-          IMPLICIT NONE
-          CHARACTER (LEN=*) :: STRING
-          INTEGER MY_LEN
-          MY_LEN=LEN_TRIM(STRING)
-          RETURN
-      END FUNCTION MY_LEN
 
 
       SUBROUTINE DRAWIT
@@ -1349,20 +1339,19 @@ C     NOW WRITE THE ARRAY VALUES
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-          INTEGER LENN,II1,II2,II3,II4,II5,MY_LEN
+          INTEGER LENN,II1,II2,II3,II4,II5
           CHARACTER STRINGER*1
           CHARACTER C1A*20,C1B*20,C1C*20,C1D*20,NEUTLINE*42
           CHARACTER*(*) C1
           INCLUDE 'dathgr.inc'
           INCLUDE 'datmai.inc'
-          EXTERNAL MY_LEN
           I1=II1
           I2=II2
           I3=II3
           I4=II4
           I5=II5
-          I6=MY_LEN(C1)
-          LENN=MY_LEN(C1)
+          I6=LEN_TRIM(C1)
+          LENN=LEN_TRIM(C1)
           I7=0
           I8=0
           CALL check_bounds(I1,I2,I3,I4,I5,I6,I7,I8)
@@ -2865,19 +2854,18 @@ C
           CHARACTER JK_J1*20,BFRM*3,JK_BLLIN*140,OLYNE*140,A1*1,A2*2,A3*3
           CHARACTER FFORM*10
           CHARACTER*153 STRIPOUT
-          INTEGER II,I,OUTY,LL,MY_LEN,IPASS1
+          INTEGER II,I,OUTY,LL,IPASS1
           LOGICAL OPENOUT
 
           COMMON/SHOWME/BFRM
 
           INCLUDE 'datmai.inc'
-          EXTERNAL MY_LEN
 
           I=II
 C       ADDED 1/20/2004
           IF(OUTLYNE(1:1).EQ.' ') OUTLYNE(1:139)=OUTLYNE(2:139)//' '
           OLYNE=TRIM(OUTLYNE)
-          LL=MY_LEN(OLYNE)
+          LL=LEN_TRIM(OLYNE)
 
           if (LL.eq.0) return
 
@@ -2989,12 +2977,12 @@ C     OUT IS NOT 6
           IF(I.EQ.2) THEN
 C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
               IF(OUT.EQ.6.OR.OUT.EQ.69.OR.OUT.EQ.7) THEN
-                  LL=MY_LEN(OUTLYNE)
+                  LL=LEN_TRIM(OUTLYNE)
                   LL=131
                   IF(OUT.EQ.6.OR.OUT.EQ.69) THEN
                       WRITE(OUT,*) OUTLYNE
                   ELSE
-                      LL=MY_LEN(OUTLYNE)
+                      LL=LEN_TRIM(OUTLYNE)
                       WRITE(OUTY,FFORM) OLYNE
                       IF(OUTY.EQ.6) THEN
                           IPASS1=79
@@ -3003,13 +2991,13 @@ C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
                   END IF
               ELSE
                   IF(I.NE.5) THEN
-                      LL=MY_LEN(OUTLYNE)
+                      LL=LEN_TRIM(OUTLYNE)
                       WRITE(OUTY,FMT=FFORM) OLYNE
                       IF(OUTY.EQ.6) THEN
                           IPASS1=79
                           WRITE(OUT,*) OUTLYNE
                       END IF
-                      LL=MY_LEN(OUTLYNE)
+                      LL=LEN_TRIM(OUTLYNE)
                   END IF
               END IF
               OUTLYNE=JK_BLLIN
