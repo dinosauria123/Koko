@@ -115,5 +115,6 @@ savehistory( const char *fname, int ncs ) {
    cfname[ncs] = '\0';
 
    linenoiseHistorySave(cfname);
+   linenoiseHistoryFree();      /* called only once on Koko exit */
 }
 

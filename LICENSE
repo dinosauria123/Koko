@@ -16,8 +16,8 @@ Initial port of KDP-2 (KODS and KODS_GUI) for Linux, MacOSX, Android was
 written by ENDO Michiaki. 
 
 
-License
--------
+Licenses
+--------
 
   This program is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -36,6 +36,7 @@ License
   are licensed under the terms of the Lesser GNU Public License (LGPL). The source
   code of the DPSORT subroutine is in the Public Domain.
 
+  The linenoise library is licensed under the terms of a BSD license 2.0.
 
 Artwork
 -------
