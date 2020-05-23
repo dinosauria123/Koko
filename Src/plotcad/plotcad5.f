@@ -4209,8 +4209,6 @@ C     FANWV1 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(1)
                       GO TO 10
-                  ELSE
-C     FANWV1 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
 C     FANWV2 IS THE FIRST FAN
@@ -4218,8 +4216,6 @@ C     FANWV2 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(2)
                       GO TO 10
-                  ELSE
-C     FANWV2 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
 C     FANWV3 IS THE FIRST FAN
@@ -4227,8 +4223,6 @@ C     FANWV3 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(3)
                       GO TO 10
-                  ELSE
-C     FANWV3 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
 C     FANWV4 IS THE FIRST FAN
@@ -4236,8 +4230,6 @@ C     FANWV4 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(4)
                       GO TO 10
-                  ELSE
-C     FANWV4 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
 C     FANWV5 IS THE FIRST FAN
@@ -4245,8 +4237,6 @@ C     FANWV5 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(5)
                       GO TO 10
-                  ELSE
-C     FANWV5 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
 C     FANWV6 IS THE FIRST FAN
@@ -4254,8 +4244,6 @@ C     FANWV6 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(71)
                       GO TO 10
-                  ELSE
-C     FANWV6 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
 C     FANWV7 IS THE FIRST FAN
@@ -4263,8 +4251,6 @@ C     FANWV7 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(72)
                       GO TO 10
-                  ELSE
-C     FANWV7 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
 C     FANWV8 IS THE FIRST FAN
@@ -4272,8 +4258,6 @@ C     FANWV8 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(73)
                       GO TO 10
-                  ELSE
-C     FANWV8 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
 C     FANWV2 IS THE FIRST FAN
@@ -4281,8 +4265,6 @@ C     FANWV2 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(74)
                       GO TO 10
-                  ELSE
-C     FANWV9 IS NOT THE FIRST FAN
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
 C     FANWV10 IS THE FIRST FAN
@@ -4290,8 +4272,6 @@ C     FANWV10 IS THE FIRST FAN
                       FANLAST=FAN1
                       WAVE1=SYSTEM1(75)
                       GO TO 10
-                  ELSE
-C     FANWV10 IS NOT THE FIRST FAN
                   END IF
               END DO
  10           CONTINUE
@@ -4302,8 +4282,6 @@ C     FANWV1 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(1)
                       GO TO 20
-                  ELSE
-C     FANWV1 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
 C     FANWV2 IS THE SECOND FAN
@@ -4311,8 +4289,6 @@ C     FANWV2 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(2)
                       GO TO 20
-                  ELSE
-C     FANWV2 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
 C     FANWV3 IS THE SECOND FAN
@@ -4320,8 +4296,6 @@ C     FANWV3 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(3)
                       GO TO 20
-                  ELSE
-C     FANWV3 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
 C     FANWV1 IS THE SECOND FAN
@@ -4329,8 +4303,6 @@ C     FANWV1 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(4)
                       GO TO 20
-                  ELSE
-C     FANWV4 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
 C     FANWV5 IS THE SECOND FAN
@@ -4338,8 +4310,6 @@ C     FANWV5 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(5)
                       GO TO 20
-                  ELSE
-C     FANWV5 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
 C     FANWV1 IS THE SECOND FAN
@@ -4347,8 +4317,6 @@ C     FANWV1 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(71)
                       GO TO 20
-                  ELSE
-C     FANWV6 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
 C     FANWV1 IS THE SECOND FAN
@@ -4356,8 +4324,6 @@ C     FANWV1 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(72)
                       GO TO 20
-                  ELSE
-C     FANWV7 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
 C     FANWV8 IS THE SECOND FAN
@@ -4365,8 +4331,6 @@ C     FANWV8 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(73)
                       GO TO 20
-                  ELSE
-C     FANWV8 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
 C     FANWV9 IS THE SECOND FAN
@@ -4374,8 +4338,6 @@ C     FANWV9 IS THE SECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(74)
                       GO TO 20
-                  ELSE
-C     FANWV9 IS NOT THE SECOND FAN
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
 C     FANWV10 IS THE DECOND FAN
@@ -4383,8 +4345,6 @@ C     FANWV10 IS THE DECOND FAN
                       FANLAST=FAN2
                       WAVE2=SYSTEM1(75)
                       GO TO 20
-                  ELSE
-C     FANWV10 IS NOT THE SECOND FAN
                   END IF
               END DO
  20           CONTINUE
@@ -4394,70 +4354,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(1)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN3=2
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(2)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN3=3
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(3)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN3=4
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(4)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN3=5
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(5)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN3=6
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(71)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN3=7
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(72)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN3=8
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(73)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN3=9
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(74)
                       GO TO 30
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN3=10
                       FANLAST=FAN3
                       WAVE3=SYSTEM1(75)
                       GO TO 30
-                  ELSE
                   END IF
               END DO
  30           CONTINUE
@@ -4467,70 +4417,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(1)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN4=2
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(2)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN4=3
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(3)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN4=4
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(4)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN4=5
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(5)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN4=6
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(71)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN4=7
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(72)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN4=8
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(73)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN4=9
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(74)
                       GO TO 40
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN4=10
                       FANLAST=FAN4
                       WAVE4=SYSTEM1(75)
                       GO TO 40
-                  ELSE
                   END IF
               END DO
  40           CONTINUE
@@ -4540,70 +4480,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(1)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN5=2
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(2)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN5=3
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(3)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN5=4
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(4)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN5=5
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(5)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN5=6
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(71)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN5=7
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(72)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN5=8
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(73)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN5=9
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(74)
                       GO TO 50
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN5=10
                       FANLAST=FAN5
                       WAVE5=SYSTEM1(75)
                       GO TO 50
-                  ELSE
                   END IF
               END DO
  50           CONTINUE
@@ -4613,70 +4543,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(1)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN6=2
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(2)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN6=3
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(3)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN6=4
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(4)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN6=5
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(5)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN6=6
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(71)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN6=7
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(72)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN6=8
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(73)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN6=9
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(74)
                       GO TO 60
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN6=10
                       FANLAST=FAN6
                       WAVE6=SYSTEM1(75)
                       GO TO 60
-                  ELSE
                   END IF
               END DO
  60           CONTINUE
@@ -4686,70 +4606,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(1)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN7=2
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(2)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN7=3
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(3)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN7=4
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(4)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN7=5
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(5)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN7=6
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(71)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN7=7
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(72)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN7=8
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(73)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN7=9
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(74)
                       GO TO 70
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN7=10
                       FANLAST=FAN7
                       WAVE7=SYSTEM1(75)
                       GO TO 70
-                  ELSE
                   END IF
               END DO
  70           CONTINUE
@@ -4759,70 +4669,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(1)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN8=2
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(2)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN8=3
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(3)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN8=4
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(4)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN8=5
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(5)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN8=6
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(71)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN8=7
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(72)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN8=8
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(73)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN8=9
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(74)
                       GO TO 80
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN8=10
                       FANLAST=FAN8
                       WAVE8=SYSTEM1(75)
                       GO TO 80
-                  ELSE
                   END IF
               END DO
  80           CONTINUE
@@ -4832,70 +4732,60 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(1)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN9=2
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(2)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN9=3
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(3)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN9=4
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(4)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN9=5
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(5)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN9=6
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(71)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN9=7
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(72)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN9=8
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(73)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN9=9
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(74)
                       GO TO 90
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN9=10
                       FANLAST=FAN9
                       WAVE9=SYSTEM1(75)
                       GO TO 90
-                  ELSE
                   END IF
               END DO
  90           CONTINUE
@@ -4905,75 +4795,65 @@ C     FANWV10 IS NOT THE SECOND FAN
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(1)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.2.AND.FANWV2) THEN
                       FAN10=2
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(2)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.3.AND.FANWV3) THEN
                       FAN10=3
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(3)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.4.AND.FANWV4) THEN
                       FAN10=4
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(4)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.5.AND.FANWV5) THEN
                       FAN10=5
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(5)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.6.AND.FANWV6) THEN
                       FAN10=6
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(71)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.7.AND.FANWV7) THEN
                       FAN10=7
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(72)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.8.AND.FANWV8) THEN
                       FAN10=8
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(73)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.9.AND.FANWV9) THEN
                       FAN10=9
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(74)
                       GO TO 100
-                  ELSE
                   END IF
                   IF(I.EQ.10.AND.FANWV10) THEN
                       FAN10=10
                       FANLAST=FAN10
                       WAVE10=SYSTEM1(75)
                       GO TO 100
-                  ELSE
                   END IF
               END DO
           END IF
  100      CONTINUE
-C
+
           IF(FAN5.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 5
 C     DRAW THE WV5 LINE
@@ -5007,14 +4887,12 @@ C     DRAW THE WV5 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'  ! micrometer
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(1250,350,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #5 LEGEND
           END IF
           IF(FAN4.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 4
@@ -5045,14 +4923,12 @@ C     DRAW THE WV4 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(1250,550,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #4 LEGEND
           END IF
           IF(FAN3.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 3
@@ -5084,15 +4960,12 @@ C     DRAW THE WV3 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-!    "Label 'm' = micron
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(1250,750,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #3 LEGEND
           END IF
           IF(FAN2.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 2
@@ -5124,15 +4997,12 @@ C     DRAW THE WV2 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-!    "Label 'm' = micron
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(1250,950,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #2 LEGEND
           END IF
           IF(FAN1.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 1
@@ -5164,14 +5034,12 @@ C     DRAW THE WV1 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-!    "Label 'm' = micron
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(1250,1150,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
           END IF
           IF(FAN10.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 10
@@ -5202,14 +5070,12 @@ C     DRAW THE WV10 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(2650,350,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #10 LEGEND
           END IF
           IF(FAN9.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 9
@@ -5240,14 +5106,12 @@ C     DRAW THE WV9 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(2650,550,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #9 LEGEND
           END IF
           IF(FAN8.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 8
@@ -5278,14 +5142,12 @@ C     DRAW THE WV8 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(2650,750,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #8 LEGEND
           END IF
           IF(FAN7.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 7
@@ -5316,14 +5178,12 @@ C     DRAW THE WV7 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(2650,950,NNTT2(1:1),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
-          ELSE
-C     DON'T DO THE PLOTTING OF THE WAVELENGTH #7 LEGEND
           END IF
           IF(FAN6.NE.0) THEN
 C     DO THE PLOTTING OF THE LEGEND FOR WAVELENGTH 6
@@ -5354,7 +5214,7 @@ C     DOTTED LINE BUT WITH BIG DOTS
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='m'
+              NNTT2='um'
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
               CALL MY_JUSTSTRING(2650,1150,NNTT2(1:1),0,NT1SIZ,3)
@@ -5373,7 +5233,6 @@ C     DROP PEN, DRAW LINE
           CALL MY_PLOT(3000,1325,1,0,-10,10010,-10,7010)
           CALL MY_PLOT(3000,250,1,0,-10,10010,-10,7010)
           CALL MY_PLOT(0,1325,0,0,-10,10010,-10,7010)
-C     DROP PEN, DRAW LINE
           CALL MY_PLOT(10000,1325,1,0,-10,10010,-10,7010)
 C     LIFT PEN, RETURN TO 0,0
           CALL MY_PLOT(0,0,0,0,-10,10010,-10,7010)

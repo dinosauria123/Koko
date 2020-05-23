@@ -1765,27 +1765,27 @@ C
           END IF
           IF(STI.EQ.1.OR.SN.EQ.0.AND.SQ.EQ.0.AND.SST.EQ.0) THEN
 ! 100  FORMAT(
-!     1'THE TEN GLASS EVALUATION WAVELENGTHS IN MICRONS CURRENTLY ARE:')
+!     1'THE TEN GLASS EVALUATION WAVELENGTHS IN MICROMETER CURRENTLY ARE:')
  101          FORMAT(
-     1        'WAVELENGTH #1  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #1  = ',G13.6,'MICROMETER')
  102          FORMAT(
-     1        'WAVELENGTH #2  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #2  = ',G13.6,'MICROMETER')
  103          FORMAT(
-     1        'WAVELENGTH #3  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #3  = ',G13.6,'MICROMETER')
  104          FORMAT(
-     1        'WAVELENGTH #4  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #4  = ',G13.6,'MICROMETER')
  105          FORMAT(
-     1        'WAVELENGTH #5  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #5  = ',G13.6,'MICROMETER')
  106          FORMAT(
-     1        'WAVELENGTH #6  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #6  = ',G13.6,'MICROMETER')
  107          FORMAT(
-     1        'WAVELENGTH #7  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #7  = ',G13.6,'MICROMETER')
  108          FORMAT(
-     1        'WAVELENGTH #8  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #8  = ',G13.6,'MICROMETER')
  109          FORMAT(
-     1        'WAVELENGTH #9  = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #9  = ',G13.6,'MICROMETER')
  110          FORMAT(
-     1        'WAVELENGTH #10 = ',G13.6,'MICRONS')
+     1        'WAVELENGTH #10 = ',G13.6,'MICROMETER')
               WRITE(OUTLYNE,101) GLSWV(1)
               CALL SHOWIT(0)
               WRITE(OUTLYNE,102) GLSWV(2)
@@ -1841,24 +1841,24 @@ C
 C
           INCLUDE 'datlen.inc'
           INCLUDE 'datmai.inc'
-C
+
 C       NOW RESOLVE THE CALCULATION OF REFRACTIVE INDICES VIA
 C       GLASS CATALOG SEARCHES.
 C
-C       THERE IS AN EQUATION FOR CALCULATION OF INDICES USED
-C       ACROSS THE INDUSTRY. IT IS
-C
+C     The Sellmeier formula is used throughout the optics industry
+C     for the calculation of refractive indices:
+
           PN(LAMBDA,A0,A1,A2,A3,A4,A5)=
      1    DSQRT(A0+(A1*(LAMBDA**2))+(A2*(1.0D0/(LAMBDA**2)))+
      2    (A3*(1.0D0/(LAMBDA**4)))+(A4*(1.0D0/(LAMBDA**6)))+
      3    (A5*(1.0D0/(LAMBDA**8))))
-C
+
           PNSC(LAMBDA,A0,A1,A2,A3,A4,A5)=
      1    DSQRT(
      1    ((A0*(LAMBDA**2))/((LAMBDA**2)-A3))+
      2    ((A1*(LAMBDA**2))/((LAMBDA**2)-A4))+
      2    ((A2*(LAMBDA**2))/((LAMBDA**2)-A5))+1.0D0)
-C
+
 C       DETERMINE MINIMUM AND MAX GLSWV WAVELENGTHS
           LMIN=GLSWV(1)
           IF(GLSWV(2).LT.LMIN) LMIN=GLSWV(2)
@@ -1945,7 +1945,7 @@ C       STOP AND GO TO CMD LEVEL AND PRINT WARNING
                   WRITE(OUTLYNE,200) LAMLOW,LAMUPP
                   CALL SHOWIT(1)
  200              FORMAT('IT IS DEFINED ONLY FROM ',F9.4,' TO ',F9.4,
-     1            ' MICRON(S)')
+     1            ' MICROMETER')
                   OUTLYNE=
      1            'ALL REFRACTIVE INDICES FOR THIS GLASS HAVE BEEN SET TO 1.0'
                   CALL SHOWIT(1)
@@ -3426,7 +3426,7 @@ C       STOP AND GO TO CMD LEVEL AND PRINT WARNING
                           WRITE(OUTLYNE,200) LAMLOW,LAMUPP
                           CALL SHOWIT(1)
  200                      FORMAT('IT IS DEFINED ONLY FROM ',F9.4,' TO ',F9.4,
-     1                    ' MICRON(S)')
+     1                    ' MICROMETER')
                           OUTLYNE=
      1                    'ALL REFRACTIVE INDICES FOR THIS SURFACE HAVE BEEN SET TO 1.0'
                           CALL SHOWIT(1)
@@ -5430,7 +5430,7 @@ C       STOP AND GO TO CMD LEVEL AND PRINT WARNING
                       WRITE(OUTLYNE,200) LAMLOW,LAMUPP
                       CALL SHOWIT(1)
  200                  FORMAT('IT IS DEFINED ONLY FROM ',F9.4,' TO ',F9.4,
-     1                ' MICRON(S)')
+     1                ' MICROMETER')
                       OUTLYNE=
      1                'ALL REFRACTIVE INDICES FOR THIS GLASS HAVE BEEN SET TO 1.0'
                       CALL SHOWIT(1)
@@ -5612,7 +5612,7 @@ C       STOP AND GO TO CMD LEVEL AND PRINT WARNING
                       WRITE(OUTLYNE,200) LAMLOW,LAMUPP
                       CALL SHOWIT(1)
  200                  FORMAT('IT IS DEFINED ONLY FROM ',F9.4,' TO ',F9.4,
-     1                ' MICRON(S)')
+     1                ' MICROMETER')
                       OUTLYNE=
      1                'ALL REFRACTIVE INDICES FOR THIS SURFACE HAVE BEEN SET TO 1.0'
                       CALL SHOWIT(1)

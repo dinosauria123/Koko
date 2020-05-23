@@ -299,7 +299,7 @@ C     GENERATE GRAPHIC
           IF(K.EQ.1) THEN
               CALL MY_JUSTSTRING(100,250,
      1        'PEAK TO VALLEY OPD MAP AT WAVELENGTH = '
-     2        //TRIM(WAVVAL)//' MICRON(S)',0,1,3)
+     2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'WAVEFRONT CONTOUR LEVELS'
      2        ,0,1,3,3)
@@ -307,7 +307,7 @@ C     GENERATE GRAPHIC
           IF(K.EQ.2) THEN
               CALL MY_JUSTSTRING(100,250,
      1        'RMS OPD MAP AT WAVELENGTH = '
-     2        //TRIM(WAVVAL)//' MICRON(S)',0,1,3)
+     2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'WAVEFRONT CONTOUR LEVELS'
      2        ,0,1,3)
@@ -315,7 +315,7 @@ C     GENERATE GRAPHIC
           IF(K.EQ.3) THEN
               CALL MY_JUSTSTRING(100,250,
      1        'PSF BASED STREHL RATIO AT WAVELENGTH = '
-     2        //TRIM(WAVVAL)//' MICRON(S)',0,1,3)
+     2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'STREHL RATIO CONTOUR LEVELS'
      2        ,0,1,3)

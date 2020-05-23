@@ -2561,11 +2561,11 @@ C                       PROCEED
                   REG(12)=SAGMEAN
                   REG(11)=SAGRMS
                   REG(10)=SAGPTOV
- 103              FORMAT('MINIMUM SAG VALUE1 IN MICRONS = ',G23.15)
- 104              FORMAT('MAXIMUM SAG VALUE1 IN MICRONS = ',G23.15)
- 105              FORMAT('   MEAN SAG VALUE1 IN MICRONS = ',G23.15)
- 106              FORMAT('    RMS SAG VALUE1 IN MICRONS = ',G23.15)
- 107              FORMAT('    P-V SAG VALUE1 IN MICRONS = ',G23.15)
+ 103              FORMAT('MINIMUM SAG VALUE1 IN MICROMETER = ',G23.15)
+ 104              FORMAT('MAXIMUM SAG VALUE1 IN MICROMETER = ',G23.15)
+ 105              FORMAT('   MEAN SAG VALUE1 IN MICROMETER = ',G23.15)
+ 106              FORMAT('    RMS SAG VALUE1 IN MICROMETER = ',G23.15)
+ 107              FORMAT('    P-V SAG VALUE1 IN MICROMETER = ',G23.15)
                   RETURN
               ELSE
 C     NOT 'FILE'

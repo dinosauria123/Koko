@@ -81,18 +81,18 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! Checks if the data directory for KODS exists. Since the
+  ! Fortran 'inquire' function cannot check for the existence of
+  ! directories, this function checks for the existence of a file
+  ! 'topdir/KODS/README_DATA'
+  !
+  ! INPUT
+  ! topdir :  directory containing the KODS directory
+  !
+  ! OUTPUT
+  ! returns T if the directory exists, F otherwise
+  !
   LOGICAL FUNCTION kods_dir_exists( topdir )
-
-    ! Checks if the data directory for KODS exists. Since the
-    ! Fortran 'inquire' function cannot check for the existence of
-    ! directories, this function checks for the existence of a file
-    ! 'topdir/KODS/README_DATA'
-    !
-    ! INPUT
-    ! topdir :  directory containing the KODS directory
-    !
-    ! OUTPUT
-    ! returns T if the directory exists, F otherwise
 
     CHARACTER(len=*), INTENT(in) :: topdir
     CHARACTER(len=256)           :: testfile
@@ -111,11 +111,11 @@ CONTAINS
 
 
   !----------------------------------------------------------  
+  ! A function the check for the existence of a file;
+  ! makes the inquire statement easier to use in logical
+  ! expressions
+  !
   LOGICAL FUNCTION file_exists( fname )
-
-    ! A function the check for the existence of a file;
-    ! makes the inquire statement easier to use in logical
-    ! expressions
 
     CHARACTER(len=*), INTENT(in) :: fname
 
@@ -125,13 +125,13 @@ CONTAINS
   
 
   !----------------------------------------------------------
+  ! Returns the system wide config file name on any platform
+  !
+  ! OUTPUT
+  ! cfgfile :  fully qualified name of the Koko configuration file
+  !
   SUBROUTINE sys_config_file(cfgfile)
     
-    ! Returns the system wide config file name on any platform
-    !
-    ! OUTPUT
-    ! cfgfile :  fully qualified name of the Koko configuration file
-
     CHARACTER(len=*), INTENT(out) :: cfgfile
 
 # if defined( WINDOWS )
@@ -151,16 +151,16 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! A platform-independent way to append a directory to a path
+  !
+  ! INPUT
+  ! partpath :  a path, possibly containing a drive designator
+  ! pathitem :  name of a component to be appended to the path
+  !
+  ! OUTPUT
+  ! fullpath :  the concatenated path name
+  !
   SUBROUTINE dir_path_append(fullpath, partpath, pathitem)
-
-    ! A platform-independent way to append a directory to a path
-    !
-    ! INPUT
-    ! partpath :  a path, possibly containing a drive designator
-    ! pathitem :  name of a component to be appended to the path
-    !
-    ! OUTPUT
-    ! fullpath :  the concatenated path name
 
     CHARACTER(len=*), INTENT(in)  :: partpath, pathitem
     CHARACTER(len=*), INTENT(out) :: fullpath
@@ -177,9 +177,14 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! Returns a directory for storing temporary files. The
+  ! subroutine first reads the contents of the environment
+  ! variable TEMP. If it is empty, a default value is returned.
+  !
+  ! INPUT
+  ! tmpdir :  a string with the directory name
+  !
   SUBROUTINE set_kods_temp_dir( tmpdir )
-
-    ! Returns a directory for storing temporary files
 
     CHARACTER(len=*), INTENT(out) :: tmpdir
     CHARACTER(len=256)            :: tdir
@@ -199,9 +204,9 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! adds a (back-) slash to a directory name
+  !
   SUBROUTINE add_dir_slash( dirname )
-
-    ! adds a (back-) slash to a directory name
 
     CHARACTER(len=*), INTENT(inout) :: dirname
     CHARACTER                       :: last_char
@@ -225,9 +230,9 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! deletes a file
+  !
   SUBROUTINE os_delete( filename )
-
-    ! deletes a file
 
     CHARACTER(len=*), INTENT(in) :: filename
     CHARACTER(len=4)             :: cmd
@@ -247,10 +252,10 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! Copies a file
+  !
   SUBROUTINE os_copy( from_name, to_name )
 
-    ! copies a file
-    
     CHARACTER(len=*), INTENT(in) :: from_name, to_name
     CHARACTER(len=8)             :: cmd
 
@@ -271,10 +276,10 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! Creates a new directory
+  !
   SUBROUTINE os_newdir( dir_name )
 
-    ! creates a new directory
-    
     CHARACTER(len=*), INTENT(in) :: dir_name
     CHARACTER(len=12)            :: cmd
 
@@ -291,10 +296,10 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! Lists the contents of a directory
+  !
   SUBROUTINE os_listdir( dir_name )
 
-    ! creates a new directory
-    
     CHARACTER(len=*), INTENT(in) :: dir_name
     CHARACTER(len=8)             :: cmd
 
@@ -311,11 +316,11 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! a simplified interface to executing a shell command. On unix
+  ! systems the command is passed to 'sh', on Windows systems to
+  ! 'cmd.exe'
+  !
   SUBROUTINE shell_command( command )
-
-    ! a simplified interface to executing a shell command. On unix
-    ! systems the command is passed to 'sh', on Windows systems to
-    ! 'cmd.exe'
 
     CHARACTER(len=*), INTENT(in) :: command
     INTEGER                      :: exitstat, cmdstat

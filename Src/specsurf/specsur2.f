@@ -1922,106 +1922,54 @@ C
      1            COEF(56)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1            COEF(60)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1            COEF(64)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7004) COEF(65),COEF(66)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.3.OR.ITY.EQ.10) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1            COEF(4)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1            COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1            COEF(12)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1            COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7042) COEF(37)
                   CALL SHOWIT(0)
@@ -2060,63 +2008,28 @@ C
               END IF
               IF(ITY.EQ.18) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,5001) COEF(1),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,5002) COEF(2),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,5003) COEF(3),UN
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,5004) COEF(4),COEF(5),COEF(6),
-     1            COEF(7)
+                  WRITE(OUTLYNE,5004) COEF(4),COEF(5),COEF(6),COEF(7)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,5005) COEF(8),COEF(9),COEF(10),
-     1            COEF(11)
+                  WRITE(OUTLYNE,5005) COEF(8),COEF(9),COEF(10),COEF(11)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,5006) COEF(12),COEF(13),COEF(14),
-     1            COEF(15)
+                  WRITE(OUTLYNE,5006) COEF(12),COEF(13),COEF(14),COEF(15)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,5007) COEF(16),COEF(17),COEF(18)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.19) THEN
-
-
-
-
 
                   IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,8001) INT(COEF(1))
                   IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,8006)
@@ -2124,25 +2037,14 @@ C
  8006             FORMAT('NO APODIZATION SOURCE GRID FILE HAS BEEN SPECIFIED')
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,8002) INT(COEF(2))
  8002             FORMAT('APODIZATION GRID DIMENSION NxN, N = ',I5)
                   CALL SHOWIT(0)
-
-
-
 
                   COEF(3)=FTFL01(3,SURF)
                   WRITE(OUTLYNE,8003) COEF(3)
  8003             FORMAT('GRID CLEAR APERTURE(RADIUS) = ',G15.8,1X,A6)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,9030) COEF(4)
  9030             FORMAT('APODIZATION SCALE FACTOR = ',G15.8)
@@ -2151,243 +2053,102 @@ C
               END IF
               IF(ITY.EQ.22) THEN
 
-
-
-
-
                   IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,8101) INT(COEF(1))
                   IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,8106)
  8101             FORMAT('GRID SAG FILE # (SGGRIDxx.DAT), xx = ',I2)
  8106             FORMAT('NO SAG SOURCE GRID FILE HAS BEEN SPECIFIED')
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,8102) INT(COEF(2))
  8102             FORMAT('SAG GRID DIMENSION NxN, N = ',I5)
                   CALL SHOWIT(0)
-
-
-
-
 
                   COEF(3)=FTFL01(3,SURF)
                   WRITE(OUTLYNE,8103) COEF(3)
  8103             FORMAT('GRID CLEAR APERTURE(RADIUS) = ',G15.8,1X,A6)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,9050) COEF(4)
  9050             FORMAT('SAG SCALE FACTOR = ',G15.8)
                   CALL SHOWIT(0)
-
-
               END IF
               IF(ITY.EQ.23) THEN
 C     NORMAL CUBIC SPLINE
 
-
-
-
-                  WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
-     1            COEF(4)
+                  WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),COEF(4)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
-     1            COEF(8)
+                  WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
-     1            COEF(12)
+                  WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
-     1            COEF(16)
+                  WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
-     1            COEF(20)
+                  WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),COEF(20)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
-     1            COEF(24)
+                  WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
-     1            COEF(28)
+                  WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),COEF(28)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
-     1            COEF(32)
+                  WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
-     1            COEF(36)
+                  WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),COEF(36)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
-     1            COEF(40)
+                  WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),COEF(40)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
-     1            COEF(44)
+                  WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),COEF(44)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
-     1            COEF(48)
+                  WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),COEF(48)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
-     1            COEF(52)
+                  WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),COEF(52)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
-     1            COEF(56)
+                  WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),COEF(56)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
-     1            COEF(60)
+                  WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),COEF(60)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
-     1            COEF(64)
+                  WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),COEF(64)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
-     1            COEF(68)
+                  WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),COEF(68)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
-     1            COEF(72)
+                  WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),COEF(72)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
-     1            COEF(76)
+                  WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),COEF(76)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
-     1            COEF(80)
+                  WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),COEF(80)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
-     1            COEF(84)
+                  WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),COEF(84)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
-     1            COEF(87)
+                  WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),COEF(87)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
-     1            COEF(92)
+                  WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),COEF(92)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
-     1            COEF(96)
+                  WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),COEF(96)
                   CALL SHOWIT(0)
               END IF
 C
               IF(ITY.EQ.20) THEN
-
-
-
-
 
                   IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,9001) INT(COEF(1))
                   IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,9006)
@@ -2395,17 +2156,9 @@ C
  9006             FORMAT('NO PHASE SOURCE GRID FILE HAS BEEN SPECIFIED')
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,9002) INT(COEF(2))
  9002             FORMAT('PHASE GRID DIMENSION NxN, N = ',I5)
                   CALL SHOWIT(0)
-
-
-
-
 
                   COEF(3)=FTFL01(3,SURF)
                   WRITE(OUTLYNE,9003) COEF(3),UN
@@ -2421,14 +2174,10 @@ C
  9008             FORMAT
      1            ('INPUT PHASE(OPD) UNITS ARE CURRENT LENS UNITS = ',A6)
  9009             FORMAT
-     1            ('INPUT PHASE(OPD) UNITS ARE MICRONS')
+     1            ('INPUT PHASE(OPD) UNITS ARE MICROMETER')
  9010             FORMAT
      1            ('INVALID UNITS CODE FOUND IN TYPE 20 SPECIAL SURFACE')
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,9040) COEF(5)
  9040             FORMAT('PHASE SCALE FACTOR = ',G15.8)
@@ -2437,387 +2186,171 @@ C
               END IF
               IF(ITY.EQ.5.OR.ITY.EQ.11) THEN
 
-
-
-
-
-                  WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
-     1            COEF(4)
+                  WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),COEF(4)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
-     1            COEF(8)
+                  WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
-     1            COEF(12)
+                  WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
-     1            COEF(16)
+                  WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
-     1            COEF(20)
+                  WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),COEF(20)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
-     1            COEF(24)
+                  WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
-     1            COEF(28)
+                  WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),COEF(28)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
-     1            COEF(32)
+                  WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
-     1            COEF(36)
+                  WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),COEF(36)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
-     1            COEF(40)
+                  WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),COEF(40)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
-     1            COEF(44)
+                  WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),COEF(44)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
-     1            COEF(48)
+                  WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),COEF(48)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
-     1            COEF(52)
+                  WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),COEF(52)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
-     1            COEF(56)
+                  WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),COEF(56)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
-     1            COEF(60)
+                  WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),COEF(60)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
-     1            COEF(64)
+                  WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),COEF(64)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
-     1            COEF(68)
+                  WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),COEF(68)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
-     1            COEF(72)
+                  WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),COEF(72)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
-     1            COEF(76)
+                  WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),COEF(76)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
-     1            COEF(80)
+                  WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),COEF(80)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
-     1            COEF(84)
+                  WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),COEF(84)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
-     1            COEF(87)
+                  WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),COEF(87)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
-     1            COEF(92)
+                  WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),COEF(92)
                   CALL SHOWIT(0)
 
-
-
-
-
-                  WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
-     1            COEF(96)
+                  WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),COEF(96)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.21) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1            COEF(4)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1            COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1            COEF(12)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1            COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1            COEF(40)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1            COEF(44)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1            COEF(48)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1            COEF(52)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1            COEF(56)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1            COEF(60)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1            COEF(64)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1            COEF(68)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1            COEF(72)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1            COEF(76)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1            COEF(80)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1            COEF(84)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1            COEF(87)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1            COEF(92)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1            COEF(96)
@@ -2825,97 +2358,49 @@ C
               END IF
               IF(ITY.EQ.14.OR.ITY.EQ.15) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1            COEF(4)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1            COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1            COEF(12)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1            COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1            COEF(40)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1            COEF(44)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1            COEF(48)
@@ -2923,25 +2408,13 @@ C
               END IF
               IF(ITY.EQ.16) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1            COEF(4)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1            COEF(8)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,401) COEF(9),COEF(10),COEF(11)
                   CALL SHOWIT(0)
@@ -2949,229 +2422,113 @@ C
               END IF
               IF(ITY.EQ.7.OR.ITY.EQ.8) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1            COEF(4)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1            COEF(8)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1            COEF(12)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1            COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1            COEF(40)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1            COEF(44)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1            COEF(48)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1            COEF(52)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1            COEF(56)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1            COEF(60)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1            COEF(64)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1            COEF(68)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1            COEF(72)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1            COEF(76)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1            COEF(80)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1            COEF(84)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1            COEF(87)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7171) COEF(89),COEF(90),COEF(91)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.13.AND.F12.EQ.1) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2201) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2202) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2203) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2204) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2205) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='POS.    '
                   IF(COEF(6).LT.0.0D0) REALL='NEG.    '
@@ -3184,30 +2541,14 @@ C
                   WRITE(OUTLYNE,2207) INT(COEF(7)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2208) COEF(8),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2209) COEF(9),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2210) COEF(10),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(11).GT.0.0D0) REALL='POS.   '
                   IF(COEF(11).LT.0.0D0) REALL='NEG.   '
@@ -3226,44 +2567,20 @@ C
               END IF
               IF(ITY.EQ.12.AND.COEF(11).EQ.0.0D0) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2001) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2002) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2003) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2004) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2005) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='REAL    '
                   IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -3272,30 +2589,14 @@ C
                   WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2007) COEF(7),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2008) COEF(8),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2009) COEF(9),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(10).GT.0.0D0) REALL='REAL   '
                   IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -3306,44 +2607,20 @@ C
               END IF
               IF(ITY.EQ.12.AND.COEF(11).EQ.6.0D0) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2001) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2002) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2003) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2004) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2005) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='REAL    '
                   IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -3352,30 +2629,14 @@ C
                   WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2007) COEF(7),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2008) COEF(8),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2009) COEF(9),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(10).GT.0.0D0) REALL='REAL   '
                   IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -3386,85 +2647,41 @@ C
                   WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,7001) COEF(21),COEF(22),COEF(23)
      1            ,COEF(24)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,7002) COEF(25),COEF(26),COEF(27)
      1            ,COEF(28)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7003) COEF(29),COEF(30),COEF(31)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.12.AND.COEF(11).EQ.1.0D0) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2001) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2002) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2003) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2004) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2005) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='REAL    '
                   IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -3473,30 +2690,14 @@ C
                   WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2007) COEF(7),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2008) COEF(8),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2009) COEF(9),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(10).GT.0.0D0) REALL='REAL   '
                   IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -3507,69 +2708,33 @@ C
                   WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7005) COEF(21)
                   CALL SHOWIT(0)
               END IF
               IF(ITY.EQ.12.AND.COEF(11).EQ.7.0D0) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2001) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2002) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2003) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2004) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2005) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='REAL    '
                   IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -3578,30 +2743,14 @@ C
                   WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2007) COEF(7),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2008) COEF(8),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2009) COEF(9),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(10).GT.0.0D0) REALL='REAL   '
                   IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -3612,218 +2761,109 @@ C
                   WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
-
-
-
+                  
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1            COEF(24)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1            COEF(40)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1            COEF(44)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1            COEF(48)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1            COEF(52)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1            COEF(56)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1            COEF(60)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1            COEF(64)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1            COEF(68)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1            COEF(72)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1            COEF(76)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1            COEF(80)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1            COEF(84)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1            COEF(87)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1            COEF(92)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1            COEF(96)
                   CALL SHOWIT(0)
-
-
-
               END IF
               IF(ITY.EQ.12.AND.COEF(11).EQ.2.0D0.OR.
      1        ITY.EQ.12.AND.COEF(11).EQ.3.0D0.OR.
      1        ITY.EQ.12.AND.COEF(11).EQ.4.0D0.OR.
      1        ITY.EQ.12.AND.COEF(11).EQ.5.0D0) THEN
 
-
-
-
-
                   WRITE(OUTLYNE,2001) COEF(1)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2002) COEF(2)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2003) COEF(3),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2004) COEF(4),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2005) COEF(5),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(6).GT.0.0D0) REALL='REAL    '
                   IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -3832,30 +2872,14 @@ C
                   WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2007) COEF(7),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,2008) COEF(8),UN
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,2009) COEF(9),UN
                   CALL SHOWIT(0)
-
-
-
-
 
                   IF(COEF(10).GT.0.0D0) REALL='REAL   '
                   IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -3866,136 +2890,68 @@ C
                   WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1            COEF(16)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1            COEF(20)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),COEF(24)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1            COEF(28)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1            COEF(32)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1            COEF(36)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1            COEF(40)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1            COEF(44)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1            COEF(48)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1            COEF(52)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1            COEF(56)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1            COEF(60)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1            COEF(64)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1            COEF(68)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1            COEF(72)
                   CALL SHOWIT(0)
 
-
-
-
-
                   WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1            COEF(76)
                   CALL SHOWIT(0)
-
-
-
-
 
                   WRITE(OUTLYNE,7141) COEF(77),COEF(78),COEF(79)
                   CALL SHOWIT(0)
@@ -4145,10 +3101,6 @@ C       THERE IS SPECIAL SURFACE DATA
                   IF(ALENS(34,JK).EQ.24.0)  TYPE='24- ON   '
                   IF(ALENS(34,JK).EQ.-24.0) TYPE='24- OFF  '
                   IF(DABS(ALENS(34,JK)).GT.24.0) THEN
-
-
-
-
                       WRITE(OUTLYNE,*)'SPECIAL SURFACE TYPE NOT RECOGNIZED'
                       CALL SHOWIT(1)
                       WRITE(OUTLYNE,*)'VALID TYPES RANGE FROM 1 TO 24'
@@ -4172,291 +3124,147 @@ C
                       CALL SHOWIT(0)
                   END IF
 
-
-
-
-
                   WRITE(OUTLYNE,102) TYPE2(1:79)
                   CALL SHOWIT(0)
                   IF(ITY.EQ.1.OR.ITY.EQ.6) THEN
-
-
-
-
 
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7041) COEF(37),COEF(38),COEF(39)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.2.OR.ITY.EQ.9) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7004) COEF(65),COEF(66)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.3.OR.ITY.EQ.10) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7042) COEF(37)
                       CALL SHOWIT(0)
@@ -4495,86 +3303,42 @@ C
                   END IF
                   IF(ITY.EQ.18) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,5001) COEF(1),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,5002) COEF(2),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,5003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,5004) COEF(4),COEF(5),COEF(6),
      1                COEF(7)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,5005) COEF(8),COEF(9),COEF(10),
      1                COEF(11)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,5006) COEF(12),COEF(13),COEF(14),
      1                COEF(15)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,5007) COEF(16),COEF(17),COEF(18)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.19) THEN
 
-
-
-
-
                       IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,8001) INT(COEF(1))
                       IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,8006)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,8002) INT(COEF(2))
                       CALL SHOWIT(0)
-
-
-
-
 
                       COEF(3)=FTFL01(3,JK)
                       WRITE(OUTLYNE,8003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,9030) COEF(4)
                       CALL SHOWIT(0)
@@ -4582,32 +3346,16 @@ C
                   END IF
                   IF(ITY.EQ.22) THEN
 
-
-
-
-
                       IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,8101) INT(COEF(1))
                       IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,8106)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,8102) INT(COEF(2))
                       CALL SHOWIT(0)
-
-
-
-
 
                       COEF(3)=FTFL01(3,JK)
                       WRITE(OUTLYNE,8103) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,9050) COEF(4)
                       CALL SHOWIT(0)
@@ -4615,193 +3363,97 @@ C
                   END IF
                   IF(ITY.EQ.23) THEN
 C     NORMAL CUBIC SPLINE
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1                COEF(80)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1                COEF(84)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1                COEF(87)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1                COEF(92)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1                COEF(96)
@@ -4809,24 +3461,12 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.20) THEN
 
-
-
-
-
                       IF(COEF(1).NE.0.0D0)WRITE(OUTLYNE,9001) INT(COEF(1))
                       IF(COEF(1).EQ.0.0D0)WRITE(OUTLYNE,9006)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,9002) INT(COEF(2))
                       CALL SHOWIT(0)
-
-
-
-
 
                       COEF(3)=FTFL01(3,JK)
                       WRITE(OUTLYNE,9003) COEF(3)
@@ -4837,203 +3477,103 @@ C     NORMAL CUBIC SPLINE
                       IF(COEF(4).EQ.3.0D0)WRITE(OUTLYNE,9010)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,9040) COEF(5)
                       CALL SHOWIT(0)
                   END IF
 
                   IF(ITY.EQ.5.OR.ITY.EQ.11) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1                COEF(80)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1                COEF(84)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1                COEF(87)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1                COEF(92)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1                COEF(96)
@@ -5041,193 +3581,97 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.21) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1                COEF(80)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1                COEF(84)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1                COEF(87)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1                COEF(92)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1                COEF(96)
@@ -5235,97 +3679,49 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.14.OR.ITY.EQ.15) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
@@ -5333,25 +3729,13 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.16) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,401) COEF(9),COEF(10),COEF(11)
                       CALL SHOWIT(0)
@@ -5359,229 +3743,113 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.7.OR.ITY.EQ.8) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,200) COEF(1),COEF(2),COEF(3),
      1                COEF(4)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,300) COEF(5),COEF(6),COEF(7),
      1                COEF(8)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,400) COEF(9),COEF(10),COEF(11),
      1                COEF(12)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1                COEF(80)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1                COEF(84)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1                COEF(87)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7171) COEF(89),COEF(90),COEF(91)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.13.AND.F12.EQ.1) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2201) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2202) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2203) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2204) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2205) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='POS.    '
                       IF(COEF(6).LT.0.0D0) REALL='NEG.    '
@@ -5594,30 +3862,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2207) INT(COEF(7)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2208) COEF(8),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2209) COEF(9),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2210) COEF(10),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(11).GT.0.0D0) REALL='POS.   '
                       IF(COEF(11).LT.0.0D0) REALL='NEG.   '
@@ -5636,44 +3888,20 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.12.AND.COEF(11).EQ.0.0D0) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2001) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2002) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2004) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2005) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='REAL    '
                       IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -5682,30 +3910,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2007) COEF(7),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2008) COEF(8),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2009) COEF(9),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(10).GT.0.0D0) REALL='REAL   '
                       IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -5716,44 +3928,20 @@ C     NORMAL CUBIC SPLINE
                   END IF
                   IF(ITY.EQ.12.AND.COEF(11).EQ.6.0D0) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2001) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2002) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2004) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2005) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='REAL    '
                       IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -5762,30 +3950,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2007) COEF(7),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2008) COEF(8),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2009) COEF(9),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(10).GT.0.0D0) REALL='REAL   '
                       IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -5796,69 +3968,33 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7005) COEF(21)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.12.AND.COEF(11).EQ.1.0D0) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2001) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2002) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2004) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2005) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='REAL    '
                       IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -5867,30 +4003,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2007) COEF(7),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2008) COEF(8),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2009) COEF(9),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(10).GT.0.0D0) REALL='REAL   '
                       IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -5901,69 +4021,33 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7005) COEF(21)
                       CALL SHOWIT(0)
                   END IF
                   IF(ITY.EQ.12.AND.COEF(11).EQ.7.0D0) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2001) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2002) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2004) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2005) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='REAL    '
                       IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -5972,30 +4056,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2007) COEF(7),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2008) COEF(8),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2009) COEF(9),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(10).GT.0.0D0) REALL='REAL   '
                       IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -6006,218 +4074,109 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
-
-
-
+                      
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),
      1                COEF(24)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,714) COEF(77),COEF(78),COEF(79),
      1                COEF(80)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,715) COEF(81),COEF(82),COEF(83),
      1                COEF(84)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,716) COEF(84),COEF(85),COEF(86),
      1                COEF(87)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,717) COEF(89),COEF(90),COEF(91),
      1                COEF(92)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,718) COEF(93),COEF(94),COEF(95),
      1                COEF(96)
                       CALL SHOWIT(0)
-
-
-
                   END IF
                   IF(ITY.EQ.12.AND.COEF(11).EQ.2.0D0.OR.
      1            ITY.EQ.12.AND.COEF(11).EQ.3.0D0.OR.
      1            ITY.EQ.12.AND.COEF(11).EQ.4.0D0.OR.
      1            ITY.EQ.12.AND.COEF(11).EQ.5.0D0) THEN
 
-
-
-
-
                       WRITE(OUTLYNE,2001) COEF(1)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2002) COEF(2)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2003) COEF(3),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2004) COEF(4),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2005) COEF(5),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(6).GT.0.0D0) REALL='REAL    '
                       IF(COEF(6).LT.0.0D0) REALL='VIRTUAL '
@@ -6226,30 +4185,14 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,2006) INT(COEF(6)),REALL
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2007) COEF(7),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,2008) COEF(8),UN
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,2009) COEF(9),UN
                       CALL SHOWIT(0)
-
-
-
-
 
                       IF(COEF(10).GT.0.0D0) REALL='REAL   '
                       IF(COEF(10).LT.0.0D0) REALL='VIRTUAL'
@@ -6260,136 +4203,68 @@ C     NORMAL CUBIC SPLINE
                       WRITE(OUTLYNE,4001) COEF(11),COEF(12)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,500) COEF(13),COEF(14),COEF(15),
      1                COEF(16)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,600) COEF(17),COEF(18),COEF(19),
      1                COEF(20)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,700) COEF(21),COEF(22),COEF(23),COEF(24)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,701) COEF(25),COEF(26),COEF(27),
      1                COEF(28)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,702) COEF(29),COEF(30),COEF(31),
      1                COEF(32)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,703) COEF(33),COEF(34),COEF(35),
      1                COEF(36)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,704) COEF(37),COEF(38),COEF(39),
      1                COEF(40)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,705) COEF(41),COEF(42),COEF(43),
      1                COEF(44)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,706) COEF(45),COEF(46),COEF(47),
      1                COEF(48)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,707) COEF(49),COEF(50),COEF(51),
      1                COEF(52)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,708) COEF(53),COEF(54),COEF(55),
      1                COEF(56)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,709) COEF(57),COEF(58),COEF(59),
      1                COEF(60)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,710) COEF(61),COEF(62),COEF(63),
      1                COEF(64)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,711) COEF(65),COEF(66),COEF(67),
      1                COEF(68)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,712) COEF(69),COEF(70),COEF(71),
      1                COEF(72)
                       CALL SHOWIT(0)
 
-
-
-
-
                       WRITE(OUTLYNE,713) COEF(73),COEF(74),COEF(75),
      1                COEF(76)
                       CALL SHOWIT(0)
-
-
-
-
 
                       WRITE(OUTLYNE,7141) COEF(77),COEF(78),COEF(79)
                       CALL SHOWIT(0)
@@ -6403,7 +4278,7 @@ C
  200      FORMAT('C(01)=',G12.5,1X,'C(02)=',
      1    G12.5,1X,'C(03)=',G12.5,1X,'C(04)=',G12.5)
  2001     FORMAT('HOE ORDER NUMBER      (C1) = ',G15.8)
- 2002     FORMAT('CONST. WAVELENGTH     (C2) = ',G15.8,' MICRONS')
+ 2002     FORMAT('CONST. WAVELENGTH     (C2) = ',G15.8,' MICROMETER')
  2003     FORMAT('X-COORD. SOURCE POINT (C3) = ',G15.8,1X,A6)
  2004     FORMAT('Y-COORD. SOURCE POINT (C4) = ',G15.8,1X,A6)
  2005     FORMAT('Z-COORD. SOURCE POINT (C5) = ',G15.8,1X,A6)
@@ -6414,7 +4289,7 @@ C
  2010     FORMAT('REFERENCE REALITY    (C10) = ',I2,1X,A8)
 C
  2201     FORMAT('HOE ORDER NUMBER      (C1) = ',G15.8)
- 2202     FORMAT('CONST. WAVELENGTH     (C2) = ',G15.8,' MICRONS')
+ 2202     FORMAT('CONST. WAVELENGTH     (C2) = ',G15.8,' MICROMETER')
  2203     FORMAT('X-COORD. SOURCE POINT (C3) = ',G15.8,1X,A6)
  2204     FORMAT('Y-COORD. SOURCE POINT (C4) = ',G15.8,1X,A6)
  2205     FORMAT('Z-COORD. SOURCE POINT (C5) = ',G15.8,1X,A6)

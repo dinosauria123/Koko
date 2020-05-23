@@ -333,7 +333,7 @@ C     GENERATE GRAPHIC
           IF(IJ.EQ.1) THEN
               CALL MY_JUSTSTRING(100,250,
      1        'WAVEFRONT CONTOUR MAP AT WAVELENGTH = '
-     2        //TRIM(WAVVAL)//' MICRON(S)',0,1,3)
+     2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'WAVEFRONT CONTOUR LEVELS'
      2        ,0,1,3)
@@ -341,7 +341,7 @@ C     GENERATE GRAPHIC
           IF(IJ.EQ.2) THEN
               CALL MY_JUSTSTRING(100,250,
      1        'PUPIL INTENSITY MAP AT WAVELENGTH = '
-     2        //TRIM(WAVVAL)//' MICRON(S)',0,1,3)
+     2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'RELATIVE PUPIL INTENSITY'
      2        ,0,1,3)

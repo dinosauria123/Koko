@@ -517,7 +517,7 @@ C       PRINT MESSAGE
  105      FORMAT('DIRECTORY FOR SPECT FILE ',I3,1X,A8)
  101      FORMAT(1X)
  102      FORMAT(
-     1    '           ',4X,'(MICRONS)',4X,'(MICRONS)')
+     1    '           ',4X,'(MICROMETER)',4X,'(MICROMETER)')
  106      FORMAT(
      1    'FILE #/NAME',4X,'LAMBDA 1',5X,'LAMBDA 2',3X,
      2    'NO. OF POINTS',2X,'DATE/TIME FILED')
@@ -643,7 +643,7 @@ C       PROCEED
  200      FORMAT(
      1    'LISTING OF THE "SPECT" WORK MEMORY AREA')
  201      FORMAT(1X)
- 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICRONS)',6X,
+ 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICROMETER)',6X,
      1    'FUNCTION VALUE')
  203      FORMAT(
      1    '--------------------------------------------------------')
@@ -699,16 +699,16 @@ C       PROCEED
      1    'LISTING OF THE "SPECT" TABLE MEMORY AREA FOR FILE (',
      1     A8,' )')
  201      FORMAT(1X)
- 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICRONS)',6X,
+ 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICROMETER)',6X,
      1    'FUNCTION VALUE')
  203      FORMAT(
      1    '--------------------------------------------------------')
  204      FORMAT(
      1    'SHORTEST WAVELENGTH VALUE CURRENTLY IN THE FILE = '
-     2    ,G18.10,' MICRONS')
+     2    ,G18.10,' MICROMETER')
  205      FORMAT(
      1    'LONGEST  WAVELENGTH VALUE CURRENTLY IN THE FILE = '
-     2    ,G18.10,' MICRONS')
+     2    ,G18.10,' MICROMETER')
  206      FORMAT('TOTAL NUMBER OF DATA POINTS = ',I3)
 C                       RETURN
       END
@@ -772,7 +772,7 @@ C       PRINT MESSAGE AND RETURN
               OUTLYNE='MULTIPLIED INTO THE CUMULATIVE AREA'
               CALL SHOWIT(1)
               OUTLYNE=
-     1        'UNITS ARE: Watt/(cm2-micron)'
+     1        'UNITS ARE: Watt/(cm2-micrometer)'
               CALL SHOWIT(1)
               RETURN
           END IF
@@ -808,7 +808,7 @@ C       PRINT MESSAGE AND RETURN
               OUTLYNE='MULTIPLIED INTO THE CUMULATIVE AREA'
               CALL SHOWIT(1)
               OUTLYNE=
-     1        'UNITS ARE: Photon/(sec-cm2-micron)'
+     1        'UNITS ARE: Photon/(sec-cm2-micrometer)'
               CALL SHOWIT(1)
               RETURN
           END IF
@@ -1183,7 +1183,7 @@ C       PROCEED
  200      FORMAT(
      1    'LISTING OF THE "SPECT" CUMULATIVE MEMORY AREA')
  201      FORMAT(1X)
- 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICRONS)',6X,
+ 202      FORMAT('ENTRY NUMBER',4X,'WAVLENGTH-(MICROMETER)',6X,
      1    'FUNCTION VALUE')
  203      FORMAT(
      1    '--------------------------------------------------------')
@@ -1291,7 +1291,7 @@ C       PROCEED
 ! 200    FORMAT(
 !     1  'SPECTRAL WAVELENGTHS AND WEIGHTS')
 ! 201    FORMAT(1X)
- 202      FORMAT(' WAVLENGTH-(MICRONS) ',6X,
+ 202      FORMAT(' WAVLENGTH-(MICROMETER) ',6X,
      1    '   SPECTRAL WEIGHT   ')
  203      FORMAT(
      1    '--------------------------------------------------------')
@@ -1698,7 +1698,7 @@ C       IF YOU GOT HERE, FILE DID NOT EXIST
  300      CONTINUE
 C
 C       ESTABLISH NEW WAVELENGTH BOUNDARIES. NO WAVELENGTH
-C       VALUE MAY BE LESS THAN 0.0 MICRONS
+C       VALUE MAY BE LESS THAN 0.0 MICROMETER
 C
           L1=(LAMB1*W1)+W2
           IF(L1.LT.0.0D0) L1=0.0D0

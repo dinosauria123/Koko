@@ -436,7 +436,7 @@ C       WAVELENGTHS
                   WRITE(OUTLYNE,12) I,NSSSYSTEM(I)
                   CALL SHOWIT(0)
               END DO
- 12           FORMAT('WAVELENGTH #',I2,' = 'G15.8,' MICRON(S)')
+ 12           FORMAT('WAVELENGTH #',I2,' = 'G15.8,' MICROMETER')
               WRITE(OUTLYNE,99)
               CALL SHOWIT(0)
 C       SPECTRAL WEIGHTS

@@ -1070,7 +1070,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1123,7 +1123,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1196,7 +1196,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1327,7 +1327,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1458,7 +1458,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1589,7 +1589,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1720,7 +1720,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1813,7 +1813,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength (microns)')
+!!     1  'Constuction Wavelength (micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -1864,7 +1864,7 @@ C
           END DO
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,1,'Order Number')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,2,
-!!     1  'Constuction Wavelength(microns)')
+!!     1  'Constuction Wavelength(micrometer)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,3,
 !!     1  'X - Coordinate - Source Point')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
@@ -2272,7 +2272,7 @@ C
 !        CALL WGRIDPUTCELLDOUBLE(IDF_GRID1,2,4,FTFL01(4,J)
 !     1  ,'(G23.15)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,4,
-!     1  'UNITS: 0=waves, 1=lens units, 2=microns')
+!     1  'UNITS: 0=waves, 1=lens units, 2=micrometer')
 !        CALL WGRIDPUTCELLDOUBLE(IDF_GRID1,2,5,FTFL01(5,J)
 !     1  ,'(G23.15)')
 !        CALL WGRIDPUTCELLSTRING(IDF_GRID1,1,5,

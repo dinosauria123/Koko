@@ -1408,8 +1408,8 @@ C
           DO I=1,113
               IF(WS(1:13).EQ.RNAME(I)(1:13)) THEN
  991              FORMAT('WAVELENGTH RANGE:')
- 992              FORMAT('LOWER WAVELENGTH = ',G15.8,' MICRONS')
- 993              FORMAT('UPPER WAVELENGTH = ',G15.8,' MICRONS')
+ 992              FORMAT('LOWER WAVELENGTH = ',G15.8,' MICROMETER')
+ 993              FORMAT('UPPER WAVELENGTH = ',G15.8,' MICROMETER')
                   NAME1='RUSSIAN      '
                   NAME2=RNAME(I)(1:13)
                   FLNAME=' '
@@ -1421,12 +1421,8 @@ C
                   WRITE(OUTLYNE,993) LAMUPP
                   CALL SHOWIT(0)
 
-
-
                   WRITE(OUTLYNE,1) RNAME(I)(1:13)
                   CALL SHOWIT(0)
-
-
 
                   WRITE(OUTLYNE,10)
                   CALL SHOWIT(0)
@@ -1434,8 +1430,6 @@ C
               ELSE
               END IF
           END DO
-
-
 
           OUTLYNE='THE REQUESTED GLASS NAME WAS NOT FOUND'
           CALL SHOWIT(1)
@@ -2054,8 +2048,8 @@ C     DETERMINE FILE NAME
 
 
  991                          FORMAT('WAVELENGTH RANGE:')
- 992                          FORMAT('LOWER WAVELENGTH = ',G15.8,' MICRONS')
- 993                          FORMAT('UPPER WAVELENGTH = ',G15.8,' MICRONS')
+ 992                          FORMAT('LOWER WAVELENGTH = ',G15.8,' MICROMETER')
+ 993                          FORMAT('UPPER WAVELENGTH = ',G15.8,' MICROMETER')
 
                               DO J=2,TOTAL+1
                                   READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
@@ -2101,98 +2095,51 @@ C
  2223                                 FORMAT('HERZBERGER INTERPOLATION EQUATION')
                                       IF(FLNAME.NE.'SCHOTT.BIN  '.AND.FLNAME.NE.'SCH2000.BIN ') THEN
 
-
-
-
                                           WRITE(OUTLYNE,22)
                                           CALL SHOWIT(0)
-
-
-
 
                                           WRITE(OUTLYNE,122) A0
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,123) A1
                                           CALL SHOWIT(0)
-
-
-
 
                                           WRITE(OUTLYNE,124) A2
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,125) A3
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,126) A4
                                           CALL SHOWIT(0)
-
-
-
 
                                           WRITE(OUTLYNE,127) A5
                                           CALL SHOWIT(0)
                                       ELSE
 
-
-
-
                                           WRITE(OUTLYNE,2222)
                                           CALL SHOWIT(0)
-
-
-
-
-
-
 
                                           WRITE(OUTLYNE,1122) A0
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,1123) A1
                                           CALL SHOWIT(0)
-
-
-
 
                                           WRITE(OUTLYNE,1124) A2
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,1125) A3
                                           CALL SHOWIT(0)
 
-
-
-
                                           WRITE(OUTLYNE,1126) A4
                                           CALL SHOWIT(0)
-
-
-
 
                                           WRITE(OUTLYNE,1127) A5
                                           CALL SHOWIT(0)
                                       END IF
                                       CALL CLOSE_FILE(36,1)
                                       RETURN
-                                  ELSE
-C     KEEP LOOKING
                                   END IF
                               END DO
                               CALL CLOSE_FILE(36,1)
@@ -2202,9 +2149,6 @@ C     OHARAMULTI
                               OPEN(UNIT=36,ACCESS='DIRECT',FILE=LIBGLA//'OHARA.BIN',
      1                        FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                               READ(UNIT=36,REC=1) TOTAL
-
-
-
 
                               DO J=2,TOTAL+1
                                   READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
@@ -2219,73 +2163,40 @@ C     OHARAMULTI
                                       WRITE(OUTLYNE,993) LAMUPP
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,120) NAME
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,121) NUMBER
                                       CALL SHOWIT(0)
 
-
-
-
-
-
-
                                       WRITE(OUTLYNE,2222)
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,1122) A0
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,1123) A1
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,1124) A2
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,1125) A3
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,1126) A4
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,1127) A5
                                       CALL SHOWIT(0)
                                       CALL CLOSE_FILE(36,1)
                                       RETURN
-                                  ELSE
                                   END IF
                               END DO
+                               
                               OPEN(UNIT=36,ACCESS='DIRECT',FILE=LIBGLA//'OHARA-O.BIN',
      1                        FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                               READ(UNIT=36,REC=1) TOTAL
-
-
-
 
                               DO J=2,TOTAL+1
                                   READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
@@ -2300,59 +2211,29 @@ C     OHARAMULTI
                                       WRITE(OUTLYNE,993) LAMUPP
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,120) NAME
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,121) NUMBER
                                       CALL SHOWIT(0)
 
-
-
-
-
-
-
                                       WRITE(OUTLYNE,22)
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,122) A0
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,123) A1
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,124) A2
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,125) A3
                                       CALL SHOWIT(0)
 
-
-
-
                                       WRITE(OUTLYNE,126) A4
                                       CALL SHOWIT(0)
-
-
-
 
                                       WRITE(OUTLYNE,127) A5
                                       CALL SHOWIT(0)
@@ -2362,8 +2243,6 @@ C     OHARAMULTI
                               END DO
                           END IF
                           CALL CLOSE_FILE(36,1)
-
-
 
                           OUTLYNE='THE REQUESTED GLASS NAME WAS NOT FOUND'
                           CALL SHOWIT(1)
@@ -2380,16 +2259,10 @@ C
                               IF(WS.EQ.'ACRYLIC') THEN
  400                              FORMAT('Acrylic (Lucite) - 492:574')
 
-
-
-
                                   WRITE(OUTLYNE,400)
                                   CALL SHOWIT(0)
  401                              FORMAT(
      1                            'Normal Cubic Spline Fit to `Modern Optical Eng`. data')
-
-
-
 
                                   WRITE(OUTLYNE,401)
                                   CALL SHOWIT(0)
@@ -2407,14 +2280,8 @@ C
                               IF(WS.EQ.'PLYSTY') THEN
  402                              FORMAT('Polystyrene - 590:309')
 
-
-
-
                                   WRITE(OUTLYNE,402)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,401)
                                   CALL SHOWIT(0)
@@ -2432,14 +2299,8 @@ C
                               IF(WS.EQ.'POLYCARB') THEN
  403                              FORMAT('Polycarbonate - 585:299')
 
-
-
-
                                   WRITE(OUTLYNE,403)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,401)
                                   CALL SHOWIT(0)
@@ -2457,14 +2318,8 @@ C
                               IF(WS.EQ.'SAN') THEN
  404                              FORMAT('Copolymer Styrene-Acrylonitrile (SAN) - 567:348')
 
-
-
-
                                   WRITE(OUTLYNE,404)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,401)
                                   CALL SHOWIT(0)
@@ -2483,16 +2338,10 @@ C
                               IF(WS.EQ.'GERMSC') THEN
  300                              FORMAT('Single Crystal Germanium - at 300 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,300)
                                   CALL SHOWIT(0)
  301                              FORMAT(
      1                            'Normal Cubic Spline Fit to EXOTIC MATERIALS INC. data')
-
-
-
 
                                   WRITE(OUTLYNE,301)
                                   CALL SHOWIT(0)
@@ -2511,14 +2360,8 @@ C
                               IF(WS.EQ.'GERMPC') THEN
  302                              FORMAT('Poly-Crystalline Germanium - at 300 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,302)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,301)
                                   CALL SHOWIT(0)
@@ -2537,16 +2380,10 @@ C
                               IF(WS.EQ.'SILICON') THEN
  303                              FORMAT('Silicon - at 299 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,303)
                                   CALL SHOWIT(0)
  304                              FORMAT(
      1                            'Normal Cubic Spline Fit to WILLOW RUN LABORATORIES data')
-
-
-
 
                                   WRITE(OUTLYNE,304)
                                   CALL SHOWIT(0)
@@ -2564,15 +2401,9 @@ C
                               IF(WS.EQ.'IRG100') THEN
  305                              FORMAT('Schott IRG100 - Infrared Glass')
 
-
-
-
                                   WRITE(OUTLYNE,305)
                                   CALL SHOWIT(0)
  306                              FORMAT('Normal Cubic Spline Fit to Schott data')
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -2590,14 +2421,8 @@ C
                               IF(WS.EQ.'ZNSE') THEN
  307                              FORMAT('CVD Zinc Selenide - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,307)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,308)
                                   CALL SHOWIT(0)
@@ -2616,15 +2441,9 @@ C
 1307                              FORMAT(
      1                            'IRTRAN4 - equiv. to CVD Zinc Selenide - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1307)
                                   CALL SHOWIT(0)
  308                              FORMAT('Normal Cubic Spline Fit to CVD Inc. data')
-
-
-
 
                                   WRITE(OUTLYNE,308)
                                   CALL SHOWIT(0)
@@ -2642,14 +2461,8 @@ C
                               IF(WS.EQ.'ZNS') THEN
  309                              FORMAT('CVD Zinc Sulfide - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,309)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,308)
                                   CALL SHOWIT(0)
@@ -2668,14 +2481,8 @@ C
 1309                              FORMAT(
      1                            'IRTRAN2 - equiv. to CVD Zinc Sulfide - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1309)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,308)
                                   CALL SHOWIT(0)
@@ -2693,14 +2500,8 @@ C
                               IF(WS.EQ.'CLRTRAN') THEN
  310                              FORMAT('CVD CLEARTRAN - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,310)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,308)
                                   CALL SHOWIT(0)
@@ -2718,15 +2519,9 @@ C
                               IF(WS.EQ.'SILICA'.OR.WS.EQ.'SIO2        ') THEN
  311                              FORMAT('Fused Silica - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,311)
                                   CALL SHOWIT(0)
  321                              FORMAT('Handbook of Optics')
-
-
-
 
                                   WRITE(OUTLYNE,321)
                                   CALL SHOWIT(0)
@@ -2744,15 +2539,9 @@ C
                               IF(WS.EQ.'SUPRASIL') THEN
  1311                             FORMAT('SUPRASIL - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1311)
                                   CALL SHOWIT(0)
  1321                             FORMAT('Normal Cubic Spline Fit to HERAEUS AMERSIL DATA')
-
-
-
 
                                   WRITE(OUTLYNE,1321)
                                   CALL SHOWIT(0)
@@ -2770,15 +2559,9 @@ C
                               IF(WS.EQ.'HOMOSIL') THEN
  2311                             FORMAT('HOMOSIL - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,2311)
                                   CALL SHOWIT(0)
  2321                             FORMAT('Normal Cubic Spline Fit to HERAEUS AMERSIL DATA')
-
-
-
 
                                   WRITE(OUTLYNE,2321)
                                   CALL SHOWIT(0)
@@ -2796,14 +2579,8 @@ C
                               IF(WS.EQ.'SAPPHIRE'.OR.WS.EQ.'SAPHIR') THEN
  312                              FORMAT('Sapphire (ordinary ray) - at 297 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,312)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,340)
                                   CALL SHOWIT(0)
@@ -2821,15 +2598,9 @@ C
                               IF(WS.EQ.'DYNASIL') THEN
  313                              FORMAT('Synthetic Fused Silica - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,313)
                                   CALL SHOWIT(0)
  314                              FORMAT('Dynasil Corp. Interpolation Equation')
-
-
-
 
                                   WRITE(OUTLYNE,314)
                                   CALL SHOWIT(0)
@@ -2847,15 +2618,9 @@ C
                               IF(WS.EQ.'AMTIR1') THEN
  315                              FORMAT('AMTIR 1 - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,315)
                                   CALL SHOWIT(0)
  316                              FORMAT('Normal Cubic Spline Fit to Amorphous Materials Data')
-
-
-
 
                                   WRITE(OUTLYNE,316)
                                   CALL SHOWIT(0)
@@ -2873,14 +2638,8 @@ C
                               IF(WS.EQ.'AMTIR3') THEN
  317                              FORMAT('AMTIR 3 - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,317)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,316)
                                   CALL SHOWIT(0)
@@ -2898,15 +2657,9 @@ C
                               IF(WS.EQ.'AS2S3') THEN
  318                              FORMAT('Arsenic Trisulfide - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,318)
                                   CALL SHOWIT(0)
  340                              FORMAT('I. R. Handbook Interpolation Equation')
-
-
-
 
                                   WRITE(OUTLYNE,340)
                                   CALL SHOWIT(0)
@@ -2924,14 +2677,8 @@ C
                               IF(WS.EQ.'GAAS') THEN
  319                              FORMAT('Gallium Arsenide - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,319)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,316)
                                   CALL SHOWIT(0)
@@ -2949,14 +2696,8 @@ C
                               IF(WS.EQ.'CDTE') THEN
  320                              FORMAT('Cadmium Telluride (IRTRAN6) - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,320)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,316)
                                   CALL SHOWIT(0)
@@ -2975,14 +2716,8 @@ C
 1320                              FORMAT(
      1                            'IRTRAN6 - equiv. to Cadmium Telluride at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1320)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,316)
                                   CALL SHOWIT(0)
@@ -3000,20 +2735,11 @@ C
                               IF(WS.EQ.'MGF2(O)') THEN
  322                              FORMAT('Magnesium Fluoride (IRTRAN1) - at 294 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,322)
                                   CALL SHOWIT(0)
 
-
-
-
                                   WRITE(OUTLYNE,323)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,1324)
                                   CALL SHOWIT(0)
@@ -3031,22 +2757,13 @@ C
                               IF(WS.EQ.'MGF2') THEN
 2322                              FORMAT('Magnesium Fluoride (IRTRAN1) - at 294 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,2322)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,323)
                                   CALL SHOWIT(0)
  324                              FORMAT('Harshaw/Filtrol Interpolation Equation')
 1324                              FORMAT('Handbook of Optics Interpolation Equation')
-
-
-
 
                                   WRITE(OUTLYNE,1324)
                                   CALL SHOWIT(0)
@@ -3065,21 +2782,12 @@ C
 1322                              FORMAT(
      1                            'IRTRAN1 - equiv. to (MgF2) (o) ray - at 294 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1322)
                                   CALL SHOWIT(0)
  323                              FORMAT('Ordinary Ray')
 
-
-
-
                                   WRITE(OUTLYNE,323)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,1324)
                                   CALL SHOWIT(0)
@@ -3097,21 +2805,12 @@ C
                               IF(WS.EQ.'MGF2(E)') THEN
  325                              FORMAT('Magnesium Fluoride (IRTRAN1) - at 294 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,325)
                                   CALL SHOWIT(0)
  326                              FORMAT('Extraordinary Ray')
 
-
-
-
                                   WRITE(OUTLYNE,326)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,1324)
                                   CALL SHOWIT(0)
@@ -3129,14 +2828,8 @@ C
                               IF(WS.EQ.'CAF2') THEN
  327                              FORMAT('Calcium Fluoride (IRTRAN3) - at 292 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,327)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3154,14 +2847,8 @@ C
                               IF(WS.EQ.'IRTRAN3') THEN
 1327                              FORMAT('IRTRAN3 - equiv. to CaF2 at 292 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1327)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3179,14 +2866,8 @@ C
                               IF(WS.EQ.'MGO') THEN
  328                              FORMAT('Magnesium Oxide (IRTRAN5) - at 295.3 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,328)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,321)
                                   CALL SHOWIT(0)
@@ -3205,14 +2886,8 @@ C
 1328                              FORMAT(
      1                            'IRTRAN5 - equiv. to Magnesium Oxide at 295.3 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,1328)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,321)
                                   CALL SHOWIT(0)
@@ -3230,14 +2905,8 @@ C
                               IF(WS.EQ.'BAF2') THEN
  329                              FORMAT('Barium Fluoride - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,329)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3255,14 +2924,8 @@ C
                               IF(WS.EQ.'KBR') THEN
  330                              FORMAT('Potassium Bromide - at 295 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,330)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3280,14 +2943,8 @@ C
                               IF(WS.EQ.'CSI') THEN
  331                              FORMAT('Cesium Iodide - at 297 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,331)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3305,14 +2962,8 @@ C
                               IF(WS.EQ.'CSBR') THEN
  332                              FORMAT('Cesium Bromide - at 300 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,332)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3330,14 +2981,8 @@ C
                               IF(WS.EQ.'KRS5') THEN
  333                              FORMAT('Thallium Bromoiodide (KRS-5) - at 298 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,333)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,324)
                                   CALL SHOWIT(0)
@@ -3355,20 +3000,11 @@ C
                               IF(WS.EQ.'SIO2O') THEN
  334                              FORMAT('Crystal Quartz - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,334)
                                   CALL SHOWIT(0)
 
-
-
-
                                   WRITE(OUTLYNE,323)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,304)
                                   CALL SHOWIT(0)
@@ -3385,20 +3021,11 @@ C
                               END IF
                               IF(WS.EQ.'SIO2E') THEN
 
-
-
-
                                   WRITE(OUTLYNE,334)
                                   CALL SHOWIT(0)
 
-
-
-
                                   WRITE(OUTLYNE,326)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,304)
                                   CALL SHOWIT(0)
@@ -3415,15 +3042,9 @@ C
                               END IF
                               IF(WS.EQ.'NACL') THEN
 
-
-
-
  335                              FORMAT('Sodium Chloride - at 293 degrees Kelvin')
                                   WRITE(OUTLYNE,335)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,304)
                                   CALL SHOWIT(0)
@@ -3443,9 +3064,6 @@ C
                                   WRITE(OUTLYNE,336)
                                   CALL SHOWIT(0)
 
-
-
-
                                   WRITE(OUTLYNE,340)
                                   CALL SHOWIT(0)
                                   NAME1=WQ//'     '
@@ -3463,9 +3081,6 @@ C
  337                              FORMAT('Corning VIR 3 - at 293.0 degrees Kelvin')
                                   WRITE(OUTLYNE,337)
                                   CALL SHOWIT(0)
-
-
-
 
  341                              FORMAT('Normal Cubic Spline Fit to Corning Data')
                                   WRITE(OUTLYNE,341)
@@ -3486,9 +3101,6 @@ C
                                   WRITE(OUTLYNE,338)
                                   CALL SHOWIT(0)
 
-
-
-
                                   WRITE(OUTLYNE,341)
                                   CALL SHOWIT(0)
                                   NAME1=WQ//'     '
@@ -3506,9 +3118,6 @@ C
  339                              FORMAT('Raytheon ALON- at 293.0 degrees Kelvin')
                                   WRITE(OUTLYNE,339)
                                   CALL SHOWIT(0)
-
-
-
 
  342                              FORMAT('Normal Cubic Spline Fit to Raytheon Data')
                                   WRITE(OUTLYNE,342)
@@ -3529,9 +3138,6 @@ C
                                   WRITE(OUTLYNE,350)
                                   CALL SHOWIT(0)
 
-
-
-
  351                              FORMAT('Normal Cubic Spline Fit to Alpha Data')
                                   WRITE(OUTLYNE,351)
                                   CALL SHOWIT(0)
@@ -3551,9 +3157,6 @@ C
                                   WRITE(OUTLYNE,352)
                                   CALL SHOWIT(0)
 
-
-
-
  353                              FORMAT('Normal Cubic Spline Fit to Sassoon Data')
                                   WRITE(OUTLYNE,353)
                                   CALL SHOWIT(0)
@@ -3571,14 +3174,8 @@ C
                               IF(WS.EQ.'B270') THEN
  354                              FORMAT('Schott B270 - Water White Crown Glass')
 
-
-
-
                                   WRITE(OUTLYNE,354)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3596,14 +3193,8 @@ C
                               IF(WS.EQ.'IRG2') THEN
  355                              FORMAT('Schott IRG2 - Schott Germinate Glass')
 
-
-
-
                                   WRITE(OUTLYNE,355)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3621,14 +3212,8 @@ C
                               IF(WS.EQ.'IRG3') THEN
  356                              FORMAT('Schott IRG3 - Schott Lanthan Dense Flint Glass')
 
-
-
-
                                   WRITE(OUTLYNE,356)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3646,14 +3231,8 @@ C
                               IF(WS.EQ.'IRGN6') THEN
  357                              FORMAT('Schott IRGN6 - Schott CaAl Silicate Glass')
 
-
-
-
                                   WRITE(OUTLYNE,357)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3671,14 +3250,8 @@ C
                               IF(WS.EQ.'IRG7') THEN
  358                              FORMAT('Schott IRG7 - Schott Lead Silicate Glass')
 
-
-
-
                                   WRITE(OUTLYNE,358)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3696,14 +3269,8 @@ C
                               IF(WS.EQ.'IRG9') THEN
  359                              FORMAT('Schott IRG9 - Schott Fluorophosphate Glass')
 
-
-
-
                                   WRITE(OUTLYNE,359)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3721,14 +3288,8 @@ C
                               IF(WS.EQ.'IRG11') THEN
  360                              FORMAT('Schott IRG11 - Schott Ca Aluminate Glass')
 
-
-
-
                                   WRITE(OUTLYNE,360)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3746,14 +3307,8 @@ C
                               IF(WS.EQ.'IRG15') THEN
  361                              FORMAT('Schott IRG15 - Schott Zinc Crown Glass')
 
-
-
-
                                   WRITE(OUTLYNE,361)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,306)
                                   CALL SHOWIT(0)
@@ -3771,14 +3326,8 @@ C
                               IF(WS.EQ.'H2O') THEN
  362                              FORMAT('Distilled Water - at 293 degrees Kelvin')
 
-
-
-
                                   WRITE(OUTLYNE,362)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,363)
                                   CALL SHOWIT(0)
@@ -3798,14 +3347,8 @@ C
  364                              FORMAT(
      1                            'Vacuum - relative to AIR at 293 degrees K and 760 mm Hg')
 
-
-
-
                                   WRITE(OUTLYNE,364)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,365)
                                   CALL SHOWIT(0)
@@ -3824,15 +3367,8 @@ C
                               IF(WS.EQ.'ZNS-MS') THEN
  366                              FORMAT(
      1                            'ZNS-Multi-Spectral Zinc Selenide, II-VI Corp. Data')
-
-
-
-
                                   WRITE(OUTLYNE,366)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,363)
                                   CALL SHOWIT(0)
@@ -3849,16 +3385,9 @@ C
                               END IF
                               IF(WS.EQ.'CEF3') THEN
  367                              FORMAT(
-     1                            'Cerium Flouride for coatings, 0.55 and 2.00 microns')
-
-
-
-
+     1                            'Cerium Flouride for coatings, 0.55 um and 2.00 um')
                                   WRITE(OUTLYNE,367)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,368)
  368                              FORMAT(
@@ -3877,16 +3406,9 @@ C
                               END IF
                               IF(WS.EQ.'LA2O3') THEN
  369                              FORMAT(
-     1                            'Lanthanum Oxide for coatings, 0.55 and 2.00 microns')
-
-
-
-
+     1                            'Lanthanum Oxide for coatings, 0.55 um and 2.00 um')
                                   WRITE(OUTLYNE,369)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,368)
                                   CALL SHOWIT(0)
@@ -3903,16 +3425,9 @@ C
                               END IF
                               IF(WS.EQ.'THF4') THEN
  370                              FORMAT(
-     1                            'Thorium Flouride for coatings, 0.40 and 0.75 micron')
-
-
-
-
+     1                            'Thorium Flouride for coatings, 0.40 um and 0.75 um')
                                   WRITE(OUTLYNE,370)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,368)
                                   CALL SHOWIT(0)
@@ -3929,16 +3444,9 @@ C
                               END IF
                               IF(WS.EQ.'ZRO2') THEN
  371                              FORMAT(
-     1                            'Zirconium Oxide for coatings, 0.55 and 2.00 microns ')
-
-
-
-
+     1                            'Zirconium Oxide for coatings, 0.55 um and 2.00 um')
                                   WRITE(OUTLYNE,371)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,368)
                                   CALL SHOWIT(0)
@@ -3955,16 +3463,9 @@ C
                               END IF
                               IF(WS.EQ.'DIAMOND') THEN
  372                              FORMAT(
-     1                            'Diamond (Cubic Carbon) - CRC , 0.23 to 20.00 microns ')
-
-
-
-
+     1                            'Diamond (Cubic Carbon) - CRC , 0.23 um to 20.00 um')
                                   WRITE(OUTLYNE,372)
                                   CALL SHOWIT(0)
-
-
-
 
                                   WRITE(OUTLYNE,2223)
                                   CALL SHOWIT(0)
@@ -3981,16 +3482,9 @@ C
                               END IF
                               IF(WS.EQ.'YAG') THEN
  373                              FORMAT(
-     1                            'YAG - Handbook of Optics Equation - CRC , 0.4 to 4.0 microns ')
-
-
-
-
+     1                            'YAG - Handbook of Optics Equation - CRC , 0.4 um to 4.0 um')
                                   WRITE(OUTLYNE,373)
                                   CALL SHOWIT(0)
-
-
-
 
                                   NAME1=WQ//'     '
                                   NAME2=WS(1:13)
@@ -4003,8 +3497,6 @@ C
                                   CALL SHOWIT(0)
                                   RETURN
                               END IF
-
-
 
                               OUTLYNE='THE REQUESTED GLASS NAME WAS NOT FOUND'
                               CALL SHOWIT(1)
@@ -4022,9 +3514,6 @@ C     GLCAT/GLASS SEARCH
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4038,73 +3527,38 @@ C     GLCAT/GLASS SEARCH
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,2222)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'SCHOTT           '
                               CALL SHOWIT(0)
  140                          FORMAT('GLASS MANUFACTURED BY : ',A17)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
@@ -4112,9 +3566,6 @@ C     KEEP LOOKING
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4128,72 +3579,37 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,2222)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'SCHOTT           '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
@@ -4201,9 +3617,6 @@ C     KEEP LOOKING
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4217,72 +3630,37 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,22)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'HOYA             '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
@@ -4290,9 +3668,6 @@ C     KEEP LOOKING
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4306,72 +3681,37 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,22)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'HIKARI           '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
@@ -4379,9 +3719,6 @@ C     KEEP LOOKING
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4395,72 +3732,37 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,2222)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,1126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,1127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'OHARA            '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
@@ -4468,9 +3770,6 @@ C     KEEP LOOKING
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
 
-
-
-
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
                           IF(WS(1:13).EQ.NAME.OR.WS(1:13).EQ.NUMBER) THEN
@@ -4484,81 +3783,44 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,22)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'OHARA            '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
+                      
                       OPEN(UNIT=36,ACCESS='DIRECT',FILE=LIBGLA//'CHANCE.BIN',
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
-
-
-
 
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
@@ -4573,81 +3835,44 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,22)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'CHANCE-PILKINGTON'
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
                       CALL CLOSE_FILE(36,1)
+                      
                       OPEN(UNIT=36,ACCESS='DIRECT',FILE=LIBGLA//'CORNIN.BIN',
      1                FORM='UNFORMATTED',RECL=(NRECL*33),STATUS='UNKNOWN')
                       READ(UNIT=36,REC=1) TOTAL
-
-
-
 
                       DO J=2,TOTAL+1
                           READ(UNIT=36,REC=J)NAME,NUMBER,A0,A1,A2,A3,A4,A5
@@ -4662,76 +3887,39 @@ C     KEEP LOOKING
                               WRITE(OUTLYNE,993) LAMUPP
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,120) NAME
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,121) NUMBER
                               CALL SHOWIT(0)
 
-
-
-
-
-
-
                               WRITE(OUTLYNE,22)
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,122) A0
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,123) A1
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,124) A2
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,125) A3
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,126) A4
                               CALL SHOWIT(0)
 
-
-
-
                               WRITE(OUTLYNE,127) A5
                               CALL SHOWIT(0)
-
-
-
 
                               WRITE(OUTLYNE,140) 'CORNING-FRANCE   '
                               CALL SHOWIT(0)
                               CALL CLOSE_FILE(36,1)
                               RETURN
-                          ELSE
-C     KEEP LOOKING
                           END IF
                       END DO
-
-
 
                       OUTLYNE='THE REQUESTED GLASS NAME WAS NOT FOUND'
                       CALL SHOWIT(1)
