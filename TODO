@@ -1,9 +1,7 @@
 To Do List for KODS
 ===================
 
-- not all input can be made upper case.
-  Prevent directory argument of LENSLOC to be changed to
-  upper case.
+- need CDGM glass catalog
 
 - change directory from within Koko
 
@@ -43,4 +41,7 @@ Done List
 - replace all subroutines from "Numerical Recipes"
 - build and installation instructions
 - Installation process and installation options
+- not all input can be made upper case. Prevent directory argument
+  of LENSLOC to be changed to upper case.
+
 
