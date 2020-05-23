@@ -1779,20 +1779,20 @@ C
 C
           RETURN
       END
+
+
 C SUB LENSSAVE_NOOPT.FOR
       SUBROUTINE LENSSAVE_NOOPT
           USE GLOBALS
-C
+
           IMPLICIT NONE
-C
+
           CHARACTER LFILENAME*80
-C
-          INTEGER WSCNT
-C
           INCLUDE 'datmac.inc'
           INCLUDE 'datmai.inc'
+
           LFILENAME=""
-C
+
           IF(STI.EQ.1) THEN
               OUTLYNE=
      1        '"LSAVE" SAVES THE CURRENT LENS IN AN ASCII FILE'
@@ -1811,21 +1811,18 @@ C
               CALL MACFAL
               RETURN
           END IF
-C
+
           IF(SST.EQ.0) WS='LENS'
-          WSCNT=LEN(TRIM(WS))
-          WRITE(OUTLYNE,*) WSCNT,TRIM(WS)
+          WRITE(OUTLYNE,*) TRIM(WS)
           CALL SHOWIT(1)
-          LFILENAME(1:LEN(TRIM(WS))+4)=TRIM(WS)//'.PRG'
-          WSCNT=LEN(TRIM(LFILENAME))
-C
-C       ***************************************************************
-C     DELETE CURRENT FILE
+          LFILENAME = TRIM(WS)//'.koko'
+ 
+C     OVERWRITE EXISTING FILE
           OPEN(UNIT=97,ACCESS='SEQUENTIAL',BLANK='NULL'
      1      ,FORM='FORMATTED',FILE=TRIM(DIRLEN)//TRIM(LFILENAME)
      2      ,STATUS='UNKNOWN')
           CALL CLOSE_FILE(97,0)
-C
+
 C     SAVE I/O
           SAVE_KDP(1)=SAVEINPT(1)
           INPUT='OUT FILE '//TRIM(DIRLEN)//TRIM(LFILENAME)
@@ -1836,6 +1833,7 @@ C     SAVE I/O
           CALL PROCES
           INPUT='OUT TP'
           CALL PROCES
+
 C     RESTORE I/0
           REST_KDP(1)=RESTINPT(1)
           OUTLYNE=
@@ -1843,19 +1841,18 @@ C     RESTORE I/0
           CALL SHOWIT(1)
           RETURN
       END
+
 C SUB LENSSAVE.FOR
       SUBROUTINE LENSSAVE
           USE GLOBALS
-C
+
           IMPLICIT NONE
-C
+
           CHARACTER LFILENAME*80
-C
-          INTEGER WSCNT
-C
+
           INCLUDE 'datmac.inc'
           INCLUDE 'datmai.inc'
-C
+
           LFILENAME=""
           IF(STI.EQ.1) THEN
               OUTLYNE=
@@ -1872,27 +1869,21 @@ C
               CALL MACFAL
               RETURN
           END IF
-C
+
           IF(SST.EQ.0) WS='LENS'
-          WSCNT=LEN(TRIM(WS))
-          WRITE(OUTLYNE,*) WSCNT,TRIM(WS)
-          CALL SHOWIT(1)
-          LFILENAME(1:LEN(TRIM(WS))+4)=TRIM(WS)//'.PRG'
-          WSCNT=LEN(TRIM(LFILENAME))
-C
-C       ***************************************************************
+
+          LFILENAME = TRIM(WS)//'.koko'
+
 C     DELETE CURRENT FILE
           OPEN(UNIT=97,ACCESS='SEQUENTIAL',BLANK='NULL'
      1      ,FORM='FORMATTED',FILE=TRIM(DIRLEN)//TRIM(LFILENAME)
      2      ,STATUS='UNKNOWN')
           CALL CLOSE_FILE(97,0)
-C
+
 C     SAVE I/O
           SAVE_KDP(1)=SAVEINPT(1)
           INPUT='OUT FILE '//TRIM(DIRLEN)//TRIM(LFILENAME)
           CALL PROCES
-!        WRITE(OUTLYNE,*) INPUT(1:79)
-!        CALL SHOWIT(1)
           INPUT='LENO'
           CALL PROCES
           INPUT='IN TP'
@@ -1906,22 +1897,21 @@ C     RESTORE I/0
           CALL SHOWIT(1)
           RETURN
       END
+
+
 C SUB LENSREST.FOR
       SUBROUTINE LENSREST
-C
+
           IMPLICIT NONE
-C
+
           CHARACTER LFILENAME*80
-C
-          INTEGER WSCNT
-C
           LOGICAL EXISJK
-C
+
           INCLUDE 'datmac.inc'
           INCLUDE 'datmai.inc'
 
           LFILENAME=""
-C
+
           IF(STI.EQ.1) THEN
               OUTLYNE=
      1        '"LENSREST" RESTORES THE CURRENT LENS FROM AN ASCII FILE'
@@ -1950,18 +1940,26 @@ C
               RETURN
           END IF
 
-C
-          WSCNT=LEN(TRIM(WS))
-          WRITE(OUTLYNE,*) WSCNT,TRIM(WS)
-          CALL SHOWIT(1)
-          LFILENAME(1:LEN(TRIM(WS))+4)=TRIM(WS)//'.PRG'
-          WSCNT=LEN(TRIM(LFILENAME))
-C
-C       ***************************************************************
 C     DOES THE FILE EXIST?
           EXISJK=.FALSE.
+
+!     First check extension .koko
+          LFILENAME = TRIM(WS)//'.koko'
           INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
-          IF(.NOT.EXISJK) THEN
+
+!     then check KDP upper case .PRG extension
+          IF(.NOT. EXISJK) THEN
+             LFILENAME = TRIM(WS)//'.PRG'
+             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          END IF 
+
+!     if not found, check lower case extension too
+          IF(.NOT. EXISJK) THEN
+             LFILENAME = TRIM(WS)//'.prg'
+             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          END IF 
+
+          IF (.NOT.EXISJK) THEN
               OUTLYNE=
      1        'LENS FILE NAMED '//TRIM(LFILENAME)//' DOES NOT EXIST'
               CALL SHOWIT(1)
@@ -3132,6 +3130,8 @@ C       IF YOU GOT HERE YOU DID NOT FIND A MATCH.
           END IF
           RETURN
       END
+
+
 C SUB MLO.FOR
       SUBROUTINE MLO
 C
