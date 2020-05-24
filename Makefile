@@ -31,15 +31,22 @@ all:
 	make -C ./Src
 	make -C ./QtGui -f MakeGui koko-gui
 	@echo
-	@echo "*************************************************************"
+	@echo "***************************************************************************"
 	@echo
 	@echo "It's all done !"
 	@echo
-	@echo "Now install the programs with: make install  (superuser only)"
-	@echo "or see INSTALL.m for installation alternatives."
-	@echo "Remove object files etc. with : make clean"
+	@echo "Now install the programs with (requires superuser privileges):"
+	@echo "     make install        ( full installation )"
+	@echo "     make install-exec   ( install executables only )"
+	@echo "     make install-conf   ( install system-wide configuration file )"
+	@echo "     make install-data   ( install program data )"
 	@echo
-	@echo "*************************************************************"
+	@echo "     make clean          ( remove intermediate files )"
+	@echo
+	@echo "See INSTALL.md for details and for installation instructions as a user"
+	@echo "without superuser privileges."
+	@echo
+	@echo "****************************************************************************"
 	@echo
 
 # install executables and system-wide config file
