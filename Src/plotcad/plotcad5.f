@@ -4887,10 +4887,10 @@ C     DRAW THE WV5 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'  ! micrometer **should be greek letter*** ???
+              NNTT2=" um"  ! micrometer **should be greek letter*** ???
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(1250,350,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(1250,350,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -4923,10 +4923,10 @@ C     DRAW THE WV4 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(1250,550,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(1250,550,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -4960,10 +4960,10 @@ C     DRAW THE WV3 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(1250,750,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(1250,750,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -4997,10 +4997,10 @@ C     DRAW THE WV2 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(1250,950,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(1250,950,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5034,10 +5034,10 @@ C     DRAW THE WV1 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(1250,1150,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(1250,1150,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5070,10 +5070,10 @@ C     DRAW THE WV10 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(2650,350,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(2650,350,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5106,10 +5106,10 @@ C     DRAW THE WV9 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(2650,550,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(2650,550,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5142,10 +5142,10 @@ C     DRAW THE WV8 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(2650,750,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(2650,750,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5178,10 +5178,10 @@ C     DRAW THE WV7 LINE
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(2650,950,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(2650,950,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           END IF
@@ -5214,10 +5214,10 @@ C     DOTTED LINE BUT WITH BIG DOTS
               END IF
               CALL MY_SETCHARASPECT(1.5,1.5)
               CALL MY_SETFONT(2,0)
-              NNTT2='um'
+              NNTT2=" um"
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
-              CALL MY_JUSTSTRING(2650,1150,NNTT2(1:2),0,NT1SIZ,3)
+              CALL MY_JUSTSTRING(2650,1150,NNTT2(1:3),0,NT1SIZ,3)
               CALL MY_SETFONT(1,0)
               CALL MY_SETCHARASPECT(1.0,1.0)
           ELSE
