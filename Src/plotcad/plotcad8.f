@@ -4167,13 +4167,13 @@ C
                       YB1=LLPOS
                       CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                       CALL MY_PLOT(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
                       DO IIK=2,IK
 C
                           IF(K.EQ.1.AND.FAN1.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4193,8 +4193,7 @@ C
                           IF(K.EQ.2.AND.FAN2.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4214,8 +4213,7 @@ C
                           IF(K.EQ.3.AND.FAN3.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4235,8 +4233,7 @@ C
                           IF(K.EQ.4.AND.FAN4.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4256,8 +4253,7 @@ C
                           IF(K.EQ.5.AND.FAN5.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4277,8 +4273,7 @@ C
                           IF(K.EQ.6.AND.FAN6.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4298,8 +4293,7 @@ C
                           IF(K.EQ.7.AND.FAN7.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4319,8 +4313,7 @@ C
                           IF(K.EQ.8.AND.FAN8.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4340,8 +4333,7 @@ C
                           IF(K.EQ.9.AND.FAN9.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4361,8 +4353,7 @@ C
                           IF(K.EQ.10.AND.FAN10.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -4381,6 +4372,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
@@ -4536,13 +4528,13 @@ C
                       YB1=RLPOS
                       CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                       CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                       DO IIK=2,IK
                           IF(K.EQ.1.AND.FAN1.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4562,8 +4554,7 @@ C
                           IF(K.EQ.2.AND.FAN2.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4583,8 +4574,7 @@ C
                           IF(K.EQ.3.AND.FAN3.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4604,8 +4594,7 @@ C
                           IF(K.EQ.4.AND.FAN4.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4625,8 +4614,7 @@ C
                           IF(K.EQ.5.AND.FAN5.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4646,8 +4634,7 @@ C
                           IF(K.EQ.6.AND.FAN6.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4667,8 +4654,7 @@ C
                           IF(K.EQ.7.AND.FAN7.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4688,8 +4674,7 @@ C
                           IF(K.EQ.8.AND.FAN8.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4709,8 +4694,7 @@ C
                           IF(K.EQ.9.AND.FAN9.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4730,8 +4714,7 @@ C
                           IF(K.EQ.10.AND.FAN10.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     1                        IIK.eq.2)THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -4750,7 +4733,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
-
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
@@ -5656,13 +5639,13 @@ C
                       YB1=LLPOS
                       CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                       CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
                       DO IIK=2,IK
 C
                           IF(K.EQ.1.AND.FAN1.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5682,8 +5665,7 @@ C
                           IF(K.EQ.2.AND.FAN2.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5703,8 +5685,7 @@ C
                           IF(K.EQ.3.AND.FAN3.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5724,8 +5705,7 @@ C
                           IF(K.EQ.4.AND.FAN4.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5745,8 +5725,7 @@ C
                           IF(K.EQ.5.AND.FAN5.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5766,8 +5745,7 @@ C
                           IF(K.EQ.6.AND.FAN6.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5787,8 +5765,7 @@ C
                           IF(K.EQ.7.AND.FAN7.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5808,8 +5785,7 @@ C
                           IF(K.EQ.8.AND.FAN8.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5829,8 +5805,7 @@ C
                           IF(K.EQ.9.AND.FAN9.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5850,8 +5825,7 @@ C
                           IF(K.EQ.10.AND.FAN10.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=LRPOS
@@ -5870,6 +5844,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
@@ -6025,13 +6000,13 @@ C
                       YB1=RLPOS
                       CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                       CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                       DO IIK=2,IK
                           IF(K.EQ.1.AND.FAN1.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6051,8 +6026,7 @@ C
                           IF(K.EQ.2.AND.FAN2.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6072,8 +6046,7 @@ C
                           IF(K.EQ.3.AND.FAN3.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6093,8 +6066,7 @@ C
                           IF(K.EQ.4.AND.FAN4.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6114,8 +6086,7 @@ C
                           IF(K.EQ.5.AND.FAN5.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6135,8 +6106,7 @@ C
                           IF(K.EQ.6.AND.FAN6.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6156,8 +6126,7 @@ C
                           IF(K.EQ.7.AND.FAN7.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6177,8 +6146,7 @@ C
                           IF(K.EQ.8.AND.FAN8.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6198,8 +6166,7 @@ C
                           IF(K.EQ.9.AND.FAN9.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6219,8 +6186,7 @@ C
                           IF(K.EQ.10.AND.FAN10.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=RRPOS
@@ -6239,6 +6205,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
@@ -6403,13 +6370,13 @@ C
                       YB1=OPLPOS
                       CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                       CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                       DO IIK=2,IK
                           IF(K.EQ.1.AND.FAN1.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6429,8 +6396,7 @@ C
                           IF(K.EQ.2.AND.FAN2.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6450,8 +6416,7 @@ C
                           IF(K.EQ.3.AND.FAN3.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6471,8 +6436,7 @@ C
                           IF(K.EQ.4.AND.FAN4.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6492,8 +6456,7 @@ C
                           IF(K.EQ.5.AND.FAN5.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6513,8 +6476,7 @@ C
                           IF(K.EQ.6.AND.FAN6.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6534,8 +6496,7 @@ C
                           IF(K.EQ.7.AND.FAN7.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6555,8 +6516,7 @@ C
                           IF(K.EQ.8.AND.FAN8.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6576,8 +6536,7 @@ C
                           IF(K.EQ.9.AND.FAN9.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6597,8 +6556,7 @@ C
                           IF(K.EQ.10.AND.FAN10.NE.0) THEN
                               IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                        JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                        IIK.eq.2) THEN
+     1                        JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                                   XA1=XA
                                   XB1=XB
                                   YA1=OPRPOS
@@ -6617,6 +6575,7 @@ C
                           END IF
                       END DO
                       CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                      CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   END DO
 C     DO NEXT FOV
@@ -6781,12 +6740,12 @@ C
                   YB1=LLPOS
                   CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                   CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
                   DO IIK=2,IK
 C
                       IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                IIK.eq.2) THEN
+     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                           XA1=XA
                           XB1=XB
                           YA1=LRPOS
@@ -6803,6 +6762,7 @@ C
                       END IF
                   END DO
                   CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C     DO NEXT FOV
               END DO
 C
@@ -6944,12 +6904,12 @@ C
                   YB1=RLPOS
                   CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                   CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   DO IIK=2,IK
                       IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                IIK.eq.2) THEN
+     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                           XA1=XA
                           XB1=XB
                           YA1=RRPOS
@@ -6966,6 +6926,7 @@ C
                       END IF
                   END DO
                   CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
 C     DO NEXT FOV
               END DO
@@ -7115,12 +7076,12 @@ C
                   YB1=LLPOS
                   CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                   CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
                   DO IIK=2,IK
 C
                       IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                IIK.eq.2) THEN
+     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                           XA1=XA
                           XB1=XB
                           YA1=LRPOS
@@ -7137,6 +7098,7 @@ C
                       END IF
                   END DO
                   CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C     DO NEXT FOV
               END DO
 C
@@ -7278,12 +7240,12 @@ C
                   YB1=RLPOS
                   CALL FIXIT(JIMX(1),JIMY(1),XA1,XB1,YA1,YB1)
                   CALL MY_PLOTC(JIMX(1),JIMY(1),0,0,XA1,XB1,YA1,YB1)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C
                   DO IIK=2,IK
                       IF(JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.0.OR.
      1                JIMFLG(IIK-1).EQ.0.AND.JIMFLG(IIK).EQ.1.OR.
-     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0.or.
-     &                IIK.eq.2) THEN
+     1                JIMFLG(IIK-1).EQ.1.AND.JIMFLG(IIK).EQ.0) THEN
                           XA1=XA
                           XB1=XB
                           YA1=RRPOS
@@ -7300,6 +7262,7 @@ C
                       END IF
                   END DO
                   CALL MY_PLOT(0,0,0,0,-10,10010,-10,10010)
+                  CALL MY_PLOTC(-1,-1,0,k,-10,10010,-10,10010)
 C     DO NEXT FOV
               END DO
               RETURN
