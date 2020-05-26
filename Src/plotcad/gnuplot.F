@@ -154,9 +154,28 @@ C///////////////////////////////////////////////////////////////////////
           implicit none
           integer I1,I2,I3,I4,I5,I6,I7,I8
 
+          if ((I1.eq.-1).and.(I2.eq.-1)) then
+              write(130,*)
+              write(115,*)
+              write(116,*)
+              write(117,*)
+              write(118,*)
+              return
+          end if
+
+          if ((I1.eq.416).or.(I1.eq.3750).or.(I1.eq.7082)) then
+              write(130,*)
+              write(115,*)
+              write(116,*)
+              write(117,*)
+              write(118,*)
+              return
+          end if
+
           if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
               return
           end if
+
           if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
             if (I4.eq.0) then
               if (I3.eq.1) then
