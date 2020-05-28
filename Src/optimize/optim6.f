@@ -561,18 +561,15 @@ C       PROCEED WITH ACTION FOR COMMAND
           IF(.NOT.ALLER.AND.CFGER) THEN
               FMTFMT1=0.0D0
               DO I=1,OPCNT
-                  IF(INT(OPERND(I,16)).EQ.TAGER)
-     1                      FMTFMT1=FMTFMT1+(OPERND(I,14)**2)
+                  IF(INT(OPERND(I,16)).EQ.TAGER) THEN
+                     FMTFMT1=FMTFMT1+(OPERND(I,14)**2)
+                  END IF
               END DO
-          END IF
+           END IF
+           
           IF(ALLER) DELFMT=FMTFMT-OLDFMT
-! 10   FORMAT('    NEW FMT = ',G23.15,1X,'CHANGE = ',G23.15)
-! 101  FORMAT('FOR OPERAND NUMBER = ',I3)
-! 102  FORMAT('  FMT CONTRIBUTION = ',G23.15)
-! 201  FORMAT('FOR CONFIG. NUMBER = ',I2)
-! 20   FORMAT('FMT(CHANGE) = ',G23.15)
+          
           IF(.NOT.NOP) THEN
-C
               IF(ALLER) THEN
 C     PRINT MESSAGE
                   IF(.NOT.FMTEXT) OLDFMT=FMTFMT
@@ -580,9 +577,9 @@ C     PRINT MESSAGE
               END IF
 C
           END IF
-          RETURN
-C       ALL DONE
       END
+
+      
 C SUB FIXCVAR.FOR
       SUBROUTINE FIXCVAR
 C

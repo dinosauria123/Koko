@@ -2286,8 +2286,11 @@ C     THE NEW FIGURE OF MERIT, THE OLD FIGURE OF MERIT  AND ITS CHANGE
               S4=0
               S5=0
               W1=0.0D0
-              IF(.NOT.SILENT) CALL FMT2
-              IF(SILENT) CALL FMT3
+              IF (.NOT. SILENT) THEN
+                 CALL FMT2
+              ELSE
+                 CALL FMT3
+              END IF
               REST_KDP(4)=RESTINPT(4)
               DEALLOCATE(WT,W,V,BTB,BTG,STAT=ALLOERR)
               RETURN

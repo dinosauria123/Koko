@@ -90,6 +90,15 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
 
 //------------------------------------------------------------------------
 
+// Loads the contents of the ~/.koko_history file
+// The function is only called when the history file
+// exists. When an error occurs while reading the
+// history file it is ignored.
+//
+// INPUT
+// fname :  Fortran string with the fully qualified name
+//          of the history file ( not \0-terminated )
+// ncs :    number of characters in file name.
 void
 loadhistory( const char *fname, int ncs ) {
 
@@ -99,7 +108,10 @@ loadhistory( const char *fname, int ncs ) {
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
 
-   linenoiseHistoryLoad(cfname);  
+   linenoiseHistoryLoad(cfname);
+
+   // set maximum history length
+   linenoiseHistorySetMaxLen(250);
 }
 
 

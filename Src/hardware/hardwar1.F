@@ -2974,11 +2974,11 @@ C     OUT IS NOT 6
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
+
           IF(I.EQ.2) THEN
 C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
               IF(OUT.EQ.6.OR.OUT.EQ.69.OR.OUT.EQ.7) THEN
                   LL=LEN_TRIM(OUTLYNE)
-                  LL=131
                   IF(OUT.EQ.6.OR.OUT.EQ.69) THEN
                       WRITE(OUT,*) OUTLYNE
                   ELSE
@@ -3001,13 +3001,12 @@ C       OUTPUT INTENDED FOR UNIT=OUT (139 COL)
                   END IF
               END IF
               OUTLYNE=JK_BLLIN
-              RETURN
           END IF
 
           IF(I.EQ.5) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN ONLY (UNIT 6 EXCLUSIVELY)
               IPASS1=79
-              WRITE(OUT,*) OUTLYNE
+              WRITE(OUT,*) TRIM(OUTLYNE)
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
@@ -3015,18 +3014,19 @@ C       A MESSAGE INTENDED FOR THE SCREEN ONLY (UNIT 6 EXCLUSIVELY)
           IF(I.EQ.1) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN ONLY
               IPASS1=79
-              WRITE(OUT,*) OUTLYNE
+              WRITE(OUT,*) TRIM(OUTLYNE)
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
+
           IF(I.EQ.4) THEN
 C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
-              WRITE(OUT,*) OUTLYNE
+              WRITE(OUT,*) TRIM(OUTLYNE)
               OUTLYNE=JK_BLLIN
               RETURN
           END IF
           IF(I.NE.5) OUTLYNE=JK_BLLIN
-          RETURN
+
       END SUBROUTINE SHOWIT
 
 

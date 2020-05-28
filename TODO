@@ -3,7 +3,7 @@ To Do List for KODS
 
 - need CDGM glass catalog
 
-- change directory from within Koko
+- TAB completion at command input
 
 - replace any hardcoded system commands
 
@@ -12,7 +12,7 @@ To Do List for KODS
 - fix utility/utility7.f:lwrite
 
 - 'make' does not work well with Fortran 90 modules. Need better
-  build system ?
+  build system (?)
   
 - need icons for app and GUI
 
@@ -22,7 +22,9 @@ To Do List for KODS
 
 - implement Qcon and Qbfs polynomials for aspheric surfaces
 
-- ANSI Zernike polynomials with numerically stable implementation
+- ISO 24157 Zernike polynomials with numerically stable implementation
+
+- Q-polynomials on unit disc
 
 - in hardwar1.F: make setting USERHOME architecture independent
 
@@ -43,5 +45,6 @@ Done List
 - Installation process and installation options
 - not all input can be made upper case. Prevent directory argument
   of LENSLOC to be changed to upper case.
+- change lens directory from within Koko
 
 

@@ -3186,7 +3186,7 @@ C
               SILENT=.FALSE.
               IF(IFUNCTION.EQ.2) SILENT=.TRUE.
               IF(WQ.NE.'P'.AND.WQ.NE.'POWELL') THEN
-                  CALL SOLVIT(MAXCNT,MAXCNT,DERIV)
+                  CALL SOLVIT(MAXCNT,MAXCNT,DERIV,SILENT)
               ELSE
                   CALL SOLVIT_POWELL(MAXCNT,MAXCNT,DERIV,SILENT)
 
