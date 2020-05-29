@@ -31,9 +31,12 @@ all:
 	make -C ./Src
 	make -C ./QtGui -f MakeGui koko-gui
 	@echo
-	@echo "***************************************************************************"
+	@echo "*****************************************************************************"
 	@echo
 	@echo "It's all done !"
+	@echo
+	@echo "Optional next step:"
+	@echo "     make strip          ( remove debugging information from koko-cli )"
 	@echo
 	@echo "Now install the programs with (requires superuser privileges):"
 	@echo "     make install        ( full installation )"
@@ -46,7 +49,7 @@ all:
 	@echo "See INSTALL.md for details and for installation instructions as a user"
 	@echo "without superuser privileges."
 	@echo
-	@echo "****************************************************************************"
+	@echo "******************************************************************************"
 	@echo
 
 # install executables and system-wide config file
@@ -77,3 +80,7 @@ install-data:
 clean:
 	make -C ./Src clean
 	make -C ./QtGui -f MakeGui clean
+
+# remove debugging symbols from koko-cli
+strip:
+	make -C ./Src strip

@@ -25,11 +25,11 @@ ifdef DEBUG
   CFLAGS = -Wall -g -malign-double
 else
   ifdef NATIVE
-    FFLAGS = -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
   else
-    FFLAGS = -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
   endif  
-  CFLAGS = -O2 -malign-double
+  CFLAGS = -g -O2 -malign-double
 endif
 IFLAGS = -I../include -I../modules
 
@@ -75,6 +75,9 @@ clean:
 	make -C modules clean
 	make -C linenoise clean
 	for d in $(SUBDIRS) ; do make -C $$d clean ; done
+
+strip:
+	strip -S ./koko-cli
 
 install:
 	mkdir -p $(PREFIX)/bin
