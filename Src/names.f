@@ -1036,7 +1036,7 @@ C       973 TO 1472 NOT YET USED
           WCC(1696)='CLPX'
           WCC(1697)='GRID'
           WCC(1698)='VIESYM'
-          WCC(1699)='WSYSTEM'
+! WSYSTEM
           WCC(1700)='MEDIT'
           WCC(1701)='TESTRD'
           WCC(1702)='INI'
@@ -1053,7 +1053,7 @@ C       973 TO 1472 NOT YET USED
           WCC(1713)='GALPHA'
           WCC(1714)='GBETA'
           WCC(1715)='GGAMMA'
-          WCC(1716)='WSYS'
+! WSYS
           WCC(1717)='OPDIF'
           WCC(1718)='GREYSPOT'
           WCC(1719)='SSTEP'
@@ -1373,7 +1373,7 @@ C     NSS DATABASE COMMANDS
           WCC(2033)='PSFBIN'
           WCC(2034)='CONFIG'
 
-C         WCC(2035) ... WCC(2044) were used for stock analysis
+!         WCC(2035) ... WCC(2044) were used for stock analysis
           WCC(2045)='ONTOL'
           WCC(2046)='SINGTOL'
           WCC(2047)='CHGMAC'

@@ -722,18 +722,9 @@ C     MESSAGE THAT NO FILE EXISTS TO DRAW
           CALL SHOWIT(1)
           IF(OPEN28) CALL MY_ENDPLT
           CALL CLOSE_FILE(28,1)
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
-          IF(GRFILN(1:1).EQ.' ') GRFILN(1:12)=GRFILN(2:12)//' '
+
+          GRFILN = ADJUSTL( GRFILN )
+
           CEELINE=JK_TAG//(GRFILN(1:12))
           OPEN(UNIT=28
      1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'

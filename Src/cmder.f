@@ -1836,11 +1836,6 @@ C     SPECIAL DELSUR OPERATION
                   RETURN
               END IF
 
-              IF(WC.EQ.'WSYS'.OR.WC.EQ.'WSYSTEM')  THEN
-                  CALL MYSYS
-                  RETURN
-              END IF
-
               IF(WC.EQ.'SYS'.OR.WC.EQ.'SYSTEM')  THEN
                   CALL MYSYS
                   RETURN

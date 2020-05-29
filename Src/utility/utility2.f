@@ -5009,8 +5009,6 @@ C
                   IF(COMMWD(I).EQ.'RE')      COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'SYS')     COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'SYSTEM')  COLREP=.TRUE.
-                  IF(COMMWD(I).EQ.'WSYS')    COLREP=.TRUE.
-                  IF(COMMWD(I).EQ.'WSYSTEM') COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LFORMAT') COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LBL')     COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LABEL')   COLREP=.TRUE.
@@ -5269,8 +5267,6 @@ C
                   IF(COMMWD(I).EQ.'RE')      COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'SYS')     COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'SYSTEM')  COLREP=.TRUE.
-                  IF(COMMWD(I).EQ.'WSYS')    COLREP=.TRUE.
-                  IF(COMMWD(I).EQ.'WSYSTEM') COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LFORMAT') COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LBL')     COLREP=.TRUE.
                   IF(COMMWD(I).EQ.'LABEL')   COLREP=.TRUE.

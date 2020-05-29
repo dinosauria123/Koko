@@ -1049,6 +1049,7 @@ C SUB MYSYS.FOR
           SUBROUTINE MYSYS
 
           USE opsys
+          USE strings  
             
           IMPLICIT NONE
           CHARACTER WWSS*80
@@ -1075,7 +1076,7 @@ C
               ELSE
               END IF
               N=1
-              call LOWER_CASE(WS)
+              CALL to_lower(WS)
               DO I=80,1,-1
                   IF(WS(I:I).NE.' ') THEN
                       N=I
@@ -1090,39 +1091,7 @@ C
               WWSS(1:N)=WS(1:N)
               CALL shell_command( WWSS )
           END IF
-          IF(WC(1:1).EQ.'W') THEN
-              IF(STI.EQ.1) THEN
-                  OUTLYNE=
-     1            '"WSYS(TEM)" IS USED EXECUTE AN OPERATING SYSTEM COMMAND'
-                  CALL SHOWIT(1)
-                  RETURN
-              ELSE
-              END IF
-              IF(SN.EQ.1.OR.SQ.EQ.1) THEN
-                  OUTLYNE='"WSYS(TEM)" ONLY TAKES STRING INPUT'
-                  CALL SHOWIT(1)
-                  OUTLYNE='RE-ENTER COMMAND'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
-              ELSE
-              END IF
-              N=1
-              DO I=80,1,-1
-                  call LOWER_CASE(WS)
-                  IF(WS(I:I).NE.' ') THEN
-                      N=I
-                      GO TO 20
-                  ELSE
-                  END IF
-              END DO
- 20           CONTINUE
-              DO I=1,80
-                  WWSS(I:I)=' '
-              END DO
-              WWSS(1:N)=WS(1:N)
-              CALL shell_command( WWSS )
-          END IF
+           
           RETURN
       END
 
@@ -1575,17 +1544,3 @@ C
           END IF
           RETURN
       END
-
-
-      SUBROUTINE LOWER_CASE(STRUC)
-          IMPLICIT NONE
-          CHARACTER STRUC*80
-          INTEGER I,J
-          DO I=1,80
-              J=ICHAR(STRUC(I:I))
-              IF(J.GE.65.AND.J.LE.90)
-     1               STRUC(I:I)=CHAR(J+32)
-          END DO
-          RETURN
-      END
-
