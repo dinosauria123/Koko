@@ -558,16 +558,3 @@ C///////////////////////////////////////////////////////////////////////
 #endif
           RETURN
       END
-
-      SUBROUTINE del_col_files
-
-          INCLUDE 'datmai.inc'
-
-          CALL system('rm '//TRIM(HOME)//'plotdata/*.txt')
-          CALL system('touch '//TRIM(HOME)//'plotdata/black.txt')
-          CALL system('touch '//TRIM(HOME)//'plotdata/breakblack.txt')
-          CALL system('touch '//TRIM(HOME)//'plotdata/red.txt')
-          CALL system('touch '//TRIM(HOME)//'plotdata/yellow.txt')
-          CALL system('touch '//TRIM(HOME)//'plotdata/magenta.txt')
-          RETURN
-      END
