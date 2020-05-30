@@ -2493,21 +2493,20 @@
       END SUBROUTINE userinput
 
 
-      SUBROUTINE GREETING
+      SUBROUTINE greeting
 
         INCLUDE 'buildinfo.inc'      
 
         WRITE (*,*)
-        WRITE (*,*) 'Koko Optical Design Software (KODS)'
+        WRITE (*,*) "Koko Optical Design Software (KODS)"
         WRITE (*,*)
-        WRITE (*,*) 'This is free software. There is ABSOLUTELY NO WARRANTY, '
-        WRITE (*,*) 'not even for merchantability or fitness for a particular purpose.'
-        WRITE (*,*) 'See COPYING, LICENSE, and AUTHORS in the source distribution for details.'
+        WRITE (*,*) "This is free software. There is ABSOLUTELY NO WARRANTY,"
+        WRITE (*,*) "not even for merchantability or fitness for a particular purpose."
+        WRITE (*,*) "See COPYING, LICENSE, and AUTHORS in the source distribution for details."
         WRITE (*,*) TRIM(buildstr)
         WRITE (*,*)
         
-        RETURN
-      END SUBROUTINE GREETING
+      END SUBROUTINE greeting
       
 
       SUBROUTINE print_usage()

@@ -32,8 +32,43 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PROMPT_LEN 32  // max number of characters in prompt
-#define FNAME_LEN 256  // max file name length
+#define PROMPT_LEN 32   // max number of characters in prompt
+#define FNAME_LEN 256   // max file name length
+#define MAX_HISTORY 250 // max length of command history
+
+
+//--- For command completion ---------------------------------------------
+
+static int hidx = -1;  // for command completion
+
+// Is called every time <tab> is pressed. Looks through the command
+// history beginning with the most recent command to find one that
+// matches a prefix (partial command)
+void
+CompletionFunc(char const* prefix, linenoiseCompletions* completion_list) {
+
+   int i;
+   char *history_line;
+
+   // look up commands going back in history
+   if ( hidx < 0 ) {
+      hidx = linenoiseHistoryLen() -  1;  // index is 0-based
+   }
+   
+   for (i = hidx; i >=0; i--) {
+      history_line = linenoiseHistoryLine(i);
+      if ((history_line != NULL) && (strncmp(prefix, history_line, strlen(prefix)) == 0)) {
+         linenoiseAddCompletion(completion_list, history_line);
+	 hidx = i - 1; // continue here at next <tab>
+	 break;
+      }
+      else {
+	 free(history_line);
+      }
+   }
+   
+}
+
 
 //--- Prototypes ---------------------------------------------------------
 
@@ -56,9 +91,9 @@ void savehistory( const char *, int );
 void
 nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
 
-   char tmp_prompt[PROMPT_LEN];
+   char ln_prompt[PROMPT_LEN];
    int nc;
-   char *tmp_response;
+   char *ln_response;
 
    // copy Fortran prompt string to C string
    if ( ncprs > PROMPT_LEN - 1 ) {
@@ -67,24 +102,27 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
    else {
       nc = ncprs;
    }
-   strncpy(tmp_prompt, prompt, nc);
-   tmp_prompt[nc] = '\0';
+   strncpy(ln_prompt, prompt, nc);
+   ln_prompt[nc] = '\0';
 
    // prompt the user and return the answer
-   tmp_response = linenoise(tmp_prompt);
+   ln_response = linenoise(ln_prompt);
 
    // copy response to calling subroutine
-   nc = strlen(tmp_response);
-   strncpy(response, tmp_response, nc);
+   nc = strlen(ln_response);
+   strncpy(response, ln_response, nc);
    if (nc < lenrs) {
       memset(response+nc, ' ', lenrs-nc);
    }
 
    // add response to command history
-   linenoiseHistoryAdd(tmp_response);
+   linenoiseHistoryAdd(ln_response);
+
+   // next completion re-starts at last command
+   hidx = -1;
 
    // free tmp result buffer
-   free(tmp_response);
+   free(ln_response);
 }
 
 
@@ -107,16 +145,23 @@ loadhistory( const char *fname, int ncs ) {
    // make C-style file name string
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
-
    linenoiseHistoryLoad(cfname);
 
-   // set maximum history length
-   linenoiseHistorySetMaxLen(250);
+   // set up command completion
+   linenoiseSetCompletionCallback( CompletionFunc );
 }
 
 
 //------------------------------------------------------------------------
 
+// Saves up to MAX_HISTORY commands from the command history in
+// the ~/.koko_history file
+//
+// INPUT
+// 
+// fname :  Fortran string with the fully qualified name
+//          of the history file ( not \0-terminated )
+// ncs :    number of characters in file name.
 void
 savehistory( const char *fname, int ncs ) {
 
@@ -126,7 +171,11 @@ savehistory( const char *fname, int ncs ) {
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
 
+   // discard oldest entries
+   linenoiseHistorySetMaxLen(MAX_HISTORY);
+
+   // save history
    linenoiseHistorySave(cfname);
-   linenoiseHistoryFree();      /* called only once on Koko exit */
+   linenoiseHistoryFree(); // called only on Koko exit
 }
 

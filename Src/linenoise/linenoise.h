@@ -53,6 +53,7 @@ void linenoiseAddCompletion(linenoiseCompletions* lc, const char* str);
 char* linenoise(const char* prompt);
 void linenoisePreloadBuffer(const char* preloadText);
 int linenoiseHistoryAdd(const char* line);
+int linenoiseHistoryLen(void); 
 int linenoiseHistorySetMaxLen(int len);
 char* linenoiseHistoryLine(int index);
 int linenoiseHistorySave(const char* filename);

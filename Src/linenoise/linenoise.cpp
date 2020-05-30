@@ -3301,6 +3301,10 @@ int linenoiseHistoryAdd(const char* line) {
   return 1;
 }
 
+int linenoiseHistoryLen(void) {
+   return historyLen;
+}
+
 int linenoiseHistorySetMaxLen(int len) {
   if (len < 1) {
     return 0;
