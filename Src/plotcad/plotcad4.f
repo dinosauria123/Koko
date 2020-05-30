@@ -2912,11 +2912,12 @@ C     SELECT A COLOR
 
 C     MOVE TO THE POINT
               IF(INT(DSPOT(7)).EQ.0.AND.DSPOT(12).NE.0.0D0) THEN
-                  CALL MY_PLOTC(XPOINT-10,YPOINT,1,0,3000,7000,1500,5500)
-                  CALL MY_PLOTC(XPOINT+10,YPOINT,0,0,3000,7000,1500,5500)
-                  CALL MY_PLOTC(XPOINT,YPOINT-10,1,0,3000,7000,1500,5500)
-                  CALL MY_PLOTC(XPOINT,YPOINT+10,0,0,3000,7000,1500,5500)
                   CALL MY_PLOTC(-1,-1,0,0,3000,7000,1500,5500)
+                  CALL MY_PLOTC(XPOINT-10,YPOINT,1,0,3000,7000,1500,5500)
+                  CALL MY_PLOTC(XPOINT+10,YPOINT,1,0,3000,7000,1500,5500)
+                  CALL MY_PLOTC(-1,-1,0,0,3000,7000,1500,5500)
+                  CALL MY_PLOTC(XPOINT,YPOINT-10,1,0,3000,7000,1500,5500)
+                  CALL MY_PLOTC(XPOINT,YPOINT+10,1,0,3000,7000,1500,5500)
               END IF
 C
           END DO
@@ -4560,16 +4561,17 @@ C
           DO I=1,SPNUM
               IX(I)=INT((((REAL(XX(I))-LLIM)/(ULIM-LLIM))*5000.0)+2000.0)
               IY(I)=INT((((REAL(YY(I))-LFUNC)/(UFUNC-LFUNC))*4200.0)+1400.0)
+              write(*,*) Y(I),IY(I)
           END DO
 
 
-          CALL MY_PLOTC(IX(1),IY(1),0,LT,2000,7000,1400,5600)
+          CALL MY_PLOTC(IX(1),IY(1),1,LT,2000,7000,1400,5600)
           DO I=2,SPNUM
-              if (IX(I).GE.7000.OR.IY(I).LT.1400) then
-                  call MY_PLOTC(IX(I),IY(I),0,LT,2000,7000,1400,5600)
-              else
+!              if (IX(I).GE.7000.OR.IY(I).LT.1400) then
+!                  call MY_PLOTC(IX(I),IY(I),0,LT,2000,7000,1400,5600)
+!              else
                   CALL MY_PLOTC(IX(I),IY(I),1,LT,2000,7000,1400,5600)
-              end if
+!              end if
 
               IF(CT.EQ.1.AND..NOT.DONE(1)) THEN
                   IF(I.GT.1.AND.CT.EQ.1.AND.IX(I-1).LE.2200.AND.
