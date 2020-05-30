@@ -59,14 +59,13 @@ CompletionFunc(char const* prefix, linenoiseCompletions* completion_list) {
       history_line = linenoiseHistoryLine(i);
       if ((history_line != NULL) && (strncmp(prefix, history_line, strlen(prefix)) == 0)) {
          linenoiseAddCompletion(completion_list, history_line);
-	 hidx = i - 1; // continue here at next <tab>
-	 break;
+         hidx = i - 1; // continue here at next <tab>
+         break;
       }
       else {
-	 free(history_line);
+         free(history_line);
       }
    }
-   
 }
 
 

@@ -47,10 +47,28 @@ subroutine spline(x,y,n, yps,ype, ypp)
   real (dp), intent(in)  :: x(n), y(n), yps, ype
   real (dp), intent(out) :: ypp(n)
   
-  integer :: ier
+  integer   :: ier, ibs, ibe
+  real (dp) :: lyps, lype
 
+  ! select boundary conditions
+  if (abs(yps) < 1.0e30_dp ) then
+     ibs = 1        
+     lyps = yps
+  else
+     ibs = 2        ! yps is 2nd derivative
+     lyps = 0.0_dp  ! set to 0
+  end if
+
+  if (abs(ype) < 1.0e30_dp ) then
+     ibe = 1        
+     lype = ype
+  else
+     ibe = 2        ! ype is 2nd derivative
+     lype = 0.0_dp  ! set to 0
+  end if
+  
   ! call interpolation function
-  call spline_cubic_set(n,x,y, 1,yps, 1,ype, ypp, ier)
+  call spline_cubic_set(n,x,y, ibs,lyps, ibe,lype, ypp, ier)
   
   if (ier > 0) then
      call splerror( ier )

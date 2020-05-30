@@ -4514,26 +4514,23 @@ C     SET LETTER SIZE AND ANGLE
 
 
       SUBROUTINE PLOTFUNCA(X,Y,FEND,LLIM,ULIM,LFUNC,UFUNC,SPNUM,LT,CT,J)
-C
+
           IMPLICIT NONE
-C
+
           REAL X,Y,LLIM,ULIM,LFUNC,UFUNC
-C
           REAL*8 Y2,XX,YY,XDEL,XXX,YYY
-C
           INTEGER FEND,I,IX,IY,ALLOERR,SPNUM,LT,CT,J
-C
           REAL*8 FLDCODE(1:2,0:10)
           CHARACTER FLDUNIT(0:10)*3
           COMMON/FLDLAB/FLDCODE,FLDUNIT
-C
+
           DIMENSION IX(:),IY(:),X(FEND),Y(FEND),XX(:),YY(:),
      1    Y2(:),XXX(:),YYY(:)
-C
+
           LOGICAL DONE(1:20)
-C
+
           ALLOCATABLE :: IX,IY,XX,YY,Y2,XXX,YYY
-C
+
           DEALLOCATE(IX,IY,XX,YY,Y2,XXX,YYY,STAT=ALLOERR)
 
           ALLOCATE(IX(1:SPNUM),IY(1:SPNUM),Y2(1:FEND)
@@ -4542,14 +4539,13 @@ C
 C     CT REPRESENTS 5 POINTS ON THE HORIZINTAL AXIS
 C
 
-          DO I=1,20
-              DONE(I)=.FALSE.
-          END DO
+          DONE(1:20) =.FALSE.
+
           DO I=1,FEND
               XXX(I)=DBLE(X(I))
               YYY(I)=DBLE(Y(I))
-
-          END DO
+           END DO
+           
           CALL SPLINE(XXX,YYY,FEND,1.0D31,1.0D31,Y2)
           XX(1)=DBLE(LLIM)
           CALL SPLINT(XXX,YYY,Y2,FEND,XX(1),YY(1))
@@ -4561,7 +4557,6 @@ C
           DO I=1,SPNUM
               IX(I)=INT((((REAL(XX(I))-LLIM)/(ULIM-LLIM))*5000.0)+2000.0)
               IY(I)=INT((((REAL(YY(I))-LFUNC)/(UFUNC-LFUNC))*4200.0)+1400.0)
-              write(*,*) Y(I),IY(I)
           END DO
 
 
