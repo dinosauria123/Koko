@@ -385,6 +385,9 @@ C
 
       SUBROUTINE PDRAW
 
+          USE globals
+          USE opsys
+        
           IMPLICIT NONE
 C
 C       THIS SUB DOES THE DRAW COMMAND
@@ -425,21 +428,15 @@ C       CHECK SYNTAX
               CALL PROCES
               REST_KDP(22)=RESTINPT(22)
           END IF
-          call drawcmdsave
 
-#ifdef OSX
-          plotcommand="/opt/local/bin/gnuplot "//trim(HOME)//"drawcmd.txt" !For OSX
-#endif
-#ifdef LINUX
-          plotcommand="gnuplot "//trim(HOME)//"drawcmd.txt" !For Linux
-#endif
-          call system(plotcommand)
-#ifdef OSX
-          call system("killall AquaTerm")
-#endif
-          RETURN
+          CALL drawcmdsave
+
+          plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)//"drawcmd.txt"
+          CALL shell_command( plotcommand )
+          
       END SUBROUTINE PDRAW
 
+      
       SUBROUTINE LDRAW
         
           USE GLOBALS

@@ -8,14 +8,14 @@ Prerequisites
 -------------
 
 * A  modern **Fortran** compiler (gfortran).
-* An **C++** compiler (gcc).
+* A **C++** compiler (gcc).
 * The **Make** tool, typically gmake on Linux
-* The **gnuplot** cross-platform plotting software.
+* The **gnuplot** cross-platform plotting software version 5 or later.
   (<https://sourceforge.net/projects/gnuplot>)
 * For the graphical user interface an installation of the
   cross-platform development framework **Qt5** (<https://www.qt.io), with
   development libraries, is required.
-* A text editor
+* A text editor (vi, jed, nano, ...)
 
 
 Building Koko

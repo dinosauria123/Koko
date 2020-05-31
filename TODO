@@ -5,8 +5,6 @@ To Do List for KODS
 - read .agf glass data files directly
 - update all glass catalogs
 
-- TAB completion at command input
-
 - replace any hardcoded system commands
 
 - fix utility/utility7.f:lwrite
@@ -47,5 +45,6 @@ Done List
 - not all input can be made upper case. Prevent directory argument
   of LENSLOC to be changed to upper case.
 - change lens directory from within Koko
+- TAB completion at command input
 
 

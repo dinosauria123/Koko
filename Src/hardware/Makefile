@@ -4,10 +4,9 @@
 # Ulf GRIESMANN, April 2020
 #
 
-FSRC = hardwar1.F
-fSRC = hardwar2.f
+FSRC = hardwar1.f hardwar2.f
 
-FOBJ = $(FSRC:.F=.o) $(fSRC:.f=.o)
+FOBJ = $(FSRC:.f=.o)
 
 # targets
 all: libhardware
@@ -15,9 +14,6 @@ all: libhardware
 libhardware: $(FOBJ)
 	ar rs libhardware.a $?
 	mv libhardware.a ../lib
-
-%.o: %.F
-	$(FC) -c $(FFLAGS) $(IFLAGS) $<
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) -I.. $<
