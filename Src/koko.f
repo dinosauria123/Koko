@@ -145,6 +145,7 @@
           ! for command line options
           character          :: ch
           logical            :: quiet
+          integer            :: prtcolor
           
 !--- Configuration Options ----------------------------------
           
@@ -162,6 +163,9 @@
              TMPDIR = HOME ! last resort
           END IF
 
+          ! CLI command prompt color
+          prtcolor = 30
+          
           ! parse the system wide configuration file
           CALL sys_config_file(sys_cfg_file) ! construct system wide config file name
           IF ( file_exists(sys_cfg_file) ) THEN
@@ -189,6 +193,7 @@
                 CALL CFG_add(usr_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
                 CALL CFG_add(usr_cfg, "graphics%viewer",  BMPREADR,  "Koko graphics viewer")
                 CALL CFG_add(usr_cfg, "text%editor",      TXTEDITOR, "Koko text editor")
+                CALL CFG_add(usr_cfg, "cli%promptcolor",  30,        "Koko cli prompt color")
                 
                 CALL CFG_read_file(usr_cfg, usr_cfg_file)
 
@@ -197,10 +202,14 @@
                 CALL CFG_get(usr_cfg, "directories%temp", TMPDIR)
                 CALL CFG_get(usr_cfg, "graphics%viewer",  BMPREADR)
                 CALL CFG_get(usr_cfg, "text%editor",      TXTEDITOR)
+                CALL CFG_get(usr_cfg, "cli%promptcolor",  prtcolor)
              END IF
           END IF
 
-          ! error check
+          ! set the command prompt color
+          CALL promptcolor( prtcolor )
+          
+          ! check if data directory is accessible
           CALL dir_path_append(test_file, HOME, "README_DATA")
           INQUIRE(file = test_file, exist = has_kodsdir)
           IF ( .NOT. has_kodsdir ) THEN

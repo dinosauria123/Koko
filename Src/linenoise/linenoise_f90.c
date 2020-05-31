@@ -31,10 +31,16 @@
 #include "linenoise.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
-#define PROMPT_LEN 32   // max number of characters in prompt
+#define PROMPT_LEN 64   // max number of characters in prompt
 #define FNAME_LEN 256   // max file name length
 #define MAX_HISTORY 250 // max length of command history
+#define ESC '\x1b'      // ESC character
+
+
+// ANSI foreground color code for prompt (default is black)
+static int prompt_color = 30;
 
 
 //--- For command completion ---------------------------------------------
@@ -74,6 +80,8 @@ CompletionFunc(char const* prefix, linenoiseCompletions* completion_list) {
 void nextline( const char*, const int, char*, int );
 void loadhistory( const char *, int );
 void savehistory( const char *, int );
+void promptcolor( int );
+
 
 //--- Interface functions ------------------------------------------------
 
@@ -90,6 +98,7 @@ void savehistory( const char *, int );
 void
 nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
 
+   char tmp_prompt[PROMPT_LEN];
    char ln_prompt[PROMPT_LEN];
    int nc;
    char *ln_response;
@@ -101,9 +110,10 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
    else {
       nc = ncprs;
    }
-   strncpy(ln_prompt, prompt, nc);
-   ln_prompt[nc] = '\0';
-
+   strncpy(tmp_prompt, prompt, nc);
+   tmp_prompt[nc] = '\0';
+   sprintf(ln_prompt, "%c[%dm%s%c[0m", ESC, prompt_color, tmp_prompt, ESC);
+   
    // prompt the user and return the answer
    ln_response = linenoise(ln_prompt);
 
@@ -178,3 +188,15 @@ savehistory( const char *fname, int ncs ) {
    linenoiseHistoryFree(); // called only on Koko exit
 }
 
+
+//------------------------------------------------------------------------
+
+// Sets the ANSI color code for the prompt
+//
+// INPUT
+// acc  :  ANSI color code
+void
+promptcolor( int acc ) {
+
+   prompt_color = acc;
+}

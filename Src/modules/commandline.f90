@@ -57,6 +57,23 @@ MODULE commandline
 
 
      !----------------------------------------------------------
+     ! Set the color of the command prompt
+     ! See: https://en.wikipedia.org/wiki/ANSI_escape_code
+     !
+     ! INPUT
+     ! acc :  an integer with the ANSI color code.
+     !          30 : black
+     !          31 : red
+     !          32 : green
+     !          34 : blue
+     !
+     SUBROUTINE promptcolor( acc ) BIND(C)
+       USE, INTRINSIC                     :: ISO_C_BINDING
+       INTEGER(c_int), VALUE, INTENT(IN)  :: acc
+     END SUBROUTINE promptcolor
+
+
+     !----------------------------------------------------------
      ! Load the command history from a file
      !
      ! INPUT

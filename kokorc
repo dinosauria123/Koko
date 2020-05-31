@@ -9,3 +9,6 @@
 
 [text]
     editor = vi
+
+[cli]
+    promptcolor = 30
