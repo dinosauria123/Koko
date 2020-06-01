@@ -1,29 +1,25 @@
-!///////////////////////////////////////////////////////////////////////
-!/
-!/ Copyright (C) 2020 The Koko Project Developers
-!/
-!/ See the file COPYRIGHT.md in the top-level directory of this
-!/ distribution
-!/
-!/ This file is part of Koko.
-!/
-!/ Koko is free software: you can redistribute it and/or modify it
-!/ under the terms of the GNU General Public License as published by
-!/ the Free Software Foundation, either version 3 of the License, or
-!/ (at your option) any later version.
-!/
-!/ Koko is distributed in the hope that it will be useful, but
-!/ WITHOUT ANY WARRANTY; without even the implied warranty of
-!/ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!/ GNU General Public License for more details.
-!/
-!/ You should have received a copy of the GNU General Public License
-!/ along with Koko; see the file COPYING.  If not, see
-!/ <https://www.gnu.org/licenses/>.
-!/
-!///////////////////////////////////////////////////////////////////////
+! Copyright (C) 2020 The Koko Project Developers
+!
+! See the file COPYRIGHT.md in the top-level directory of this
+! distribution
+!
+! This file is part of Koko.
+!
+! Koko is free software: you can redistribute it and/or modify it
+! under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! Koko is distributed in the hope that it will be useful, but
+! WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with Koko; see the file COPYING.  If not, see
+! <https://www.gnu.org/licenses/>.
 
-module svdsub
+MODULE svdsub
 
   ! Emulates or replaces the Singular Value Decomposition related
   ! subroutines from "Numerical Recipes" used in KDP-2 using open-source
@@ -31,13 +27,13 @@ module svdsub
   !
   ! Ulf Griesmann, May 2020
   
-  use svd
+  USE svd
 
-  implicit none
+  IMPLICIT NONE
 
-contains
+CONTAINS
 
-  subroutine svdcmp(AU, m, n, mp, np, W, V)
+  SUBROUTINE svdcmp(AU, m, n, mp, np, W, V)
 
     ! Emulates the "Numerical Recipes 2nd Ed." singular value
     ! decomposition of a matrix A, including the awful distinction
@@ -58,32 +54,32 @@ contains
     ! W  :   vector representing a diagonal matrix with singular values
     ! V  :   n x n matrix V (not the transpose V' !)
 
-    integer,   intent(in)    :: m, n, mp, np
-    real (dp), intent(inout) :: AU(mp,np)
-    real (dp), intent(out)   :: W(np), V(np,np)
+    INTEGER,   INTENT(in)    :: m, n, mp, np
+    REAL (dp), INTENT(inout) :: AU(mp,np)
+    REAL (dp), INTENT(out)   :: W(np), V(np,np)
 
-    integer                :: info   ! will ignore because TMI
-    real (dp), allocatable :: xx(:,:), uu(:,:), vv(:,:), ss(:), ee(:)
+    INTEGER                :: info   ! will ignore because TMI
+    REAL (dp), ALLOCATABLE :: xx(:,:), uu(:,:), vv(:,:), ss(:), ee(:)
 
     ! allocate arguments for SVD subroutine
-    allocate( xx(m,n) )  ! holds A
-    allocate( uu(m,m) )  ! holds U
-    allocate( vv(n,n) )  ! holds V
-    allocate( ss(m) )    ! holds W/S
-    allocate( ee(n) )    ! error info - will be ignored
+    ALLOCATE( xx(m,n) )  ! holds A
+    ALLOCATE( uu(m,m) )  ! holds U
+    ALLOCATE( vv(n,n) )  ! holds V
+    ALLOCATE( ss(m) )    ! holds W/S
+    ALLOCATE( ee(n) )    ! error info - will be ignored
 
     ! copy input arguments
     xx = AU(1:m,1:n)
     
     ! compute SVD (returns V')
-    call dsvdc(xx, m, n, ss, ee, uu, vv, 11, info)
+    CALL dsvdc(xx, m, n, ss, ee, uu, vv, 11, info)
 
     ! copy results to output arguments
     AU(1:m,1:m) = uu
     W(1:n) = ss(1:n)
-    V(1:n,1:n) = transpose(vv) ! svdcmp returns V
+    V(1:n,1:n) = TRANSPOSE(vv) ! svdcmp returns V
     
-  end subroutine svdcmp
+  END SUBROUTINE svdcmp
 
   
   ! subroutine svdcmpa
@@ -113,7 +109,7 @@ contains
   ! call svdcmp(AU, SM, SSN, VN, VN, W, V)
   
 
-  subroutine svdcmpb(AU, W, V, nn)
+  SUBROUTINE svdcmpb(AU, W, V, nn)
 
     ! A simplified version of svdcmp that computes the SVD of a
     ! sqare matrix A.
@@ -127,28 +123,28 @@ contains
     ! W  :   vector representing a diagonal matrix with singular values
     ! V  :   nn x nn matrix V (not the transpose V' !)
 
-    integer,   intent(in)    :: nn
-    real (dp), intent(inout) :: AU(nn,nn)
-    real (dp), intent(out)   :: W(nn), V(nn,nn)
+    INTEGER,   INTENT(in)    :: nn
+    REAL (dp), INTENT(inout) :: AU(nn,nn)
+    REAL (dp), INTENT(out)   :: W(nn), V(nn,nn)
 
-    integer                  :: info ! will be ignored
-    real (dp), allocatable   :: xx(:,:), ee(:)
+    INTEGER                  :: info ! will be ignored
+    REAL (dp), ALLOCATABLE   :: xx(:,:), ee(:)
 
     ! allocate arguments for SVD subroutine
-    allocate( xx(nn,nn) )  ! holds input matrix
-    allocate( ee(nn) )     ! error info, not needed - will be ignored
+    ALLOCATE( xx(nn,nn) )  ! holds input matrix
+    ALLOCATE( ee(nn) )     ! error info, not needed - will be ignored
 
     ! copy input argument
     xx = AU
     
     ! compute SVD (returns V')
-    call dsvdc(xx, nn, nn, W, ee, AU, V, 11, info)
-    V = transpose(V)
+    CALL dsvdc(xx, nn, nn, W, ee, AU, V, 11, info)
+    V = TRANSPOSE(V)
 
-  end subroutine svdcmpb
+  END SUBROUTINE svdcmpb
 
 
-  subroutine svbksb(U, W, V, m, n, mp, np, b, x)
+  SUBROUTINE svbksb(U, W, V, m, n, mp, np, b, x)
 
     ! Emulates the "Numerical Recipes" subroutine 'svbksb',
     ! warts and all, to solve a linear system of equations
@@ -166,16 +162,16 @@ contains
     ! OUTPUT
     ! x :     solution as a column vector of length m
 
-    integer,   intent(in)  :: m, n, mp, np
-    real (dp), intent(in)  :: U(mp,mp), W(np), V(np,np), b(mp)
-    real (dp), intent(out) :: x(m)
+    INTEGER,   INTENT(in)  :: m, n, mp, np
+    REAL (dp), INTENT(in)  :: U(mp,mp), W(np), V(np,np), b(mp)
+    REAL (dp), INTENT(out) :: x(m)
 
     ! temporary matrices
-    real (dp), allocatable :: uu(:,:), ww(:), vv(:,:), bb(:)
-    allocate( uu(m,n) )
-    allocate( ww(n) )
-    allocate( vv(n,n) )
-    allocate( bb(m) )
+    REAL (dp), ALLOCATABLE :: uu(:,:), ww(:), vv(:,:), bb(:)
+    ALLOCATE( uu(m,n) )
+    ALLOCATE( ww(n) )
+    ALLOCATE( vv(n,n) )
+    ALLOCATE( bb(m) )
 
     ! copy "logical" parts of input matrices
     uu(1:m,1:n) = U(1:m,1:n)
@@ -183,9 +179,9 @@ contains
     vv(1:n,1:n) = V(1:n,1:n)
     bb(1:m) = b(1:m)
 
-    call dsvd_solve(m, n, uu, ww, vv, bb, x)
+    CALL dsvd_solve(m, n, uu, ww, vv, bb, x)
 
-  end subroutine svbksb
+  END SUBROUTINE svbksb
 
 
   ! subroutine svbksba
@@ -219,7 +215,7 @@ contains
   ! call svbksb(BTB, W, V, SM, SSN, VN1, VN, BTG, X)
   
 
-  subroutine svbksbb(U, W, V, nn, b, x)
+  SUBROUTINE svbksbb(U, W, V, nn, b, x)
 
     ! A simplified version of subroutine 'svbksb' for square system
     ! matrices A to solve a linear system of equations
@@ -240,12 +236,12 @@ contains
     ! block SVD2 containing a single variable. The common block is
     ! replaced here by the output variable 'x'.
 
-    integer,   intent(in)  :: nn
-    real (dp), intent(in)  :: U(nn,nn), W(nn), V(nn,nn), b(nn)
-    real (dp), intent(out) :: x(nn)
+    INTEGER,   INTENT(in)  :: nn
+    REAL (dp), INTENT(in)  :: U(nn,nn), W(nn), V(nn,nn), b(nn)
+    REAL (dp), INTENT(out) :: x(nn)
 
-    call dsvd_solve(nn, nn, U, W, V, b, x)
+    CALL dsvd_solve(nn, nn, U, W, V, b, x)
     
-  end subroutine svbksbb
+  END SUBROUTINE svbksbb
   
-end module svdsub
+END MODULE svdsub

@@ -1,4 +1,25 @@
-module random
+! Copyright (C) 2020 The Koko Project Developers
+!
+! See the file COPYRIGHT.md in the top-level directory of this
+! distribution
+!
+! This file is part of Koko.
+!
+! Koko is free software: you can redistribute it and/or modify it
+! under the terms of the GNU General Public License as published by
+! the Free Software Foundation, either version 3 of the License, or
+! (at your option) any later version.
+!
+! Koko is distributed in the hope that it will be useful, but
+! WITHOUT ANY WARRANTY; without even the implied warranty of
+! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+! GNU General Public License for more details.
+!
+! You should have received a copy of the GNU General Public License
+! along with Koko; see the file COPYING.  If not, see
+! <https://www.gnu.org/licenses/>.
+
+MODULE random
 
   ! Provides (pseudo-) random number generators with
   ! uniform and normal probability distribution functions.
@@ -7,127 +28,126 @@ module random
   !
   ! Ulf GRIESMANN, May 2020
   
-    implicit none
-    integer, parameter :: sp = kind(1.0)
-    integer, parameter :: dp = kind(1.0d0)
+    IMPLICIT NONE
+    INTEGER, PARAMETER :: sp = KIND(1.0)
+    INTEGER, PARAMETER :: dp = KIND(1.0d0)
 
-    real (sp), parameter :: pi_sp = 4.0_sp*atan2(1.0_sp,1.0_sp)
-    real (dp), parameter :: pi_dp = 4.0_sp*atan2(1.0_dp,1.0_dp)
+    REAL (sp), PARAMETER :: pi_sp = 4.0_sp*ATAN2(1.0_sp,1.0_sp)
+    REAL (dp), PARAMETER :: pi_dp = 4.0_sp*ATAN2(1.0_dp,1.0_dp)
 
-contains
-
+CONTAINS
   
-  function srand_uniform()
+  FUNCTION srand_uniform()
     !
     ! Returns a single precision pseudo-random number
     ! in the interval [0,1) using the standard
     ! random number generator
 
-    real (sp) :: srand_uniform
-    real (sp) :: rn
+    REAL (sp) :: srand_uniform
+    REAL (sp) :: rn
 
-    call random_number( rn )
+    CALL random_number( rn )
     srand_uniform = rn
 
-    return
+    RETURN
 
-  end function srand_uniform
+  END FUNCTION srand_uniform
 
 
-  function srand_normal()
+  FUNCTION srand_normal()
     !
-    !! srand_normal returns a unit pseudonormal
+    ! srand_normal returns a unit pseudonormal
     !
-    !  Discussion:
+    ! Discussion:
     !
-    !    The standard normal probability distribution function (PDF) has
-    !    mean 0 and standard deviation 1.
+    !   The standard normal probability distribution function (PDF) has
+    !   mean 0 and standard deviation 1.
     !
-    !  Licensing:
+    ! Licensing:
     !
-    !    This code is distributed under the GNU LGPL license.
+    !   This code is distributed under the GNU LGPL license.
     !
-    !  Modified:
+    ! Modified:
     !
-    !    06 August 2013
+    !   06 August 2013
     !
-    !  Author:
+    ! Author:
     !
-    !    John Burkardt
+    !   John Burkardt
     !
-    !  Parameters:
+    ! Parameters:
     !
-    !    Output, real (sp) srand_normal, a sample of the standard
-    !    normal PDF.
+    !   Output, real (sp) srand_normal, a sample of the standard
+    !   normal PDF.
 
-    real (sp) :: srand_normal
-    real (sp) :: r1, r2
+    REAL (sp) :: srand_normal
+    REAL (sp) :: r1, r2
     
-    call random_number(r1)
-    call random_number(r2)
+    CALL random_number(r1)
+    CALL random_rumber(r2)
     
     srand_normal = &
-         sqrt ( - 2.0_sp * log ( r1 ) ) * cos ( 2.0_sp * pi_sp * r2 )
+         SQRT ( - 2.0_sp * LOG ( r1 ) ) * COS ( 2.0_sp * pi_sp * r2 )
     
-    return
+    RETURN
 
-  end function srand_normal
+  END FUNCTION srand_normal
   
 
-  function drand_uniform()
+  FUNCTION drand_uniform()
     !
     ! Returns a double precision pseudo-random number
     ! in the interval [0,1) using the standard
     ! random number generator
 
-    real (dp) :: drand_uniform
-    real (dp) :: rn
+    REAL (dp) :: drand_uniform
+    REAL (dp) :: rn
 
-    call random_number( rn )
+    CALL random_number( rn )
     drand_uniform = rn
 
-    return
+    RETURN
 
-  end function drand_uniform
+  END FUNCTION drand_uniform
   
 
-  function drand_normal()
+  FUNCTION drand_normal()
     !
-    !! drand_normal returns a double precision unit pseudo-normal.
+    ! drand_normal returns a double precision unit pseudo-normal.
     !
-    !  Discussion:
+    ! Discussion:
     !
-    !    The standard normal probability distribution function (PDF) has
-    !    mean 0 and standard deviation 1.
+    !   The standard normal probability distribution function (PDF) has
+    !   mean 0 and standard deviation 1.
     !
-    !  Licensing:
+    ! Licensing:
     !
-    !    This code is distributed under the GNU LGPL license.
+    !   This code is distributed under the GNU LGPL license.
     !
-    !  Modified:
+    ! Modified:
     !
-    !    06 August 2013
+    !   06 August 2013
     !
-    !  Author:
+    ! Author:
     !
-    !    John Burkardt
+    !   John Burkardt
     !
-    !  Parameters:
+    ! Parameters:
     !
-    !    Output, real (dp) a normally distributed
-    !    random value.
+    !   Output, real (dp) a normally distributed
+    !   random value.
 
-    real (dp) :: drand_normal
-    real (dp) :: r1, r2
+    REAL (dp) :: drand_normal
+    REAL (dp) :: r1, r2
 
-    call random_number(r1)
-    call random_number(r2)
+    CALL random_number(r1)
+    CALL random_number(r2)
     
     drand_normal = &
-         sqrt ( - 2.0_dp * log ( r1 ) ) * cos ( 2.0_dp * pi_dp * r2 )
+         SQRT( - 2.0_dp * LOG ( r1 ) ) * COS ( 2.0_dp * pi_dp * r2 )
     
-    return
+    RETURN
 
-  end function drand_normal
+  END FUNCTION drand_normal
   
-end module random
+END MODULE random

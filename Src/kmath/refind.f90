@@ -21,7 +21,7 @@
 
 MODULE refind
 
-  ! Formulae for refractive indices of optical materials
+  ! Formulae for refractive indices of some optical materials
 
   IMPLICIT NONE
   INTEGER, PARAMETER  :: dp = kind(1.0d0)
@@ -54,8 +54,8 @@ CONTAINS
     REAL(KIND=dp)          :: lambda_um
     REAL(KIND=dp),OPTIONAL :: t, p, h
     
-    REAL(KIND=dp)             :: riair
-    REAL(KIND=dp)             :: A,B,C,D,E,F,G,X,s2,ns,ntp,pv
+    REAL(KIND=dp)          :: riair
+    REAL(KIND=dp)          :: A,B,C,D,E,F,G,X,s2,ns,ntp,pv
 
     IF (.NOT. PRESENT(t)) THEN
        t = 20.0_dp
@@ -96,6 +96,7 @@ CONTAINS
 
 
   !-----------------------------------------------------------------------
+
   FUNCTION water_svp( tc )
 
     ! Calculates the saturation vapor pressure of water at a
@@ -146,7 +147,7 @@ CONTAINS
        water_svp = 1.0e6_dp * (2.0_dp * C / X)**4;
     ELSE
        theta = T / 273.16
-       Y = A1 * (1 - theta**(-1.5_dp)) + A2 * (1 - theta**(-1.25_dp))
+       Y = A1 * (1.0_dp - theta**(-1.5_dp)) + A2 * (1.0_dp - theta**(-1.25_dp))
        water_svp = A3 * EXP(Y)
     END IF
 
