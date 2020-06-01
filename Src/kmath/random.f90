@@ -84,7 +84,7 @@ CONTAINS
     REAL (sp) :: r1, r2
     
     CALL random_number(r1)
-    CALL random_rumber(r2)
+    CALL random_number(r2)
     
     srand_normal = &
          SQRT ( - 2.0_sp * LOG ( r1 ) ) * COS ( 2.0_sp * pi_sp * r2 )
