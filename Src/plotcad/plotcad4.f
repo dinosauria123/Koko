@@ -4211,7 +4211,7 @@ C
                   IF(I.GT.1.AND.CT.EQ.1.AND.IX(I-1).LE.2200.AND.
      1            IX(I).GE.2200) THEN
 C     DRAW CAPTION LINE 1
-                      CALL MY_PLOTC(7100,5000,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,5000,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),5000,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,5000)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4222,7 +4222,7 @@ C     DRAW CAPTION LINE 1
                   IF(I.GT.1.AND.CT.EQ.2.AND.IX(I-1).LE.2400.AND.
      1            IX(I).GE.2400) THEN
 C     DRAW CAPTION LINE 2
-                      CALL MY_PLOTC(7100,4850,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4850,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4850,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4850)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4233,7 +4233,7 @@ C     DRAW CAPTION LINE 2
                   IF(I.GT.1.AND.CT.EQ.3.AND.IX(I-1).LE.2600.AND.
      1            IX(I).GE.2600) THEN
 C     DRAW CAPTION LINE 3
-                      CALL MY_PLOTC(7100,4700,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4700,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4700,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4700)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4244,7 +4244,7 @@ C     DRAW CAPTION LINE 3
                   IF(I.GT.1.AND.CT.EQ.4.AND.IX(I-1).LE.2800.AND.
      1            IX(I).GE.2800) THEN
 C     DRAW CAPTION LINE 4
-                      CALL MY_PLOTC(7100,4550,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4550,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4550,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4550)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4255,7 +4255,7 @@ C     DRAW CAPTION LINE 4
                   IF(I.GT.1.AND.CT.EQ.5.AND.IX(I-1).LE.3000.AND.
      1            IX(I).GE.3000) THEN
 C     DRAW CAPTION LINE 5
-                      CALL MY_PLOTC(7100,4400,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4400,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4400,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4400)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4266,7 +4266,7 @@ C     DRAW CAPTION LINE 5
                   IF(I.GT.1.AND.CT.EQ.6.AND.IX(I-1).LE.3200.AND.
      1            IX(I).GE.3200) THEN
 C     DRAW CAPTION LINE 6
-                      CALL MY_PLOTC(7100,4250,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4250,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4250,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4250)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4277,7 +4277,7 @@ C     DRAW CAPTION LINE 6
                   IF(I.GT.1.AND.CT.EQ.7.AND.IX(I-1).LE.3400.AND.
      1            IX(I).GE.3400) THEN
 C     DRAW CAPTION LINE 7
-                      CALL MY_PLOTC(7100,4100,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4100,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4100,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,4100)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4288,7 +4288,7 @@ C     DRAW CAPTION LINE 7
                   IF(I.GT.1.AND.CT.EQ.8.AND.IX(I-1).LE.3600.AND.
      1            IX(I).GE.3600) THEN
 C     DRAW CAPTION LINE 8
-                      CALL MY_PLOTC(7100,3950,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3950,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3950,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3950)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4299,7 +4299,7 @@ C     DRAW CAPTION LINE 8
                   IF(I.GT.1.AND.CT.EQ.9.AND.IX(I-1).LE.3800.AND.
      1            IX(I).GE.3800) THEN
 C     DRAW CAPTION LINE 9
-                      CALL MY_PLOTC(7100,3800,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3800,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3800,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3800)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4310,7 +4310,7 @@ C     DRAW CAPTION LINE 9
                   IF(I.GT.1.AND.CT.EQ.10.AND.IX(I-1).LE.4000.AND.
      1            IX(I).GE.4000) THEN
 C     DRAW CAPTION LINE 10
-                      CALL MY_PLOTC(7100,3650,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3650,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3650,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3650)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4321,7 +4321,7 @@ C     DRAW CAPTION LINE 10
                   IF(I.GT.1.AND.CT.EQ.11.AND.IX(I-1).LE.4200.AND.
      1            IX(I).GE.4200) THEN
 C     DRAW CAPTION LINE 11
-                      CALL MY_PLOTC(7100,3500,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3500,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3500,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3500)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4332,7 +4332,7 @@ C     DRAW CAPTION LINE 11
                   IF(I.GT.1.AND.CT.EQ.12.AND.IX(I-1).LE.4400.AND.
      1            IX(I).GE.4400) THEN
 C     DRAW CAPTION LINE 12
-                      CALL MY_PLOTC(7100,3350,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3350,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3350,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3350)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4343,7 +4343,7 @@ C     DRAW CAPTION LINE 12
                   IF(I.GT.1.AND.CT.EQ.13.AND.IX(I-1).LE.4600.AND.
      1            IX(I).GE.4600) THEN
 C     DRAW CAPTION LINE 13
-                      CALL MY_PLOTC(7100,3200,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3200,1,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3200,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3200)
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
@@ -4354,7 +4354,7 @@ C     DRAW CAPTION LINE 13
                   IF(I.GT.1.AND.CT.EQ.14.AND.IX(I-1).LE.4800.AND.
      1            IX(I).GE.4800) THEN
 C     DRAW CAPTION LINE 14
-                      CALL MY_PLOTC(7100,3050,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3050,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3050,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,3050)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4365,7 +4365,7 @@ C     DRAW CAPTION LINE 14
                   IF(I.GT.1.AND.CT.EQ.15.AND.IX(I-1).LE.5000.AND.
      1            IX(I).GE.5000) THEN
 C     DRAW CAPTION LINE 15
-                      CALL MY_PLOTC(7100,2900,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2900,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2900,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2900)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4376,7 +4376,7 @@ C     DRAW CAPTION LINE 15
                   IF(I.GT.1.AND.CT.EQ.16.AND.IX(I-1).LE.5200.AND.
      1            IX(I).GE.5200) THEN
 C     DRAW CAPTION LINE 16
-                      CALL MY_PLOTC(7100,2750,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2750,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2750,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2750)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4387,7 +4387,7 @@ C     DRAW CAPTION LINE 16
                   IF(I.GT.1.AND.CT.EQ.17.AND.IX(I-1).LE.5400.AND.
      1            IX(I).GE.5400) THEN
 C     DRAW CAPTION LINE 17
-                      CALL MY_PLOTC(7100,2600,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2600,1,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2600,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2600)
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
@@ -4398,7 +4398,7 @@ C     DRAW CAPTION LINE 17
                   IF(I.GT.1.AND.CT.EQ.18.AND.IX(I-1).LE.5600.AND.
      1            IX(I).GE.5600) THEN
 C     DRAW CAPTION LINE 18
-                      CALL MY_PLOTC(7100,2450,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2450,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2450,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2450)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4409,7 +4409,7 @@ C     DRAW CAPTION LINE 18
                   IF(I.GT.1.AND.CT.EQ.19.AND.IX(I-1).LE.5800.AND.
      1            IX(I).GE.5800) THEN
 C     DRAW CAPTION LINE 19
-                      CALL MY_PLOTC(7100,2300,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2300,1,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2300,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2300)
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
@@ -4420,7 +4420,7 @@ C     DRAW CAPTION LINE 19
                   IF(I.GT.1.AND.CT.EQ.20.AND.IX(I-1).LE.6000.AND.
      1            IX(I).GE.6000) THEN
 C     DRAW CAPTION LINE 20
-                      CALL MY_PLOTC(7100,2150,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2150,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2150,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2150)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4431,7 +4431,7 @@ C     DRAW CAPTION LINE 20
                   IF(I.GT.1.AND.CT.EQ.21.AND.IX(I-1).LE.6200.AND.
      1            IX(I).GE.6200) THEN
 C     DRAW CAPTION LINE 21
-                      CALL MY_PLOTC(7100,2000,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2000,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2000,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,2000)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4442,7 +4442,7 @@ C     DRAW CAPTION LINE 21
                   IF(I.GT.1.AND.CT.EQ.22.AND.IX(I-1).LE.6400.AND.
      1            IX(I).GE.6400) THEN
 C     DRAW CAPTION LINE 22
-                      CALL MY_PLOTC(7100,1850,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,1850,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),1850,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION(CT,J,7500,1850)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4544,7 +4544,7 @@ C
           DO I=1,FEND
               XXX(I)=DBLE(X(I))
               YYY(I)=DBLE(Y(I))
-           END DO
+          END DO
            
           CALL SPLINE(XXX,YYY,FEND,1.0D31,1.0D31,Y2)
           XX(1)=DBLE(LLIM)
@@ -4558,21 +4558,14 @@ C
               IX(I)=INT((((REAL(XX(I))-LLIM)/(ULIM-LLIM))*5000.0)+2000.0)
               IY(I)=INT((((REAL(YY(I))-LFUNC)/(UFUNC-LFUNC))*4200.0)+1400.0)
           END DO
-
-
-          CALL MY_PLOTC(IX(1),IY(1),1,LT,2000,7000,1400,5600)
+          CALL MY_PLOTC(IX(1),IY(1),0,LT,2000,7000,1400,5600)
           DO I=2,SPNUM
-!              if (IX(I).GE.7000.OR.IY(I).LT.1400) then
-!                  call MY_PLOTC(IX(I),IY(I),0,LT,2000,7000,1400,5600)
-!              else
-                  CALL MY_PLOTC(IX(I),IY(I),1,LT,2000,7000,1400,5600)
-!              end if
-
+              CALL MY_PLOTC(IX(I),IY(I),1,LT,2000,7000,1400,5600)
               IF(CT.EQ.1.AND..NOT.DONE(1)) THEN
                   IF(I.GT.1.AND.CT.EQ.1.AND.IX(I-1).LE.2200.AND.
      1            IX(I).GE.2200) THEN
 C     DRAW CAPTION LINE 1
-                      CALL MY_PLOTC(7100,5000,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,5000,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),5000,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,5000)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4584,7 +4577,7 @@ C     DRAW CAPTION LINE 1
      1            IX(I).GE.2400) THEN
 C     DRAW CAPTION LINE 2
 
-                      CALL MY_PLOTC(7100,4850,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4850,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4850,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4850)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4597,7 +4590,7 @@ C     DRAW CAPTION LINE 2
      1            IX(I).GE.2600) THEN
 C     DRAW CAPTION LINE 3
 
-                      CALL MY_PLOTC(7100,4700,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4700,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4700,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4700)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4610,7 +4603,7 @@ C     DRAW CAPTION LINE 3
      1            IX(I).GE.2800) THEN
 C     DRAW CAPTION LINE 4
 
-                      CALL MY_PLOTC(7100,4550,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4550,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4550,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4550)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4623,7 +4616,7 @@ C     DRAW CAPTION LINE 4
      1            IX(I).GE.3000) THEN
 C     DRAW CAPTION LINE 5
 
-                      CALL MY_PLOTC(7100,4400,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4400,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4400,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4400)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4636,7 +4629,7 @@ C     DRAW CAPTION LINE 5
      1            IX(I).GE.3200) THEN
 C     DRAW CAPTION LINE 6
 
-                      CALL MY_PLOTC(7100,4250,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4250,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4250,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4250)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4648,7 +4641,7 @@ C     DRAW CAPTION LINE 6
                   IF(I.GT.1.AND.CT.EQ.7.AND.IX(I-1).LE.3400.AND.
      1            IX(I).GE.3400) THEN
 C     DRAW CAPTION LINE 7
-                      CALL MY_PLOTC(7100,4100,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4100,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),4100,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,4100)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4660,7 +4653,7 @@ C     DRAW CAPTION LINE 7
                   IF(I.GT.1.AND.CT.EQ.8.AND.IX(I-1).LE.3600.AND.
      1            IX(I).GE.3600) THEN
 C     DRAW CAPTION LINE 8
-                      CALL MY_PLOTC(7100,3950,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3950,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3950,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3950)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4672,7 +4665,7 @@ C     DRAW CAPTION LINE 8
                   IF(I.GT.1.AND.CT.EQ.9.AND.IX(I-1).LE.3800.AND.
      1            IX(I).GE.3800) THEN
 C     DRAW CAPTION LINE 9
-                      CALL MY_PLOTC(7100,3800,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3800,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3800,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3800)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4684,7 +4677,7 @@ C     DRAW CAPTION LINE 9
                   IF(I.GT.1.AND.CT.EQ.10.AND.IX(I-1).LE.4000.AND.
      1            IX(I).GE.4000) THEN
 C     DRAW CAPTION LINE 10
-                      CALL MY_PLOTC(7100,3650,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3650,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3650,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3650)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4697,7 +4690,7 @@ C     DRAW CAPTION LINE 10
                   IF(I.GT.1.AND.CT.EQ.11.AND.IX(I-1).LE.4200.AND.
      1            IX(I).GE.4200) THEN
 C     DRAW CAPTION LINE 11
-                      CALL MY_PLOTC(7100,3500,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3500,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3500,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3500)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4709,7 +4702,7 @@ C     DRAW CAPTION LINE 11
                   IF(I.GT.1.AND.CT.EQ.12.AND.IX(I-1).LE.4400.AND.
      1            IX(I).GE.4400) THEN
 C     DRAW CAPTION LINE 12
-                      CALL MY_PLOTC(7100,3350,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3350,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3350,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3350)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4721,7 +4714,7 @@ C     DRAW CAPTION LINE 12
                   IF(I.GT.1.AND.CT.EQ.13.AND.IX(I-1).LE.4600.AND.
      1            IX(I).GE.4600) THEN
 C     DRAW CAPTION LINE 13
-                      CALL MY_PLOTC(7100,3200,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3200,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3200,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3200)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4733,7 +4726,7 @@ C     DRAW CAPTION LINE 13
                   IF(I.GT.1.AND.CT.EQ.14.AND.IX(I-1).LE.4800.AND.
      1            IX(I).GE.4800) THEN
 C     DRAW CAPTION LINE 14
-                      CALL MY_PLOTC(7100,3050,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3050,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),3050,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,3050)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4745,7 +4738,7 @@ C     DRAW CAPTION LINE 14
                   IF(I.GT.1.AND.CT.EQ.15.AND.IX(I-1).LE.5000.AND.
      1            IX(I).GE.5000) THEN
 C     DRAW CAPTION LINE 15
-                      CALL MY_PLOTC(7100,2900,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2900,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2900,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2900)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4757,7 +4750,7 @@ C     DRAW CAPTION LINE 15
                   IF(I.GT.1.AND.CT.EQ.16.AND.IX(I-1).LE.5200.AND.
      1            IX(I).GE.5200) THEN
 C     DRAW CAPTION LINE 16
-                      CALL MY_PLOTC(7100,2750,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2750,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2750,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2750)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4769,7 +4762,7 @@ C     DRAW CAPTION LINE 16
                   IF(I.GT.1.AND.CT.EQ.17.AND.IX(I-1).LE.5400.AND.
      1            IX(I).GE.5400) THEN
 C     DRAW CAPTION LINE 17
-                      CALL MY_PLOTC(7100,2600,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2600,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2600,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2600)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4781,7 +4774,7 @@ C     DRAW CAPTION LINE 17
                   IF(I.GT.1.AND.CT.EQ.18.AND.IX(I-1).LE.5600.AND.
      1            IX(I).GE.5600) THEN
 C     DRAW CAPTION LINE 18
-                      CALL MY_PLOTC(7100,2450,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2450,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2450,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2450)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4793,7 +4786,7 @@ C     DRAW CAPTION LINE 18
                   IF(I.GT.1.AND.CT.EQ.19.AND.IX(I-1).LE.5800.AND.
      1            IX(I).GE.5800) THEN
 C     DRAW CAPTION LINE 19
-                      CALL MY_PLOTC(7100,2300,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2300,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2300,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2300)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4805,7 +4798,7 @@ C     DRAW CAPTION LINE 19
                   IF(I.GT.1.AND.CT.EQ.20.AND.IX(I-1).LE.6000.AND.
      1            IX(I).GE.6000) THEN
 C     DRAW CAPTION LINE 20
-                      CALL MY_PLOTC(7100,2150,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2150,0,1,2000,7100,1400,5600)
                       CALL MY_PLOTC(IX(I),2150,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION1(CT,J,7500,2150)
                       CALL MY_PLOTC(IX(I),IY(I),1,1,2000,7000,1400,5600)
@@ -4938,7 +4931,7 @@ C     DRAW CAPTION LINE 1
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),5000,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,5000,MAXFREQ)
-                      CALL MY_PLOTC(7100,5000,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,5000,1,1,2000,7100,1400,5600)
 
 
                       DONE(1)=.TRUE.
@@ -4951,7 +4944,7 @@ C     DRAW CAPTION LINE 2
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4850,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4850,MAXFREQ)
-                      CALL MY_PLOTC(7100,4850,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4850,1,1,2000,7100,1400,5600)
 
                       DONE(2)=.TRUE.
                   END IF
@@ -4963,7 +4956,7 @@ C     DRAW CAPTION LINE 3
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4700,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4700,MAXFREQ)
-                      CALL MY_PLOTC(7100,4700,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4700,1,1,2000,7100,1400,5600)
 
                       DONE(3)=.TRUE.
                   END IF
@@ -4975,7 +4968,7 @@ C     DRAW CAPTION LINE 4
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4550,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4550,MAXFREQ)
-                      CALL MY_PLOTC(7100,4550,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4550,1,1,2000,7100,1400,5600)
 
                       DONE(4)=.TRUE.
                   END IF
@@ -4987,7 +4980,7 @@ C     DRAW CAPTION LINE 5
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4400,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4400,MAXFREQ)
-                      CALL MY_PLOTC(7100,4400,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4400,1,1,2000,7100,1400,5600)
 
 
                       DONE(5)=.TRUE.
@@ -5000,7 +4993,7 @@ C     DRAW CAPTION LINE 6
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4250,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4250,MAXFREQ)
-                      CALL MY_PLOTC(7100,4250,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4250,1,1,2000,7100,1400,5600)
 
 
                       DONE(6)=.TRUE.
@@ -5013,7 +5006,7 @@ C     DRAW CAPTION LINE 7
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),4100,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,4100,MAXFREQ)
-                      CALL MY_PLOTC(7100,4100,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,4100,1,1,2000,7100,1400,5600)
 
                       DONE(7)=.TRUE.
                   END IF
@@ -5025,7 +5018,7 @@ C     DRAW CAPTION LINE 8
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3950,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3950,MAXFREQ)
-                      CALL MY_PLOTC(7100,3950,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3950,1,1,2000,7100,1400,5600)
 
                       DONE(8)=.TRUE.
                   END IF
@@ -5037,7 +5030,7 @@ C     DRAW CAPTION LINE 9
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3800,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3800,MAXFREQ)
-                      CALL MY_PLOTC(7100,3800,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3800,1,1,2000,7100,1400,5600)
 
                       DONE(9)=.TRUE.
                   END IF
@@ -5049,7 +5042,7 @@ C     DRAW CAPTION LINE 10
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3650,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3650,MAXFREQ)
-                      CALL MY_PLOTC(7100,3650,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3650,1,1,2000,7100,1400,5600)
 
                       DONE(10)=.TRUE.
                   END IF
@@ -5061,7 +5054,7 @@ C     DRAW CAPTION LINE 11
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3500,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3500,MAXFREQ)
-                      CALL MY_PLOTC(7100,3500,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3500,1,1,2000,7100,1400,5600)
 
                       DONE(11)=.TRUE.
                   END IF
@@ -5073,7 +5066,7 @@ C     DRAW CAPTION LINE 12
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3350,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3350,MAXFREQ)
-                      CALL MY_PLOTC(7100,3350,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3350,1,1,2000,7100,1400,5600)
 
                       DONE(12)=.TRUE.
                   END IF
@@ -5085,7 +5078,7 @@ C     DRAW CAPTION LINE 13
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3200,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3200,MAXFREQ)
-                      CALL MY_PLOTC(7100,3200,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3200,1,1,2000,7100,1400,5600)
 
                       DONE(13)=.TRUE.
                   END IF
@@ -5097,7 +5090,7 @@ C     DRAW CAPTION LINE 14
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),3050,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,3050,MAXFREQ)
-                      CALL MY_PLOTC(7100,3050,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,3050,1,1,2000,7100,1400,5600)
 
                       DONE(14)=.TRUE.
                   END IF
@@ -5109,7 +5102,7 @@ C     DRAW CAPTION LINE 15
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2900,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2900,MAXFREQ)
-                      CALL MY_PLOTC(7100,2900,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2900,1,1,2000,7100,1400,5600)
 
                       DONE(15)=.TRUE.
                   END IF
@@ -5121,7 +5114,7 @@ C     DRAW CAPTION LINE 16
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2750,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2750,MAXFREQ)
-                      CALL MY_PLOTC(7100,2750,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2750,1,1,2000,7100,1400,5600)
 
                       DONE(16)=.TRUE.
                   END IF
@@ -5133,7 +5126,7 @@ C     DRAW CAPTION LINE 17
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2600,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2600,MAXFREQ)
-                      CALL MY_PLOTC(7100,2600,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2600,1,1,2000,7100,1400,5600)
 
                       DONE(17)=.TRUE.
                   END IF
@@ -5145,7 +5138,7 @@ C     DRAW CAPTION LINE 18
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2450,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2450,MAXFREQ)
-                      CALL MY_PLOTC(7100,2450,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2450,1,1,2000,7100,1400,5600)
 
                       DONE(18)=.TRUE.
                   END IF
@@ -5157,7 +5150,7 @@ C     DRAW CAPTION LINE 19
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2300,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2300,MAXFREQ)
-                      CALL MY_PLOTC(7100,2300,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2300,1,1,2000,7100,1400,5600)
 
                       DONE(19)=.TRUE.
                   END IF
@@ -5169,7 +5162,7 @@ C     DRAW CAPTION LINE 20
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2150,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2150,MAXFREQ)
-                      CALL MY_PLOTC(7100,2150,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2150,1,1,2000,7100,1400,5600)
 
                       DONE(20)=.TRUE.
                   END IF
@@ -5181,7 +5174,7 @@ C     DRAW CAPTION LINE 21
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),2000,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,2000,MAXFREQ)
-                      CALL MY_PLOTC(7100,2000,1,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,2000,1,1,2000,7100,1400,5600)
 
                       DONE(21)=.TRUE.
                   END IF
@@ -5193,7 +5186,7 @@ C     DRAW CAPTION LINE 22
                       CALL MY_PLOTC(IX(I),IY(I),0,1,2000,7000,1400,5600)
                       CALL MY_PLOTC(IX(I),1850,1,1,2000,7000,1400,5600)
                       CALL FOVCAPTION2(CT,7500,1850,MAXFREQ)
-                      CALL MY_PLOTC(7100,1850,0,1,2000,7000,1400,5600)
+                      CALL MY_PLOTC(7100,1850,1,1,2000,7100,1400,5600)
 
                       DONE(22)=.TRUE.
                   END IF

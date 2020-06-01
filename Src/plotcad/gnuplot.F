@@ -172,63 +172,49 @@ C///////////////////////////////////////////////////////////////////////
               return
           end if
 
-          if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
-              return
-          end if
-
-          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
-            if (I4.eq.0) then
-              if (I3.eq.1) then
+          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+            if ((I4.eq.0).and.(I3.eq.1)) then
                   write(130,'(2I5)') I1,I2    !black
-              end if
-            end if
-          else
+            else if ((I4.eq.0).and.(I3.eq.0)) then
                   write(130,*)
                   write(130,'(2I5)') I1,I2
+            end if
           end if
 
-          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
-           if (I4.eq.1) then
-              if (I3.eq.1) then
+          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+            if ((I4.eq.1).and.(I3.eq.1)) then
                   write(115,'(2I5)') I1,I2    !yellow
-              end if
-           end if
-         else
+            else if ((I4.eq.1).and.(I3.eq.0)) then
                   write(115,*)
                   write(115,'(2I5)') I1,I2
+            end if
           end if
 
-          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
-           if (I4.eq.2) then
-              if (I3.eq.1) then
-                  write(116,'(2I5)') I1,I2    !magenta
-              end if
-           end if
-         else
+          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+            if ((I4.eq.2).and.(I3.eq.1)) then
+                  write(116,'(2I5)') I1,I2    !yellow
+            else if ((I4.eq.2).and.(I3.eq.0)) then
                   write(116,*)
                   write(116,'(2I5)') I1,I2
-         end if
-
-          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
-           if (I4.eq.3) then
-              if (I3.eq.1) then
-                  write(117,'(2I5)') I1,I2    !red
-              end if
-           end if
-          else
-                  write(117,*)
-                  write(117,'(2I5)') I1,I2
+            end if
           end if
 
-          if (((I1.gt.I5).and.(I1.lt.I6)).and.((I2.gt.I7).and.(I2.lt.I8))) then
-           if (I4.eq.4) then
-              if (I3.eq.1) then
-                  write(118,'(2I5)') I1,I2    !cyan
-              end if
-           end if
-          else
+          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+            if ((I4.eq.3).and.(I3.eq.1)) then
+                  write(117,'(2I5)') I1,I2    !yellow
+            else if ((I4.eq.3).and.(I3.eq.0)) then
+                  write(117,*)
+                  write(117,'(2I5)') I1,I2
+            end if
+          end if
+
+          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+            if ((I4.eq.4).and.(I3.eq.1)) then
+                  write(118,'(2I5)') I1,I2    !yellow
+            else if ((I4.eq.4).and.(I3.eq.0)) then
                   write(118,*)
                   write(118,'(2I5)') I1,I2
+            end if
           end if
 
           if (I4.eq.2) then
