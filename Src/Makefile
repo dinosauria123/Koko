@@ -39,7 +39,7 @@ export CC FC IFLAGS CFLAGS FFLAGS
 LDIR = -L./lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
 
-fSRC = koko.f cmder.f names.f libload.f loadgrida.f saverest.f
+fSRC = koko.f cmder.f names.f libload.f saverest.f
 
 FOBJ = $(fSRC:.f=.o) 
 

@@ -2937,19 +2937,19 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
 C
-          IF(F5.EQ.1.OR.F6.EQ.1) THEN
+          IF (F5.EQ.1.OR.F6.EQ.1) THEN
 C
-              IF(STI.EQ.1) THEN
-                  IF(ALENS(36,I).NE.0.0D0) THEN
-                      WRITE(OUTLYNE,106)SURF
+              IF (STI.EQ.1) THEN
+                  IF (ALENS(36,SURF).NE.0.0D0) THEN
+                      WRITE(OUTLYNE,106) SURF
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,101)ALENS(37,I)
+                      WRITE(OUTLYNE,101)ALENS(37,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,102)ALENS(38,I)
+                      WRITE(OUTLYNE,102)ALENS(38,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,103)ALENS(39,I)
+                      WRITE(OUTLYNE,103)ALENS(39,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,104)ALENS(40,I)
+                      WRITE(OUTLYNE,104)ALENS(40,SURF)
                       CALL SHOWIT(0)
  106                  FORMAT('"TASPH" VALUES AT SURFACE #',I3,' ARE:')
  101                  FORMAT('"ADTOR = "',G23.15)

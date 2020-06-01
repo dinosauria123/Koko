@@ -376,9 +376,10 @@ C
  2003     FORMAT('   CORRESPONDING SURFCE CURVATURE = ',G15.6,1X,A12)
           RETURN
       END
+
+      
 C SUB SCHWARTZ.FOR
       SUBROUTINE SCHWARTZ
-C       MAY THE SCHWARTZ BE WITH YOU
 C
           IMPLICIT NONE
 C
@@ -390,10 +391,7 @@ C
 C       "MAY THE SCHWARTZ BE WITH YOU!"
 C
 C
-          REAL*8 C1,C1P,C2,VAL
-     1    ,VAL1,VAL2,SIG,SIGP,RETVAL
-C
-          EXTERNAL RETVAL
+          REAL*8 C1,C1P,C2,VAL,VAL1,VAL2,SIG,SIGP,RADINT
 C
           INCLUDE 'datmai.inc'
 C
@@ -613,13 +611,13 @@ C     CASE OF TOTAL
                   END IF
 C     CASE OF ONLY LAMBDA UPPER
                   IF(W2.LT.1.0D20.AND.W3.EQ.0.0D0) THEN
-                      VAL=RETVAL(W1,W2,RADUNI)
+                      VAL=RADINT(W1,W2,RADUNI)
                       GO TO 200
                   END IF
 C     CASE OF RANGE
                   IF(W2.LT.1.0D20.AND.W3.GT.0.0D0) THEN
-                      VAL1=RETVAL(W1,W2,RADUNI)
-                      VAL2=RETVAL(W1,W3,RADUNI)
+                      VAL1=RADINT(W1,W2,RADUNI)
+                      VAL2=RADINT(W1,W3,RADUNI)
                       VAL=VAL1-VAL2
                       GO TO 200
                   END IF
@@ -632,13 +630,13 @@ C     CASE OF TOTAL
                   END IF
 C     CASE OF ONLY LAMBDA UPPER
                   IF(W2.LT.1.0D20.AND.W3.EQ.0.0D0) THEN
-                      VAL=RETVAL(W1,W2,RADUNI)
+                      VAL=RADINT(W1,W2,RADUNI)
                       GO TO 200
                   END IF
 C     CASE OF RANGE
                   IF(W2.LT.1.0D20.AND.W3.GT.0.0D0) THEN
-                      VAL1=RETVAL(W1,W2,RADUNI)
-                      VAL2=RETVAL(W1,W3,RADUNI)
+                      VAL1=RADINT(W1,W2,RADUNI)
+                      VAL2=RADINT(W1,W3,RADUNI)
                       VAL=VAL1-VAL2
                       GO TO 200
                   END IF
@@ -668,21 +666,35 @@ C
               REG(40)=REG(9)
               REG(9)=VAL
           END IF
-C
-          RETURN
-      END
-      FUNCTION RETVAL(T,LAMBDA,RADUNI)
+
+      END SUBROUTINE SCHWARTZ
+
+        
+      FUNCTION RADINT(T,LAMBDA,RADUNI)
+!
+!  Returns the radiant exitance (radiant flux per unit area of a
+!  black body at temperature T, integrated over the wavelength
+!  interval [0,lambda].
+!
+!  Reference:
+!  W. K. Widger and M. P. Woodall; Integration of the blackbody radiation
+!  function; Bull. of the Am. Meteorological Soc. 10, 1217-1219, 1976        
+
           IMPLICIT NONE
-          REAL*8 T,LAMBDA,C1,C2,C1P,SUMOLD,RETVAL,SUM
-     1    ,A
+        
+          REAL*8 T,LAMBDA,C1,C2,C1P,SUMOLD,RADINT,SUM,A
           INTEGER RADUNI,K
           C1=37415.0D0
           C1P=1.88365D23
           C2=14387.9D0
-          IF(RADUNI.EQ.1) THEN
+
+          SUM = 0.d0
+          K = 0
+          
+          IF (RADUNI.EQ.1) THEN
 C     WATT UNITS
-              SUM=0.0D0
-              DO K=1,1000000
+              DO
+                  K = K + 1
                   SUMOLD=SUM
                   A=DEXP((-C2*DBLE(K))/(LAMBDA*T))/DBLE(K)
                   SUM=SUM+
@@ -690,29 +702,29 @@ C     WATT UNITS
      2            ((3.0D0*T)/(DBLE(K)*C2*(LAMBDA**2)))+
      3            ((6.0D0*(T**2))/(DBLE((K**2))*(C2**2)*LAMBDA))+
      4            ((6.0D0*(T**3))/(DBLE((K**3))*(C2**3))))*A)
-                  IF(DABS(SUM-SUMOLD).LE.1.0D-10) GO TO 999
+                  IF(DABS(SUM-SUMOLD).LE.1.0D-10) EXIT
               END DO
- 999          RETVAL=((T*C1)/C2)*SUM
-              RETURN
-          END IF
-          IF(RADUNI.EQ.2) THEN
+              RADINT=((T*C1)/C2)*SUM
+
+          ELSE IF (RADUNI.EQ.2) THEN
 C     PHOTON UNITS
-              SUM=0.0D0
-              DO K=1,1000000
+              DO
+                  K = K + 1
                   SUMOLD=SUM
                   A=DEXP((-C2*DBLE(K))/(LAMBDA*T))/DBLE(K)
                   SUM=SUM+
      1            (((1.0D0/(LAMBDA**2))+
      2            ((2.0D0*T)/(DBLE(K)*C2*LAMBDA))+
      3            ((2.0D0*(T**2))/(DBLE((K**2))*(C2**2))))*A)
-                  IF(DABS(SUM-SUMOLD).LE.1.0D-10) GO TO 888
+                  IF(DABS(SUM-SUMOLD).LE.1.0D-10) EXIT
               END DO
- 888          RETVAL=((T*C1P)/C2)*SUM
-              RETURN
+              RADINT=((T*C1P)/C2)*SUM
+
           END IF
-          RETURN
-      END
-C
+          
+      END FUNCTION RADINT
+
+
 C     THIS ROUTINE DOES CROSS TRACK SPECTRAL
 C
       SUBROUTINE SCE(VALVAL,TYPE,V1,ERROR)

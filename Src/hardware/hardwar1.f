@@ -2897,11 +2897,11 @@ C       USED ONLY IN COMMA DELIMITED TABLE OUTPUT
 
           IF(I.EQ.10) THEN
               I=0
-              STRIPOUT=OUTLYNE
+              STRIPOUT = OUTLYNE(1:LEN(STRIPOUT))
               IPASS1=139
               CALL NO_ZEROS(STRIPOUT,IPASS1)
-              OUTLYNE=STRIPOUT
-              STRIPOUT=OUTLYNE
+              OUTLYNE=STRIPOUT   ! ??? wtf ...
+              STRIPOUT = OUTLYNE(1:LEN(STRIPOUT))  
               IPASS1=139
               CALL ONE_BLANK(STRIPOUT,IPASS1)
               OUTLYNE=STRIPOUT

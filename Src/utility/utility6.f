@@ -1088,8 +1088,9 @@ C
           INCLUDE 'datlen.inc'
 C
           ETERROR=.FALSE.
+          EDGTHK = 0.d0
 C
-          IF(K.EQ.1) THEN
+          IF (K.EQ.1) THEN
 C     YZ PLANE CALCULATION FROM SURFACE I TO I+1
 C     DETERMINE HEIGHTS AND THICKNESS FOR CALCULATION
               IF(ALENS(9,I).EQ.0.0D0.AND.ALENS(9,I+1).EQ.0.0D0) THEN
@@ -1132,9 +1133,8 @@ C     CALC SAG1 AND SAG2
               ELSE
                   EDGTHK=-SAG1+SAG2+TH12
               END IF
-
-              RETURN
           END IF
+           
           IF(K.EQ.2) THEN
 C     XZ PLANE CLACULATION
 C     DETERMINE HEIGHTS AND THICKNESS FOR CALCULATION
@@ -1170,10 +1170,11 @@ C     CALC SAG1 AND SAG2
               ELSE
                   EDGTHK=-SAG1+SAG2+TH12
               END IF
-              RETURN
           END IF
-          RETURN
-      END
+
+      END FUNCTION EDGTHK
+
+      
       FUNCTION SAGIT(I,CA,K,ETERROR)
 C
           IMPLICIT NONE
@@ -1191,16 +1192,17 @@ C     YZ PLANE CALCULATION FROM SURFACE I TO I+1
 C     DETERMINE SAG FOR SURF I AND I+1 IN YZ-PLANE
               CALL SAGITT(I,CA,K,SAG,ETERROR)
               SAGIT=SAG
-              RETURN
-          END IF
-          IF(K.EQ.2) THEN
+
+          ELSE IF(K.EQ.2) THEN
 C     XZ PLANE CLACULATION
 C     DETERMINE SAG FOR SURF I AND I+1 IN YZ-PLANE
               CALL SAGITT(I,CA,K,SAG,ETERROR)
               SAGIT=SAG
-              RETURN
+
+          ELSE
+              SAGIT = 0.0
+              ETERROR = .TRUE.
           END IF
-          RETURN
       END
 C SUB GET.FOR
       SUBROUTINE GET

@@ -4222,7 +4222,7 @@ C       RESTORE REFRY DATA
                   REFEXT=.TRUE.
               END IF
 C       RESTORE REFRY DATA
-              REFRY(I,J)=SAVE(I,J)
+              REFRY=SAVE
               IF(WQ.EQ.'PFS') THEN
 C       OUTPUT A PRINTED HEADER WITH APPROPRIATE VALUES
                   WRITE(OUTLYNE,250)

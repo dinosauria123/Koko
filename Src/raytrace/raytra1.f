@@ -3361,7 +3361,6 @@ C
           LOGICAL XODD,YODD,ISITIN
           REAL*8 IX,IY
           REAL*8 DSP38
-
 C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
@@ -3599,7 +3598,6 @@ C       CALCULATE X AND Y STEPS
                   CALL MACFAL
                   RETURN
               ELSE
-
                   FOBNUMBER=FOBNUMBER+1
               END IF
               SAVE_KDP(1)=SAVEINPT(1)
@@ -3608,8 +3606,8 @@ C       CALCULATE X AND Y STEPS
               REST_KDP(1)=RESTINPT(1)
               KK=1
               IF(SPDEXT) THEN
-C       NOW CALC TAREA
-                  DO I=ID1+1,ITOT-1
+C     NOW CALC TAREA
+                  DO I=ID1+1,ITOT-1 
 C     LOAD DSPOTT(I,*) INTO DSPOT(*)
                       ID=I
                       CALL SPOTIT(4)
@@ -3623,21 +3621,21 @@ C       SKIP, NO ENERGY
                       END IF
                   END DO
 C
-                  if(dsp38.lt.0.03d0) then
+                  IF(dsp38.LT.0.03d0) THEN
                       farea=0.0d0
-                  else
+                  ELSE
                       IF(DSP38.NE.0.0D0) THEN
                           FAREA=REFRY(9,1)*IRTOT*XSPAN*YSPAN/DSP38
                       ELSE
                           FAREA=0.0D0
                       END IF
-                  end if
-                  if(tarea.eq.0.0d0) then
+                  END IF
+                  IF(tarea.EQ.0.0d0) THEN
                       area_fill=0.0d0
-                  else
+                  ELSE
                       area_fill=farea/tarea
-                  end if
-              else
+                  END IF
+              ELSE
 C       NO SPOT EXISTS
                   area_fill=0.0d0
                   WRITE(OUTLYNE,*) 'NO SPOT DIAGRAM EXISTS'

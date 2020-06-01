@@ -2654,13 +2654,13 @@ C       CLAPS PRESENT
                   IF(NSSALENS(1,SFID).EQ.6.0D0) THEN
 C       AUTOMATICALLY SET BOUNDS
                       MYX=DABS(NSSALENS(10,SFID))
-                      NSSBOUNDS(1,J)=-DABS(NSSALENS(10,SFID))-NUDGE(MYX)
-                      NSSBOUNDS(2,J)=DABS(NSSALENS(10,SFID))+NUDGE(MYX)
-                      NSSBOUNDS(3,J)=-DABS(NSSALENS(10,SFID))-NUDGE(MYX)
-                      NSSBOUNDS(4,J)=DABS(NSSALENS(10,SFID))+NUDGE(MYX)
+                      NSSBOUNDS(1,SFID)=-DABS(NSSALENS(10,SFID))-NUDGE(MYX)
+                      NSSBOUNDS(2,SFID)= DABS(NSSALENS(10,SFID))+NUDGE(MYX)
+                      NSSBOUNDS(3,SFID)=-DABS(NSSALENS(10,SFID))-NUDGE(MYX)
+                      NSSBOUNDS(4,SFID)= DABS(NSSALENS(10,SFID))+NUDGE(MYX)
                       MYX=DABS(NSSALENS(11,SFID))
-                      NSSBOUNDS(5,J)=0.0D0-NUDGE(MYX)
-                      NSSBOUNDS(6,J)=DABS(NSSALENS(11,SFID))+NUDGE(MYX)
+                      NSSBOUNDS(5,SFID)=0.0D0-NUDGE(MYX)
+                      NSSBOUNDS(6,SFID)=DABS(NSSALENS(11,SFID))+NUDGE(MYX)
                   END IF
               ELSE
                   OUTLYNE='NO NSS DATABASE EXISTS. NO SURFACE NAME CAN'

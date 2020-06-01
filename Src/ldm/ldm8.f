@@ -1312,8 +1312,8 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
 C
-          IF(F5.EQ.1.OR.F6.EQ.1) THEN
-              IF(SQ.EQ.1) THEN
+          IF (F5.EQ.1.OR.F6.EQ.1) THEN
+              IF (SQ.EQ.1) THEN
                   OUTLYNE=
      1            '"ASPH" TAKES NO QUALIFIER AT THE LENS OR UPDATE LENS LEVEL'
                   CALL SHOWIT(1)
@@ -1323,29 +1323,29 @@ C
                   RETURN
               END IF
 C
-              IF(STI.EQ.1) THEN
-                  IF(ALENS(8,I).NE.0.0D0) THEN
+              IF (STI.EQ.1) THEN
+                  IF (ALENS(8,SURF).NE.0.0D0) THEN
                       WRITE(OUTLYNE,106)SURF
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,101)ALENS(43,I)
+                      WRITE(OUTLYNE,101)ALENS(43,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,102)ALENS(4,I)
+                      WRITE(OUTLYNE,102)ALENS(4,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,103)ALENS(5,I)
+                      WRITE(OUTLYNE,103)ALENS(5,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,104)ALENS(6,I)
+                      WRITE(OUTLYNE,104)ALENS(6,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,105)ALENS(7,I)
+                      WRITE(OUTLYNE,105)ALENS(7,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,111)ALENS(81,I)
+                      WRITE(OUTLYNE,111)ALENS(81,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,112)ALENS(82,I)
+                      WRITE(OUTLYNE,112)ALENS(82,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,113)ALENS(83,I)
+                      WRITE(OUTLYNE,113)ALENS(83,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,114)ALENS(84,I)
+                      WRITE(OUTLYNE,114)ALENS(84,SURF)
                       CALL SHOWIT(0)
-                      WRITE(OUTLYNE,115)ALENS(85,I)
+                      WRITE(OUTLYNE,115)ALENS(85,SURF)
                       CALL SHOWIT(0)
  106                  FORMAT('"ASPH" VALUES AT SURFACE #',I3,' ARE:')
  101                  FORMAT('"AC = "',G23.15)

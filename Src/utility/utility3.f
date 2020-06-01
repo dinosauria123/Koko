@@ -2020,7 +2020,6 @@ C       NOW CALCULATE FACTORIAL
       END
 
 
-
 C SUB CHSIGN.FOR
       FUNCTION CHSIGN()
           IMPLICIT NONE
@@ -2064,7 +2063,7 @@ C SUB DEGRAD.FOR
           REAL*8 PI,DEGRA,AAA
           INCLUDE 'datmai.inc'
           PI=PII
-          IF(WC.EQ.'RTD') THEN
+          IF (WC.EQ.'RTD') THEN
               AAA=(180.0D0/PI)
               REG(40)=REG(9)
               IF(WQ.EQ.'A') DEGRA=REG(1)*AAA
@@ -2096,9 +2095,8 @@ C SUB DEGRAD.FOR
               IF(WQ.EQ.'LTEST') DEGRA=REG(26)*AAA
               IF(WQ.EQ.'MTEST') DEGRA=REG(27)*AAA
               IF(WQ.EQ.'NTEST') DEGRA=REG(28)*AAA
-              RETURN
-          END IF
-          IF(WC.EQ.'DTR') THEN
+
+          ELSE IF (WC.EQ.'DTR') THEN
               AAA=(PI/180.0D0)
               REG(40)=REG(9)
               IF(WQ.EQ.'A') DEGRA=REG(1)*AAA
@@ -2109,8 +2107,7 @@ C SUB DEGRAD.FOR
               IF(WQ.EQ.'F') DEGRA=REG(6)*AAA
               IF(WQ.EQ.'G') DEGRA=REG(7)*AAA
               IF(WQ.EQ.'H') DEGRA=REG(8)*AAA
-              IF(WQ.EQ.' '.OR.WQ.EQ.'ACC'.OR.WQ.EQ.'X')
-     1         DEGRA=REG(9)*AAA
+              IF(WQ.EQ.' '.OR.WQ.EQ.'ACC'.OR.WQ.EQ.'X') DEGRA=REG(9)*AAA
               IF(WQ.EQ.'Y') DEGRA=REG(10)*AAA
               IF(WQ.EQ.'Z') DEGRA=REG(11)*AAA
               IF(WQ.EQ.'T') DEGRA=REG(12)*AAA
@@ -2130,10 +2127,12 @@ C SUB DEGRAD.FOR
               IF(WQ.EQ.'LTEST') DEGRA=REG(26)*AAA
               IF(WQ.EQ.'MTEST') DEGRA=REG(27)*AAA
               IF(WQ.EQ.'NTEST') DEGRA=REG(28)*AAA
-              RETURN
+
+           ELSE
+              ! it would be an error to get here
+              DEGRA = 0.d0 ! make compiler happy (U.G.) 
           END IF
-          RETURN
-      END
+      END FUNCTION DEGRA
 C SUB PI.FOR
       SUBROUTINE PI
           IMPLICIT NONE

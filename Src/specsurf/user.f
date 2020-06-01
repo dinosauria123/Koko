@@ -56,7 +56,7 @@ C
 C
           RHO2=((X**2)+(Y**2))
           RHO=DSQRT(RHO2)
-          C2=C**2
+
           C=FTFL01(1,I)+(FTFL01(2,I)*RHO)+
      1    (FTFL01(3,I)*(RHO**2))+(FTFL01(4,I)*(RHO**3))+
      1    (FTFL01(5,I)*(RHO**4))+(FTFL01(6,I)*(RHO**5))+
@@ -68,6 +68,8 @@ C
      1    (FTFL01(17,I)*(RHO**16))+(FTFL01(18,I)*(RHO**17))+
      1    (FTFL01(19,I)*(RHO**18))+(FTFL01(20,I)*(RHO**19))+
      1    (FTFL01(21,I)*(RHO**20))
+          C2=C**2
+
           KAPPA=FTFL01(31,R_I)+(FTFL01(32,I)*RHO)+
      1    (FTFL01(33,I)*(RHO**2))+(FTFL01(34,I)*(RHO**3))+
      1    (FTFL01(35,I)*(RHO**4))+(FTFL01(36,I)*(RHO**5))+
