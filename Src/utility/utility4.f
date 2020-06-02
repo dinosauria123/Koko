@@ -349,6 +349,8 @@ C       PROCEED
           END IF
           RETURN
       END
+
+      
 C SUB BESS.FOR
       SUBROUTINE BESS
 C
@@ -356,9 +358,7 @@ C
 C
 C       THIS SUBROUTINE IS USED FOR BESSEL FUNCTIONS
 C
-          EXTERNAL BESSJ1
-C
-          REAL*8 VALUE1,BESSJ1
+          REAL*8 VALUE1
 C
           INCLUDE 'datmai.inc'
 C
@@ -388,48 +388,16 @@ C
                   CALL MACFAL
                   RETURN
               END IF
-              VALUE1=BESSJ1(W1)
+              VALUE1=BESSEL_J1(W1)  ! use F90 Bessel function
               REG(40)=REG(9)
               REG(9)=VALUE1
           ELSE
               OUTLYNE='ONLY J1(X) HAS BEEN IMPLEMENTED'
               CALL SHOWIT(1)
           END IF
-          RETURN
-      END
-      FUNCTION BESSJ1(X)
-C
-          IMPLICIT NONE
-C
-          REAL*8 Y,P1,P2,P3,P4,P5,Q1,Q2,Q3,Q4,Q5,
-     *        R1,R2,R3,R4,R5,R6,
-     *        S1,S2,S3,S4,S5,S6,X,BESSJ1,XX,Z,AX
-          DATA R1,R2,R3,R4,R5,R6/72362614232.D0,-7895059235.D0,242396853.1D0
-     *    ,
-     *        -2972611.439D0,15704.48260D0,-30.16036606D0/,
-     *        S1,S2,S3,S4,S5,S6/144725228442.D0,2300535178.D0,
-     *        18583304.74D0,99447.43394D0,376.9991397D0,1.D0/
-          DATA P1,P2,P3,P4,P5/1.D0,.183105D-2,-.3516396496D-4,.2457520174D-5
-     *    ,
-     *        -.240337019D-6/, Q1,Q2,Q3,Q4,Q5/.04687499995D0,-.2002690873D-3
-     *    ,
-     *        .8449199096D-5,-.88228987D-6,.105787412D-6/
-          IF(DABS(X).LT.8.0D0)THEN
-              Y=X**2
-              BESSJ1=X*(R1+Y*(R2+Y*(R3+Y*(R4+Y*(R5+Y*R6)))))
-     *            /(S1+Y*(S2+Y*(S3+Y*(S4+Y*(S5+Y*S6)))))
-          ELSE
-              AX=DABS(X)
-              Z=8.0D0/AX
-              Y=Z**2
-              XX=AX-2.356194491D0
-              BESSJ1=DSQRT(.636619772D0/AX)*(DCOS(XX)*(P1+Y*(P2+Y*(P3+Y*(P4+Y
-     *            *P5))))-Z*DSIN(XX)*(Q1+Y*(Q2+Y*(Q3+Y*(Q4+Y*Q5)))))
-     *            *DSIGN(1.0D0,X)
-          ENDIF
-          RETURN
-      END
+      END SUBROUTINE IS
 
+      
 C SUB BLANK.FOR
       SUBROUTINE BLANK0
 C
