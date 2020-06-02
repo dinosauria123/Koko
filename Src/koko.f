@@ -152,7 +152,8 @@
           ! first look up user home directory
           CALL user_home_directory(has_userhome, USERHOME)
 
-          ! check if the KODS directory is in the user's home directory
+          ! check if the KODS directory is in the user's home
+          ! directory
           IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
              CALL dir_path_append(HOME, USERHOME, "KODS")
           END IF
@@ -167,7 +168,8 @@
           prtcolor = 30
           
           ! parse the system wide configuration file
-          CALL sys_config_file(sys_cfg_file) ! construct system wide config file name
+          CALL sys_config_file(sys_cfg_file) ! construct system wide
+          ! config file name
           IF ( file_exists(sys_cfg_file) ) THEN
              ! define config default values
              CALL CFG_add(sys_cfg, "directories%home", HOME,      "Koko lib directory")

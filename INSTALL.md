@@ -23,7 +23,8 @@ Building Koko
 
 First download the sourcecode and unpack the archive or clone the
 github repository.  In the top level directory ./Koko that holds the
-source code, type
+source code (or ./Koko-master if the latest version from github was
+downloaded), type
 
     make
 
@@ -47,7 +48,7 @@ Koko can be installed as super-user (or using sudo) with the command
 which installs the executables **koko-cli** and **koko-gui** in
 '/usr/local/bin' and copies the system-wide configuration file
 **kokorc** to **/etc**. When the system-wide configuration file exists
-it will be backed up.  Shoul a directory prefix other than
+it will be backed up.  Should a directory prefix other than
 **/usr/local** be desired, e.g. **/opt**, or even a user's home
 directory, the installation directory can be changed by specifying the
 directory prefix during installation:
@@ -59,7 +60,8 @@ The installation command
     make install-exec
 
 only installs the executable files but does not overwrite an existing
-system-wide configuration file.
+system-wide configuration file. The installation directory PREFIX/bin
+should be in the search path.
 
 
 Setting up the KODS Data Directories
@@ -90,15 +92,26 @@ Configuring Koko
 When the program data for Koko are stored in a non-standard location,
 this location must be defined in the Koko configuration file. When
 Koko is started, the program first reads the system-wide configuration
-file **kokorc**. Once the system-wide configuration is parsed, a
-configuration file named **.kokorc** in a user's home directory is
+file **kokorc**. The location of this file depends on the operating
+system. On Unix-like systems, the system-wide configuration file is
+located in **/etc**. On Windows it will be in the application data
+folder. The system-wide configuration file can be installed with
+
+    make install-conf
+
+after the Koko executables have been built. **Remember to edit the
+configuration file to match the system setup before installing it.**
+Once the system-wide configuration is parsed, a configuration file
+named **.kokorc** (dot kokorc) in a user's home directory is
 read. This enables every user to temporarily or permanently override
-system-wide defaults.  An example configuration file can be found in
-the top level directory of the Koko source distribution. The
-configuration file has the following form:
+system-wide defaults. The system-wide configuration file can also be
+absent. In this case only the per-user configuration file is parsed.
+An example configuration file can be found in the top level directory
+of the Koko source distribution. The configuration file has the
+following form:
 
 <pre>
-; Configuration file example for Koko
+; Minimal configuration file example for Koko
 ;
 [directories]
     home = /HOME/ulfg/KODS
@@ -112,7 +125,8 @@ In the configuration file the location of the Koko data directory
 (**home** in the configuration file), and a directory for temporary data
 can be defined. The viewer for graphical output from Koko can also be
 specified in the configuration file. Comment lines beginning with ;
-are ignored in the configuration file.
+are ignored in the configuration file. The example configuration in
+the source distribution contains all available configuration options.
 
 The configuration can also be changed temporarily by specifiying home
 and temporary directories on the Koko command line. For more details
@@ -126,7 +140,7 @@ koko-cli  -h
 Building the Graphical User Interface Separately
 ------------------------------------------------
 
-Change to the __./QtGui__ directory and create the build files by
+Change to the **./QtGui** directory and create the build files by
 issuing the
 
     qmake

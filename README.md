@@ -25,12 +25,12 @@ systems:
 User Interfaces
 ---------------
 
-Koko has a command line interface and a table-based graphical user
+Koko has a command line interface. A table-based graphical user
 interface that will be familiar to users of commercial optics design
-programs. A longer term plan is to integrate Koko into a workbench for
-FreeCAD (<https://freecadweb.org>). This will enable a more
-object-oriented approach to optics design and will also provide an
-integrated optical and mechanical design capability.
+programs is under development. One longer-term plan is to integrate Koko
+into a workbench for FreeCAD (<https://freecadweb.org>). This will
+enable a more object-oriented approach to optics design and will also
+provide an integrated optical and mechanical design capability.
 
 
 Copying

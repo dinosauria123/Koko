@@ -1,11 +1,17 @@
-; Configuration file example for Koko
+; Configuration file EXAMPLE for Koko
 ;
 [directories]
     home = /home/ulfg/KODS
     temp = /tmp
 
 [graphics]
-    viewer = /usr/bin/gnuplot
+    viewer    = /usr/bin/gnuplot
+    terminal  = wxt
+    font      = "Noto Mono"
+    fontsizel = 12
+    fontsizem =  9
+    fontsizes =  5
+    linewidth =  0.7
 
 [text]
     editor = vi
