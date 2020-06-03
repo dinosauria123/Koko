@@ -33,6 +33,45 @@ MODULE kokoconfig
 CONTAINS
 
   !-------------------------------------------------------------
+  ! Defines default settings for the Koko configuration
+  ! configuration data
+  !
+  ! INPUT
+  ! default_kods :  default value of KODS library directory
+  ! default_temp :  default value of the temp directory
+  !
+  ! OUTPUT
+  ! config data are stored in koko_cfg
+  !
+  SUBROUTINE config_defaults( default_kods, default_temp )
+
+    CHARACTER(LEN=*), INTENT(IN) :: default_kods, default_temp
+
+    ! directories
+    CALL CFG_add(koko_cfg, "directories%home",  default_kods, "Koko lib directory")
+    CALL CFG_add(koko_cfg, "directories%temp",  default_temp, "Koko temp directory")
+
+    ! graphics
+    CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",   "Koko graphics viewer")
+    CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",       "gnuplot default terminal")
+    CALL CFG_add(koko_cfg, "graphics%font",     "Noto Mono", "Default graphics font")
+    CALL CFG_add(koko_cfg, "graphics%fontsizel", 12,         "Large font size")
+    CALL CFG_add(koko_cfg, "graphics%fontsizem", 9,          "Medium font size")
+    CALL CFG_add(koko_cfg, "graphics%fontsizes", 5,          "Small font size")
+    CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,     "Plotter line width")
+    
+    ! text
+    CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
+       
+    ! cli
+    CALL CFG_add(koko_cfg, "cli%promptcolor",    30,         "Prompt color default (black)")
+    
+    koko_config_initialized = .TRUE.
+    
+  END SUBROUTINE config_defaults
+  
+    
+  !-------------------------------------------------------------
   ! Reads a configuration file and updates the structure holding
   ! configuration data
   !
@@ -44,38 +83,15 @@ CONTAINS
   ! OUTPUT
   ! config data are stored in koko_cfg
   !
-  SUBROUTINE parse_config_file( fname, default_kods, default_temp )
+  SUBROUTINE parse_config_file( fname )
 
-    CHARACTER(LEN=*), INTENT(IN)           :: fname
-    CHARACTER(LEN=*), INTENT(IN), OPTIONAL :: default_kods, default_temp
+    CHARACTER(LEN=*), INTENT(IN) :: fname
 
-    ! set default values for configuration
     IF (.NOT. koko_config_initialized) THEN
-
-       ! directories (mandatory config file entries)
-       IF ( PRESENT(default_kods) ) THEN
-          CALL CFG_add(koko_cfg, "directories%home",  default_kods, "Koko lib directory")
-       END IF
-       IF ( PRESENT(default_temp) ) THEN
-          CALL CFG_add(koko_cfg, "directories%temp",  default_temp, "Koko temp directory")
-       END IF
-
-       ! graphics
-       CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",   "Koko graphics viewer")
-       CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",       "gnuplot default terminal")
-       CALL CFG_add(koko_cfg, "graphics%font",     "Noto Mono", "Default graphics font")
-       CALL CFG_add(koko_cfg, "graphics%fontsizel", 12,         "Large font size")
-       CALL CFG_add(koko_cfg, "graphics%fontsizem", 9,          "Medium font size")
-       CALL CFG_add(koko_cfg, "graphics%fontsizes", 5,          "Small font size")
-       CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,     "Plotter line width")
-
-       ! text
-       CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
-
-       ! cli
-       CALL CFG_add(koko_cfg, "cli%promptcolor",    30,         "Prompt color default (black)")
-
-       koko_config_initialized = .TRUE.
+       WRITE (*,*)
+       WRITE (*,*) "Fatal error: Koko configuration is not initialized"
+       WRITE (*,*)
+       STOP
     END IF
     
     ! read the configuration file

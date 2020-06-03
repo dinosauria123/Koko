@@ -163,11 +163,14 @@
              TMPDIR = HOME ! last resort
           END IF
 
+          ! set configuration defaults
+          CALL config_defaults(HOME, TMPDIR)
+          
           ! parse the system wide configuration file
           CALL sys_config_file(sys_cfg_file) ! construct system wide
           ! config file name
           IF ( file_exists(sys_cfg_file) ) THEN
-             CALL parse_config_file(sys_cfg_file, HOME, TMPDIR)
+             CALL parse_config_file(sys_cfg_file)
           END IF
           
           ! parse the user specific configuration file
@@ -178,6 +181,13 @@
              END IF
           END IF
 
+          ! update directories from config file
+          CALL CFG_get(koko_cfg, "directories%home", HOME)
+          CALL CFG_get(koko_cfg, "directories%temp", TMPDIR)
+
+          ! set graphics program
+          CALL CFG_get(koko_cfg, "graphics%viewer", BMPREADR)          
+          
           ! set the command prompt color
           CALL CFG_get(koko_cfg, "cli%promptcolor", prtcolor)
           CALL promptcolor( prtcolor )
