@@ -28,9 +28,9 @@
           USE GLOBALS
           USE NSSMOD
           USE opsys
-          USE configfile
           USE getoptions
           USE commandline
+          USE kokoconfig
 
           IMPLICIT NONE
 
@@ -140,7 +140,6 @@
 
           ! for configuration file
           CHARACTER(len=256) :: sys_cfg_file, usr_cfg_file, test_file
-          TYPE(CFG_t)        :: sys_cfg, usr_cfg
 
           ! for command line options
           character          :: ch
@@ -164,51 +163,23 @@
              TMPDIR = HOME ! last resort
           END IF
 
-          ! CLI command prompt color
-          prtcolor = 30
-          
           ! parse the system wide configuration file
           CALL sys_config_file(sys_cfg_file) ! construct system wide
           ! config file name
           IF ( file_exists(sys_cfg_file) ) THEN
-             ! define config default values
-             CALL CFG_add(sys_cfg, "directories%home", HOME,      "Koko lib directory")
-             CALL CFG_add(sys_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
-             CALL CFG_add(sys_cfg, "graphics%viewer",  "gnuplot", "Koko graphics viewer")
-             CALL CFG_add(sys_cfg, "text%editor",      "vi",      "Koko text editor")
-             
-             CALL CFG_read_file(sys_cfg, sys_cfg_file)
-             
-             ! update config variables from file
-             CALL CFG_get(sys_cfg, "directories%home", HOME)
-             CALL CFG_get(sys_cfg, "directories%temp", TMPDIR)
-             CALL CFG_get(sys_cfg, "graphics%viewer",  BMPREADR)
-             CALL CFG_get(sys_cfg, "text%editor",      TXTEDITOR)
+             CALL parse_config_file(sys_cfg_file, HOME, TMPDIR)
           END IF
           
           ! parse the user specific configuration file
           IF ( has_userhome ) THEN
              CALL dir_path_append(usr_cfg_file, USERHOME, '.kokorc')
              IF ( file_exists(usr_cfg_file) ) THEN
-                ! values found in system wide config are now the default
-                CALL CFG_add(usr_cfg, "directories%home", HOME,      "Koko lib directory")
-                CALL CFG_add(usr_cfg, "directories%temp", TMPDIR,    "Koko temp directory")
-                CALL CFG_add(usr_cfg, "graphics%viewer",  BMPREADR,  "Koko graphics viewer")
-                CALL CFG_add(usr_cfg, "text%editor",      TXTEDITOR, "Koko text editor")
-                CALL CFG_add(usr_cfg, "cli%promptcolor",  30,        "Koko cli prompt color")
-                
-                CALL CFG_read_file(usr_cfg, usr_cfg_file)
-
-                ! update config variables from file
-                CALL CFG_get(usr_cfg, "directories%home", HOME)
-                CALL CFG_get(usr_cfg, "directories%temp", TMPDIR)
-                CALL CFG_get(usr_cfg, "graphics%viewer",  BMPREADR)
-                CALL CFG_get(usr_cfg, "text%editor",      TXTEDITOR)
-                CALL CFG_get(usr_cfg, "cli%promptcolor",  prtcolor)
+                CALL parse_config_file(usr_cfg_file)
              END IF
           END IF
 
           ! set the command prompt color
+          CALL CFG_get(koko_cfg, "cli%promptcolor", prtcolor)
           CALL promptcolor( prtcolor )
           
           ! check if data directory is accessible
@@ -228,7 +199,7 @@
           
           IF ( command_argument_count() > 0 ) THEN
              DO
-                ch = getopt("bdhqt:")
+                ch = getopt("bcdhqt:")
                 SELECT CASE( ch )
                 CASE (char(0))
                    EXIT
@@ -239,6 +210,9 @@
                    END IF
                    batchmode = .TRUE.
                    BATCHFILE = optarg
+                CASE ('c')
+                   CALL print_koko_config()
+                   STOP
                 CASE ('d')
                    IF ( len_trim(optarg) == 0 ) THEN
                       WRITE (*,*) "Missing argument for command option -d"
@@ -2522,9 +2496,10 @@
 
       SUBROUTINE print_usage()
 
-        WRITE (*,*) "Usage: koko-cli [-h] [-q] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
+        WRITE (*,*) "Usage: koko-cli [-h] [-c] [-q] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
         WRITE (*,*) "Options and arguments:"
         WRITE (*,*) " -h            :  print this help message"
+        WRITE (*,*) " -c            :  print Koko configuration settings"
         WRITE (*,*) " -d <datadir>  :  set data directory for KODS"
         WRITE (*,*) " -t <tempdir>  :  set temporary file directory"
         WRITE (*,*) " -b <lensfile> :  excecute a lens file in batch mode"

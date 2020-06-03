@@ -40,8 +40,11 @@ LDIR = -L./lib
 LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
 
 fSRC = koko.f cmder.f names.f libload.f saverest.f
+f90SRC = kokoconfig.f90
 
-FOBJ = $(fSRC:.f=.o) 
+fOBJ = $(fSRC:.f=.o) 
+f90OBJ = $(f90SRC:.f90=.o) 
+FOBJ = $(f90OBJ) $(fOBJ)
 
 # targets
 all: buildinfo libdir modules libraries koko-cli
@@ -65,6 +68,10 @@ buildinfo:
 
 %.o: %.f
 	$(FC) -c $(FFLAGS) -I./include -I./modules $<
+
+%.o: %.f90
+	$(FC) -c $(FFLAGS) -I./include -I./modules $<
+	mv *.mod ./modules
 
 libdir:
 	mkdir -p ./lib

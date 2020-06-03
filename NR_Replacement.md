@@ -16,3 +16,4 @@ functionality of the original NR subroutines.
  | spline<br> splint                   | splineint<br> cubicspline         | Spline interpolation     |
  | svdcmp[ab]<br> svbksb[ab]<br> pythag| svdsub<br> svd                    | Solve linear equations   |
  | ranran<br> gasdev                   | random_number<br> [sd]rand_normal | Random number generation |
+ | bessj1                              | bessel_j1                         | Bessel function 1st kind |
