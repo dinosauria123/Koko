@@ -1749,16 +1749,16 @@
               END IF
           END IF
 
-          IF ( IN == 5 .AND. len_trim(BATCHFILE) > 0 ) THEN
+          IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
 
-              open(unit=115,file=trim(HOME)//'plotdata/yellow.txt')   ! ???
-              open(unit=116,file=trim(HOME)//'plotdata/magenta.txt')
-              open(unit=117,file=trim(HOME)//'plotdata/red.txt')
-              open(unit=118,file=trim(HOME)//'plotdata/cyan.txt')
-              open(unit=119,file=trim(HOME)//'plotdata/contdata.txt')
-              open(unit=130,file=trim(HOME)//'plotdata/black.txt')
-              open(unit=131,file=trim(HOME)//'plotdata/breakblack.txt')
+              open(unit=115,file=trim(HOME)//'gnuplot/yellow.txt')   ! ???
+              open(unit=116,file=trim(HOME)//'gnuplot/magenta.txt')
+              open(unit=117,file=trim(HOME)//'gnuplot/red.txt')
+              open(unit=118,file=trim(HOME)//'gnuplot/cyan.txt')
+              open(unit=119,file=trim(HOME)//'gnuplot/contdata.txt')
+              open(unit=130,file=trim(HOME)//'gnuplot/black.txt')
+              open(unit=131,file=trim(HOME)//'gnuplot/breakblack.txt')
               open(unit=150,file=trim(HOME)//'drawcmd3.txt')
 
               CALL userinput(CMDNO)

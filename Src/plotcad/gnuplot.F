@@ -299,7 +299,7 @@ C///////////////////////////////////////////////////////////////////////
           CHARACTER*150 catcommand2
 
           catcommand2="cat "//TRIM(HOME)//"drawcmd3.txt "
-     1    //TRIM(HOME)//"plotdata/plotcont.txt"//"> "
+     1    //TRIM(HOME)//"gnuplot/plotcont.txt"//"> "
      2    //TRIM(HOME)//"drawcmd.txt"
 
           CALL system(catcommand2)
@@ -313,7 +313,7 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black" lw 0.5 w l'
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black" lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
           RETURN
@@ -324,9 +324,9 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/breakblack.txt" with lines lt 0
+     1     TRIM(HOME)//'gnuplot/breakblack.txt" with lines lt 0
      1 lc rgb "black" lw 2'
 
           WRITE(150,*) 'pause -1'
@@ -340,9 +340,9 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/yellow.txt" lc rgb "dark-yellow"
+     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
      1 lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
@@ -354,9 +354,9 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/red.txt" lc rgb "red"
+     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red"
      1 lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
@@ -368,9 +368,9 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/red.txt" lc rgb "red"
+     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red"
      1 pt 7 ps 0.3'
           WRITE(150,*) 'pause -1'
 
@@ -382,11 +382,11 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/yellow.txt" lc rgb "dark-yellow"
+     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/magenta.txt" lc rgb "magenta"
+     1     TRIM(HOME)//'gnuplot/magenta.txt" lc rgb "magenta"
      1 lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
@@ -398,11 +398,11 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/yellow.txt" lc rgb "dark-yellow"
+     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/red.txt" lc rgb "red" lw 0.5 w l'
+     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red" lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
           RETURN
@@ -414,13 +414,13 @@ C///////////////////////////////////////////////////////////////////////
           INCLUDE 'datmai.inc'
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'plotdata/black.txt" lc rgb "black"
+     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/yellow.txt" lc rgb "dark-yellow"
+     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/magenta.txt" lc rgb "magenta"
+     1     TRIM(HOME)//'gnuplot/magenta.txt" lc rgb "magenta"
      1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'plotdata/red.txt" lc rgb "red" lw 0.5 w l'
+     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red" lw 0.5 w l'
           WRITE(150,*) 'pause -1'
 
           RETURN
