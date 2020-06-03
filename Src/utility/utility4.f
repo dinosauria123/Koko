@@ -395,7 +395,7 @@ C
               OUTLYNE='ONLY J1(X) HAS BEEN IMPLEMENTED'
               CALL SHOWIT(1)
           END IF
-      END SUBROUTINE IS
+      END SUBROUTINE BESS
 
       
 C SUB BLANK.FOR
