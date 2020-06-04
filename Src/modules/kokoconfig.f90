@@ -52,13 +52,12 @@ CONTAINS
     CALL CFG_add(koko_cfg, "directories%temp",  default_temp, "Koko temp directory")
 
     ! graphics
-    CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",   "Koko graphics viewer")
-    CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",       "gnuplot default terminal")
-    CALL CFG_add(koko_cfg, "graphics%font",     "Noto Mono", "Default graphics font")
-    CALL CFG_add(koko_cfg, "graphics%fontsizel", 12,         "Large font size")
-    CALL CFG_add(koko_cfg, "graphics%fontsizem", 9,          "Medium font size")
-    CALL CFG_add(koko_cfg, "graphics%fontsizes", 5,          "Small font size")
-    CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,     "Plotter line width")
+    CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",     "Koko graphics viewer")
+    CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",         "gnuplot default terminal")
+    CALL CFG_add(koko_cfg, "graphics%fontlrg",  "Noto Mono,12","Large graphics font")
+    CALL CFG_add(koko_cfg, "graphics%fontmed",  "Noto Mono,9", "Medium graphics font")
+    CALL CFG_add(koko_cfg, "graphics%fontsml",  "Noto Mono,5", "Small graphics font")
+    CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,       "Plotter line width")
     
     ! text
     CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
@@ -125,14 +124,12 @@ CONTAINS
     WRITE (*,*) "    viewer = "//TRIM(cval)
     CALL CFG_get(koko_cfg, "graphics%terminal", cval)
     WRITE (*,*) "    terminal = "//TRIM(cval)
-    CALL CFG_get(koko_cfg, "graphics%font", cval)
-    WRITE (*,*) "    font = "//TRIM(cval)
-    CALL CFG_get(koko_cfg, "graphics%fontsizel", ival)
-    WRITE (*,"(A,I2)") "     fontsizel = ", ival
-    CALL CFG_get(koko_cfg, "graphics%fontsizem", ival)
-    WRITE (*,"(A,I2)") "     fontsizem = ", ival
-    CALL CFG_get(koko_cfg, "graphics%fontsizes", ival)
-    WRITE (*,"(A,I2)") "     fontsizes = ", ival
+    CALL CFG_get(koko_cfg, "graphics%fontlrg", cval)
+    WRITE (*,*) "    fontlrg = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "graphics%fontmed", cval)
+    WRITE (*,*) "    fontmed = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "graphics%fontsml", cval)
+    WRITE (*,*) "    fontsml = "//TRIM(cval)
     CALL CFG_get(koko_cfg, "graphics%linewidth", rval)
     WRITE (*,"(A,F5.2)") "     linewidth = ", rval
     

@@ -7,10 +7,9 @@
 [graphics]
     viewer    = /usr/bin/gnuplot
     terminal  = wxt
-    font      = "Noto Mono"
-    fontsizel = 12
-    fontsizem =  9
-    fontsizes =  5
+    fontlrg   = "Noto Mono,12"
+    fontmed   = "Noto Mono,9"
+    fontsml   = "Noto Mono,5"
     linewidth =  0.7
 
 [text]

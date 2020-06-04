@@ -79,10 +79,10 @@ C///////////////////////////////////////////////////////////////////////
           END IF
 
           RETURN
-      END
+      END SUBROUTINE datacolorssave
 
 
-      subroutine drawdatasave(I1,I2,I3,I4)
+      SUBROUTINE drawdatasave(I1,I2,I3,I4)
 
           implicit none
           integer I1,I2,I3,I4            
@@ -146,10 +146,10 @@ C///////////////////////////////////////////////////////////////////////
               end if
           end if
           return
-      end
+      END SUBROUTINE drawdatasave
 
 
-      subroutine drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
+      SUBROUTINE drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
 
           implicit none
           integer I1,I2,I3,I4,I5,I6,I7,I8
@@ -227,7 +227,7 @@ C///////////////////////////////////////////////////////////////////////
               end if
           end if
           return
-      end
+      END SUBROUTINE drawdatasave2
 
 
       SUBROUTINE gnuplotlabel(I1,I2,label,I3,I4)
@@ -259,7 +259,7 @@ C///////////////////////////////////////////////////////////////////////
           END IF
 
    10     RETURN
-      END
+      END SUBROUTINE gnuplotlabel
 
 
       SUBROUTINE contlabel(X0,Y0,label)
@@ -276,7 +276,7 @@ C///////////////////////////////////////////////////////////////////////
      1    X,",",Y,' "',label,'"'
 
           RETURN
-      END
+      END SUBROUTINE contlabel
 
 
       SUBROUTINE drawcmdsave
@@ -290,7 +290,7 @@ C///////////////////////////////////////////////////////////////////////
           CALL system(catcommand)
 
           RETURN
-      END
+      END SUBROUTINE drawcmdsave
 
 
       SUBROUTINE drawcmdsave2
@@ -305,7 +305,7 @@ C///////////////////////////////////////////////////////////////////////
           CALL system(catcommand2)
 
           RETURN
-      END
+      END SUBROUTINE drawcmdsave2
 
 
       SUBROUTINE setonecolors
@@ -317,8 +317,9 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE setonecolors
 
+      
       SUBROUTINE setonecolors2
 
           INCLUDE 'datmai.inc'
@@ -332,7 +333,7 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE setonecolors2
 
 
       SUBROUTINE settwocolors
@@ -347,8 +348,9 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE settwocolors
 
+        
       SUBROUTINE settwocolors2
 
           INCLUDE 'datmai.inc'
@@ -361,8 +363,9 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE settwocolors2
 
+      
       SUBROUTINE settwocolors3
 
           INCLUDE 'datmai.inc'
@@ -375,8 +378,9 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE settwocolors3
 
+      
       SUBROUTINE setthreecolors
 
           INCLUDE 'datmai.inc'
@@ -391,8 +395,10 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
 
+      END SUBROUTINE setthreecolors
+
+      
       SUBROUTINE setthreecolors2
 
           INCLUDE 'datmai.inc'
@@ -406,7 +412,7 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE setthreecolors2
 
 
       SUBROUTINE setfourcolors
@@ -424,8 +430,9 @@ C///////////////////////////////////////////////////////////////////////
           WRITE(150,*) 'pause -1'
 
           RETURN
-      END
+      END SUBROUTINE setfourcolors
 
+      
       SUBROUTINE MAC_EDITOR
         
           USE opsys
@@ -439,108 +446,125 @@ C///////////////////////////////////////////////////////////////////////
           CALL shell_command(TRIM(TXTEDITOR)//" "//"MAC_EDIT.DAT")
 
           RETURN
-      END
+      END SUBROUTINE MAC_EDITOR
 
 
       SUBROUTINE plotbmp(BMPFILE)
-
+        !
+        ! plots a BMP file using gnuplot in a specified
+        ! graphics format. The file is plotted in a graphics
+        ! window.
+        !
+        ! INPUT
+        ! BMPFILE :  name of BMP file
+        !
           USE globals
-        
+          USE opsys
+          USE kokoconfig
+          
+          IMPLICIT NONE
+
           INCLUDE 'datmai.inc'
-          CHARACTER*80 BMPFILE
-          LOGICAL BMPEXIST
+
+          CHARACTER(LEN=*),INTENT(IN) :: BMPFILE
+          
+          CHARACTER(LEN=32) :: gpterm, gpfont
+          LOGICAL           :: BMPEXIST
 
           INQUIRE(file=TRIM(BMPFILE),exist=BMPEXIST)
           IF (.NOT.BMPEXIST) THEN
-
-              WRITE(OUTLYNE,*) 'ERROR OPENING ',TRIM(BMPFILE)
+              WRITE(OUTLYNE,*) 'ERROR OPENING BMP FILE ',TRIM(BMPFILE)
               CALL SHOWIT(1)
               CALL MACFAL
               RETURN
           END IF
 
-          OPEN(113,file=TRIM(HOME)//'PLOTBMP.TXT')
-
-#ifdef LINUX
-          WRITE(113,*) 'set terminal wxt font "Courier,5"'
-#endif
-#ifdef OSX
-          WRITE(113,*) 'set terminal aqua font "Courier,9"'
-#endif
+          ! retrieve font info
+          CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
+          CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
+             
+          ! create gnuplot script
+          OPEN (113,file=TRIM(HOME)//'plotbmp.gpl')
+          WRITE(113,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
           WRITE(113,*) 'set noborder'
           WRITE(113,*) 'set nokey'
           WRITE(113,*) 'set notics'
-          WRITE(113,*) 'plot "'//TRIM(BMPFILE)//'" binary
-     1array=(320,240) skip=54 format="%uint8" using 3:2:1
-     2with rgbimage'
+          WRITE(113,*) 'plot "'//TRIM(BMPFILE)//'" binary array=(320,240)
+     & skip=54 format="%uint8" using 3:2:1 with rgbimage'
           WRITE(113,*) 'pause -1'
           CLOSE(113)
 
-          CALL system(TRIM(BMPREADR)//' '//TRIM(HOME)//'PLOTBMP.TXT')
+          ! dispatch gnuplot script
+          CALL shell_command(TRIM(BMPREADR)//' '//TRIM(HOME)//'plotbmp.gpl')
 
-      END
+      END SUBROUTINE plotbmp
 
 
-      SUBROUTINE saveeps(GRFILN)
+      SUBROUTINE saveplot(BMPFILE,GRFILN, GFMT)
+        !
+        ! plots a BMP file using gnuplot in a specified
+        ! graphics format.
+        !
+        ! INPUT
+        ! BMPFILE :  name of BMP file to be printed
+        ! GRFILN :   name of the graphics file to be created
+        ! GFMT :     graphics format. "eps", "pdf", or "jpg"
+        !
+          USE globals
+          USE opsys
+          USE kokoconfig
+          USE strings
 
+          IMPLICIT NONE
+          
           INCLUDE 'datmai.inc'
-          CHARACTER GRFILN*12
 
-#ifdef OSX
-          CALL system('sed -e "s/aqua/eps/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'epsout.txt')
-          CALL system('/opt/local/bin/gnuplot '//TRIM(HOME)//'epsout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
+          CHARACTER(LEN=*), INTENT(IN) :: BMPFILE, GRFILN, GFMT
+          
+          CHARACTER(LEN=32) :: gpterm, gpfont
+          CHARACTER(LEN=16) :: loc_gfmt
+          LOGICAL           :: BMPEXIST
 
-#ifdef LINUX
-          CALL system('sed -e "s/wxt/eps/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'epsout.txt')
-          CALL system('/usr/bin/gnuplot '//TRIM(HOME)//'epsout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
-          RETURN
-      END
+          INQUIRE(file=TRIM(BMPFILE),exist=BMPEXIST)
+          IF (.NOT.BMPEXIST) THEN
+              WRITE(OUTLYNE,*) 'ERROR OPENING BMP FILE ',TRIM(BMPFILE)
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
 
+          ! retrieve font info
+          CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
 
-      SUBROUTINE savejpg(GRFILN)
+          loc_gfmt = GFMT  ! local copy
+          CALL to_lower( loc_gfmt )
+             
+          SELECT CASE ( loc_gfmt )
+          CASE ("eps")
+             gpterm = "eps"
+          CASE ("jpg")
+             gpterm = "jpeg"
+          CASE ("pdf")
+             gpterm = "pdfcairo"
+          CASE DEFAULT
+             WRITE(OUTLYNE,*) 'UNRECOGNIZED GRAPHICS FORMAT'
+             CALL SHOWIT(1)
+             CALL MACFAL
+             RETURN
+          END SELECT
+          
+          ! created gnuplot script
+          OPEN (113,file=TRIM(HOME)//'plotbmp.gpl')
+          WRITE(113,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
+          WRITE(113,*) 'set noborder'
+          WRITE(113,*) 'set nokey'
+          WRITE(113,*) 'set notics'
+          WRITE(113,*) 'plot "'//TRIM(BMPFILE)//'" binary array=(320,240)
+     & skip=54 format="%uint8" using 3:2:1 with rgbimage'
+          CLOSE(113)
 
-          INCLUDE 'datmai.inc'
-          CHARACTER GRFILN*12
+          ! dispatch gnuplot
+          CALL shell_command(TRIM(BMPREADR)//' '//TRIM(HOME)//'plotbmp.gpl > '
+     &                       //TRIM(USERHOME)//'/'//TRIM(GRFILN))             
 
-#ifdef OSX
-          CALL system('sed -e "s/aqua/jpeg/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'jpgout.txt')
-          CALL system('/opt/local/bin/gnuplot '//TRIM(HOME)//'jpgout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
-
-#ifdef LINUX
-          CALL system('sed -e "s/wxt/jpeg/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'jpgout.txt')
-          CALL system('/usr/bin/gnuplot '//TRIM(HOME)//'jpgout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
-          RETURN
-      END
-
-      SUBROUTINE savepdf(GRFILN)
-
-          INCLUDE 'datmai.inc'
-          CHARACTER GRFILN*12
-
-#ifdef OSX
-          CALL system('sed -e "s/aqua/pdfcairo/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'pdfout.txt')
-          CALL system('/opt/local/bin/gnuplot '//TRIM(HOME)//'pdfout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
-
-#ifdef LINUX
-          CALL system('sed -e "s/wxt/pdfcairo/g" -e "s/pause -1//g" '
-     &    //TRIM(HOME)//'drawcmd.txt > '//TRIM(HOME)//'pdfout.txt')
-          CALL system('/usr/bin/gnuplot '//TRIM(HOME)//'pdfout.txt > '
-     &    //TRIM(USERHOME)//'/'//TRIM(GRFILN))
-#endif
-          RETURN
-      END
+      END SUBROUTINE saveplot
