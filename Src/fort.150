@@ -1,0 +1,9 @@
+set label at screen  0.030, 0.044 "Cooke Triplet variant U.S. Patent 2,453,260"
+set label at screen  0.864, 0.254 "Y"
+set label at screen  0.920, 0.174 "Z"
+set label at screen  0.401, 0.125 "X-LOOK VECTOR =  -1.00"
+set label at screen  0.401, 0.098 "Y-LOOK VECTOR =   0.00"
+set label at screen  0.401, 0.071 "Z-LOOK VECTOR =   0.00"
+set label at screen  0.030, 0.071 "SCALE FACTOR =   1.290000 X"
+ plot [0:10000] [0:7000] "/HOME/ulfg/KODS//gnuplot/black.gpl" lc rgb "black" lw 0.70 w l,"/HOME/ulfg/KODS//gnuplot/yellow.gpl" lc rgb "dark-yellow" lw 0.70 w l
+ pause -1

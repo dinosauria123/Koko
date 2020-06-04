@@ -392,7 +392,8 @@ C
 C
 C       THIS SUB DOES THE DRAW COMMAND
 C
-          CHARACTER DRWNAM*11,plotcommand*80
+          CHARACTER(LEN=11)  :: DRWNAM
+          CHARACTER(LEN=256) :: plotcommand
           COMMON/DRWTAG/DRWNAM
 
           INCLUDE 'datmai.inc'
@@ -431,7 +432,10 @@ C       CHECK SYNTAX
 
           CALL drawcmdsave
 
-          plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)//"drawcmd.txt"
+          plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)
+          CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
+          CALL dir_path_append(plotcommand, "drawcmd.gpl", plotcommand)
+
           CALL shell_command( plotcommand )
           
       END SUBROUTINE PDRAW

@@ -40,8 +40,8 @@ CONTAINS
     ! homedir :      the fully qualified path of the home directory,
     !                including, in Windows, the home drive.
     
-    CHARACTER(len=*), INTENT(out) :: homedir
-    LOGICAL, INTENT(out)          :: has_homedir
+    CHARACTER(len=*), INTENT(OUT) :: homedir
+    LOGICAL, INTENT(OUT)          :: has_homedir
     
     INTEGER            :: status, length
 
@@ -94,7 +94,7 @@ CONTAINS
   !
   LOGICAL FUNCTION kods_dir_exists( topdir )
 
-    CHARACTER(len=*), INTENT(in) :: topdir
+    CHARACTER(len=*), INTENT(IN) :: topdir
     CHARACTER(len=256)           :: testfile
     
 #if defined( LINUX ) || defined( MACOSX )
@@ -117,7 +117,7 @@ CONTAINS
   !
   LOGICAL FUNCTION file_exists( fname )
 
-    CHARACTER(len=*), INTENT(in) :: fname
+    CHARACTER(len=*), INTENT(IN) :: fname
 
     INQUIRE(file = fname, exist = file_exists)
     
@@ -132,7 +132,7 @@ CONTAINS
   !
   SUBROUTINE sys_config_file(cfgfile)
     
-    CHARACTER(len=*), INTENT(out) :: cfgfile
+    CHARACTER(len=*), INTENT(OUT) :: cfgfile
 
 # if defined( WINDOWS )
     INTEGER            :: status, length
@@ -160,17 +160,27 @@ CONTAINS
   ! OUTPUT
   ! fullpath :  the concatenated path name
   !
-  SUBROUTINE dir_path_append(fullpath, partpath, pathitem)
+  SUBROUTINE dir_path_append(partpath, pathitem, fullpath)
 
-    CHARACTER(len=*), INTENT(in)  :: partpath, pathitem
-    CHARACTER(len=*), INTENT(out) :: fullpath
+    CHARACTER(len=*) :: partpath, pathitem, fullpath
+    INTEGER          :: pplen
 
+    pplen = LEN_TRIM(fullpath)
+    
 #if defined( LINUX ) || defined( MACOSX )
-    fullpath = TRIM(partpath)//'/'//TRIM(pathitem)
+    IF (partpath(pplen:pplen) == '/') THEN
+       fullpath = TRIM(partpath)//TRIM(pathitem)
+    ELSE
+       fullpath = TRIM(partpath)//'/'//TRIM(pathitem)
+    END IF
 #endif
 
 #if defined( WINDOWS )
-    fullpath = TRIM(partpath)//'\'//TRIM(pathitem)
+    IF (partpath(pplen:pplen) == '\') THEN
+       fullpath = TRIM(partpath)//TRIM(pathitem)
+    ELSE
+       fullpath = TRIM(partpath)//'\'//TRIM(pathitem)
+    END IF
 #endif
     
   END SUBROUTINE dir_path_append
@@ -186,7 +196,7 @@ CONTAINS
   !
   SUBROUTINE set_kods_temp_dir( tmpdir )
 
-    CHARACTER(len=*), INTENT(out) :: tmpdir
+    CHARACTER(len=*), INTENT(OUT) :: tmpdir
     CHARACTER(len=256)            :: tdir
     INTEGER                       :: length, status
 
@@ -234,7 +244,7 @@ CONTAINS
   !
   SUBROUTINE os_delete( filename )
 
-    CHARACTER(len=*), INTENT(in) :: filename
+    CHARACTER(len=*), INTENT(IN) :: filename
     CHARACTER(len=4)             :: cmd
 
 #if defined( LINUX ) || defined( MACOSX )
@@ -256,7 +266,7 @@ CONTAINS
   !
   SUBROUTINE os_copy( from_name, to_name )
 
-    CHARACTER(len=*), INTENT(in) :: from_name, to_name
+    CHARACTER(len=*), INTENT(IN) :: from_name, to_name
     CHARACTER(len=8)             :: cmd
 
 #if defined( LINUX ) || defined( MACOSX )
@@ -276,11 +286,34 @@ CONTAINS
 
   
   !----------------------------------------------------------
+  ! Appends two files at the OS level
+  !
+  ! Unix:    cat file_a file_b > file_out 
+  ! Windows: type file_a file_b > file_out
+  !
+  SUBROUTINE append_files( file_a, file_b, file_out )
+
+    CHARACTER(len=*), INTENT(IN) :: file_a, file_b, file_out
+    CHARACTER(len=8)             :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "cat"
+#endif
+#if defined( WINDOWS )
+    cmd = "type"
+#endif
+
+    CALL shell_command(TRIM(cmd)//" "//TRIM(file_a)//" "//TRIM(file_b)//" > "//TRIM(file_out))
+
+  END SUBROUTINE append_files
+
+
+  !----------------------------------------------------------
   ! Creates a new directory
   !
   SUBROUTINE os_newdir( dir_name )
 
-    CHARACTER(len=*), INTENT(in) :: dir_name
+    CHARACTER(len=*), INTENT(IN) :: dir_name
     CHARACTER(len=12)            :: cmd
 
 #if defined( LINUX ) || defined( MACOSX )
@@ -300,7 +333,7 @@ CONTAINS
   !
   SUBROUTINE os_listdir( dir_name )
 
-    CHARACTER(len=*), INTENT(in) :: dir_name
+    CHARACTER(len=*), INTENT(IN) :: dir_name
     CHARACTER(len=8)             :: cmd
 
 #if defined( LINUX ) || defined( MACOSX )
@@ -322,7 +355,7 @@ CONTAINS
   !
   SUBROUTINE shell_command( command )
 
-    CHARACTER(len=*), INTENT(in) :: command
+    CHARACTER(len=*), INTENT(IN) :: command
     INTEGER                      :: exitstat, cmdstat
 
     CALL execute_command_LINE(TRIM(command), .TRUE., exitstat, cmdstat)

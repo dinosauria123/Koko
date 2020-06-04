@@ -139,12 +139,13 @@
           LOGICAL has_userhome, has_kodsdir
 
           ! for configuration file
-          CHARACTER(len=256) :: sys_cfg_file, usr_cfg_file, test_file
+          CHARACTER(LEN=256) :: sys_cfg_file, usr_cfg_file, test_file
+          CHARACTER(LEN=256) :: gpl_dir, gpl_script
 
           ! for command line options
-          character          :: ch
-          logical            :: quiet
-          integer            :: prtcolor
+          CHARACTER          :: ch
+          LOGICAL            :: quiet
+          INTEGER            :: prtcolor
           
 !--- Configuration Options ----------------------------------
           
@@ -154,7 +155,7 @@
           ! check if the KODS directory is in the user's home
           ! directory
           IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
-             CALL dir_path_append(HOME, USERHOME, "KODS")
+             CALL dir_path_append(USERHOME, "KODS", HOME)
           END IF
 
           ! set default directory for temporary files
@@ -175,7 +176,7 @@
           
           ! parse the user specific configuration file
           IF ( has_userhome ) THEN
-             CALL dir_path_append(usr_cfg_file, USERHOME, '.kokorc')
+             CALL dir_path_append(USERHOME, '.kokorc', usr_cfg_file)
              IF ( file_exists(usr_cfg_file) ) THEN
                 CALL parse_config_file(usr_cfg_file)
              END IF
@@ -193,7 +194,7 @@
           CALL promptcolor( prtcolor )
           
           ! check if data directory is accessible
-          CALL dir_path_append(test_file, HOME, "README_DATA")
+          CALL dir_path_append(HOME, "README_DATA", test_file)
           INQUIRE(file = test_file, exist = has_kodsdir)
           IF ( .NOT. has_kodsdir ) THEN
              WRITE (*,*) ' '
@@ -254,7 +255,7 @@
 
           HISTFILE = ' '
           IF ( has_userhome ) THEN
-             CALL dir_path_append( HISTFILE, USERHOME, ".koko_history")
+             CALL dir_path_append(USERHOME, ".koko_history", HISTFILE)
              IF ( file_exists( HISTFILE )) THEN
                 CALL loadhistory( HISTFILE, LEN_TRIM(HISTFILE) )
              END IF
@@ -1752,14 +1753,33 @@
           IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
 
-              open(unit=115,file=trim(HOME)//'gnuplot/yellow.txt')
-              open(unit=116,file=trim(HOME)//'gnuplot/magenta.txt')
-              open(unit=117,file=trim(HOME)//'gnuplot/red.txt')
-              open(unit=118,file=trim(HOME)//'gnuplot/cyan.txt')
-              open(unit=119,file=trim(HOME)//'gnuplot/contdata.txt')
-              open(unit=130,file=trim(HOME)//'gnuplot/black.txt')
-              open(unit=131,file=trim(HOME)//'gnuplot/breakblack.txt')
-              open(unit=150,file=trim(HOME)//'drawcmd3.txt')
+              ! Libs/gnuplot directory
+              CALL dir_path_append(HOME, "gnuplot", gpl_dir)
+
+              ! open gnuplot data files
+              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
+              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
+              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
+              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
+              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
+              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
+              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+
+              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
+              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
 
               CALL userinput(CMDNO)
 
@@ -1767,6 +1787,7 @@
               close(116)
               close(117)
               close(118)
+              close(119)
               close(130)
               close(131)
               close(150)

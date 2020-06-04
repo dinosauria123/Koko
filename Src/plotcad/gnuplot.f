@@ -78,7 +78,6 @@ C///////////////////////////////////////////////////////////////////////
               END IF
           END IF
 
-          RETURN
       END SUBROUTINE datacolorssave
 
 
@@ -138,14 +137,14 @@ C///////////////////////////////////////////////////////////////////////
 
           if (I4.eq.2) then
               if (I3.eq.1) then
-                  write(131,'(2I5)') I1,I2    !break black
+                  write(131,'(2I5)') I1,I2    !break black (dashed ???)
               else
                   write(131,*)
                   write(131,'(2I5)') I1,I2
 
               end if
           end if
-          return
+
       END SUBROUTINE drawdatasave
 
 
@@ -226,31 +225,38 @@ C///////////////////////////////////////////////////////////////////////
 
               end if
           end if
-          return
+
       END SUBROUTINE drawdatasave2
 
 
-      SUBROUTINE gnuplotlabel(I1,I2,label,I3,I4)
+      SUBROUTINE gnuplotlabel(IX,IY,label,I3,I4)
 
+          USE kokoconfig
+        
           IMPLICIT NONE
-          INTEGER I1,I2,I3,I4
+          
+          CHARACTER(LEN=*), INTENT(IN) :: label
+          INTEGER, INTENT(IN)          ::  IX,IY,I3,I4
+          
           REAL X,Y
-          CHARACTER label*80
+          CHARACTER(LEN=32) :: font
 
-          X=REAL(I1)/10500.0+0.02
-          Y=REAL(I2)/7350.0+0.03
+          ! font to be used
+          CALL CFG_get(koko_cfg, "graphics%fontlrg", font)
+          
+          ! position of label
+          X=REAL(IX)/10500.0+0.02
+          Y=REAL(IY)/7350.0+0.03
 
           IF ((I4.EQ.2).AND.(I3.EQ.90)) THEN
-              WRITE(150,'(A,F6.3,A1,F6.3,A2,A,A)') 'set label font "Courier,12"
-     1center at screen ',REAL(I1)/10000.0,",",REAL(I2/7000.0)+0.01,
+              WRITE(150,'(A,A,A,F6.3,A1,F6.3,A2,A,A)') 'set label font "',TRIM(font),
+     1'" center at screen ',REAL(IX)/10000.0,",",REAL(IY/7000.0)+0.01,
      2        ' "',TRIM(label),'" rotate by 90'
-              GOTO 10
 
           ELSE IF (I4.EQ.2) THEN
-              WRITE(150,'(A,F6.3,A1,F6.3,A2,A,A)') 'set label font "Courier,12"
-     1center at screen ',REAL(I1)/10000.0,",",REAL(I2/7000.0)+0.01,
+              WRITE(150,'(A,A,A,F6.3,A1,F6.3,A2,A,A)') 'set label font "',TRIM(font),
+     1'" center at screen ',REAL(IX)/10000.0,",",REAL(IY/7000.0)+0.01,
      2        ' "',TRIM(label),'"'
-              GOTO 10
 
           ELSE
               WRITE(150,'(A,F6.3,A1,F6.3,A2,A,A)') 'set label at screen '
@@ -258,7 +264,6 @@ C///////////////////////////////////////////////////////////////////////
 
           END IF
 
-   10     RETURN
       END SUBROUTINE gnuplotlabel
 
 
@@ -266,177 +271,313 @@ C///////////////////////////////////////////////////////////////////////
 
           IMPLICIT NONE
 
-          REAL X0,Y0,X,Y
-          CHARACTER label*80
+          REAL, INTENT(IN)             :: X0,Y0
+          CHARACTER(LEN=*), INTENT(IN) :: label
+
+          REAL :: X,Y
 
           X=REAL(300.0/10000.0*X0)
           Y=REAL(210.0/7000.0*Y0)
 
           WRITE(150,'(A,F6.3,A1,F6.3,A2,A,A)') 'set label at screen ',
-     1    X,",",Y,' "',label,'"'
+     1    X,',',Y,' "',label,'"'
 
-          RETURN
       END SUBROUTINE contlabel
 
 
       SUBROUTINE drawcmdsave
 
+          USE opsys
+          USE kokoconfig
+        
           INCLUDE 'datmai.inc'
-          CHARACTER*150 catcommand
+          CHARACTER(LEN=256) :: file_a, file_b, file_out
+          CHARACTER(LEN=32)  :: gpterm, gpfont
 
-          catcommand="cat "//TRIM(HOME)//"drawcmd0.txt "
-     1    //TRIM(HOME)//"drawcmd3.txt "//"> "//TRIM(HOME)//"drawcmd.txt"
+          ! name of script header file
+          file_a = TRIM(HOME)
+          CALL dir_path_append(file_a, "gnuplot", file_a)
+          CALL dir_path_append(file_a, "drawcmd0.gpl", file_a)
 
-          CALL system(catcommand)
+          ! create new script header
+          CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
+          CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
+             
+          OPEN (213, STATUS='replace', FILE=TRIM(file_a))
+          WRITE(213,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
+          WRITE(213,*) 'set noborder'
+          WRITE(213,*) 'set nokey'
+          WRITE(213,*) 'set notics'
+          CLOSE(213)
+          
+          ! script body file
+          file_b = TRIM(HOME)
+          CALL dir_path_append(file_b, "gnuplot", file_b)
+          CALL dir_path_append(file_b, "drawcmd3.gpl", file_b)
 
-          RETURN
+          ! name of complete script file
+          file_out = TRIM(HOME)
+          CALL dir_path_append(file_out, "gnuplot", file_out)
+          CALL dir_path_append(file_out, "drawcmd.gpl", file_out)
+
+          ! create full gnuplot script
+          CALL append_files(file_a, file_b, file_out)
+
       END SUBROUTINE drawcmdsave
 
 
       SUBROUTINE drawcmdsave2
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
-          CHARACTER*150 catcommand2
+          CHARACTER(LEN=256) :: file_a, file_b, file_out
 
-          catcommand2="cat "//TRIM(HOME)//"drawcmd3.txt "
-     1    //TRIM(HOME)//"gnuplot/plotcont.txt"//"> "
-     2    //TRIM(HOME)//"drawcmd.txt"
+          ! name of first script file
+          file_a = TRIM(HOME)
+          CALL dir_path_append(file_a, "gnuplot", file_a)
+          CALL dir_path_append(file_a, "drawcmd3.gpl", file_a)
 
-          CALL system(catcommand2)
+          ! name of second script file
+          file_b = TRIM(HOME)
+          CALL dir_path_append(file_b, "gnuplot", file_b)
+          CALL dir_path_append(file_b, "plotcont.gpl", file_b)
 
-          RETURN
+          ! name of complete script file
+          file_out = TRIM(HOME)
+          CALL dir_path_append(file_out, "gnuplot", file_out)
+          CALL dir_path_append(file_out, "drawcmd.gpl", file_out)
+
+          ! create full gnuplot script
+          CALL append_files(file_a, file_b, file_out)
+
       END SUBROUTINE drawcmdsave2
 
 
       SUBROUTINE setonecolors
 
+          USE opsys
+          
           INCLUDE 'datmai.inc'
 
-          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black" lw 0.5 w l'
+          CHARACTER(LEN=256) :: script
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! name of plot scripts
+          CALL dir_path_append(TRIM(HOME), 'gnuplot', script)
+          CALL dir_path_append(script, "black.gpl", script)
+
+          WRITE(150,*)'plot [0:10000] [0:7000] "'//
+     &TRIM(script)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE setonecolors
 
       
       SUBROUTINE setonecolors2
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
-          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/breakblack.txt" with lines lt 0
-     1 lc rgb "black" lw 2'
+          CHARACTER(LEN=256) :: script1, script2
+          CHARACTER(LEN=16)  :: lwstr
 
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "breakblack.gpl", script2)
+
+          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" with lines lt 0 lc rgb "black" lw 2'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE setonecolors2
 
 
       SUBROUTINE settwocolors
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
+          CHARACTER(LEN=256) :: script1, script2
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "yellow.gpl", script2)
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
-     1 lw 0.5 w l'
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE settwocolors
 
-        
+
       SUBROUTINE settwocolors2
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
+          CHARACTER(LEN=256) :: script1, script2
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "red.gpl", script2)
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red"
-     1 lw 0.5 w l'
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "red" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE settwocolors2
 
-      
+
       SUBROUTINE settwocolors3
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
+          CHARACTER(LEN=256) :: script1, script2
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "red.gpl", script2)
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red"
-     1 pt 7 ps 0.3'
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "red" pt 7 ps 0.3'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE settwocolors3
 
-      
+
       SUBROUTINE setthreecolors
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
-          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/magenta.txt" lc rgb "magenta"
-     1 lw 0.5 w l'
-          WRITE(150,*) 'pause -1'
+          CHARACTER(LEN=256) :: script1, script2, script3
+          CHARACTER(LEN=16)  :: lwstr
 
-          RETURN
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "yellow.gpl", script2)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
+          CALL dir_path_append(script3, "magenta.gpl", script3)
+
+          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script3)//'" lc rgb "magenta" lw '//TRIM(lwstr)//' w l'
+          WRITE(150,*) 'pause -1'
 
       END SUBROUTINE setthreecolors
 
       
       SUBROUTINE setthreecolors2
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
+          CHARACTER(LEN=256) :: script1, script2, script3
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "yellow.gpl", script2)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
+          CALL dir_path_append(script3, "red.gpl", script3)
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red" lw 0.5 w l'
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script3)//'" lc rgb "red" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE setthreecolors2
 
 
       SUBROUTINE setfourcolors
 
+          USE opsys
+        
           INCLUDE 'datmai.inc'
 
+          CHARACTER(LEN=256) :: script1, script2, script3, script4
+          CHARACTER(LEN=16)  :: lwstr
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of plot scripts
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "yellow.gpl", script2)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
+          CALL dir_path_append(script3, "magenta.gpl", script3)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script4)
+          CALL dir_path_append(script3, "red.gpl", script4)
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
-     1     TRIM(HOME)//'gnuplot/black.txt" lc rgb "black"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/yellow.txt" lc rgb "dark-yellow"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/magenta.txt" lc rgb "magenta"
-     1 lw 0.5 w l,"'//
-     1     TRIM(HOME)//'gnuplot/red.txt" lc rgb "red" lw 0.5 w l'
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script3)//'" lc rgb "magenta" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script4)//'" lc rgb "red" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
 
-          RETURN
       END SUBROUTINE setfourcolors
 
       
       SUBROUTINE MAC_EDITOR
         
           USE opsys
-          USE GLOBALS
+          USE globals
 
           IMPLICIT NONE
           
@@ -445,7 +586,6 @@ C///////////////////////////////////////////////////////////////////////
 
           CALL shell_command(TRIM(TXTEDITOR)//" "//"MAC_EDIT.DAT")
 
-          RETURN
       END SUBROUTINE MAC_EDITOR
 
 
@@ -479,12 +619,12 @@ C///////////////////////////////////////////////////////////////////////
               RETURN
           END IF
 
-          ! retrieve font info
+          ! retrieve font and terminal info
           CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
           CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
              
           ! create gnuplot script
-          OPEN (113,file=TRIM(HOME)//'plotbmp.gpl')
+          OPEN (113, STATUS='replace', file=TRIM(HOME)//'plotbmp.gpl')
           WRITE(113,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
           WRITE(113,*) 'set noborder'
           WRITE(113,*) 'set nokey'
@@ -568,3 +708,20 @@ C///////////////////////////////////////////////////////////////////////
      &                       //TRIM(USERHOME)//'/'//TRIM(GRFILN))             
 
       END SUBROUTINE saveplot
+
+
+      SUBROUTINE retrieve_linewidth(lw_str)
+
+        USE kokoconfig
+        
+        CHARACTER(LEN=*),INTENT(OUT)   :: lw_str
+        REAL (KIND=dp)                 :: linewidth
+          
+        ! retrieve configured linewidth
+        CALL CFG_get(koko_cfg, "graphics%linewidth", linewidth)
+
+        ! write it into string
+        WRITE(lw_str, "(F6.2)") linewidth
+        lw_str = ADJUSTL(lw_str)
+
+      END SUBROUTINE retrieve_linewidth

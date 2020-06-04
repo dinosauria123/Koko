@@ -536,8 +536,8 @@ c
           REAL            , DIMENSION(NX,NY)       :: ZDATA
           INTEGER         , DIMENSION(2)           :: NVAL
           INTEGER                                  :: IX,IY,IC
-!      REAL                                     :: X,Y
-c
+          CHARACTER(LEN=256)                       :: plotcommand
+          
 c  generate some data
           ZSTEP=INT(5000.0/REAL(NZSTEP))
           IF(NZSTEP.LT.250) NZSTEP=250
@@ -597,9 +597,12 @@ C
 c
 c  generate contour plot
 c
-          CALL shell_command(trim(BMPREADR)//" "//trim(HOME)//"drawcmd.txt")
+          plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)
+          CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
+          CALL dir_path_append(plotcommand, "drawcmd.gpl", plotcommand)
 
-          RETURN
+          CALL shell_command( plotcommand )
+
       END SUBROUTINE DrawContour_OPD
 
 
@@ -624,7 +627,8 @@ c
           REAL            , DIMENSION(NX,NY)       :: ZDATA
           INTEGER         , DIMENSION(2)           :: NVAL
           INTEGER                                  :: IX,IY,IC
-c
+          CHARACTER(LEN=256)                       :: plotcommand
+
           ZSTEP=11
 
 c  generate some data
@@ -671,11 +675,13 @@ c     1(ICC*16).GE.208.AND.(ICC*16).LE.223) ICC=ICC+1
 c
 c  generate contour plot
 c
-          call shell_command(trim(BMPREADR)//" "//trim(HOME)//"drawcmd.txt")
+          plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)
+          CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
+          CALL dir_path_append(plotcommand, "drawcmd.gpl", plotcommand)
 
-          RETURN
+          CALL shell_command( plotcommand )
+
       END SUBROUTINE DrawContour_APD
-
 
 
       SUBROUTINE SETSYMBOL
