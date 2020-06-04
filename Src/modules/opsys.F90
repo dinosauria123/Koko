@@ -163,12 +163,13 @@ CONTAINS
   SUBROUTINE dir_path_append(partpath, pathitem, fullpath)
 
     CHARACTER(len=*) :: partpath, pathitem, fullpath
-    INTEGER          :: pplen
+    INTEGER          :: lc
 
-    pplen = LEN_TRIM(fullpath)
+    ! last character
+    lc = LEN_TRIM(partpath)
     
 #if defined( LINUX ) || defined( MACOSX )
-    IF (partpath(pplen:pplen) == '/') THEN
+    IF (partpath(lc:lc) == '/') THEN
        fullpath = TRIM(partpath)//TRIM(pathitem)
     ELSE
        fullpath = TRIM(partpath)//'/'//TRIM(pathitem)
@@ -176,7 +177,7 @@ CONTAINS
 #endif
 
 #if defined( WINDOWS )
-    IF (partpath(pplen:pplen) == '\') THEN
+    IF (partpath(lc:lc) == '\') THEN
        fullpath = TRIM(partpath)//TRIM(pathitem)
     ELSE
        fullpath = TRIM(partpath)//'\'//TRIM(pathitem)
