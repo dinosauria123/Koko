@@ -12,6 +12,7 @@ koko-gui
 
 # binary files
 *.pdf
+plot.png
 
 #Qt related
 .qmake*

@@ -1752,7 +1752,7 @@
           IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
 
-              open(unit=115,file=trim(HOME)//'gnuplot/yellow.txt')   ! ???
+              open(unit=115,file=trim(HOME)//'gnuplot/yellow.txt')
               open(unit=116,file=trim(HOME)//'gnuplot/magenta.txt')
               open(unit=117,file=trim(HOME)//'gnuplot/red.txt')
               open(unit=118,file=trim(HOME)//'gnuplot/cyan.txt')

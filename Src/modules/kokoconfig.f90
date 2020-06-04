@@ -52,12 +52,12 @@ CONTAINS
     CALL CFG_add(koko_cfg, "directories%temp",  default_temp, "Koko temp directory")
 
     ! graphics
-    CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",     "Koko graphics viewer")
-    CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",         "gnuplot default terminal")
-    CALL CFG_add(koko_cfg, "graphics%fontlrg",  "Noto Mono,12","Large graphics font")
-    CALL CFG_add(koko_cfg, "graphics%fontmed",  "Noto Mono,9", "Medium graphics font")
-    CALL CFG_add(koko_cfg, "graphics%fontsml",  "Noto Mono,5", "Small graphics font")
-    CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,       "Plotter line width")
+    CALL CFG_add(koko_cfg, "graphics%viewer",   "gnuplot",    "Koko graphics viewer")
+    CALL CFG_add(koko_cfg, "graphics%terminal", "wxt",        "gnuplot default terminal")
+    CALL CFG_add(koko_cfg, "graphics%fontlrg",  "Courier,12", "Large graphics font")
+    CALL CFG_add(koko_cfg, "graphics%fontmed",  "Courier,9",  "Medium graphics font")
+    CALL CFG_add(koko_cfg, "graphics%fontsml",  "Courier,5",  "Small graphics font")
+    CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,      "Plotter line width")
     
     ! text
     CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
