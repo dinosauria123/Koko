@@ -23,58 +23,65 @@ C/ <https://www.gnu.org/licenses/>.
 C/
 C///////////////////////////////////////////////////////////////////////
 
-      SUBROUTINE datacolorssave(I1,I2,I3,I4)
+!
+! Plotting interface to gnuplot
+!
+
+      SUBROUTINE datacolorssave(IX,IY,I3,IC)
 
           IMPLICIT NONE
-          INTEGER I1,I2,I3,I4
+          INTEGER, INTENT(IN) :: IX,IY ! plotter coordinates
+          INTEGER, INTENT(IN) :: I3    ! ???
+          INTEGER, INTENT(IN) :: IC    ! plot color
 
-          IF (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) THEN
+          ! canvas size: x in [0,10000], y in [0,7000]
+          IF (IX.LT.0.OR.IY.LT.0.OR.IX.GT.10000.OR.IY.GT.7000) THEN
               RETURN
           END IF
 
-          IF (I4.EQ.0) THEN
+          IF (IC.EQ.0) THEN
               IF (I3.EQ.1) THEN
-                  WRITE(130,'(2I5)') I1,I2
+                  WRITE(130,'(2I5)') IX,IY
               ELSE
                   WRITE(130,*)
-                  WRITE(130,'(2I5)') I1,I2
+                  WRITE(130,'(2I5)') IX,IY
               END IF
           END IF
 
-          IF (I4.EQ.1) THEN
+          IF (IC.EQ.1) THEN
               IF (I3.EQ.1) THEN
-                  WRITE(115,'(2I5)') I1,I2
+                  WRITE(115,'(2I5)') IX,IY
               ELSE
                   WRITE(115,*)
-                  WRITE(115,'(2I5)') I1,I2
+                  WRITE(115,'(2I5)') IX,IY
 
               END IF
           END IF
 
-          IF (I4.EQ.2) THEN
+          IF (IC.EQ.2) THEN
               IF (I3.EQ.1) THEN
-                  WRITE(116,'(2I5)') I1,I2
+                  WRITE(116,'(2I5)') IX,IY
               ELSE
                   WRITE(116,*)
-                  WRITE(116,'(2I5)') I1,I2
+                  WRITE(116,'(2I5)') IX,IY
               END IF
           END IF
 
-          IF (I4.EQ.3) THEN
+          IF (IC.EQ.3) THEN
               IF (I3.EQ.1) THEN
-                  WRITE(117,'(2I5)') I1,I2
+                  WRITE(117,'(2I5)') IX,IY
               ELSE
                   WRITE(117,*)
-                  WRITE(117,'(2I5)') I1,I2
+                  WRITE(117,'(2I5)') IX,IY
               END IF
           END IF
 
-          IF (I4.EQ.4) THEN
+          IF (IC.EQ.4) THEN
               IF (I3.EQ.1) THEN
-                  WRITE(118,'(2I5)') I1,I2
+                  WRITE(118,'(2I5)') IX,IY
               ELSE
                   WRITE(118,*)
-                  WRITE(118,'(2I5)') I1,I2
+                  WRITE(118,'(2I5)') IX,IY
               END IF
           END IF
 
@@ -141,7 +148,6 @@ C///////////////////////////////////////////////////////////////////////
               else
                   write(131,*)
                   write(131,'(2I5)') I1,I2
-
               end if
           end if
 
@@ -222,7 +228,6 @@ C///////////////////////////////////////////////////////////////////////
               else
                   write(131,*)
                   write(131,'(2I5)') I1,I2
-
               end if
           end if
 
@@ -236,9 +241,9 @@ C///////////////////////////////////////////////////////////////////////
           IMPLICIT NONE
           
           CHARACTER(LEN=*), INTENT(IN) :: label
-          INTEGER, INTENT(IN)          ::  IX,IY,I3,I4
+          INTEGER, INTENT(IN)          :: IX,IY,I3,I4
           
-          REAL X,Y
+          REAL              :: X,Y
           CHARACTER(LEN=32) :: font
 
           ! font to be used

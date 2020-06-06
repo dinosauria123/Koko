@@ -19,10 +19,10 @@ and *Right arrow* keys may be used to navigate within the command line.
 Command history
 ---------------
 On exit, Koko stores the last 250 commands in the file
-<user home directory>/.koko_history. At the beginning of the next Koko
+*(user home directory)/.koko_history*. At the beginning of the next Koko
 session, the command history file is read and users can recall
 previously typed commands using the *Arrow up* key (or CTRL-p). The
-*Arrow down* key (or CTRL-n) moves towards more recent commands in the
+*Arrow down* key (or CTRL-n) scrolls towards more recent commands in the
 history. 
 
 
@@ -38,7 +38,7 @@ them one-by-one, going back in the command history.
 
 Command case protection
 -----------------------
-Koko LIKES TO BARK. Most program output is in upper case, and all user
+KOKO LIKES TO BARK. Most program output is in upper case, and all user
 input is internally converted to upper case before it is processed.
 This can lead to problems when the user input is a file name and the
 computer Koko is running on uses a case sensitive file system. An
@@ -59,7 +59,7 @@ it easier to visually associate commands and their output in the
 terminal window. The default prompt color is black. The prompt color
 can be changed either in the system wide configuration file *kokorc*
 or the user specific configuration file
-*<user home directory>/.kokorc*. The configuration file must contain
+*(user home directory)/.kokorc*. The configuration file must contain
 a section
 <pre>
 [cli]
