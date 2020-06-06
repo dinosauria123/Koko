@@ -112,7 +112,9 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
    }
    strncpy(tmp_prompt, prompt, nc);
    tmp_prompt[nc] = '\0';
-   sprintf(ln_prompt, "%c[1;%dm%s%c[0m", ESC, prompt_color, tmp_prompt, ESC);
+
+   // construct prompt with 8-bit color ESC sequences
+   sprintf(ln_prompt, "%c[38;5;%dm%s%c[38;5;0m", ESC, prompt_color, tmp_prompt, ESC);
    
    // prompt the user and return the answer
    ln_response = linenoise(ln_prompt);

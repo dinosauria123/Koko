@@ -622,13 +622,7 @@ C       CHECK SYNTAX
               GRFILN='PDF.PDF'
           end if
           IF(SST.EQ.1) THEN
-              IF(WS(8:8).EQ.' ') WS(1:8)=' '//WS(1:7)
-              IF(WS(7:8).EQ.'  ') WS(1:8)='  '//WS(1:6)
-              IF(WS(6:8).EQ.'   ') WS(1:8)='   '//WS(1:5)
-              IF(WS(5:8).EQ.'    ') WS(1:8)='    '//WS(1:4)
-              IF(WS(4:8).EQ.'     ') WS(1:8)='     '//WS(1:3)
-              IF(WS(3:8).EQ.'      ') WS(1:8)='      '//WS(1:2)
-              IF(WS(2:8).EQ.'       ') WS(1:8)='       '//WS(1:1)
+              WS = ADJUSTR(WS)
           END IF
           IF(SST.EQ.1) THEN
               IF(WQ.EQ.'        ') GRFILN='            '
@@ -1565,7 +1559,7 @@ C     NOW WRITE THE ARRAY VALUES
           IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
-          RETURN
+
       END SUBROUTINE MY_PLOTC
 
         
@@ -1781,7 +1775,7 @@ C       SETS THE PROGRAM COLORS.
           INCLUDE 'dathgr.inc'
 
           IF(STI.EQ.0) THEN
-C     NO QUERRY
+C     NO QUERY
               IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1.OR.SST.EQ.1) THEN
                   OUTLYNE=
      1            '"COLORSET" ONLY TAKES QUALIFIER AND NUMERIC WORD #1 INPUT'
@@ -1923,7 +1917,7 @@ C     NOT GBAC
               RETURN
 
           ELSE
-C     QUERRY IS IMPLEMENTED HERE
+C     QUERY IS IMPLEMENTED HERE
 C     CASE OF "COLORSET ?"
               IF(SQ.EQ.0) THEN
                   OUTLYNE='"COLORSET" QUERRY REQUIRES A VALID QALIFIER WORD'
@@ -1937,9 +1931,9 @@ C     IS SQ=1 ?
      1            WQ.NE.'EDGE'.AND.WQ.NE.'PROF'.AND.WQ.NE.'AXIS'.AND.
      1            WQ.NE.'GBAC'.AND.WQ.NE.'WAV1'.AND.WQ.NE.'WAV2'.AND.
      1            WQ.NE.'WAV3'.AND.WQ.NE.'WAV4'.AND.WQ.NE.'WAV5'.AND.
-     1            WQ.NE.'FRAM'.AND.WQ.NE.'LABL'.AND.
+     1            WQ.NE.'FRAM'.AND.WQ.NE.'LABL'.AND.WQ.NE.'AIRY'.AND.
      1            WQ.NE.'WAV6'.AND.WQ.NE.'WAV7'.AND.WQ.NE.'WAV8'.AND.
-     1            WQ.NE.'WAV9'.AND.WQ.NE.'WAV10'.AND.
+     1            WQ.NE.'WAV9'.AND.WQ.NE.'WAV10'.AND.WQ.NE.'MARK'.AND.
      1            WQ.NE.'SPEC'.AND.WQ.NE.'PEN')THEN
                       OUTLYNE=
      1                'INVALID QUALIFIER USED WITH "COLORSET" QUERRY'
@@ -1950,34 +1944,34 @@ C     IS SQ=1 ?
                       RETURN
                   END IF
 C     QUALIFIER OK
-                  IF(WQ.EQ.'RAYS') COLANS=COLRAY
-                  IF(WQ.EQ.'CLAP') COLANS=COLCLP
-                  IF(WQ.EQ.'COBS') COLANS=COLCOB
-                  IF(WQ.EQ.'EDGE') COLANS=COLEDG
-                  IF(WQ.EQ.'PROF') COLANS=COLPRO
-                  IF(WQ.EQ.'AXIS') COLANS=COLAXS
-                  IF(WQ.EQ.'GBAC') COLANS=COLBAC
-                  IF(WQ.EQ.'WAV1') COLANS=COLR1
-                  IF(WQ.EQ.'WAV2') COLANS=COLR2
-                  IF(WQ.EQ.'WAV3') COLANS=COLR3
-                  IF(WQ.EQ.'WAV4') COLANS=COLR4
-                  IF(WQ.EQ.'WAV5') COLANS=COLR5
-                  IF(WQ.EQ.'WAV6') COLANS=COLR6
-                  IF(WQ.EQ.'WAV7') COLANS=COLR7
-                  IF(WQ.EQ.'WAV8') COLANS=COLR8
-                  IF(WQ.EQ.'WAV9') COLANS=COLR9
+                  IF(WQ.EQ.'RAYS')  COLANS=COLRAY
+                  IF(WQ.EQ.'CLAP')  COLANS=COLCLP
+                  IF(WQ.EQ.'COBS')  COLANS=COLCOB
+                  IF(WQ.EQ.'EDGE')  COLANS=COLEDG
+                  IF(WQ.EQ.'PROF')  COLANS=COLPRO
+                  IF(WQ.EQ.'AXIS')  COLANS=COLAXS
+                  IF(WQ.EQ.'GBAC')  COLANS=COLBAC
+                  IF(WQ.EQ.'WAV1')  COLANS=COLR1
+                  IF(WQ.EQ.'WAV2')  COLANS=COLR2
+                  IF(WQ.EQ.'WAV3')  COLANS=COLR3
+                  IF(WQ.EQ.'WAV4')  COLANS=COLR4
+                  IF(WQ.EQ.'WAV5')  COLANS=COLR5
+                  IF(WQ.EQ.'WAV6')  COLANS=COLR6
+                  IF(WQ.EQ.'WAV7')  COLANS=COLR7
+                  IF(WQ.EQ.'WAV8')  COLANS=COLR8
+                  IF(WQ.EQ.'WAV9')  COLANS=COLR9
                   IF(WQ.EQ.'WAV10') COLANS=COLR10
-                  IF(WQ.EQ.'FRAM') COLANS=COLFRM
-                  IF(WQ.EQ.'LABL') COLANS=COLLBL
-                  IF(WQ.EQ.'SPEC') COLANS=COLSPE
-                  IF(WQ.EQ.'PEN') COLANS=COLPEN
+                  IF(WQ.EQ.'FRAM')  COLANS=COLFRM
+                  IF(WQ.EQ.'LABL')  COLANS=COLLBL
+                  IF(WQ.EQ.'SPEC')  COLANS=COLSPE
+                  IF(WQ.EQ.'AIRY')  COLANS=COLAIR
+                  IF(WQ.EQ.'MARK')  COLANS=COLMRK
+                  IF(WQ.EQ.'PEN')   COLANS=COLPEN
 100               FORMAT('"',A4,'"',' IS CURRENTLY SET TO COLOR NUMBER ',I3)
                   WRITE(OUTLYNE,100)WQ(1:4),COLANS
                   CALL SHOWIT(1)
-                  RETURN
               END IF
           END IF
-          RETURN
 
       END SUBROUTINE COLORS
 

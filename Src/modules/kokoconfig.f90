@@ -63,7 +63,7 @@ CONTAINS
     CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
        
     ! cli
-    CALL CFG_add(koko_cfg, "cli%promptcolor",    30,         "Prompt color default (black)")
+    CALL CFG_add(koko_cfg, "cli%promptcolor",    0,          "Prompt color default (black)")
     
     koko_config_initialized = .TRUE.
     

@@ -646,18 +646,16 @@ c
           DO IC = 1,ZSTEP
               ZCONT(IC) = REAL(IC)
           END DO
-c
-c
+
 c  In this example, declared size of data array and
 c  size of plot are the same.
-c
+
           NVAL(1) = NX
           NVAL(2) = NY
-c
-c
+
 c  Set up simple strings for the key and assign
 c  varying line styles for each contour
-c
+
           ICC=0
           DO IC = 1,ZSTEP
               ICC=ICC+1

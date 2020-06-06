@@ -16,4 +16,4 @@
     editor = vi
 
 [cli]
-    promptcolor = 30
+    promptcolor = 4
