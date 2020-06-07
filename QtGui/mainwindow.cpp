@@ -72,7 +72,7 @@ MainWindow::MainWindow(QMainWindow *parent)
 
     setupUi(this);
 
-    msgView->setFont(QFont("courier",9,QFont::Bold));
+    msgView->setFont(QFont("Noto Mono",10,QFont::Bold));
     cmdLine->setFocus();
 
     proc = new QProcess(this);
