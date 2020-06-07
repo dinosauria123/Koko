@@ -39,8 +39,8 @@
 #define ESC '\x1b'      // ESC character
 
 
-// ANSI foreground color code for prompt (default is black)
-static int prompt_color = 30;
+// ANSI 8-bit foreground color code for prompt (default is black)
+static int prompt_color = 0;
 
 
 //--- For command completion ---------------------------------------------
@@ -51,8 +51,8 @@ static int hidx = -1;  // for command completion
 // history beginning with the most recent command to find one that
 // matches a prefix (partial command)
 void
-CompletionFunc(char const* prefix, linenoiseCompletions* completion_list) {
-
+CompletionFunc(char const* prefix, linenoiseCompletions* completion_list)
+{
    int i;
    char *history_line;
 
@@ -61,7 +61,7 @@ CompletionFunc(char const* prefix, linenoiseCompletions* completion_list) {
       hidx = linenoiseHistoryLen() -  1;  // index is 0-based
    }
    
-   for (i = hidx; i >=0; i--) {
+   for (i = hidx; i >= 0; i--) {
       history_line = linenoiseHistoryLine(i);
       if ((history_line != NULL) && (strncmp(prefix, history_line, strlen(prefix)) == 0)) {
          linenoiseAddCompletion(completion_list, history_line);
@@ -97,8 +97,8 @@ void init_tab_completion(void);
 // response : character string with user response
 //
 void
-nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
-
+nextline( const char* prompt, const int ncprs, char *response, int lenrs )
+{
    char tmp_prompt[PROMPT_LEN];
    char ln_prompt[PROMPT_LEN];
    int nc;
@@ -150,8 +150,8 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs ) {
 //          of the history file ( not \0-terminated )
 // ncs :    number of characters in file name.
 void
-loadhistory( const char *fname, int ncs ) {
-
+loadhistory( const char *fname, int ncs )
+{
    char cfname[FNAME_LEN];
    
    // make C-style file name string
@@ -172,19 +172,16 @@ loadhistory( const char *fname, int ncs ) {
 //          of the history file ( not \0-terminated )
 // ncs :    number of characters in file name.
 void
-savehistory( const char *fname, int ncs ) {
-
+savehistory( const char *fname, int ncs )
+{
    char cfname[FNAME_LEN];
    
    // make C-style file name string
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
 
-   // keep length in check
-   //linenoiseHistorySetMaxLen( MAX_HISTORY ); FIXME - function doesn't work
-
    // save history
-   linenoiseHistorySave( cfname );
+   linenoiseHistorySave( cfname, MAX_HISTORY );
    linenoiseHistoryFree(); // called only on Koko exit
 }
 
@@ -196,8 +193,8 @@ savehistory( const char *fname, int ncs ) {
 // INPUT
 // acc  :  ANSI color code
 void
-promptcolor( int acc ) {
-
+promptcolor( int acc )
+{
    prompt_color = acc;
 }
 

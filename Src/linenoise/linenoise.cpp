@@ -3305,32 +3305,6 @@ int linenoiseHistoryLen(void) {
    return historyLen;
 }
 
-int linenoiseHistorySetMaxLen(int len) {
-  if (len < 1) {
-    return 0;
-  }
-  if (history) {
-    int tocopy = historyLen;
-    char8_t** newHistory =
-        reinterpret_cast<char8_t**>(malloc(sizeof(char8_t*) * len));
-    if (newHistory == NULL) {
-      return 0;
-    }
-    if (len < tocopy) {
-      tocopy = len;
-    }
-    memcpy(newHistory, history + historyMaxLen - tocopy,
-           sizeof(char8_t*) * tocopy);
-    free(history);
-    history = newHistory;
-  }
-  historyMaxLen = len;
-  if (historyLen > historyMaxLen) {
-    historyLen = historyMaxLen;
-  }
-  return 1;
-}
-
 /* Fetch a line of the history by (zero-based) index.  If the requested
  * line does not exist, NULL is returned.  The return value is a heap-allocated
  * copy of the line, and the caller is responsible for de-allocating it. */
@@ -3342,7 +3316,11 @@ char* linenoiseHistoryLine(int index) {
 
 /* Save the history in the specified file. On success 0 is returned
  * otherwise -1 is returned. */
-int linenoiseHistorySave(const char* filename) {
+int linenoiseHistorySave(const char* filename, int maxHistoryLen) {
+
+  int offset;
+  int numlin;
+  
 #if _WIN32
   FILE* fp = fopen(filename, "wt");
 #else
@@ -3359,8 +3337,18 @@ int linenoiseHistorySave(const char* filename) {
     return -1;
   }
 
-  for (int j = 0; j < historyLen; ++j) {
-    if (history[j][0] != '\0') {
+  // if maxHistoryLen < 0 save full history
+  if ( (historyLen <= maxHistoryLen) || (maxHistoryLen < 0) ) {
+    offset = 0;
+    numlin = historyLen;
+  }
+  else {
+    offset = historyLen - maxHistoryLen;
+    numlin = maxHistoryLen;
+  }
+  
+  for (int j = 0; j < numlin; ++j) {
+    if (history[offset+j][0] != '\0') {
       fprintf(fp, "%s\n", history[j]);
     }
   }
