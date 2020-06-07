@@ -3356,11 +3356,7 @@ C     DO A FRAME
           CALL MY_COLTYP(COLPAS)
           CALL DOSZ
 
-          if (VIEWQ.eq.'ORTHO') then
-              call setthreecolors2
-          else
-              call settwocolors
-          end if
+          call setthreecolors2
 C
           IF(DFLAG.EQ.0) THEN
               SAVE_KDP(1)=SAVEINPT(1)
