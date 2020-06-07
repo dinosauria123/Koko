@@ -137,7 +137,7 @@ void MainWindow::slot_lensInfo(int row,int col)
            continue;
        }
        else{
-            table->item(row, i)->setBackground(Qt::red);
+            table->item(row, i)->setBackground(Qt::cyan);
             table->item(row0, i)->setBackground(Qt::white);
        }
    }
