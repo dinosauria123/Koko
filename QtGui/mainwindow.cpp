@@ -2274,5 +2274,6 @@ void MainWindow::slot_quit2()
     proc->write("EXIT\n");
     delay();
     QFile::remove(ldir+"/HISTORY.DAT");
+    delay();
     QApplication::quit();
 }
