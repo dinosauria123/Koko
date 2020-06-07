@@ -1158,7 +1158,7 @@ void MainWindow::ReadFileToTable(QString pathname)
     table->clear();
     table->setRowCount( nol );          //number of row = nol
     table->setVerticalHeaderLabels(label);
-    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n")<< tr("Abbe V%1").arg(QChar(0x1D05))<< tr(DispAperture));
+    table->setHorizontalHeaderLabels( QStringList() << tr("Surface Type")<< tr(DispRadius) << tr(DispThickness ) << tr("Material") << tr("Index n%1").arg(QChar(0x1D05))<< tr("Abbe V%1").arg(QChar(0x1D05))<< tr(DispAperture));
 
     k=0;
     QString surftype;
