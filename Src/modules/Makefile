@@ -9,7 +9,7 @@ IFLAGS = -I../include
 # module sources
 fSRC   = globals.f nssmod.f
 f90SRC = configfile.f90 kokoconfig.f90 getoptions.f90 commandline.f90 strings.f90 rgb.f90
-F90SRC = opsys.F90
+F90SRC = opsys.F90 treap.F90 dictionary.F90
 CSRC   = strings_f90.c rgb_f90.c
 
 MODS = $(fSRC:.f=.mod) $(f90SRC:.f90=.mod) $(F90SRC:.F90=.mod)

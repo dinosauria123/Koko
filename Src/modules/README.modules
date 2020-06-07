@@ -1,0 +1,5 @@
+
+Modules in this directory provide basic functionality that other modules
+depend on. During compilation, this is also where all module files are
+stored to make them accessible at a single location to other compilation
+units.

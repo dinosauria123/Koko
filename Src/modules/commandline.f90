@@ -100,6 +100,14 @@ MODULE commandline
        INTEGER(c_int), VALUE, INTENT(IN)  :: ncs
      END SUBROUTINE savehistory
 
+
+     !----------------------------------------------------------
+     ! Initialize command completion with the TAB key
+     !
+     SUBROUTINE init_tab_completion() BIND(C)
+       USE, INTRINSIC :: ISO_C_BINDING
+     END SUBROUTINE init_tab_completion
+     
   END INTERFACE
 
 END MODULE commandline

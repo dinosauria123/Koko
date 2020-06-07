@@ -81,6 +81,7 @@ void nextline( const char*, const int, char*, int );
 void loadhistory( const char *, int );
 void savehistory( const char *, int );
 void promptcolor( int );
+void init_tab_completion(void);
 
 
 //--- Interface functions ------------------------------------------------
@@ -157,9 +158,6 @@ loadhistory( const char *fname, int ncs ) {
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
    linenoiseHistoryLoad(cfname);
-
-   // set up command completion
-   linenoiseSetCompletionCallback( CompletionFunc );
 }
 
 
@@ -182,11 +180,11 @@ savehistory( const char *fname, int ncs ) {
    strncpy(cfname, fname, ncs);
    cfname[ncs] = '\0';
 
-   // discard oldest entries
-   linenoiseHistorySetMaxLen(MAX_HISTORY);
+   // keep length in check
+   //linenoiseHistorySetMaxLen( MAX_HISTORY ); FIXME - function doesn't work
 
    // save history
-   linenoiseHistorySave(cfname);
+   linenoiseHistorySave( cfname );
    linenoiseHistoryFree(); // called only on Koko exit
 }
 
@@ -201,4 +199,15 @@ void
 promptcolor( int acc ) {
 
    prompt_color = acc;
+}
+
+
+//------------------------------------------------------------------------
+
+// Installs the callback function for TAB command completion
+void
+init_tab_completion(void)
+{
+   // set up command completion
+   linenoiseSetCompletionCallback( CompletionFunc );
 }

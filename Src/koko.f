@@ -261,6 +261,8 @@
              END IF
           END IF
 
+          ! set completion callback
+          CALL init_tab_completion()
           
 !--- Initialize Koko ---------------------------------------
 
@@ -2484,14 +2486,14 @@
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
 
-          INTEGER cmdno
-          CHARACTER KKDP*3
-          CHARACTER prompt*32
+          INTEGER           :: cmdno
+          CHARACTER(LEN=3)  :: kkdp
+          CHARACTER(LEN=32) :: prompt
 
           WC = '        '
 
-          CALL SELECTKOKO(KKDP)
-          WRITE (prompt,'(a,i0,a)') ' ',cmdno,':'//KKDP//'> '
+          CALL SELECTKOKO(kkdp)
+          WRITE (prompt,'(a,i0,a)') ' ',cmdno,':'//kkdp//'> '
           CALL nextline( prompt, LEN_TRIM(prompt)+1, INPUT, LEN(INPUT) )
           CALL to_upper(INPUT)
 
