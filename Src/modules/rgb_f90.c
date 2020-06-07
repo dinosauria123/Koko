@@ -29,6 +29,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 
 #include "rgb_hash.h" // hash table for color lookup
@@ -40,7 +41,9 @@
 
 void c_rgbval( const char *colorname, int lcn, int *R, int *G, int *B );
 void c_rgbhex( const char *colorname, int lcn, char *hexstring, int lhs );
+void c_rgbint( const char *colorname, int lcn, int *cval );
 static void lookup_rgb( char *colorname, int *R, int *G, int *B );
+static void hex_to_int( char *hexstr, int *colint);
 
 
 //------------------------------------------------------------------------
@@ -51,7 +54,7 @@ static void lookup_rgb( char *colorname, int *R, int *G, int *B );
 // If the color lookup fails, the returned values are negative.
 //
 // INPUT
-// colorname :  a color name (camelHump format, no spaces)
+// colorname :  a color name or a #RRGGBB string
 // lcn :        number of characters in Fortran colorname string
 //
 // OUTPUT
@@ -60,7 +63,7 @@ void
 c_rgbval( const char *colorname, int lcn, int *R, int *G, int *B )
 {
    char loc_colorname[COLSTRLEN];
-   int nc, r, g, b;
+   int nc, r, g, b, rgb;
 
    // make sure we don't write outside the local buffer
    if (lcn > COLSTRLEN - 1) {
@@ -74,8 +77,15 @@ c_rgbval( const char *colorname, int lcn, int *R, int *G, int *B )
    strncpy(loc_colorname, colorname, nc);
    loc_colorname[nc] = '\0';   // in case someone messes up the color name
 
-   // look up keyword - color triplet structure
-   lookup_rgb(loc_colorname, &r, &g, &b);
+   if (loc_colorname[0] == '#') {      // a hex string was passed
+      hex_to_int(loc_colorname, (int *)&rgb);
+      r =  rgb &  255;
+      g = (rgb & (255 << 8))  >> 8;
+      b = (rgb & (255 << 16)) >> 16;
+   }
+   else {    // look up keyword - color triplet
+      lookup_rgb(loc_colorname, &r, &g, &b);
+   }
 
    // return results
    *R = r;
@@ -125,8 +135,57 @@ c_rgbhex( const char *colorname, int lcn, char *hexstring, int lhs )
       memset(hexstring+1, ' ', lhs-1);
    }
    else {
-     sprintf(hexstring, "#%2X%2X%2X", r, g, b);
-     memset(hexstring+7, ' ', lhs-7);
+      sprintf(hexstring, "#%2X%2X%2X", r, g, b);
+      memset(hexstring+7, ' ', lhs-7);
+   }
+}
+
+
+// F90 - callable
+// For a specified color name, returns a triplet of
+// RGB (red - green - blue) values in the form of a
+// 24-bit integer number.
+// If the color lookup fails, a negative number is returnd.
+//
+// INPUT
+// colorname :  a color name (camelHump format, no spaces)
+// lcn :        number of characters in Fortran colorname string
+//
+// OUTPUT
+// cval :       RGB color coded as an integer number. First byte
+//              is red, 2nd byte is green 3rd byte is blue
+void
+c_rgbint( const char *colorname, int lcn, int *cval )
+{
+   char loc_colorname[COLSTRLEN];
+   int nc, r, g, b;
+
+   // make sure we don't write outside the local buffer
+   if (lcn > COLSTRLEN - 1) {
+      nc = COLSTRLEN - 1;
+   }
+   else {
+      nc = lcn;
+   }
+   
+   // turn color name into a C string
+   strncpy(loc_colorname, colorname, nc);
+   loc_colorname[nc] = '\0';   // in case someone messes up the color name
+
+   if (loc_colorname[0] == '#') { // a hex string was passed
+      hex_to_int(loc_colorname, cval);
+   }
+   else {
+      // look up keyword - color triplet structure
+      lookup_rgb(loc_colorname, &r, &g, &b);
+
+      // encode as 24-bit integer
+      if (r < 0) {
+	*cval = -1;
+      }
+      else {
+	*cval = (b << 16) & (g << 8) & r;
+      }
    }
 }
 
@@ -144,7 +203,7 @@ lookup_rgb( char *colorname, int *R, int *G, int *B )
       colorname[k] = tolower(colorname[k]);
    }
 
-   // perform lookup
+   // perform color lookup
    pk = (struct keyword *)in_word_set(colorname, strlen(colorname));
 
    if (pk == NULL) {
@@ -157,4 +216,26 @@ lookup_rgb( char *colorname, int *R, int *G, int *B )
      *G = pk->rgb[1];
      *B = pk->rgb[2];
    }
+}
+
+
+// Function converts a color hex string in the format #RRGGBB into
+// a 24-bit integer where the first byte contains R, the second byte
+// contains G, and the third byte contains B
+static void
+hex_to_int( char *hexstr, int *colint)
+{
+   char buf[16];
+
+   // re-arrange colors in string
+   // to form the 24-bit hex number BBGGRR
+   buf[0] = hexstr[5];  // BB
+   buf[1] = hexstr[6];
+   buf[2] = hexstr[3];  // GG
+   buf[3] = hexstr[4];
+   buf[4] = hexstr[1];  // RR
+   buf[5] = hexstr[2];
+   buf[6] = '\0';
+
+   *colint = strtol(buf, NULL, 16);
 }

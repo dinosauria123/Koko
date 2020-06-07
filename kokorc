@@ -12,6 +12,31 @@
     fontsml   = "Courier,5"
     linewidth =  0.7
 
+[color]
+    default     = black
+    background  = white
+    rays        = goldenrod
+    aperture    = green3
+    obscuration = green3
+    edge        = blue3
+    profile     = blue3
+    axes        = slategrey
+    frame       = black
+    label       = black
+    spectral    = black
+    airy        = red3
+    marker      = midnightblue
+    wavelength1 = #FFDD33  ; banana
+    wavelength2 = green3
+    wavelength3 = #FF8C19  ; carrot orange
+    wavelength4 = blue
+    wavelength5 = red2
+    wavelength6 = black
+    wavelength7 = black
+    wavelength8 = black
+    wavelength9 = black
+    wavelength10= black
+
 [text]
     editor = vi
 

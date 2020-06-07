@@ -1,3 +1,19 @@
+
+Plot colors can be specified in the Koko configuration file in two ways.
+The first is through a 7-character string of the form
+
+   #RRGGBB
+
+in which RR, GG, and BB are the 8-bit values of the red, green, and blue
+color channels encoded as hexadecimal numbers. Hexadecimal color codes
+can, for example, be looked up at
+
+   https://rgbcolorcode.com
+
+Alternatively, colors can be specified using the color names listed in
+the following table.
+
+
            Color name    R    G    B
 =====================  ==== ==== ===	   
                  snow  255, 250, 250

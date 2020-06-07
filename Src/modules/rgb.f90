@@ -27,7 +27,7 @@ MODULE rgb
   IMPLICIT NONE
 
   PRIVATE
-  PUBLIC :: rgbval, rgbhex
+  PUBLIC :: rgbval, rgbhex, rgbint, rgbint_to_hex
 
   INTERFACE
 
@@ -35,7 +35,7 @@ MODULE rgb
      ! Returns the RGB values corresponding to a color name
      !
      ! INPUT
-     ! colorname :  string with a color name
+     ! colorname :  string with a color name, or RGB hex string
      ! lcn :        number of characters in the color name
      !
      ! OUTPUT
@@ -69,6 +69,25 @@ MODULE rgb
        INTEGER(c_int), VALUE, INTENT(IN)   :: lhs
      END SUBROUTINE c_rgbhex
 
+     
+     !----------------------------------------------------------
+     ! Returns the RGB values corresponding to a color name
+     ! encoded in a 24-bit integer
+     !
+     ! INPUT
+     ! colorname : string with a color name, or RGB hex string
+     ! lcn :       length of the color name (NOT Fortran string)
+     !
+     ! OUTPUT
+     ! colint :    RGB values encoded as 24-bit integer
+     !
+     SUBROUTINE c_rgbint( colorname, lcn, colint ) BIND(C)
+       USE, INTRINSIC                      :: ISO_C_BINDING
+       CHARACTER(KIND=c_char), INTENT(IN)  :: colorname(*)
+       INTEGER(c_int), VALUE, INTENT(IN)   :: lcn
+       INTEGER(c_int), INTENT(OUT)         :: colint
+     END SUBROUTINE c_rgbint     
+
   END INTERFACE
 
 
@@ -79,6 +98,7 @@ CONTAINS
   !
   ! INPUT
   ! colorname :  string with a color name (see Koko_colors.txt)
+  !              or a #RRGGBB hex string
   !
   ! OUTPUT
   ! R,G,B :      values of RGB color channels in the range 0 .. 255
@@ -99,11 +119,10 @@ CONTAINS
   !
   ! INPUT
   ! colorname : string with a color name
-  ! lcn :       length of the color name (NOT Fortran string)
   !
   ! OUTPUT
   ! hexstring : string with the RGB hex values
-  ! lhs :       length of the Fortran string
+  !
   SUBROUTINE rgbhex(colorname, hexstring)
 
     CHARACTER(LEN=*), INTENT(IN)  :: colorname
@@ -112,5 +131,54 @@ CONTAINS
     CALL c_rgbhex(colorname, LEN_TRIM(colorname), hexstring, LEN(hexstring))
     
   END SUBROUTINE rgbhex
+
   
+  !----------------------------------------------------------
+  ! Returns the RGB values corresponding to a color name
+  ! encoded as a 24-bit integer number where the first
+  ! byte contains the 8-bit value of R, the second byte
+  ! the value of G, and the third byte the value of B
+  !
+  ! INPUT
+  ! colorname : string with a color name,
+  !             or a #RRGGBB hex string
+  !
+  ! OUTPUT
+  ! colint :    24 bit integer 
+  !
+  SUBROUTINE rgbint(colorname, colint)
+
+    CHARACTER(LEN=*), INTENT(IN)  :: colorname
+    INTEGER, INTENT(OUT)          :: colint
+
+    CALL c_rgbint(colorname, LEN_TRIM(colorname), colint)
+    
+  END SUBROUTINE rgbint
+
+  
+  !----------------------------------------------------------
+  ! Converts a RGB triplet encoded as a 24-bit integer number
+  ! into a hex string representation of the form #RRGGBB
+  !
+  ! INPUT
+  ! colint :  24-bit integer encoding an 8-bit RGB triplet
+  !
+  ! OUTPUT
+  ! hexstr :  RGB triplet encoded as a 7-character string #RRGGBB
+  !
+  SUBROUTINE rgbint_to_hex(colint, hexstr)
+
+    INTEGER, INTENT(IN)           :: colint
+    CHARACTER(LEN=*), INTENT(OUT) :: hexstr
+
+    INTEGER :: r, g, b
+
+    r =        IAND(colint,      255)
+    g = ISHFT( IAND(colint,    65280),  -8)
+    b = ISHFT( IAND(colint, 16711680), -16)
+
+    WRITE (hexstr, "(A1,3Z2.2)") '#',r,g,b
+    
+  END SUBROUTINE rgbint_to_hex
+
 END MODULE rgb
