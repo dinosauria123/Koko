@@ -1216,10 +1216,10 @@ C
 C     FIELD OF VIEW DATA
           IF(SYSTEM1(30).EQ.1.0D0.OR.SYSTEM1(30).EQ.2.0D0) THEN
 C     FOCAL OR UFOCAL
-              IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
           END IF
 C
           IF(.NOT.SUMMS) THEN

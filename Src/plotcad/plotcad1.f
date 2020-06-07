@@ -3670,10 +3670,10 @@ C
           INCLUDE 'datlen.inc'
 C
 C     DO THE PLOTTING OF THE EXTENT
-          IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+          IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
 C     UNITS ARE NOW SET
 C
           DEALLOCATE(XX,YY,F_JK,X_JK,Y_JK,XY2,H,STAT=ALLOERR)

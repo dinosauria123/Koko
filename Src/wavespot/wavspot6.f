@@ -321,10 +321,10 @@ C     LI BLANK, NOT ACTION
 C
 C     DO THE PLOTTING OF THE EXTENT
 C     FOCAL OR UFOCAL
-          IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+          IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
           IF(SYSTEM1(30).EQ.3.0D0.OR.SYSTEM1(30).EQ.4.0D0) THEN
 C     AFOCAL OR UAFOCAL
               IF(SYSTEM1(6).EQ.1.0D0) UNN='RADIAN(S)'
@@ -467,10 +467,10 @@ C
           CALL MY_JUSTSTRING(200,5100,NNTT1(1:40),NT1ANG,NT1SIZ,3)
 c
 C     DO REF SPHERE SHIFTS IF NOT ZERO
-          IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+          IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
           IF(DABS(DLLX).GT.1.0D-15) THEN
               WRITE(B,101) DLLX
               READ(B,200) CRANGE
@@ -1321,10 +1321,10 @@ C     WRITE FILE HEADER
               WRITE(51,1008) PSFXCENT*DBLE(SPACING),PSFYCENT*DBLE(SPACING)
 
 
-              IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
               IF(DABS(ALENS(3,NEWOBJ)).GE.1.0D10) THEN
 C     SCY FANG
                   YRANGE=SYSTEM1(21)*LFOB(1)

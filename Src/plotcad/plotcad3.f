@@ -568,12 +568,11 @@ C     SCX FANG
                       RANGE1=SYSTEM1(23)*LFOB(2)
                       UNN1='DEGREE(S)'
                   ELSE
-
                       RANGE1=SYSTEM1(16)*LFOB(2)
-                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCX
                   END IF
 
@@ -595,10 +594,10 @@ C     SCY FANG
                       UNN1='DEGREE(S)'
                   ELSE
                       RANGE1=SYSTEM1(14)*LFOB(1)
-                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCY
                   END IF
 
@@ -1060,10 +1059,10 @@ C     SCX FANG
                   UNN1='DEGREE(S)'
               ELSE
                   RANGE1=SYSTEM1(16)*LFOB(2)
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCX
               END IF
 
@@ -1083,10 +1082,10 @@ C     SCY FANG
                   UNN1='DEGREE(S)'
               ELSE
                   RANGE1=SYSTEM1(14)*LFOB(1)
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCY
               END IF
               WRITE(B,101) RANGE1
@@ -1102,10 +1101,10 @@ C
 C     FOCAL OR UFOCAL, PRINT THE DEFOCUS
                   IF(DELZ.NE.0.0D0) THEN
                       RANGE1=DELZ
-                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                      IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                      IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                      IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                      IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
                       WRITE(B,101) RANGE1
                       READ(B,200) CRANGE
                       NNTT1='DE-FOCUS IN  Z'
@@ -1391,10 +1390,10 @@ C     SCX FANG
               UNN1='DEGREE(S)'
           ELSE
               RANGE1=SYSTEM1(16)*LFOB(2)
-              IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCX
           END IF
           WRITE(B,101) RANGE1
@@ -1412,10 +1411,10 @@ C     SCY FANG
               UNN1='DEGREE(S)'
           ELSE
               RANGE1=SYSTEM1(14)*LFOB(1)
-              IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCY
           END IF
           WRITE(B,101) RANGE1
@@ -1429,10 +1428,10 @@ C
 C
           IF(SPDELX.NE.0.0D0) THEN
               RANGE1=SPDELX
-              IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
               WRITE(B,101) RANGE1
               READ(B,200) CRANGE
               NNTT1='OFFSET  IN   X'
@@ -1444,10 +1443,10 @@ C
           END IF
           IF(SPDELY.NE.0.0D0) THEN
               RANGE1=SPDELY
-              IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+              IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+              IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+              IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+              IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
               WRITE(B,101) RANGE1
               READ(B,200) CRANGE
               NNTT1='OFFSET  IN   Y'
@@ -1461,10 +1460,10 @@ C
 C     FOCAL OR UFOCAL, PRINT THE DEFOCUS
               IF(DELZ.NE.0.0D0) THEN
                   RANGE1=DELZ
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
                   WRITE(B,101) RANGE1
                   READ(B,200) CRANGE
                   NNTT1='DE-FOCUS IN  Z'

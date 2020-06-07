@@ -178,13 +178,13 @@ C     DO THE PLOTTING OF THE X SCALE FACTOR
 180           FORMAT(G10.3)
 200           FORMAT(A10)
               IF(SYSTEM1(6).EQ.1.0D0)
-     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' in(s)'
+     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' inch'
               IF(SYSTEM1(6).EQ.2.0D0)
-     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' cm(s)'
+     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' cm'
               IF(SYSTEM1(6).EQ.3.0D0)
-     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' mm(s)'
+     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' mm'
               IF(SYSTEM1(6).EQ.4.0D0)
-     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' m(s) '
+     1        NNTT1='(X-SIZE) ONE INCH = '//VALUE//' m'
               CALL MY_SETCHARASPECT(1.5,1.5)
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
@@ -201,13 +201,13 @@ C     DO THE PLOTTING OF THE Y SCALE FACTOR
               END DO
 11            CONTINUE
               IF(SYSTEM1(6).EQ.1.0D0)
-     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' in(s)'
+     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' inch'
               IF(SYSTEM1(6).EQ.2.0D0)
-     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' cm(s)'
+     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' cm'
               IF(SYSTEM1(6).EQ.3.0D0)
-     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' mm(s)'
+     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' mm'
               IF(SYSTEM1(6).EQ.4.0D0)
-     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' m(s) '
+     1        NNTT1='(Y-SIZE) ONE INCH = '//VALUE//' m'
               CALL MY_SETCHARASPECT(1.5,1.5)
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
@@ -225,13 +225,13 @@ C     DO THE PLOTTING OF THE SIZE FACTOR
               END DO
 13            CONTINUE
               IF(SYSTEM1(6).EQ.1.0D0)
-     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' in(s)'
+     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' inch'
               IF(SYSTEM1(6).EQ.2.0D0)
-     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' cm(s)'
+     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' cm'
               IF(SYSTEM1(6).EQ.3.0D0)
-     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' mm(s)'
+     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' mm'
               IF(SYSTEM1(6).EQ.4.0D0)
-     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' m(s) '
+     1        NNTT1='(SIZE) ONE INCH = '//VALUE//' m'
               CALL MY_SETCHARASPECT(1.5,1.5)
               COLPAS=COLLBL
               CALL MY_COLTYP(COLPAS)
@@ -2422,10 +2422,10 @@ C
 C
           IF(SYSTEM1(30).EQ.1.0D0.OR.SYSTEM1(30).EQ.2.0D0) THEN
 C     FOCAL OR UFOCAL
-              IF(SYSTEM1(6).EQ.1.0D0) UNN='UNITS = in(s)'
-              IF(SYSTEM1(6).EQ.2.0D0) UNN='UNITS = cm(s)'
-              IF(SYSTEM1(6).EQ.3.0D0) UNN='UNITS = mm(s)'
-              IF(SYSTEM1(6).EQ.4.0D0) UNN='UNITS = meter(s)'
+              IF(SYSTEM1(6).EQ.1.0D0) UNN='UNITS = inch'
+              IF(SYSTEM1(6).EQ.2.0D0) UNN='UNITS = cm'
+              IF(SYSTEM1(6).EQ.3.0D0) UNN='UNITS = mm'
+              IF(SYSTEM1(6).EQ.4.0D0) UNN='UNITS = meter'
               IF(SYSTEM1(6).EQ.1.0D0) NUNN=13
               IF(SYSTEM1(6).EQ.2.0D0) NUNN=13
               IF(SYSTEM1(6).EQ.3.0D0) NUNN=13
@@ -3873,10 +3873,10 @@ C
 C     PLOT THE SCALE FACTOR
           IF(SYSTEM1(30).EQ.1.0D0.OR.SYSTEM1(30).EQ.2.0D0) THEN
 C     FOCAL OR UFOCAL
-              IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)'
-              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)'
-              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)'
-              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s)'
+              IF(SYSTEM1(6).EQ.1.0D0) UNN='inch'
+              IF(SYSTEM1(6).EQ.2.0D0) UNN='cm'
+              IF(SYSTEM1(6).EQ.3.0D0) UNN='mm'
+              IF(SYSTEM1(6).EQ.4.0D0) UNN='meter'
           ELSE
               UNN='RADIANS'
           END IF

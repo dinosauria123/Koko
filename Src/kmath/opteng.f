@@ -1097,10 +1097,10 @@ C
           IF(SYSTEM1(6).EQ.2.0) CFAC=1.0D-4
           IF(SYSTEM1(6).EQ.3.0) CFAC=1.0D-3
           IF(SYSTEM1(6).EQ.4.0) CFAC=1.0D-6
-          IF(SYSTEM1(6).EQ.1.0) UN='INCH(ES)'
-          IF(SYSTEM1(6).EQ.2.0) UN='CM(S)'
-          IF(SYSTEM1(6).EQ.3.0) UN='MM(S)'
-          IF(SYSTEM1(6).EQ.4.0) UN='METER(S)'
+          IF(SYSTEM1(6).EQ.1.0) UN='INCH'
+          IF(SYSTEM1(6).EQ.2.0) UN='CM'
+          IF(SYSTEM1(6).EQ.3.0) UN='MM'
+          IF(SYSTEM1(6).EQ.4.0) UN='METER'
 C
           IF(SST.EQ.1) THEN
               WRITE(OUTLYNE,*)'"RAYLEIGH" TAKES NO ALPHANUMERIC STRING INPUT'

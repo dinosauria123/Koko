@@ -1067,10 +1067,10 @@ C     GENERATE PRINTOUT
  102          FORMAT('Y-FIELD POSITION',5X,'X-FIELD POSITION'
      1        ,5X,'PERCENT DISTORTION')
  106          FORMAT('     DEGREES    ',5X,'     DEGREES')
- 107          FORMAT('      IN(S)     ',5X,'      IN(S)')
- 108          FORMAT('      CM(S)     ',5X,'      CM(S)')
- 109          FORMAT('      MM(S)     ',5X,'      MM(S)')
- 110          FORMAT('       M(S)     ',5X,'       M(S)')
+ 107          FORMAT('      INCH      ',5X,'      INCH ')
+ 108          FORMAT('      CM        ',5X,'      CM   ')
+ 109          FORMAT('      MM        ',5X,'      MM   ')
+ 110          FORMAT('       M        ',5X,'       M   ')
  103          FORMAT('ORIENTATION ANGLE (DEGREES) = ',G13.6)
  104          FORMAT('                     FACTOR = ',G13.6)
  105          FORMAT(2X,G13.6,8X,G13.6,7X,G15.8)
@@ -1182,10 +1182,10 @@ C     CALCULTE FLDCV
               FACTY=W2
               IF(SYSTEM1(30).GT.2.0D0) UNIFC='DIOPTERS'
               IF(SYSTEM1(30).LE.2.0D0) THEN
-                  IF(SYSTEM1(6).EQ.1.0D0) UNIFC='IN(S)'
-                  IF(SYSTEM1(6).EQ.2.0D0) UNIFC='CM(S)'
-                  IF(SYSTEM1(6).EQ.3.0D0) UNIFC='MM(S)'
-                  IF(SYSTEM1(6).EQ.4.0D0) UNIFC=' M(S)'
+                  IF(SYSTEM1(6).EQ.1.0D0) UNIFC='IN'
+                  IF(SYSTEM1(6).EQ.2.0D0) UNIFC='CM'
+                  IF(SYSTEM1(6).EQ.3.0D0) UNIFC='MM'
+                  IF(SYSTEM1(6).EQ.4.0D0) UNIFC=' M'
               END IF
               ORI=W1
               FACTY=W2
@@ -1238,10 +1238,10 @@ C     GENERATE PRINTOUT
  202          FORMAT('Y-FIELD POSITION',3X,'X-FIELD POSITION'
      1        ,3X,'Y-FIELD CURV. (YZ)',3X,'X-FIELD CURV. (XZ)')
  206          FORMAT('     DEGREES    ',3X,'     DEGREES')
- 207          FORMAT('      IN(S)     ',3X,'      IN(S)')
- 208          FORMAT('      CM(S)     ',3X,'      CM(S)')
- 209          FORMAT('      MM(S)     ',3X,'      MM(S)')
- 210          FORMAT('       M(S)     ',3X,'       M(S)')
+ 207          FORMAT('      INCH      ',3X,'      INCH ')
+ 208          FORMAT('      CM        ',3X,'      CM   ')
+ 209          FORMAT('      MM        ',3X,'      MM   ')
+ 210          FORMAT('       M        ',3X,'       M   ')
  211          FORMAT('FIELD CURVATURE UNITS = ',A8)
  203          FORMAT('ORIENTATION ANGLE (DEGREES) = ',G13.6)
  204          FORMAT('                     FACTOR = ',G13.6)
@@ -1354,10 +1354,10 @@ C     CALCULTE AST
               FACTY=W2
               IF(SYSTEM1(30).GT.2.0D0) UNIFC='DIOPTERS'
               IF(SYSTEM1(30).LE.2.0D0) THEN
-                  IF(SYSTEM1(6).EQ.1.0D0) UNIFC='IN(S)'
-                  IF(SYSTEM1(6).EQ.2.0D0) UNIFC='CM(S)'
-                  IF(SYSTEM1(6).EQ.3.0D0) UNIFC='MM(S)'
-                  IF(SYSTEM1(6).EQ.4.0D0) UNIFC=' M(S)'
+                  IF(SYSTEM1(6).EQ.1.0D0) UNIFC='IN'
+                  IF(SYSTEM1(6).EQ.2.0D0) UNIFC='CM'
+                  IF(SYSTEM1(6).EQ.3.0D0) UNIFC='MM'
+                  IF(SYSTEM1(6).EQ.4.0D0) UNIFC=' M'
               END IF
               ORI=W1
               FACTY=W2
@@ -1394,10 +1394,10 @@ C     GENERATE PRINTOUT
  302          FORMAT('Y-FIELD POSITION',5X,'X-FIELD POSITION'
      1        ,5X,'   ASTIGMATISM (Y-X)')
  306          FORMAT('     DEGREES    ',5X,'     DEGREES')
- 307          FORMAT('      IN(S)     ',5X,'      IN(S)')
- 308          FORMAT('      CM(S)     ',5X,'      CM(S)')
- 309          FORMAT('      MM(S)     ',5X,'      MM(S)')
- 310          FORMAT('       M(S)     ',5X,'       M(S)')
+ 307          FORMAT('      INCH      ',5X,'      INCH ')
+ 308          FORMAT('      CM        ',5X,'      CM   ')
+ 309          FORMAT('      MM        ',5X,'      MM   ')
+ 310          FORMAT('       M        ',5X,'       M   ')
  303          FORMAT('ORIENTATION ANGLE (DEGREES) = ',G13.6)
  304          FORMAT('                     FACTOR = ',G13.6)
  311          FORMAT('ASTIGMATISM UNITS = ',A8)

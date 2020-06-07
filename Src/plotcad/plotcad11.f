@@ -659,10 +659,10 @@ C     LI BLANK, NOT ACTION
           END IF
 C
 C     DO THE PLOTTING OF THE EXTENT
-          IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+          IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+          IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+          IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+          IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
 C     UNITS ARE NOW SET
 C
 C     NOW WRITE = "VALUE" UNN
@@ -722,10 +722,10 @@ C
           IF(.NOT.SUMMOR) THEN
               IF(IJ.EQ.1) THEN
 C     DO REF SPHERE SHIFTS IF NOT ZERO
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN='meter    '
                   IF(DABS(DLLX).GT.1.0D-14) THEN
                       WRITE(B,101) DLLX
                       READ(B,200) CRANGE
@@ -767,10 +767,10 @@ C     SCX FANG
                   UNN1='DEGREE(S)'
               ELSE
                   RANGE1=SYSTEM1(16)*LFOB(2)
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCX
               END IF
               WRITE(B,101) RANGE1
@@ -790,10 +790,10 @@ C     SCY FANG
                   UNN1='DEGREE(S)'
               ELSE
                   RANGE1=SYSTEM1(14)*LFOB(1)
-                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='in(s)    '
-                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm(s)    '
-                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm(s)    '
-                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter(s) '
+                  IF(SYSTEM1(6).EQ.1.0D0) UNN1='inch     '
+                  IF(SYSTEM1(6).EQ.2.0D0) UNN1='cm       '
+                  IF(SYSTEM1(6).EQ.3.0D0) UNN1='mm       '
+                  IF(SYSTEM1(6).EQ.4.0D0) UNN1='meter    '
 C     SCY
               END IF
               WRITE(B,101) RANGE1

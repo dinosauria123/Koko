@@ -838,10 +838,10 @@ C     ANGULAR
           ELSE
               XOBP=SYSTEM1(16)*LFOB(2)
               YOBP=SYSTEM1(14)*LFOB(1)
-              IF(SYSTEM1(6).EQ.1.0D0) STUNI='IN(S)    '
-              IF(SYSTEM1(6).EQ.2.0D0) STUNI='CM(S)    '
-              IF(SYSTEM1(6).EQ.3.0D0) STUNI='MM(S)    '
-              IF(SYSTEM1(6).EQ.4.0D0) STUNI='M(S)    '
+              IF(SYSTEM1(6).EQ.1.0D0) STUNI='INCH     '
+              IF(SYSTEM1(6).EQ.2.0D0) STUNI='CM       '
+              IF(SYSTEM1(6).EQ.3.0D0) STUNI='MM       '
+              IF(SYSTEM1(6).EQ.4.0D0) STUNI='M        '
           END IF
 C
  100      FORMAT('CALCULATING ANGLE OF INCIDENCE STATISTICS')
