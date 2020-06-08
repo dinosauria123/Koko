@@ -35,9 +35,6 @@ C///////////////////////////////////////////////////////////////////////
           INTEGER, INTENT(IN) :: IC    ! plot color
 
           ! canvas size: x in [0,10000], y in [0,7000]
-          IF (IX.LT.0.OR.IY.LT.0.OR.IX.GT.10000.OR.IY.GT.7000) THEN
-              RETURN
-          END IF
 
           IF (IC.EQ.0) THEN
               IF (I3.EQ.1) THEN
@@ -92,10 +89,6 @@ C///////////////////////////////////////////////////////////////////////
 
           implicit none
           integer I1,I2,I3,I4            
-
-          if (I1.LT.0.OR.I2.LT.0.OR.I1.GT.10000.OR.I2.GT.7000) then
-              return
-          end if
 
             if (I4.eq.0) then
               if (I3.eq.1) then
