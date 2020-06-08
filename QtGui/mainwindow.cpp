@@ -1454,7 +1454,7 @@ void MainWindow::slot_actionNew()
          proc->write("LENSSAVE\n");
 
          delay();
-         ReadFileToTable(ldir+"/LENSES/LENS.PRG");
+         ReadFileToTable(ldir+"/LENSES/LENS.koko");
     }
 }
 
@@ -1518,7 +1518,7 @@ void MainWindow::slot_actionImport_Zemax()
         proc->write("LENSSAVE\n");
         proc->write("RTG ALL\n");
         delay();
-        ReadFileToTable(ldir+"/LENSES/LENS.PRG");
+        ReadFileToTable(ldir+"/LENSES/LENS.koko");
         proc->write("VIE XZ\n");
         return;
     }
@@ -1543,7 +1543,7 @@ void MainWindow::slot_actionImport_CODE_V()
         proc->write("LENSSAVE\n");
         proc->write("RTG ALL\n");
         delay();
-        ReadFileToTable(ldir+"/LENSES/LENS.PRG");
+        ReadFileToTable(ldir+"/LENSES/LENS.koko");
         proc->write("VIE XZ\n");
         return;
     }
