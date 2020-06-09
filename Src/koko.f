@@ -1781,8 +1781,6 @@
 
               CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
               OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
-              write(119,'(2I5)') 0, 0
-              write(119,*)
 
               CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
               OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
