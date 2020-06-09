@@ -1761,24 +1761,38 @@
               ! open gnuplot data files
               CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
               OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+              write(115,'(2I5)') 0, 0
+              write(115,*)
 
               CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
               OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+              write(116,'(2I5)') 0, 0
+              write(116,*)
 
               CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
               OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+              write(117,'(2I5)') 0, 0
+              write(117,*)
 
               CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
               OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+              write(118,'(2I5)') 0, 0
+              write(118,*)
 
               CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
               OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+              write(119,'(2I5)') 0, 0
+              write(119,*)
 
               CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
               OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+              write(130,'(2I5)') 0, 0
+              write(130,*)
 
               CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
               OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+              write(131,'(2I5)') 0, 0
+              write(131,*)
 
               CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
               OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
