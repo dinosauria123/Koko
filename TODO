@@ -12,9 +12,6 @@ To Do List for KODS
 
 - replace any hardcoded system commands
 
-- fix utility/utility7.f:lwrite
-  there are many many other examples of crowbar-style programming
-
 - 'make' does not work well with Fortran 90 modules. Need better
   build system (?)
   
@@ -51,5 +48,7 @@ Done List
   of LENSLOC to be changed to upper case.
 - change lens directory from within Koko
 - TAB completion at command input
+- fix utility/utility7.f:lwrite: endless if ... then ..
+
 
 

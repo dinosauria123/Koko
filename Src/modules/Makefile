@@ -41,4 +41,4 @@ regex_f90.inc:
 	./regex_t_size > regex_f90.inc
 
 clean:
-	rm -f *.mod *.o *~ regex_f90.inc
+	rm -f *.mod *.o *~ regex_f90.inc regex_t_size
