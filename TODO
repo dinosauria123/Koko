@@ -1,6 +1,8 @@
 To Do List for KODS
 ===================
 
+- command completion still buggy when pressing <tab> more than once
+
 - correctly implement batch mode with input file specified on
   command line
   
