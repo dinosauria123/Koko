@@ -15,10 +15,6 @@ libutility: $(FOBJ)
 	ar rs libutility.a $?
 	mv libutility.a ../lib
 
-# gfortan optimizer chokes on this one
-utility7.o: utility7.f
-	$(FC) -c -O -ffixed-line-length-none -malign-double -fno-align-commons $(IFLAGS) utility7.f
-
 %.o: %.f
 	$(FC) -c $(FFLAGS) $(IFLAGS) $<
 

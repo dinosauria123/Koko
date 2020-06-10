@@ -285,12 +285,22 @@ contains
     endif
   end subroutine regex_eq
 
-  function match_operator(str, re) result(r)
+  function match_operator(str, re) result(matched)
     character(len=*), intent(in) :: str, re
     type(regex) :: r
     integer :: status
+    logical :: matched
     status = r%compile(re)
+    if (status /= 0) then
+       matched = .false.
+       return
+    end if
     status = r%match(str)
+    if (status /= 0) then
+       matched = .false.
+    else
+       matched = .true.
+    end if
   end function match_operator
   
 end module posix_regex
