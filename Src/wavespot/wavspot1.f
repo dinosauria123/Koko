@@ -447,10 +447,10 @@ C
               ELSE
                   SPACING=(MAXY-MINY)/(DBLE(NUMPTS)-1.0D0)
               END IF
-              IF(SYSTEM1(6).EQ.1.0D0) UNIS='INCHES'
-              IF(SYSTEM1(6).EQ.2.0D0) UNIS='CM    '
-              IF(SYSTEM1(6).EQ.3.0D0) UNIS='MM    '
-              IF(SYSTEM1(6).EQ.4.0D0) UNIS='METERS'
+              IF(SYSTEM1(6).EQ.1.0D0) UNIS='INCH '
+              IF(SYSTEM1(6).EQ.2.0D0) UNIS='CM   '
+              IF(SYSTEM1(6).EQ.3.0D0) UNIS='MM   '
+              IF(SYSTEM1(6).EQ.4.0D0) UNIS='METER'
               REG(40)=REG(9)
               REG(9)=SPACING
               WRITE(OUTLYNE,20) SPACING,UNIS

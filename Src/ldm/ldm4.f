@@ -1202,11 +1202,11 @@ C
           ELSE
           END IF
           IF(SYSTEM1(94).NE.0.0D0) THEN
-              IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCHES '
+              IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCH   '
               IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.2.0D0) UNI1='CM     '
               IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.3.0D0) UNI1='MM     '
-              IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METERS '
-              IF(SYSTEM1(94).GT.0.0D0)                        UNI1='DEGREES'
+              IF(SYSTEM1(94).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METER  '
+              IF(SYSTEM1(94).GT.0.0D0)                         UNI1='DEGREES'
               WRITE(OUTLYNE,3000)
               CALL SHOWIT(0)
               WRITE(OUTLYNE,5000)
@@ -1215,11 +1215,11 @@ C
               CALL SHOWIT(0)
           END IF
           IF(SYSTEM1(95).NE.0.0D0) THEN
-              IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCHES '
+              IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCH   '
               IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.2.0D0) UNI1='CM     '
               IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.3.0D0) UNI1='MM     '
-              IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METERS '
-              IF(SYSTEM1(95).GT.0.0D0)                        UNI1='DEGREES'
+              IF(SYSTEM1(95).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METER  '
+              IF(SYSTEM1(95).GT.0.0D0)                         UNI1='DEGREES'
               WRITE(OUTLYNE,3000)
               CALL SHOWIT(0)
               WRITE(OUTLYNE,5001)
@@ -1228,11 +1228,11 @@ C
               CALL SHOWIT(0)
           END IF
           IF(SYSTEM1(98).NE.0.0D0) THEN
-              IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCHES '
+              IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCH   '
               IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.2.0D0) UNI1='CM     '
               IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.3.0D0) UNI1='MM     '
-              IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METERS '
-              IF(SYSTEM1(98).GT.0.0D0)                        UNI1='DEGREES'
+              IF(SYSTEM1(98).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METER  '
+              IF(SYSTEM1(98).GT.0.0D0)                         UNI1='DEGREES'
               WRITE(OUTLYNE,3000)
               CALL SHOWIT(0)
               WRITE(OUTLYNE,5002)
@@ -1241,11 +1241,11 @@ C
               CALL SHOWIT(0)
           END IF
           IF(SYSTEM1(99).NE.0.0D0) THEN
-              IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCHES '
+              IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.1.0D0) UNI1='INCH   '
               IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.2.0D0) UNI1='CM     '
               IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.3.0D0) UNI1='MM     '
-              IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METERS '
-              IF(SYSTEM1(99).GT.0.0D0)                        UNI1='DEGREES'
+              IF(SYSTEM1(99).LT.0.0D0.AND.SYSTEM1(6).EQ.4.0D0) UNI1='METER  '
+              IF(SYSTEM1(99).GT.0.0D0)                         UNI1='DEGREES'
               WRITE(OUTLYNE,3000)
               CALL SHOWIT(0)
               WRITE(OUTLYNE,5003)

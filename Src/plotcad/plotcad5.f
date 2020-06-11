@@ -1963,10 +1963,10 @@ C     FANS ARE OK, DO REST OF PLOT
               END IF
 C
 C     SET UP A CHARACTER VALUE FOR THE SYSTEM UNITS
-              IF(SYSTEM1(6).EQ.1.0D0) UNI='INCHES     '
-              IF(SYSTEM1(6).EQ.2.0D0) UNI='CENTIMETERS'
-              IF(SYSTEM1(6).EQ.3.0D0) UNI='MILLIMETERS'
-              IF(SYSTEM1(6).EQ.4.0D0) UNI='METERS     '
+              IF(SYSTEM1(6).EQ.1.0D0) UNI='INCH      '
+              IF(SYSTEM1(6).EQ.2.0D0) UNI='CENTIMETER'
+              IF(SYSTEM1(6).EQ.3.0D0) UNI='MILLIMETER'
+              IF(SYSTEM1(6).EQ.4.0D0) UNI='METER     '
 
               LCW=SYSTEM1(INT(SYSTEM1(11)))
               LPWP1=SYSTEM1(INT(SYSTEM1(7)))

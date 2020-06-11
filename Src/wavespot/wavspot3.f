@@ -1878,10 +1878,10 @@ C       Y ONLY
               FCSFTY=-SSSQY/SSSRY
           END IF
           FCSFT=(FCSFTX+FCSFTY)/2.0D0
-          IF(SYSTEM1(6).EQ.1.0) UN='INCHES     '
-          IF(SYSTEM1(6).EQ.2.0) UN='CENTIMETERS'
-          IF(SYSTEM1(6).EQ.3.0) UN='MILLIMETERS'
-          IF(SYSTEM1(6).EQ.4.0) UN='METERS'
+          IF(SYSTEM1(6).EQ.1.0) UN='INCH'
+          IF(SYSTEM1(6).EQ.2.0) UN='CENTIMETER'
+          IF(SYSTEM1(6).EQ.3.0) UN='MILLIMETER'
+          IF(SYSTEM1(6).EQ.4.0) UN='METER'
           RMSX=2.0D0*(DSQRT(MSSX/W))
           RMSY=2.0D0*(DSQRT(MSSY/W))
           RMS=(RMSX+RMSY)/2.0D0
@@ -3432,10 +3432,10 @@ C     AFOCAL, NO MOVE TO BEST SPOT SIZE
                   FCSFTX=0.0D0
                   FCSFTY=0.0D0
               END IF
-              IF(SYSTEM1(6).EQ.1.0) UN='INCHES     '
-              IF(SYSTEM1(6).EQ.2.0) UN='CENTIMETERS'
-              IF(SYSTEM1(6).EQ.3.0) UN='MILLIMETERS'
-              IF(SYSTEM1(6).EQ.4.0) UN='METERS'
+              IF(SYSTEM1(6).EQ.1.0) UN='INCH'
+              IF(SYSTEM1(6).EQ.2.0) UN='CENTIMETER'
+              IF(SYSTEM1(6).EQ.3.0) UN='MILLIMETER'
+              IF(SYSTEM1(6).EQ.4.0) UN='METER'
               IF(SYSTEM1(30).EQ.1.0D0.OR.SYSTEM1(30).EQ.2.0D0) THEN
                   RMSX=2.0D0*(DSQRT(MSSX/W))
                   RMSY=2.0D0*(DSQRT(MSSY/W))

@@ -1633,10 +1633,10 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
 C
-          IF(SYSTEM1(6).EQ.1) UN='INCHES'
+          IF(SYSTEM1(6).EQ.1) UN='INCH'
           IF(SYSTEM1(6).EQ.2) UN='CM'
           IF(SYSTEM1(6).EQ.3) UN='MM'
-          IF(SYSTEM1(6).EQ.4) UN='METERS'
+          IF(SYSTEM1(6).EQ.4) UN='METER'
 C
 C               THIS IS A CMD LEVEL COMMAND ONLY
 C

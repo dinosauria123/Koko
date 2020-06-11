@@ -587,10 +587,10 @@ C     WC IS 'IDEAL'
               END IF
           END IF
           IF(WC.EQ.'UNITS') THEN
-              IF(SYSTEM1(6).EQ.1.0D0) VALWS1='INCHES'
+              IF(SYSTEM1(6).EQ.1.0D0) VALWS1='INCH  '
               IF(SYSTEM1(6).EQ.2.0D0) VALWS1='CM    '
               IF(SYSTEM1(6).EQ.3.0D0) VALWS1='MM    '
-              IF(SYSTEM1(6).EQ.4.0D0) VALWS1='METERS'
+              IF(SYSTEM1(6).EQ.4.0D0) VALWS1='METER '
               VA1WS1=1
               VAL='CURRENT SYSTEM UNITS ARE:'
               VA1=1

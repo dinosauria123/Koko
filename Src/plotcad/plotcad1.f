@@ -1161,10 +1161,10 @@ C
                   END IF
               END IF
               IF(STI.EQ.1) THEN
-                  IF(SYSTEM1(6).EQ.1.0D0) PU2='INCHES'
-                  IF(SYSTEM1(6).EQ.2.0D0) PU1='CENTIMETERS'
-                  IF(SYSTEM1(6).EQ.3.0D0) PU1='MILLIMETERS'
-                  IF(SYSTEM1(6).EQ.4.0D0) PU2='METERS'
+                  IF(SYSTEM1(6).EQ.1.0D0) PU2='INCH'
+                  IF(SYSTEM1(6).EQ.2.0D0) PU1='CENTIMETER'
+                  IF(SYSTEM1(6).EQ.3.0D0) PU1='MILLIMETER'
+                  IF(SYSTEM1(6).EQ.4.0D0) PU2='METER'
                   WRITE(OUTLYNE,189) PSIZXP
                   CALL SHOWIT(1)
                   WRITE(OUTLYNE,179) PSIZYP
@@ -1562,10 +1562,10 @@ C
                   END IF
               END IF
               IF(STI.EQ.1) THEN
-                  IF(SYSTEM1(6).EQ.1.0D0) PU2='INCHES'
-                  IF(SYSTEM1(6).EQ.2.0D0) PU1='CENTIMETERS'
-                  IF(SYSTEM1(6).EQ.3.0D0) PU1='MILLIMETERS'
-                  IF(SYSTEM1(6).EQ.4.0D0) PU2='METERS'
+                  IF(SYSTEM1(6).EQ.1.0D0) PU2='INCH'
+                  IF(SYSTEM1(6).EQ.2.0D0) PU1='CENTIMETER'
+                  IF(SYSTEM1(6).EQ.3.0D0) PU1='MILLIMETER'
+                  IF(SYSTEM1(6).EQ.4.0D0) PU2='METER'
                   WRITE(OUTLYNE,189) SCFAXP,PU2
                   CALL SHOWIT(1)
                   WRITE(OUTLYNE,179) SCFAYP,PU2

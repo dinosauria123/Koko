@@ -5356,10 +5356,10 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
 C
-          IF(SYSTEM1(6).EQ.1.0D0) UNIT='INCHES'
-          IF(SYSTEM1(6).EQ.2.0D0) UNIT='CENTIMETERS'
-          IF(SYSTEM1(6).EQ.3.0D0) UNIT='MILLIMETERS'
-          IF(SYSTEM1(6).EQ.4.0D0) UNIT='METERS'
+          IF(SYSTEM1(6).EQ.1.0D0) UNIT='INCH'
+          IF(SYSTEM1(6).EQ.2.0D0) UNIT='CENTIMETER'
+          IF(SYSTEM1(6).EQ.3.0D0) UNIT='MILLIMETER'
+          IF(SYSTEM1(6).EQ.4.0D0) UNIT='METER'
           IF(.NOT.GLOBE) THEN
 C       NO VERTEX DATA TO OUTPUT
               WRITE(OUTLYNE,*)

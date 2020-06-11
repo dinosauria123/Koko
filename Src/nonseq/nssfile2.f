@@ -5748,10 +5748,10 @@ C
               END IF
           END IF
           IF(STI.EQ.1) THEN
-              IF(NSSSYSTEM(21).EQ.1.0D0) PU1='INCHES     '
-              IF(NSSSYSTEM(21).EQ.2.0D0) PU1='CENTIMETERS'
-              IF(NSSSYSTEM(21).EQ.3.0D0) PU1='MILLIMETERS'
-              IF(NSSSYSTEM(21).EQ.4.0D0) PU1='METERS     '
+              IF(NSSSYSTEM(21).EQ.1.0D0) PU1='INCH      '
+              IF(NSSSYSTEM(21).EQ.2.0D0) PU1='CENTIMETER'
+              IF(NSSSYSTEM(21).EQ.3.0D0) PU1='MILLIMETER'
+              IF(NSSSYSTEM(21).EQ.4.0D0) PU1='METER     '
               WRITE(OUTLYNE,189) NSSPSIZ,PU1
               CALL SHOWIT(1)
               RETURN
