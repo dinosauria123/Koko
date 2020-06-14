@@ -24,7 +24,7 @@ MODULE gnuplot
   ! Interface module to the gnuplot package. Provides data visualization
   ! functionality and related data structures for Koko.
   !
-  ! The Koko plotter plots data on a canvas with 7000 x 10000 pixels
+  ! The Koko plotter plots data on a canvas with 10000 x 7000 pixels
   ! X coordinate: ix in [0,10000]
   ! Y coordinate: iy in [0,7000]
 

@@ -31,6 +31,7 @@
           USE getoptions
           USE commandline
           USE kokoconfig
+          USE rgb
 
           IMPLICIT NONE
 
@@ -146,6 +147,9 @@
           CHARACTER          :: ch
           LOGICAL            :: quiet
           INTEGER            :: prtcolor
+
+          ! for color handling
+          CHARACTER(LEN=64)  :: color_name
           
 !--- Configuration Options ----------------------------------
           
@@ -709,33 +713,57 @@
           OPTMES=.TRUE.
 
 !     SET THE GLASS LIBRARY DIRECTORY NAME
-          LIBGLA=trim(trim(HOME)//'LIBGLA/')
+          CALL dir_path_append(HOME, "LIBGLA", LIBGLA)
 
-!     INITIALIZE ALL COLORS TO THEIR DEFAULTS
-          COLDEF=15
-          COLRAY=15
-          COLCLP=3
-          COLCOB=9
-          COLEDG=1
-          COLPRO=1
-          COLAXS=15
-          COLBAC=0
+!     INITIALIZE ALL COLORS TO THEIR DEFAULTS (24-bit colors)
+          CALL CFG_get(koko_cfg, "color%default",      color_name)
+          CALL rgbint(color_name, COLDEF)
+          CALL CFG_get(koko_cfg, "color%background",   color_name)
+          CALL rgbint(color_name, COLBAC)
+          CALL CFG_get(koko_cfg, "color%rays",         color_name)
+          CALL rgbint(color_name, COLRAY)
+          CALL CFG_get(koko_cfg, "color%aperture",     color_name)
+          CALL rgbint(color_name, COLCLP)
+          CALL CFG_get(koko_cfg, "color%obscuration",  color_name)
+          CALL rgbint(color_name, COLCOB)
+          CALL CFG_get(koko_cfg, "color%edge",         color_name)
+          CALL rgbint(color_name, COLEDG)
+          CALL CFG_get(koko_cfg, "color%profile",      color_name)
+          CALL rgbint(color_name, COLPRO)
+          CALL CFG_get(koko_cfg, "color%axes",         color_name)
+          CALL rgbint(color_name, COLAXS)
+          CALL CFG_get(koko_cfg, "color%frame",        color_name)
+          CALL rgbint(color_name, COLFRM)
+          CALL CFG_get(koko_cfg, "color%label",        color_name)
+          CALL rgbint(color_name, COLLBL)
+          CALL CFG_get(koko_cfg, "color%spectral",     color_name)
+          CALL rgbint(color_name, COLSPE)
+          CALL CFG_get(koko_cfg, "color%airy",         color_name)
+          CALL rgbint(color_name, COLAIR)
+          CALL CFG_get(koko_cfg, "color%marker",       color_name)
+          CALL rgbint(color_name, COLMRK)
+          CALL CFG_get(koko_cfg, "color%wavelength1",  color_name)
+          CALL rgbint(color_name, COLR1)
+          CALL CFG_get(koko_cfg, "color%wavelength2",  color_name)
+          CALL rgbint(color_name, COLR2)
+          CALL CFG_get(koko_cfg, "color%wavelength3",  color_name)
+          CALL rgbint(color_name, COLR3)
+          CALL CFG_get(koko_cfg, "color%wavelength4",  color_name)
+          CALL rgbint(color_name, COLR4)
+          CALL CFG_get(koko_cfg, "color%wavelength5",  color_name)
+          CALL rgbint(color_name, COLR5)
+          CALL CFG_get(koko_cfg, "color%wavelength6",  color_name)
+          CALL rgbint(color_name, COLR6)
+          CALL CFG_get(koko_cfg, "color%wavelength7",  color_name)
+          CALL rgbint(color_name, COLR7)
+          CALL CFG_get(koko_cfg, "color%wavelength8",  color_name)
+          CALL rgbint(color_name, COLR8)
+          CALL CFG_get(koko_cfg, "color%wavelength9",  color_name)
+          CALL rgbint(color_name, COLR9)
+          CALL CFG_get(koko_cfg, "color%wavelength10", color_name)
+          CALL rgbint(color_name, COLR10)
 
-          COLR1=15
-          COLR2=12
-          COLR3=2
-          COLR4=3
-          COLR5=4
-          COLR6=5
-          COLR7=6
-          COLR8=7
-          COLR9=8
-          COLR10=9
-
-          COLFRM=15
-          COLLBL=15
-          COLSPE=15
-          COLPEN=15
+          COLPEN = COLDEF ! current plotter pen color
 
           N=11
 
@@ -769,13 +797,13 @@
           DRWNAM='NEUTRAL.DAT'
 
 !      Library directories
-          LIBLEN=trim(trim(HOME)//'LIBLEN/')
-          LIBMAC=trim(trim(HOME)//'LIBMAC/')
-          LIBTRA=trim(trim(HOME)//'LIBTRA/')
-          LIBSPO=trim(trim(HOME)//'LIBSPO/')
-          LIBAUT=trim(trim(HOME)//'LIBAUT/')
-          LIBPLO=trim(trim(HOME)//'LIBPLO/')
-          NSSDIR=trim(trim(HOME)//'NSSDIR/')
+          CALL dir_path_append(HOME, "LIBLEN", LIBLEN)
+          CALL dir_path_append(HOME, "LIBMAC", LIBMAC)
+          CALL dir_path_append(HOME, "LIBTRA", LIBTRA)
+          CALL dir_path_append(HOME, "LIBSPO", LIBSPO)
+          CALL dir_path_append(HOME, "LIBAUT", LIBAUT)
+          CALL dir_path_append(HOME, "LIBPLO", LIBPLO)
+          CALL dir_path_append(HOME, "NSSDIR", NSSDIR)
 
 !       SET DEFAULTS FOR "GLOBAL" RAYTRACE OPTION
           GLOBE=.FALSE.

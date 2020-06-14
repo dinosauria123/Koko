@@ -58,6 +58,31 @@ CONTAINS
     CALL CFG_add(koko_cfg, "graphics%fontmed",  "Courier,9",  "Medium graphics font")
     CALL CFG_add(koko_cfg, "graphics%fontsml",  "Courier,5",  "Small graphics font")
     CALL CFG_add(koko_cfg, "graphics%linewidth", 0.7_dp,      "Plotter line width")
+
+    ! plot colors
+    CALL CFG_add(koko_cfg, "color%default",      "black",     "default plotting color")
+    CALL CFG_add(koko_cfg, "color%background",   "white",     "plot background")
+    CALL CFG_add(koko_cfg, "color%rays",         "goldenrod", "ray color")
+    CALL CFG_add(koko_cfg, "color%aperture",     "green3",    "aperture color")
+    CALL CFG_add(koko_cfg, "color%obscuration",  "green3",    "obscurations")
+    CALL CFG_add(koko_cfg, "color%edge",         "blue3",     "lens edge color")
+    CALL CFG_add(koko_cfg, "color%profile",      "blue3",     "lens profile color")
+    CALL CFG_add(koko_cfg, "color%axes",         "slategrey", "plot axes")
+    CALL CFG_add(koko_cfg, "color%frame",        "black",     "plot frame")
+    CALL CFG_add(koko_cfg, "color%label",        "black",     "label color")
+    CALL CFG_add(koko_cfg, "color%spectral",     "black",     "for spectral plots")
+    CALL CFG_add(koko_cfg, "color%airy",         "red3",      "airy circle")
+    CALL CFG_add(koko_cfg, "color%marker",       "midnightblue", "splot diagram markers")
+    CALL CFG_add(koko_cfg, "color%wavelength1",  "#FFDD33",   "yellow wavelength")
+    CALL CFG_add(koko_cfg, "color%wavelength2",  "green3",    "green wavelength")
+    CALL CFG_add(koko_cfg, "color%wavelength3",  "#FF8C19",   "orange wavelength")
+    CALL CFG_add(koko_cfg, "color%wavelength4",  "blue",      "blue wavelength")
+    CALL CFG_add(koko_cfg, "color%wavelength5",  "red2",      "red wavelength")
+    CALL CFG_add(koko_cfg, "color%wavelength6",  "black",     "optional wavelength 1")
+    CALL CFG_add(koko_cfg, "color%wavelength7",  "black",     "optional wavelength 2")
+    CALL CFG_add(koko_cfg, "color%wavelength8",  "black",     "optional wavelength 3")
+    CALL CFG_add(koko_cfg, "color%wavelength9",  "black",     "optional wavelength 4")
+    CALL CFG_add(koko_cfg, "color%wavelength10", "black",     "optional wavelength 5")
     
     ! text
     CALL CFG_add(koko_cfg, "text%editor",       "vi",        "Koko text editor")
@@ -109,8 +134,9 @@ CONTAINS
     INTEGER            :: ival
 
     WRITE (*,*)
-    WRITE (*,*) "Koko configuration settings"
-    
+    WRITE (*,*) "Koko Configuration Settings"
+
+    ! directories
     WRITE (*,*)
     WRITE (*,*) "[directories]"
     CALL CFG_get(koko_cfg, "directories%home", cval)
@@ -118,6 +144,7 @@ CONTAINS
     CALL CFG_get(koko_cfg, "directories%temp", cval)
     WRITE (*,*) "    temp = "//TRIM(cval)
 
+    ! basic graphics settings
     WRITE (*,*)
     WRITE (*,*) "[graphics]"
     CALL CFG_get(koko_cfg, "graphics%viewer", cval)
@@ -132,12 +159,65 @@ CONTAINS
     WRITE (*,*) "    fontsml = "//TRIM(cval)
     CALL CFG_get(koko_cfg, "graphics%linewidth", rval)
     WRITE (*,"(A,F5.2)") "     linewidth = ", rval
+
+    ! plot color settings
+    WRITE (*,*)
+    WRITE (*,*) "[color]"
+    CALL CFG_get(koko_cfg, "color%default",      cval)
+    WRITE (*,*) "    default = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%background",   cval)
+    WRITE (*,*) "    background = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%rays",         cval)
+    WRITE (*,*) "    rays = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%aperture",     cval)
+    WRITE (*,*) "    aperture = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%obscuration",  cval)
+    WRITE (*,*) "    obscuration = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%edge",         cval)
+    WRITE (*,*) "    edge = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%profile",      cval)
+    WRITE (*,*) "    profile = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%axes",         cval)
+    WRITE (*,*) "    axes = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%frame",        cval)
+    WRITE (*,*) "    frame = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%label",        cval)
+    WRITE (*,*) "    label = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%spectral",     cval)
+    WRITE (*,*) "    spectral = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%airy",         cval)
+    WRITE (*,*) "    airy = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%marker",       cval)
+    WRITE (*,*) "    marker = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength1",  cval)
+    WRITE (*,*) "    wavelength1 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength2",  cval)
+    WRITE (*,*) "    wavelength2 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength3",  cval)
+    WRITE (*,*) "    wavelength3 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength4",  cval)
+    WRITE (*,*) "    wavelength4 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength5",  cval)
+    WRITE (*,*) "    wavelength5 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength6",  cval)
+    WRITE (*,*) "    wavelength6 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength7",  cval)
+    WRITE (*,*) "    wavelength7 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength8",  cval)
+    WRITE (*,*) "    wavelength8 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength9",  cval)
+    WRITE (*,*) "    wavelength9 = "//TRIM(cval)
+    CALL CFG_get(koko_cfg, "color%wavelength10", cval)
+    WRITE (*,*) "    wavelength10 = "//TRIM(cval)
     
+    
+    ! text editor
     WRITE (*,*)
     WRITE (*,*) "[text]"
     CALL CFG_get(koko_cfg, "text%editor", cval)
     WRITE (*,*) "    editor = "//TRIM(cval)
 
+    ! prompt color
     WRITE (*,*)
     WRITE (*,*) "[cli]"
     CALL CFG_get(koko_cfg, "cli%promptcolor", ival)
