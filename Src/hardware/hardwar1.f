@@ -1964,7 +1964,7 @@ C     QUALIFIER OK
                   IF(WQ.EQ.'FRAM')  COLANS=COLFRM
                   IF(WQ.EQ.'LABL')  COLANS=COLLBL
                   IF(WQ.EQ.'SPEC')  COLANS=COLSPE
-                  IF(WQ.EQ.'AIRY')  COLANS=COLAIR
+                  IF(WQ.EQ.'AIRY')  COLANS=COLARY
                   IF(WQ.EQ.'MARK')  COLANS=COLMRK
                   IF(WQ.EQ.'PEN')   COLANS=COLPEN
 100               FORMAT('"',A4,'"',' IS CURRENTLY SET TO COLOR NUMBER ',I3)

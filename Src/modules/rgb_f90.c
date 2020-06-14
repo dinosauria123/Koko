@@ -184,7 +184,7 @@ c_rgbint( const char *colorname, int lcn, int *cval )
 	*cval = -1;
       }
       else {
-	*cval = (b << 16) & (g << 8) & r;
+	*cval = (b << 16) | (g << 8) | r;
       }
    }
 }

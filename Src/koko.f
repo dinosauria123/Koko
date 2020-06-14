@@ -739,7 +739,7 @@
           CALL CFG_get(koko_cfg, "color%spectral",     color_name)
           CALL rgbint(color_name, COLSPE)
           CALL CFG_get(koko_cfg, "color%airy",         color_name)
-          CALL rgbint(color_name, COLAIR)
+          CALL rgbint(color_name, COLARY)
           CALL CFG_get(koko_cfg, "color%marker",       color_name)
           CALL rgbint(color_name, COLMRK)
           CALL CFG_get(koko_cfg, "color%wavelength1",  color_name)
