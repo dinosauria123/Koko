@@ -1,12 +1,16 @@
 To Do List for KODS
 ===================
 
-- command completion still buggy when pressing <tab> more than once
+- only "opsys.F90" requires pre-processing now. Change Makefiles accordingly.
+
+- command completion still buggy when pressing <tab> more than once. 2nd
+  <tab> does not search from correct place when only one matching string
+  is found.
 
 - correctly implement batch mode with input file specified on
   command line
 
-- convert all include files with common data to modules
+- convert all include files with common data to modules (?)
 
 - need CDGM glass catalog
 - read .agf glass data files directly
@@ -29,8 +33,6 @@ To Do List for KODS
 
 - Q-polynomials on unit disc
 
-- in hardwar1.F: make setting USERHOME architecture independent
-
 
 Done List
 =========
@@ -51,6 +53,4 @@ Done List
 - change lens directory from within Koko
 - TAB completion at command input
 - fix utility/utility7.f:lwrite: endless if ... then ..
-
-
-
+- in hardwar1.F: make setting USERHOME architecture independent
