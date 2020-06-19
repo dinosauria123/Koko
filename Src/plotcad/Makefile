@@ -7,7 +7,7 @@
 fSRC = plotcad1.f plotcad2.f plotcad3.f plotcad4.f plotcad5.f plotcad6.f plotcad7.f \
        plotcad8.f plotcad9.f plotcad10.f dxf.f bmp.f gnuplot.f
 
-FOBJ = $(fSRC:.f=.o)
+FOBJ = $(f90SRC:.f90=.o) $(fSRC:.f=.o)
 
 # targets
 all: libplotcad

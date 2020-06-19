@@ -31,7 +31,7 @@
           USE getoptions
           USE commandline
           USE kokoconfig
-          USE rgb
+          USE gnuplot
 
           IMPLICIT NONE
 
@@ -141,16 +141,12 @@
 
           ! for configuration file
           CHARACTER(LEN=256) :: sys_cfg_file, usr_cfg_file, test_file
-          CHARACTER(LEN=256) :: gpl_dir, gpl_script
 
           ! for command line options
           CHARACTER          :: ch
           LOGICAL            :: quiet
           INTEGER            :: prtcolor
 
-          ! for color handling
-          CHARACTER(LEN=64)  :: color_name
-          
 !--- Configuration Options ----------------------------------
           
           ! first look up user home directory
@@ -716,53 +712,10 @@
           CALL dir_path_append(HOME, "LIBGLA", LIBGLA)
 
 !     INITIALIZE ALL COLORS TO THEIR DEFAULTS (24-bit colors)
-          CALL CFG_get(koko_cfg, "color%default",      color_name)
-          CALL rgbint(color_name, COLDEF)
-          CALL CFG_get(koko_cfg, "color%background",   color_name)
-          CALL rgbint(color_name, COLBAC)
-          CALL CFG_get(koko_cfg, "color%rays",         color_name)
-          CALL rgbint(color_name, COLRAY)
-          CALL CFG_get(koko_cfg, "color%aperture",     color_name)
-          CALL rgbint(color_name, COLCLP)
-          CALL CFG_get(koko_cfg, "color%obscuration",  color_name)
-          CALL rgbint(color_name, COLCOB)
-          CALL CFG_get(koko_cfg, "color%edge",         color_name)
-          CALL rgbint(color_name, COLEDG)
-          CALL CFG_get(koko_cfg, "color%profile",      color_name)
-          CALL rgbint(color_name, COLPRO)
-          CALL CFG_get(koko_cfg, "color%axes",         color_name)
-          CALL rgbint(color_name, COLAXS)
-          CALL CFG_get(koko_cfg, "color%frame",        color_name)
-          CALL rgbint(color_name, COLFRM)
-          CALL CFG_get(koko_cfg, "color%label",        color_name)
-          CALL rgbint(color_name, COLLBL)
-          CALL CFG_get(koko_cfg, "color%spectral",     color_name)
-          CALL rgbint(color_name, COLSPE)
-          CALL CFG_get(koko_cfg, "color%airy",         color_name)
-          CALL rgbint(color_name, COLARY)
-          CALL CFG_get(koko_cfg, "color%marker",       color_name)
-          CALL rgbint(color_name, COLMRK)
-          CALL CFG_get(koko_cfg, "color%wavelength1",  color_name)
-          CALL rgbint(color_name, COLR1)
-          CALL CFG_get(koko_cfg, "color%wavelength2",  color_name)
-          CALL rgbint(color_name, COLR2)
-          CALL CFG_get(koko_cfg, "color%wavelength3",  color_name)
-          CALL rgbint(color_name, COLR3)
-          CALL CFG_get(koko_cfg, "color%wavelength4",  color_name)
-          CALL rgbint(color_name, COLR4)
-          CALL CFG_get(koko_cfg, "color%wavelength5",  color_name)
-          CALL rgbint(color_name, COLR5)
-          CALL CFG_get(koko_cfg, "color%wavelength6",  color_name)
-          CALL rgbint(color_name, COLR6)
-          CALL CFG_get(koko_cfg, "color%wavelength7",  color_name)
-          CALL rgbint(color_name, COLR7)
-          CALL CFG_get(koko_cfg, "color%wavelength8",  color_name)
-          CALL rgbint(color_name, COLR8)
-          CALL CFG_get(koko_cfg, "color%wavelength9",  color_name)
-          CALL rgbint(color_name, COLR9)
-          CALL CFG_get(koko_cfg, "color%wavelength10", color_name)
-          CALL rgbint(color_name, COLR10)
-
+          CALL reset_colors(COLDEF,COLBAC,COLRAY,COLCLP,COLCOB,COLEDG,
+     1                      COLPRO,COLAXS,COLFRM,COLLBL,COLSPE,COLARY,
+     2                      COLMRK,COLR1,COLR2,COLR3,COLR4,COLR5,
+     3                      COLR6, COLR7,COLR8,COLR9,COLR10)
           COLPEN = COLDEF ! current plotter pen color
 
           N=11
@@ -1783,57 +1736,13 @@
           IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
 
-              ! Libs/gnuplot directory
-              CALL dir_path_append(HOME, "gnuplot", gpl_dir)
-
-              ! open gnuplot data files
-              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
-              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
-              write(115,'(2I5)') 0, 0
-              write(115,*)
-
-              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
-              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
-              write(116,'(2I5)') 0, 0
-              write(116,*)
-
-              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
-              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
-              write(117,'(2I5)') 0, 0
-              write(117,*)
-
-              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
-              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
-              write(118,'(2I5)') 0, 0
-              write(118,*)
-
-              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
-              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
-
-              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
-              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
-              write(130,'(2I5)') 0, 0
-              write(130,*)
-
-              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
-              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
-              write(131,'(2I5)') 0, 0
-              write(131,*)
-
-              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
-              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
-
+              ! get command line input
               CALL userinput(CMDNO)
 
-              close(115)
-              close(116)
-              close(117)
-              close(118)
-              close(119)
-              close(130)
-              close(131)
-              close(150)
-
+              ! reset plotter status
+              CALL reset_pens()
+              
+              ! interpret the command input
               GO TO 1
           END IF
 

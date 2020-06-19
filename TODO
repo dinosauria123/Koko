@@ -5,7 +5,9 @@ To Do List for KODS
 
 - correctly implement batch mode with input file specified on
   command line
-  
+
+- convert all include files with common data to modules
+
 - need CDGM glass catalog
 - read .agf glass data files directly
 - update all glass catalogs

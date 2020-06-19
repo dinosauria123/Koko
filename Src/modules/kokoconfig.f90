@@ -24,6 +24,7 @@ MODULE kokoconfig
   ! Functions and data structures for parsing the Koko configuration files
 
   USE configfile
+  USE rgb
 
   TYPE(CFG_t), PUBLIC :: koko_cfg
   LOGICAL, PRIVATE    :: koko_config_initialized = .FALSE.
@@ -226,5 +227,72 @@ CONTAINS
     WRITE (*,*)
     
   END SUBROUTINE print_koko_config
+
+
+  !-------------------------------------------------------------
+  ! Reset all colors to their values defined in the
+  ! configuration file(s)
+  !
+  SUBROUTINE reset_colors(def,bac,ray,clp,cob,edg,pro,axs,frm, &
+                          lbl,spe,ary,mrk,wv1,wv2,wv3,wv4,wv5, &
+                          wv6,wv7,wv8,wv9,wv10)
+    IMPLICIT NONE
+    INTEGER, INTENT(OUT) :: def,bac,ray,clp,cob,edg,pro,axs,frm, &
+                            lbl,spe,ary,mrk,wv1,wv2,wv3,wv4,wv5, &
+                            wv6,wv7,wv8,wv9,wv10
+    CHARACTER(LEN=64)    :: color_name
+
+    IF (.NOT. koko_config_initialized) THEN
+       PRINT *, "Error: cannot reset colors before reading configuration files."
+       STOP 1
+    END IF
     
+    CALL CFG_get(koko_cfg, "color%default",      color_name)
+    CALL rgbint(color_name, def)
+    CALL CFG_get(koko_cfg, "color%background",   color_name)
+    CALL rgbint(color_name, bac)
+    CALL CFG_get(koko_cfg, "color%rays",         color_name)
+    CALL rgbint(color_name, ray)
+    CALL CFG_get(koko_cfg, "color%aperture",     color_name)
+    CALL rgbint(color_name, clp)
+    CALL CFG_get(koko_cfg, "color%obscuration",  color_name)
+    CALL rgbint(color_name, cob)
+    CALL CFG_get(koko_cfg, "color%edge",         color_name)
+    CALL rgbint(color_name, edg)
+    CALL CFG_get(koko_cfg, "color%profile",      color_name)
+    CALL rgbint(color_name, pro)
+    CALL CFG_get(koko_cfg, "color%axes",         color_name)
+    CALL rgbint(color_name, axs)
+    CALL CFG_get(koko_cfg, "color%frame",        color_name)
+    CALL rgbint(color_name, frm)
+    CALL CFG_get(koko_cfg, "color%label",        color_name)
+    CALL rgbint(color_name, lbl)
+    CALL CFG_get(koko_cfg, "color%spectral",     color_name)
+    CALL rgbint(color_name, spe)
+    CALL CFG_get(koko_cfg, "color%airy",         color_name)
+    CALL rgbint(color_name, ary)
+    CALL CFG_get(koko_cfg, "color%marker",       color_name)
+    CALL rgbint(color_name, mrk)
+    CALL CFG_get(koko_cfg, "color%wavelength1",  color_name)
+    CALL rgbint(color_name, wv1)
+    CALL CFG_get(koko_cfg, "color%wavelength2",  color_name)
+    CALL rgbint(color_name, wv2)
+    CALL CFG_get(koko_cfg, "color%wavelength3",  color_name)
+    CALL rgbint(color_name, wv3)
+    CALL CFG_get(koko_cfg, "color%wavelength4",  color_name)
+    CALL rgbint(color_name, wv4)
+    CALL CFG_get(koko_cfg, "color%wavelength5",  color_name)
+    CALL rgbint(color_name, wv5)
+    CALL CFG_get(koko_cfg, "color%wavelength6",  color_name)
+    CALL rgbint(color_name, wv6)
+    CALL CFG_get(koko_cfg, "color%wavelength7",  color_name)
+    CALL rgbint(color_name, wv7)
+    CALL CFG_get(koko_cfg, "color%wavelength8",  color_name)
+    CALL rgbint(color_name, wv8)
+    CALL CFG_get(koko_cfg, "color%wavelength9",  color_name)
+    CALL rgbint(color_name, wv9)
+    CALL CFG_get(koko_cfg, "color%wavelength10", color_name)
+    CALL rgbint(color_name, wv10)
+  END SUBROUTINE reset_colors
+  
 END MODULE kokoconfig

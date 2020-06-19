@@ -28,29 +28,29 @@ MODULE gnuplot
   ! X coordinate: ix in [0,10000]
   ! Y coordinate: iy in [0,7000]
 
-  USE dictionary
-  USE rgb
+  USE kokodata
   USE opsys
+  USE rgb
+  USE dictionary
+
+  IMPLICIT NONE
+  
+  PRIVATE
+  PUBLIC plot_line, reset_pens
   
 
-  ! Defines a pen object for the plotter
-  TYPE, ALLOCATABLE     :: plot_pen
-     INTEGER            :: color ! 24-bit color of the pen
-     CHARACTER(LEN=256) :: file  ! full name of plotter data file
-     INTEGER            :: unit  ! io unit associated with the file
-  END TYPE plot_pen
-
-  
-  ! The plotter is a dictionary of pens with different colors. Pens get
-  ! added to the plotter as needed when a plot is created.
-  dict :: gnu_plotter            ! dictionary of plotter pens
+  ! The plotter is a dictionary of pens with different colors. Pens
+  ! are added to the plotter as needed when a plot is created. The
+  ! only characteristic of the pen that needs to be stored is the
+  ! i/o unit of the file associated with it.
+  TYPE(dict) :: plotter          ! dictionary of plotter pens
 
   
 CONTAINS
 
   !----------------------------------------------------------  
   ! Plots a line segment from the current pen position to a
-  ! new pen position
+  ! new pen position in the global canvas coordinate system.
   !
   ! INPUT
   ! ix, iy :  coordinates of the next point on the canvas
@@ -66,45 +66,59 @@ CONTAINS
     INTEGER, INTENT(IN) :: ix,iy
     INTEGER, INTENT(IN) :: cont
     INTEGER, INTENT(IN) :: pencolor
-
-    INCLUDE 'datmai.inc' ! needed for the KODS HOME directory :-(
     
-    ! plotter pen to use for the line
-    plot_pen          :: pen
-    CHARACTER(LEN=16) :: pen_id, pen_name
-    CHARACTER(LEN=256):: pen_fullname
-    INTEGER           :: iounit
+    CHARACTER(LEN=256)  :: kods_home, pen_fullname
+    CHARACTER(LEN=16)   :: pen_id
+    CHARACTER(LEN=32)   :: pen_name
+    INTEGER             :: iounit
     
     ! convert 24-bit color to hex string #RRGGBB
     CALL rgbint_to_hex(pencolor, pen_id)
 
     ! check if a pen with this color is already in use
-    IF ( .NOT. exists(gnu_plotter, TRIM(pen_id)) ) THEN
-       ALLOCATE(pen)  ! create a new pen
+    IF ( .NOT. exists(plotter, TRIM(pen_id)) ) THEN
 
        ! new pen data file with name kokoRRGGBB.gpl
        pen_name = "koko"//pen_id(2:7)//".gpl" ! don't use '#'
-       CALL dir_path_append(HOME,"gnuplot",pen_fullname)
+       CALL get_kods_home(kods_home)
+       CALL dir_path_append(kods_home,"gnuplot",pen_fullname)
        CALL dir_path_append(pen_fullname, pen_name, pen_fullname)
 
        ! create the plot data file for this pen
        OPEN(NEWUNIT=iounit,FILE=TRIM(pen_fullname),STATUS='new')
 
-       ! save the pen for future use
-       pen%color = pencolor
-       pen%file  = pen_fullname
-       pen%unit  = iounit
-       CALL insert_or_assign(gnu_plotter, TRIM(pen_id), pen)
+       ! save the io unit of this pen for future use
+       CALL insert_or_assign(plotter, TRIM(pen_id), iounit)
     ELSE
-       pen = get_val(gnu_plotter, TRIM(pen_id)) ! use existing pen
+       iounit = get_val(plotter, TRIM(pen_id)) ! use an existing pen
     END IF
 
     ! now use the pen to plot the line
     IF (cont /= 1) THEN
-       WRITE (pen%unit, *)
+       WRITE (iounit, *)
     END IF
-    WRITE (pen%unit, "(2I5)") ix, iy
+    WRITE (iounit, "(2I5)") ix, iy
     
   END SUBROUTINE plot_line
 
+
+  !----------------------------------------------------------  
+  ! Remove all active plotter pens from the plotter
+  !
+  SUBROUTINE reset_pens()
+
+    CHARACTER(LEN=16)  :: pen_id
+
+    DO
+       ! exit when no pens are left in the plotter
+       IF (get_size(plotter) == 0) EXIT
+
+       ! get the next pen and remove it from the plotter
+       pen_id = get_kth_key(plotter, 1)
+       CALL remove(plotter, TRIM(pen_id))
+
+    END DO
+    
+  END SUBROUTINE reset_pens
+  
 END MODULE gnuplot

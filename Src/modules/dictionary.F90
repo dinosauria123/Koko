@@ -29,6 +29,7 @@ module dictionary
   ! High level wrapper of dictionary data structure
 
   use treap, only: node, my_count, insert, erase, find_node, kth_node, delete_all, inorder
+
   implicit none
 
   private

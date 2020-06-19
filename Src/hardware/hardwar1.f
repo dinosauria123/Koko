@@ -1401,7 +1401,7 @@ C     NOW WRITE THE ARRAY VALUES
           call gnuplotlabel(I1,I2,C1A//C1B//C1C//C1D,I3,I4)
 
  5000     FORMAT(A20,22X)
-          RETURN
+
       END SUBROUTINE MY_JUSTSTRING
 
 
@@ -1431,11 +1431,12 @@ C     NOW WRITE THE ARRAY VALUES
           IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
-          RETURN
+
       END SUBROUTINE MY_COLTYP
 
 
       SUBROUTINE MY_SETPAL(II1)
+          ! set color palette
           USE GLOBALS
           IMPLICIT NONE
           CHARACTER STRINGER*1,NEUTLINE*42
@@ -1461,7 +1462,7 @@ C     NOW WRITE THE ARRAY VALUES
           IF(NEUTTOTAL+1.GE.MAXNEUTRAL/2) CALL RESIZE_NEUT
           NEUTARRAY(NEUTTOTAL+1)=NEUTLINE
  1000     FORMAT(A1,I5,I5,I5,I5,I5,I5,I5,I5)
-          RETURN
+
       END SUBROUTINE MY_SETPAL
 
       
@@ -1676,13 +1677,13 @@ C
           PLEXIS=.FALSE.
           IF(DEVTYP.EQ.1) THEN
 C       PROCEED
-          PPLI(1:60)=LI(1:60)
-          CALL MY_INIPLT
+             PPLI(1:60)=LI(1:60)
+             CALL MY_INIPLT
 
-          LLX=-10
-          LLY=-10
-          URX=10010
-          URY=7010
+             LLX=-10
+             LLY=-10
+             URX=10010
+             URY=7010
 
 C     LIGHT BLUE (DEFAULT) BACKGROUND
 C     DOES IT NEED TO CHANGE ?
@@ -1702,14 +1703,14 @@ C     DARK CYAN BACKGROUND     COLBAC=12
 C     DARK GREEN BACKGROUND    COLBAC=13
 C     DARK BLUE BACKGROUND     COLBAC=14
 C     BLACK BACKGROUND         COLBAC=15
-              COLBACC=COLBAC
+
 C     RESET THE BACKGROUND COLOR AND THE FONT STYLE
+              COLBACC=COLBAC
               CALL MY_SETPAL(COLBACC)
               CALL MY_SETFONT(1,0)
               RETURN
-          ELSE
-C       PROCEED
           END IF
+
 C       NOT A VALID DEVICE TYPE
           OUTLYNE=
      1    '"PLOT NEW" MUST BE ISSUED BEFORE PLOTTING CAN PROCEED'
@@ -1743,118 +1744,59 @@ C       STOP PLOTTING
 
       
       SUBROUTINE COLORS
-C
-C               COLORS AND THEIR INTEGER CODES
-C
-C               0 = WHITE
-C               1 = LIGHT YELLOW
-C               2 = LIGHT MAGENTA
-C               3 = LIGHT RED
-C               4 = LIGHT CYAN
-C               5 = LIGHT GREEN
-C               6 = LIGHT BLUE
-C               7 = DARK GREY
-C               8 = LIGHT GREY
-C               9 = DARK YELLOW
-C              10 = DARK MAGENTA
-C              11 = DARK RED
-C              12 = DARK CYAN
-C              13 = DARK GREEN
-C              14 = DARK BLUE
-C              15 = BLACK
-C
-          IMPLICIT NONE
-C
-C       THIS IS SUBROUTINE COLORS. THIS IS THE SUBROUTINE WHICH
-C       SETS THE PROGRAM COLORS.
+C       THIS IS SUBROUTINE COLORS, WHICH SETS THE PROGRAM COLORS
+C       VIA THE "COLORSET" COMMAND
 
+          USE kokoconfig
+          USE rgb
+        
+          IMPLICIT NONE
           INTEGER COLANS
 
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
 
+          CHARACTER(LEN=16) :: hexstr
+          INTEGER           :: colint
+          
           IF(STI.EQ.0) THEN
 C     NO QUERY
-              IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1.OR.SST.EQ.1) THEN
-                  OUTLYNE=
-     1            '"COLORSET" ONLY TAKES QUALIFIER AND NUMERIC WORD #1 INPUT'
-                  CALL SHOWIT(1)
-                  OUTLYNE='RE-ENTER COMMAND'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
-              ELSE
-              END IF
               IF(WQ.NE.'RESET') THEN
-                  IF(S1.EQ.0.OR.SQ.EQ.0) THEN
-                      OUTLYNE=
-     1                '"COLORSET" REQUIRES EXPLICIT QUALIFIER AND'
-                      CALL SHOWIT(1)
-                      OUTLYNE=
-     1                'EXPLICIT NUMERIC WORD #1 INPUT'
+                  IF (SQ /= 1 .OR. SST /= 1) THEN
+                      OUTLYNE = '"COLORSET" REQUIRES QUALIFIER AND STRING ARGUMENT'
                       CALL SHOWIT(1)
                       OUTLYNE='RE-ENTER COMMAND'
                       CALL SHOWIT(1)
                       CALL MACFAL
                       RETURN
-                  ELSE
-                  END IF
-              ELSE
+                   END IF                   
+                
 C     WQ WAS RESET
-              END IF
-              IF(WQ.EQ.'RESET') THEN
-                  IF(SN.EQ.1) THEN
-                      OUTLYNE=
-     1                '"COLORSET RESET" TAKES NO ADDITIONAL INPUT'
-                      CALL SHOWIT(1)
-                      OUTLYNE='RE-ENTER COMMAND'
-                      CALL SHOWIT(1)
-                      CALL MACFAL
-                      RETURN
-                  ELSE
-                  END IF
               ELSE
-C     WQ WAS NOT RESET
+                 IF(SN.EQ.1) THEN
+                    OUTLYNE='"COLORSET RESET" TAKES NO ADDITIONAL INPUT'
+                    CALL SHOWIT(1)
+                    OUTLYNE='RE-ENTER COMMAND'
+                    CALL SHOWIT(1)
+                    CALL MACFAL
+                 ELSE 
+                    CALL MY_INIPLT
+                    CALL reset_colors(COLDEF,COLBAC,COLRAY,COLCLP,COLCOB,COLEDG,
+     1                                COLPRO,COLAXS,COLFRM,COLLBL,COLSPE,COLARY,
+     2                                COLMRK,COLR1,COLR2,COLR3,COLR4,COLR5,
+     3                                COLR6, COLR7,COLR8,COLR9,COLR10)
+                    COLPEN=COLDEF
+                 END IF
+                 RETURN
               END IF
-              IF(WQ.EQ.'RESET') THEN
-
-                  CALL MY_INIPLT
-
-C     RESETTING PROGRAM COLORS TO DEFAULTS
-
-                  COLDEF=15
-                  COLRAY=15
-                  COLCLP=3
-                  COLCOB=9
-                  COLEDG=1
-                  COLPRO=1
-                  COLAXS=15
-                  COLBAC=0
-
-                  COLR1=15
-                  COLR2=12
-                  COLR3=2
-                  COLR4=3
-                  COLR5=4
-                  COLR6=5
-                  COLR7=6
-                  COLR8=7
-                  COLR9=8
-                  COLR10=9
-
-                  COLFRM=15
-                  COLLBL=15
-                  COLSPE=15
-                  COLPEN=15
-                  RETURN
-              END IF
+               
               IF(WQ.NE.'RAYS'.AND.WQ.NE.'CLAP'.AND.WQ.NE.'COBS'.AND.
      1        WQ.NE.'EDGE'.AND.WQ.NE.'PROF'.AND.WQ.NE.'AXIS'.AND.
      1        WQ.NE.'GBAC'.AND.WQ.NE.'WAV1'.AND.WQ.NE.'WAV2'.AND.
      1        WQ.NE.'WAV3'.AND.WQ.NE.'WAV4'.AND.WQ.NE.'WAV5'.AND.
-     1        WQ.NE.'FRAM'.AND.WQ.NE.'LABL'.AND.
-     1        WQ.NE.'SPEC'.AND.WQ.NE.'PEN'.AND.
+     1        WQ.NE.'FRAM'.AND.WQ.NE.'LABL'.AND.WQ.NE.'AIRY'.AND.
+     1        WQ.NE.'SPEC'.AND.WQ.NE.'PEN' .AND.WQ.NE.'MARK'.AND.
      1        WQ.NE.'WAV6'.AND.WQ.NE.'WAV7'.AND.WQ.NE.'WAV8'.AND.
      1        WQ.NE.'WAV9'.AND.WQ.NE.'WAV10')THEN
                   OUTLYNE=
@@ -1865,58 +1807,36 @@ C     RESETTING PROGRAM COLORS TO DEFAULTS
                   CALL MACFAL
                   RETURN
               END IF
-              IF(INT(W1).LT.-1.OR.INT(W1).GT.16) THEN
-                  OUTLYNE=
-     1            'NUMERIC COLOR VALUES MUST RANGE FROM -1 TO 15'
-                  CALL SHOWIT(1)
-                  OUTLYNE='RE-ENTER COMMAND'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
-              END IF
 C
 C     PROCEED WITH SETTING OF COLORS
-              IF(WQ.EQ.'RAYS') COLRAY=INT(W1)
-              IF(WQ.EQ.'CLAP') COLCLP=INT(W1)
-              IF(WQ.EQ.'COBS') COLCOB=INT(W1)
-              IF(WQ.EQ.'EDGE') COLEDG=INT(W1)
-              IF(WQ.EQ.'PROF') COLPRO=INT(W1)
-              IF(WQ.EQ.'AXIS') COLAXS=INT(W1)
-              IF(WQ.EQ.'GBAC') COLBAC=INT(W1)
-              IF(WQ.EQ.'WAV1') COLR1=INT(W1)
-              IF(WQ.EQ.'WAV2') COLR2=INT(W1)
-              IF(WQ.EQ.'WAV3') COLR3=INT(W1)
-              IF(WQ.EQ.'WAV4') COLR4=INT(W1)
-              IF(WQ.EQ.'WAV5') COLR5=INT(W1)
-              IF(WQ.EQ.'WAV6') COLR6=INT(W1)
-              IF(WQ.EQ.'WAV7') COLR7=INT(W1)
-              IF(WQ.EQ.'WAV8') COLR8=INT(W1)
-              IF(WQ.EQ.'WAV9') COLR9=INT(W1)
-              IF(WQ.EQ.'WAV10') COLR10=INT(W1)
-              IF(WQ.EQ.'FRAM') COLFRM=INT(W1)
-              IF(WQ.EQ.'LABL') COLLBL=INT(W1)
-
-              IF(WQ.EQ.'GBAC')  THEN
-                  IF(W1.LT.-1.0D0.OR.W1.GT.15.0D0) THEN
-                      OUTLYNE=
-     1                '"COLORSET GBAC" ONLY USES COLOR NUMBERS -1 TO 15'
-                      CALL SHOWIT(1)
-                      OUTLYNE='RE-ENTER COMMAND'
-                      CALL SHOWIT(1)
-                      CALL MACFAL
-                      RETURN
-                  ELSE
-C     INPUT OK
-                  END IF
-              ELSE
-C     NOT GBAC
-              END IF
-              IF(WQ.EQ.'SPEC') COLSPE=INT(W1)
-              IF(WQ.EQ.'PEN') COLPEN=INT(W1)
-
+              CALL rgbint(WS, colint)
+              IF(WQ.EQ.'RAYS')  COLRAY = colint
+              IF(WQ.EQ.'CLAP')  COLCLP = colint
+              IF(WQ.EQ.'COBS')  COLCOB = colint
+              IF(WQ.EQ.'EDGE')  COLEDG = colint
+              IF(WQ.EQ.'PROF')  COLPRO = colint
+              IF(WQ.EQ.'AXIS')  COLAXS = colint
+              IF(WQ.EQ.'GBAC')  COLBAC = colint
+              IF(WQ.EQ.'WAV1')  COLR1  = colint
+              IF(WQ.EQ.'WAV2')  COLR2  = colint
+              IF(WQ.EQ.'WAV3')  COLR3  = colint
+              IF(WQ.EQ.'WAV4')  COLR4  = colint
+              IF(WQ.EQ.'WAV5')  COLR5  = colint
+              IF(WQ.EQ.'WAV6')  COLR6  = colint
+              IF(WQ.EQ.'WAV7')  COLR7  = colint
+              IF(WQ.EQ.'WAV8')  COLR8  = colint
+              IF(WQ.EQ.'WAV9')  COLR9  = colint
+              IF(WQ.EQ.'WAV10') COLR10 = colint
+              IF(WQ.EQ.'FRAM')  COLFRM = colint
+              IF(WQ.EQ.'LABL')  COLLBL = colint
+              IF(WQ.EQ.'AIRY')  COLARY = colint
+              IF(WQ.EQ.'MARK')  COLMRK = colint
+              IF(WQ.EQ.'SPEC')  COLSPE = colint
+              IF(WQ.EQ.'PEN')   COLPEN = colint
               RETURN
-
-          ELSE
+              
+           ELSE
+              
 C     QUERY IS IMPLEMENTED HERE
 C     CASE OF "COLORSET ?"
               IF(SQ.EQ.0) THEN
@@ -1936,7 +1856,7 @@ C     IS SQ=1 ?
      1            WQ.NE.'WAV9'.AND.WQ.NE.'WAV10'.AND.WQ.NE.'MARK'.AND.
      1            WQ.NE.'SPEC'.AND.WQ.NE.'PEN')THEN
                       OUTLYNE=
-     1                'INVALID QUALIFIER USED WITH "COLORSET" QUERRY'
+     1                'INVALID QUALIFIER USED WITH "COLORSET" QUERY'
                       CALL SHOWIT(1)
                       OUTLYNE='RE-ENTER COMMAND'
                       CALL SHOWIT(1)
@@ -1967,8 +1887,9 @@ C     QUALIFIER OK
                   IF(WQ.EQ.'AIRY')  COLANS=COLARY
                   IF(WQ.EQ.'MARK')  COLANS=COLMRK
                   IF(WQ.EQ.'PEN')   COLANS=COLPEN
-100               FORMAT('"',A4,'"',' IS CURRENTLY SET TO COLOR NUMBER ',I3)
-                  WRITE(OUTLYNE,100)WQ(1:4),COLANS
+                  CALL rgbint_to_hex(COLANS, hexstr)
+100               FORMAT('"',A,'"',' COLOR IS SET TO: ',A7)
+                  WRITE(OUTLYNE,100) TRIM(WQ), TRIM(hexstr)
                   CALL SHOWIT(1)
               END IF
           END IF

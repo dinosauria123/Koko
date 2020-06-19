@@ -3092,7 +3092,6 @@ C     ALL LEADING BLANKS REMOVED
       END
 
 
-
       SUBROUTINE INSRTP2
 C**********************************************************************
 C     ADD MISSING PLUS SIGN ROUTINE
@@ -3299,7 +3298,6 @@ C     CASE OF EXPONENT NOT A NUMBER
       END
 
 
-
 C SUB PRO0.FOR
       SUBROUTINE PRO0
 C
@@ -3492,8 +3490,6 @@ C
       END
 
 
-
-C
       SUBROUTINE BREAKOUT(INPUT,INP,DF,FLG1,INUM,FLG2,REMAIN)
 C
 C     THIS ROUTINE TAKES A 140 CHARACTER VARIABLE NAMED "INPUT"
@@ -3651,7 +3647,6 @@ C
       END
 
 
-
       SUBROUTINE STPLBL(INPUT,BLANK)
 C**********************************************************************
 C     SRIP LEADING BLANKS ROUTINE
@@ -3677,7 +3672,7 @@ C
           END DO
 C
           I=0
-1         IF(ICHAR(INPUT(1:1)).EQ.32) THEN
+1         IF(INPUT(1:1).EQ.' ') THEN
               INPUT(1:140)=INPUT(2:140)
               IF(INPUT(1:140).EQ.BL(1:140)) THEN
                   BLANK=.TRUE.
@@ -3695,6 +3690,7 @@ C     ALL LEADING BLANKS REMOVED
           RETURN
       END
 
+      
       SUBROUTINE STPCOM(INPUT)
 C**********************************************************************
 C     STRIP LEADING COMMA ROUTINE
@@ -3718,7 +3714,9 @@ C
 C     NO COMMA TO BE REMOVED
           END IF
           RETURN
-      END
+      END SUBROUTINE STPCOM
+
+      
       SUBROUTINE INSRTP(INPUT)
 C**********************************************************************
 C     ADD MISSING PLUS SIGN ROUTINE
@@ -3777,7 +3775,9 @@ C     CASE OF MISSING "D" AS IN 2-3 REPRESENTING 2D-3
               END IF
           END DO
           RETURN
-      END
+      END SUBROUTINE INSRTD
+
+      
       SUBROUTINE DESIZE(INP1,FLG1)
 C**********************************************************************
 C     EXPONENT TOO BIG ROUTINE
@@ -3840,7 +3840,9 @@ C     CASE OF EXPONENT NOT A NUMBER
           INP1='0.0'
           FLG1=.FALSE.
           RETURN
-      END
+      END SUBROUTINE DESIZE
+
+      
       SUBROUTINE ADDDEC(INP1,FLG1)
 C**********************************************************************
 C     DECIMAL ADDIN ROUTINE
@@ -3912,7 +3914,6 @@ C     I NO1 1
 40        CONTINUE
           RETURN
       END
-
 
 
       SUBROUTINE ATON(INP,FLG1,NUM,ERROR,DF,INUM)
@@ -4019,17 +4020,16 @@ C       PRO3 FINISHES PROCESSING INPUT INTO PROGRAM INSTRUCTIONS
       END
 
 
-
 C SUB PRO2.FOR
       SUBROUTINE PRO2
           USE GLOBALS
 C
           IMPLICIT NONE
 C
-C       THIS SUBROUTINE PROCESSES THE STRING VARIABLE "INPUT"
-C       BY REMOVING UP TO 20 VIRTUAL CARRIAGE RETURNS AND RETURNING
-C       UP TO 20 INSTRUCTION LINES IN THE ARRAY INSTRUC. THE NUMBER
-C       NON-BLANK INSTRUCTIONS IS PASSED VIA NSTRUC. THE CHARACTER
+C     THIS SUBROUTINE PROCESSES THE STRING VARIABLE "INPUT"
+C     BY REMOVING UP TO 20 VIRTUAL CARRIAGE RETURNS AND RETURNING
+C     UP TO 20 INSTRUCTION LINES IN THE ARRAY INSTRUC. THE NUMBER
+C     NON-BLANK INSTRUCTIONS IS PASSED VIA NSTRUC. THE CHARACTER
 C     USED FOR REPRESENTING A VIRTUAL CARRIAGE RETURN IS DESIGNATED
 C     BY ITS ASCII VALUE1. THIS VALUE1 IS PASSED BY C_VAL, AN INTEGER.
 C     THE DEFAULT VALUE1 FOR C_VAL IS (59), THIS IS THE ASCII VALUE1
@@ -4051,14 +4051,15 @@ C
 C
           INCLUDE 'datmai.inc'
 C
-C               NOW WE RESOLVE MULTIPLE PROGRAM INSTRUCTIONS ON THE
-C               INPUT INSTRUCTION LINE.
+C         NOW WE RESOLVE MULTIPLE PROGRAM INSTRUCTIONS ON THE
+C         INPUT INSTRUCTION LINE.
 C
-C               NOW INITIALIZE AGAIN THE VIRTUAL CARRIAGE RETURN COUNT,
-C               ITS POSITION TRACKING ARRAY AND THE CVAL ARRAY.
-C               THEN REANALYSE 'INPUT', FILLING THE CVAL AND VRPOS
-C               ARRAYS.
-C               STRIP 20 LEADING BLANKS
+C         NOW INITIALIZE AGAIN THE VIRTUAL CARRIAGE RETURN COUNT,
+C         ITS POSITION TRACKING ARRAY AND THE CVAL ARRAY.
+C         THEN REANALYSE 'INPUT', FILLING THE CVAL AND VRPOS
+C         ARRAYS.
+C         STRIP 20 LEADING BLANKS
+
           J=1
           DO I=1,20
               IF(INPUT(J:J).EQ.' ') INPUT(1:140)=INPUT(2:140)
@@ -4366,7 +4367,6 @@ C       NEW FEATURE COMPLETE
       END
 
 
-
 C SUB PRO3.FOR
       SUBROUTINE PRO3
           USE GLOBALS
@@ -4419,8 +4419,6 @@ C
 C
           INCLUDE 'datmai.inc'
 
-
-C
           DM1=AA//AA//AA//AA//AA//AA//AA
           DM2=AA//AA//AA//AA//AA//AA//AA
 C               AT THIS POINT INITIALIZE
@@ -4428,7 +4426,6 @@ C               COMMWD(I),QUALWD(I),STRING(I),ANW1(I),ANW2(I),ANW3(I),
 C               ANW4(I),AND ANW5(I). THESE WILL BE THE REPOSITORIES
 C               OF THE COMMAND,QUALIFIER,STRING,AND ALPHA-NUMERIC
 C               REPRESENTATIONS OF THE NUMERIC WORDS.
-C
 C
           DO 1036 I=1,NUMCOM
               COMMWD(I)=BB
@@ -4491,16 +4488,14 @@ C               STORED IN THE COMMAND WORD ARRAY COMMWD(I).
 C
 C               NOW BREAK OUT THE COMMAND WORDS FROM THE INSTRC ARRAY.
 C
-C                       THE VARIABLE NSTRUC IS THE COUNT OF THE
-C                       NUMBER OF PENDING ISTRUCTIONS STORED IN
-C                       THE INSTRC ARRAY. MAX VALUE1 IS NUMCOM.
-C
+C               THE VARIABLE NSTRUC IS THE COUNT OF THE
+C               NUMBER OF PENDING ISTRUCTIONS STORED IN
+C               THE INSTRC ARRAY. MAX VALUE1 IS NUMCOM.
 C
 C               HERE SETUP STATUS ARRAYS AND INITIALIZE TO 2
 C               WHICH MEANS NOT YET ASSIGNED.
 C
           DO 1025 I=1,NUMCOM
-
 C
 C       0 MEANS NO, 1 MEANS YES, 2 MEANS NOT YES ASSIGNED STATUS
 C
@@ -4547,7 +4542,7 @@ C               AND ALL LEADING BLANKS. (ASCII CHARACTER 32)
 C
               K = 1
  1016         COMTST = ICHAR(INSTRC(I)(1:1))
-              IF(COMTST.EQ.32) THEN
+              IF(COMTST.EQ.ICHAR(' ')) THEN
                   INSTRC(I) = (INSTRC(I)(2:140))
 C       A BLANK WAS REMOVED
                   K = K + 1
@@ -4622,7 +4617,7 @@ C               COMMAND BACK IN THE INSTRC(I) ARRAY.
 C
               DO 1022 J=2,9
                   BLNK = ICHAR(INSTRC(I)(J:J))
-                  IF(BLNK.EQ.32.OR.BLNK.EQ.44) THEN
+                  IF(BLNK.EQ.ICHAR(' ').OR.BLNK.EQ.ICHAR(',')) THEN
                       COMMWD(I)=(INSTRC(I)(1:(J-1)))
                       INSTRC(I)=(INSTRC(I)(J:140))
                       GO TO 1023
@@ -4679,7 +4674,7 @@ C
               BSUM = 0
               BVAL = 0
               DO 1027 K=2,140
-                  BVAL =(ICHAR(INSTRC(I)(K:K))-32)
+                  BVAL =(ICHAR(INSTRC(I)(K:K))-ICHAR(' '))
                   BSUM = BSUM + BVAL
  1027         CONTINUE
 C               IF BSUM IS EQUAL TO ZERO THEN ALL OF INSTRC(I) IS
@@ -4728,7 +4723,7 @@ C
  1032             QBVAL = 0
                   L=1
                   QBVAL = ICHAR(INSTRC(I)(L:L))
-                  IF(QBVAL.NE.32.AND.QBVAL.NE.44) THEN
+                  IF(QBVAL.NE.ICHAR(' ').AND.QBVAL.NE.ICHAR(',')) THEN
                       INSTRC(I)= (INSTRC(I)((L+1):140))
                       GO TO 1032
                   ELSE
@@ -4820,7 +4815,7 @@ C
 C
                   OUTLYNE='SERIOUS ERROR RESOLVING EXTRA BLANKS, SEE'
                   CALL SHOWIT(1)
-                  OUTLYNE='STATEMENT LABLE 7029/7030 IN SUBROUTINE "PROCESS"'
+                  OUTLYNE='STATEMENT LABEL 7029/7030 IN SUBROUTINE "PROCESS"'
                   CALL SHOWIT(1)
                   RETURN
               END IF
@@ -4875,7 +4870,7 @@ C       IF NOT THEN THERE IS NO QUALIFIER BUT THERE MAY BE
 C       NUMERIC OR STRING DATA
 C
               QBVAL=ICHAR(INSTRC(I)(1:1))
-              IF(QBVAL.NE.44) THEN
+              IF(QBVAL.NE.ICHAR(',')) THEN
 C
 C       REMOVE LEADING BLANKS AND CHECK FOR SPECIAL
 C       CHARACTERS.
@@ -4886,7 +4881,7 @@ C
                   QBVAL=ICHAR(INSTRC(I)(1:1))
 C       FIRST REMOVE THE LEADING BLANKS. (WILL HANDLE 20 OF THEM)
  1050             IF(K.GT.50) GO TO 1052
-                  IF(QBVAL.EQ.32) THEN
+                  IF(QBVAL.EQ.ICHAR(' ')) THEN
                       INSTRC(I)=(INSTRC(I)(2:140))
 C       REFORM QBVAL
                       QBVAL=ICHAR(INSTRC(I)(1:1))

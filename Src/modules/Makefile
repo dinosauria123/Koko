@@ -6,15 +6,20 @@
 
 IFLAGS = -I../include
 
-# module sources
-fSRC   = globals.f nssmod.f
-f90SRC = configfile.f90 kokoconfig.f90 getoptions.f90 commandline.f90 strings.f90 \
-         rgb.f90 posix_regex.f90
+# old modules from KDP
+fSRC   = globals.f nssmod.f kokodata.f
+
+# new modules
+f90SRC = configfile.f90 getoptions.f90 commandline.f90 strings.f90 \
+         rgb.f90 kokoconfig.f90 posix_regex.f90 gnuplot.f90
+
+# modules that need preprocessing
 F90SRC = opsys.F90 treap.F90 dictionary.F90
+
 CSRC   = strings_f90.c rgb_f90.c
 
-MODS = $(fSRC:.f=.mod) $(f90SRC:.f90=.mod) $(F90SRC:.F90=.mod)
-FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o) $(F90SRC:.F90=.o)
+MODS = $(fSRC:.f=.mod) $(F90SRC:.F90=.mod) $(f90SRC:.f90=.mod)
+FOBJ = $(fSRC:.f=.o) $(F90SRC:.F90=.o) $(f90SRC:.f90=.o)
 COBJ = $(CSRC:.c=.o)
 
 # targets
