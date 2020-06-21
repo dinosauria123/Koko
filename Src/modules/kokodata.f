@@ -23,12 +23,17 @@
 
 ! This module is used to access common block data from new
 ! free-format f90 modules that cannot include the fixed-format
-! files that declare the common blocks.
+! files declaring the common blocks.
 
       CONTAINS
 
-      SUBROUTINE get_kods_home(kods_home)
+!-------------------------------------------------------------
 !     Returns the HOME directory containing KODS data
+!
+!     OUTPUT
+!     kods_home :  string containing KODS home directory        
+!
+      SUBROUTINE get_kods_home(kods_home)
         
          IMPLICIT NONE
          CHARACTER(LEN=*) :: kods_home
