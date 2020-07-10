@@ -2,8 +2,19 @@
 #
 # generate build info string for KODS
 
+# GCC version
+gcc_version=`gcc -dumpfullversion`
+
+# build date
+build_date=`date -Idate`
+
+# commit number and branch
+git_commit=`git log --pretty=oneline|wc -l`
+git_branch=`git symbolic-ref --short HEAD`
+
+# create include file
 printf "      character (len=80) :: buildstr\n" > buildinfo.inc
-printf "      buildstr = '[GCC %s]" `gcc -dumpfullversion` >> buildinfo.inc
-printf "[build date: %s]" `date -Idate` >> buildinfo.inc
-printf "[git commit: %d]'\n" `git log --pretty=oneline|wc -l` >> buildinfo.inc
+printf "      buildstr = '[GCC %s]" $gcc_version >> buildinfo.inc
+printf "[build date: %s]" $build_date >> buildinfo.inc
+printf "[git commit: %d/%s]'\n" $git_commit $git_branch >> buildinfo.inc
 
