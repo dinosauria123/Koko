@@ -134,6 +134,10 @@ c_rgbhex( const char *colorname, int lcn, char *hexstring, int lhs )
       hexstring[0] = 'F';
       memset(hexstring+1, ' ', lhs-1);
    }
+   else if (r < 0) {           // color name not found    
+      hexstring[0] = 'F';
+      memset(hexstring+1, ' ', lhs-1);
+   }
    else {
       sprintf(hexstring, "#%2X%2X%2X", r, g, b);
       memset(hexstring+7, ' ', lhs-7);
