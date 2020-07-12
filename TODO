@@ -3,6 +3,10 @@ To Do List for KODS
 
 - only "opsys.F90" requires pre-processing now. Change Makefiles accordingly.
 
+- move saverest.f --> utility
+
+- break up all files in subdirs into one subroutine/function per file
+
 - command completion still buggy when pressing <tab> more than once. 2nd
   <tab> does not search from correct place when only one matching string
   is found.
