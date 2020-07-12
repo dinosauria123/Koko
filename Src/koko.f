@@ -710,7 +710,8 @@
 
 !     SET THE GLASS LIBRARY DIRECTORY NAME
           CALL dir_path_append(HOME, "LIBGLA", LIBGLA)
-
+          CALL add_dir_slash(LIBGLA)
+          
 !     INITIALIZE ALL COLORS TO THEIR DEFAULTS (24-bit colors)
           CALL reset_colors(COLDEF,COLBAC,COLRAY,COLCLP,COLCOB,COLEDG,
      1                      COLPRO,COLAXS,COLFRM,COLLBL,COLSPE,COLARY,
