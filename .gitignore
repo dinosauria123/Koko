@@ -20,4 +20,7 @@ plot.png
 # MacOS cruft
 .DS_Store
 
+# Fortran debris
+fort.*
+
 
