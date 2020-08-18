@@ -1,0 +1,14 @@
+release/main.o
+release/mainwindow.o
+release/newdialog.o
+release/nkdialog.o
+release/optimize.o
+release/lidialog.o
+release/rayinputdialog.o
+release/qrc_resources.o
+release/moc_mainwindow.o
+release/moc_newdialog.o
+release/moc_nkdialog.o
+release/moc_optimize.o
+release/moc_lidialog.o
+release/moc_rayinputdialog.o

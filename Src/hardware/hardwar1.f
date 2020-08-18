@@ -432,7 +432,14 @@ C       CHECK SYNTAX
 
           CALL drawcmdsave
 
+#if defined(WINDOWS)
+          plotcommand = TRIM(BMPREADR)//" -persist "//TRIM(HOME)
+#endif
+
+#if defined(LINUX)
           plotcommand = TRIM(BMPREADR)//" "//TRIM(HOME)
+#endif
+
           CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
           CALL dir_path_append(plotcommand, "drawcmd.gpl", plotcommand)
 

@@ -360,3 +360,23 @@ CONTAINS
   END SUBROUTINE shell_command
   
 END MODULE opsys
+
+#if defined(WINDOWS)
+ subroutine replace_slash(path)
+
+    CHARACTER(len=*) :: path
+    INTEGER          :: lc, i
+    i = 1
+    ! last character
+    lc = LEN_TRIM(path)
+	
+	do while (i .le. lc)
+	    if (path(i:i) == "\") then
+		    path(i:i) = "/"
+	    end if
+		i=i+1
+    end do
+
+  end subroutine replace_slash
+#endif
+ 

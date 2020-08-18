@@ -8,9 +8,9 @@ SUBDIRS = kmath ldm config hardware macro optimize paraxial pickup \
           raytrace specsurf nonseq utility wavespot glass plotcad
 
 # default platform is Linux
-ifndef OS
+#ifndef OS
   OS = LINUX
-endif
+#endif
 
 # default installation directory prefix
 ifndef $(PREFIX)
@@ -21,13 +21,13 @@ endif
 CC = gcc         # for now, only support GCC
 FC = gfortran
 ifdef DEBUG
-  FFLAGS = -g -Wall -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+  FFLAGS = -g -cpp -Wall -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
   CFLAGS = -Wall -g -malign-double
 else
   ifdef NATIVE
-    FFLAGS = -g -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
   else
-    FFLAGS = -g -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
   endif  
   CFLAGS = -g -O2 -malign-double
 endif
@@ -37,7 +37,7 @@ IFLAGS = -I../include -I../modules
 export CC FC IFLAGS CFLAGS FFLAGS
 
 LDIR = -L./lib
-LIBS = -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
+LIBS = -static -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++ -lregex
 
 fSRC = koko.f cmder.f names.f libload.f saverest.f
 

@@ -62,8 +62,7 @@
 
           COMMON/TOPBOT/ATTOP,ATBOT
 
-          CHARACTER MCNAM1*8,FILNAM*10,DOSKEY(1:100)*140,
-     1    DDDAT*10,TTTIM*8,DMNAM*10,STRUC*140,AI4*4
+          CHARACTER MCNAM1*8,FILNAM*10,DOSKEY(1:100)*140,DDDAT*10,TTTIM*8,DMNAM*10,STRUC*140,AI4*4
 
           COMMON/JKSTRUC/STRUC
 
@@ -87,8 +86,7 @@
 
           COMMON/STAT13/LINCUR,LINBOT,MAXPAG
 
-          CHARACTER HCOL(0:9)*12,HCOL2(0:9)*12,
-     1    HROW(0:100)*12,HROW2(0:100)*12,WCOLD*8,ffile*40
+          CHARACTER HCOL(0:9)*12,HCOL2(0:9)*12,HROW(0:100)*12,HROW2(0:100)*12,WCOLD*8,ffile*40
 
           COMMON/HDTAB/HCOL,HCOL2,HROW,HROW2
 
@@ -139,7 +137,7 @@
           LOGICAL has_userhome, has_kodsdir
 
           ! for configuration file
-          CHARACTER(LEN=256) :: sys_cfg_file, usr_cfg_file, test_file
+          CHARACTER(LEN=256) :: sys_cfg_file, usr_cfg_file, test_file, cwd
           CHARACTER(LEN=256) :: gpl_dir, gpl_script
 
           ! for command line options
@@ -151,12 +149,23 @@
           
           ! first look up user home directory
           CALL user_home_directory(has_userhome, USERHOME)
+#if defined(WINDOWS)
+          CALL GETCWD(cwd)
+#endif
 
           ! check if the KODS directory is in the user's home
           ! directory
+#if defined(LINUX)
           IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
              CALL dir_path_append(USERHOME, "KODS", HOME)
           END IF
+#endif
+
+#if defined(WINDOWS)
+          IF ( has_userhome .AND. kods_dir_exists(cwd) ) THEN
+            CALL dir_path_append(cwd, "KODS", HOME)
+          END IF
+#endif
 
           ! set default directory for temporary files
           CALL set_kods_temp_dir(TMPDIR)
@@ -200,6 +209,7 @@
              WRITE (*,*) ' '
              WRITE (*,*) 'Fatal error: KODS library directory not found.'
              WRITE (*,*) ' '
+			 write (6,*) HOME
              STOP 1
           END IF
 

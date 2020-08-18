@@ -1,0 +1,14 @@
+debug/main.o
+debug/mainwindow.o
+debug/newdialog.o
+debug/nkdialog.o
+debug/optimize.o
+debug/lidialog.o
+debug/rayinputdialog.o
+debug/qrc_resources.o
+debug/moc_mainwindow.o
+debug/moc_newdialog.o
+debug/moc_nkdialog.o
+debug/moc_optimize.o
+debug/moc_lidialog.o
+debug/moc_rayinputdialog.o

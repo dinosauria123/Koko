@@ -367,6 +367,10 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(TRIM(HOME), 'gnuplot', script)
           CALL dir_path_append(script, "black.gpl", script)
 
+#if defined(WINDOWS)
+          call replace_slash(script)
+#endif
+
           WRITE(150,*)'plot [0:10000] [0:7000] "'//
      &TRIM(script)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l'
           WRITE(150,*) 'pause -1'
@@ -392,6 +396,10 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
           CALL dir_path_append(script2, "breakblack.gpl", script2)
 
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+#endif						   
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
      &TRIM(script2)//'" with lines lt 0 lc rgb "black" lw 2'
@@ -417,6 +425,11 @@ C///////////////////////////////////////////////////////////////////////
 
           CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
           CALL dir_path_append(script2, "yellow.gpl", script2)
+
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+#endif						   							   
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
@@ -444,6 +457,11 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
           CALL dir_path_append(script2, "red.gpl", script2)
 
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+#endif							   
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
      &TRIM(script2)//'" lc rgb "red" lw '//TRIM(lwstr)//' w l'
@@ -469,6 +487,11 @@ C///////////////////////////////////////////////////////////////////////
 
           CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
           CALL dir_path_append(script2, "red.gpl", script2)
+
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+#endif						   
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
@@ -499,6 +522,12 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
           CALL dir_path_append(script3, "magenta.gpl", script3)
 
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+		  call replace_slash(script3)
+#endif						   
+
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
      &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l,"'//
@@ -528,6 +557,12 @@ C///////////////////////////////////////////////////////////////////////
 
           CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
           CALL dir_path_append(script3, "red.gpl", script3)
+
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+		  call replace_slash(script3)
+#endif	
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
@@ -561,6 +596,13 @@ C///////////////////////////////////////////////////////////////////////
 
           CALL dir_path_append(TRIM(HOME), "gnuplot", script4)
           CALL dir_path_append(script3, "red.gpl", script4)
+
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+		  call replace_slash(script3)
+		  call replace_slash(script4)
+#endif
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
