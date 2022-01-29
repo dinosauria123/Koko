@@ -708,7 +708,7 @@ C                      OPMAP=.FALSE.
               IF(DF2.EQ.0) IWV=INT(W2)
               IF(IWV.LT.1.OR.IWV.GT.11) IWV=11
               IF(DF3.EQ.1) W3=1.0D0
-              CALL DOPUPIL
+              CALL DOPUPIL(1)
               NOCOBSPSF=.FALSE.
               IF(FIXWL) CALL UNFIXWV
               IF(FIXWL) FIXWL=.FALSE.

@@ -21,13 +21,13 @@ endif
 CC = gcc         # for now, only support GCC
 FC = gfortran
 ifdef DEBUG
-  FFLAGS = -g -cpp -Wall -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+  FFLAGS = -g -cpp -Wall -ffixed-line-length-none -malign-double -fno-align-commons -fallow-argument-mismatch -D$(OS)
   CFLAGS = -Wall -g -malign-double
 else
   ifdef NATIVE
-    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -march=native -mtune=native -malign-double -fno-align-commons -fallow-argument-mismatch -D$(OS)
   else
-    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -malign-double -fno-align-commons -D$(OS)
+    FFLAGS = -g -cpp -O2 -ffixed-line-length-none -malign-double -fno-align-commons -fallow-argument-mismatch -D$(OS)
   endif  
   CFLAGS = -g -O2 -malign-double
 endif

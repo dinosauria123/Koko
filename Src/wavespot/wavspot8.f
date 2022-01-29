@@ -302,7 +302,7 @@ C     GENERATE GRAPHIC
      2        //TRIM(WAVVAL)//' MICROMETER',0,1,3)
               CALL MY_JUSTSTRING(6550,5400,
      1        'WAVEFRONT CONTOUR LEVELS'
-     2        ,0,1,3,3)
+     2        ,0,1,3)
           END IF
           IF(K.EQ.2) THEN
               CALL MY_JUSTSTRING(100,250,

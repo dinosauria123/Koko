@@ -3838,7 +3838,7 @@ C
           WRITE(B,102) RANGE1
           READ(B,202) CCRANGE
           NNTT1=CCRANGE//' '//UNN
-          CALL MY_JUSTSTRING(7550,4460,NNTT1(1:21),0,1,3,3)
+          CALL MY_JUSTSTRING(7550,4460,NNTT1(1:21),0,1,3)
 
           CALL MY_PLOT(7250,4700,0,0,0,10000,0,7000)
           CALL MY_PLOT(7350,4700,1,0,0,10000,0,7000)
@@ -3861,7 +3861,7 @@ C     Z AXIS LABLE
           WRITE(B,103) IRANGE
           READ(B,203) ICRANGE
           CALL MY_JUSTSTRING(6500,5750,' (Surface Sag.)'
-     2    ,0,1,3,3)
+     2    ,0,1,3)
 C
           CALL PLOTBOX
 C
