@@ -37,7 +37,7 @@ IFLAGS = -I../include -I../modules
 export CC FC IFLAGS CFLAGS FFLAGS
 
 LDIR = -L./lib
-LIBS = -static -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++ -lregex
+LIBS = -static -Wl,--start-group $(addprefix -l,$(SUBDIRS)) -llinenoise -lkmod -Wl,--end-group -lm -lstdc++
 
 fSRC = koko.f cmder.f names.f libload.f saverest.f
 
