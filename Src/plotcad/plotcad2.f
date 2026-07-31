@@ -1305,13 +1305,18 @@ C
               END IF
           END IF
 C
-          IF(DFLAG.EQ.0) THEN
-              SAVE_KDP(1)=SAVEINPT(1)
-              INPUT='DRAW'
-              CALL PROCES
-              REST_KDP(1)=RESTINPT(1)
-          END IF
-          RETURN
+C     **********************************
+C     DATA PLOTTING DONE
+C
+
+              call setonecolors
+              IF(DFLAG.EQ.0) THEN
+                  SAVE_KDP(1)=SAVEINPT(1)
+                  INPUT='DRAW'
+                  CALL PROCES
+                  REST_KDP(1)=RESTINPT(1)
+              END IF
+              RETURN
       END
 
 
