@@ -171,11 +171,13 @@ C///////////////////////////////////////////////////////////////////////
           end if
 
           if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if ((I4.eq.0).and.(I3.eq.1)) then
+            if (I4.eq.0) then
+              if (I3.eq.1) then
                   write(130,'(2I5)') I1,I2    !black
-            else if ((I4.eq.0).and.(I3.eq.0)) then
+              else
                   write(130,*)
                   write(130,'(2I5)') I1,I2
+              end if
             end if
           end if
 
@@ -675,7 +677,12 @@ C///////////////////////////////////////////////////////////////////////
           CLOSE(113)
 
           ! dispatch gnuplot script
-          CALL shell_command(TRIM(BMPREADR)//' '//TRIM(HOME)//'plotbmp.gpl')
+          ! -n flag set by the embedded GUI: skip launching the native
+          ! gnuplot window. The GUI will read plotbmp.gpl itself and
+          ! render the BMP image in its "Koko Plot" window.
+          IF (.NOT. NOLAUNCH_GNUPLOT) THEN
+              CALL shell_command(TRIM(BMPREADR)//' '//TRIM(HOME)//'plotbmp.gpl')
+          END IF
 
       END SUBROUTINE plotbmp
 

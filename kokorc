@@ -6,7 +6,8 @@
 
 [graphics]
     viewer    = /usr/bin/gnuplot
-    terminal  = wxt
+    terminal  = pngcairo size 1000,750 enhanced font "Courier,9"
+    output    = %s.png
     fontlrg   = "Courier,12"
     fontmed   = "Courier,9"
     fontsml   = "Courier,5"

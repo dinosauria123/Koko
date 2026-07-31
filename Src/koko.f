@@ -217,10 +217,11 @@
 
           quiet     = .FALSE.
           batchmode = .FALSE.
-          
+          NOLAUNCH_GNUPLOT = .FALSE.
+
           IF ( command_argument_count() > 0 ) THEN
              DO
-                ch = getopt("bcdhqt:")
+                ch = getopt("bcdhnqt:")
                 SELECT CASE( ch )
                 CASE (char(0))
                    EXIT
@@ -230,7 +231,13 @@
                       STOP
                    END IF
                    batchmode = .TRUE.
-                   BATCHFILE = optarg
+                CASE ('n')
+                   ! Suppress launching the gnuplot viewer. The
+                   ! embedded Qt GUI (gui_py) passes -n so Koko
+                   ! builds the .gpl scripts as usual but never
+                   ! spawns gnuplot itself; the GUI renders the
+                   ! plot in its own "Koko Plot" window.
+                   NOLAUNCH_GNUPLOT = .TRUE.
                 CASE ('c')
                    CALL print_koko_config()
                    STOP
@@ -2551,7 +2558,7 @@
 
       SUBROUTINE print_usage()
 
-        WRITE (*,*) "Usage: koko-cli [-h] [-c] [-q] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
+        WRITE (*,*) "Usage: koko-cli [-h] [-c] [-q] [-n] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
         WRITE (*,*) "Options and arguments:"
         WRITE (*,*) " -h            :  print this help message"
         WRITE (*,*) " -c            :  print Koko configuration settings"
@@ -2559,5 +2566,6 @@
         WRITE (*,*) " -t <tempdir>  :  set temporary file directory"
         WRITE (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
         WRITE (*,*) " -q            :  run quietly, without printing the greeting"
+        WRITE (*,*) " -n            :  suppress launching the gnuplot viewer (used by the embedded Qt GUI)"
         
       END SUBROUTINE print_usage

@@ -1146,105 +1146,26 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("RTG ALL")
 
     # ----- plotting -------------------------------------------------------
-
     def render_plots(self, fmt=None):
-        """Render koko's gnuplot script into a raster image."""
-        gpl_dir = os.path.join(self.HOME, 'gnuplot')
-        if not os.path.isdir(gpl_dir):
-            self.append_msg("** no gnuplot data directory: %s **" % gpl_dir)
+        """Render koko's gnuplot script into a raster image.
+
+        The Fortran backend writes drawcmd.gpl and runs gnuplot itself
+        (pngcairo terminal), producing PNG at $TMPDIR/koko_gnuplot_plot.png.
+        This method simply reads that PNG and displays it in the Koko Plot
+        window -- no more spawning our own gnuplot subprocess.
+        """
+        # Path where Fortran write() redirects the gnuplot PNG output
+        png_path = os.path.join(self.TMPDIR, 'koko_gnuplot_plot.png')
+
+        if not os.path.isfile(png_path) or os.path.getsize(png_path) == 0:
+            self.append_msg(
+                "** %s not found or empty — did the plot command run? **"
+                % os.path.basename(png_path))
             return
 
-        # koko writes the main plot script as 'drawcmd.gpl'. Auxiliary
-        # files 'drawcmd0.gpl', 'drawcmd3.gpl', ... may also exist and can
-        # be empty, so prefer the plain 'drawcmd.gpl' when present.
-        candidates = [f for f in os.listdir(gpl_dir)
-                      if f.startswith('drawcmd') and f.endswith('.gpl')]
-        if not candidates:
-            self.append_msg("** no drawcmd*.gpl produced (did the plot "
-                            "command run?) **")
-            return
-        if 'drawcmd.gpl' in candidates:
-            src_path = os.path.join(gpl_dir, 'drawcmd.gpl')
-        else:
-            candidates.sort(key=lambda f: os.path.getmtime(
-                os.path.join(gpl_dir, f)), reverse=True)
-            src_path = os.path.join(gpl_dir, candidates[0])
+        self.show_plot(png_path)
 
-        # Choose output file + terminal candidates. The default raster
-        # path tries pngcairo first, then falls back to the libgd 'png'
-        # terminal (some gnuplot builds ship only the interactive wxt
-        # terminal and lack pngcairo, which would otherwise produce no
-        # output and leave the plot window empty).
-        if fmt == 'eps':
-            out_path = os.path.join(self.TMPDIR, 'koko_plot.eps')
-            candidates = [('postscript eps enhanced color', out_path)]
-        elif fmt == 'pdf':
-            out_path = os.path.join(self.TMPDIR, 'koko_plot.pdf')
-            candidates = [('pdfcairo size 12cm,9cm', out_path)]
-        else:
-            out_path = os.path.join(self.TMPDIR, 'koko_plot.png')
-            candidates = [
-                ('pngcairo size 1000,750 enhanced font "Courier,9"', out_path),
-                ('png size 1000,750 enhanced font "Courier,9"', out_path),
-            ]
 
-        try:
-            with open(src_path, 'r', encoding='utf-8', errors='replace') as fh:
-                lines = fh.readlines()
-        except OSError as e:
-            self.append_msg("** could not read %s: %s **" % (src_path, e))
-            return
-
-        # Strip the interactive 'set terminal' line and the 'pause', then
-        # prepend the file terminal + output for each candidate.
-        base_lines = []
-        for line in lines:
-            s = line.strip()
-            if s.startswith('pause'):
-                continue
-            if s.startswith('set terminal'):
-                continue
-            base_lines.append(line)
-        base_body = ''.join(base_lines)
-
-        # koko's setonecolors() always emits '... w l' (lines). For spot
-        # diagrams (SPD/PSF/CAPFN) the data are isolated points and must
-        # be drawn as points, otherwise nothing visible is produced. The
-        # curve-style families (DIST/FANS/AST/FLDCV/CHRSHIFT) keep 'w l'.
-        # Note: gnuplot 6 rejects 'w points' combined with 'lw <n>', so we
-        # also strip the line-width token when switching to points.
-        if self._is_point_plot(getattr(self, '_last_plot_cmd', '') or ''):
-            base_body = base_body.replace('lw 0.70 w l', 'w points')
-            base_body = base_body.replace(' w l', ' w points')
-
-        for term, out in candidates:
-            body = ("set terminal %s\nset output '%s'\n" % (term, out)) + base_body
-            try:
-                res = subprocess.run(['gnuplot'], input=body.encode('utf-8'),
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE, timeout=30,
-                                     cwd=gpl_dir)
-            except Exception as e:  # noqa: BLE001
-                self.append_msg("** gnuplot (%s) failed: %s **" % (term, e))
-                continue
-            # gnuplot may exit 0 with only a warning and an empty file,
-            # so surface any stderr text and require a non-zero size.
-            if res.stderr:
-                self.append_msg("** gnuplot (%s) warning: %s **"
-                                % (term, res.stderr.decode('utf-8', 'replace').strip()))
-            if res.returncode != 0:
-                self.append_msg("** gnuplot (%s) error (rc=%d): %s **"
-                                % (term, res.returncode,
-                                   res.stderr.decode('utf-8', 'replace').strip()))
-                continue
-            if os.path.exists(out) and os.path.getsize(out) > 0:
-                self.show_plot(out)
-                return
-            # Empty output (rc 0 but no file) means the plot command
-            # produced nothing -- most often a malformed gnuplot script.
-            self.append_msg("** gnuplot (%s) produced an empty plot **" % term)
-        self.append_msg("** gnuplot produced no output (tried: %s) **"
-                        % ", ".join(t for t, _ in candidates))
 
     def show_plot(self, path):
         pix = QPixmap(path)

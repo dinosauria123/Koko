@@ -121,20 +121,27 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs )
    ln_response = linenoise(ln_prompt);
 
    // copy response to calling subroutine
-   nc = strlen(ln_response);
-   strncpy(response, ln_response, nc);
+   if ( ln_response == NULL ) {
+      nc = 0;
+   } else {
+      nc = strlen(ln_response);
+      strncpy(response, ln_response, nc);
+   }
    if (nc < lenrs) {
       memset(response+nc, ' ', lenrs-nc);
    }
 
-   // add response to command history
-   linenoiseHistoryAdd(ln_response);
+   if ( nc > 0 ) {
+      linenoiseHistoryAdd(ln_response);
+   }
 
    // next completion re-starts at last command
    hidx = -1;
 
    // free tmp result buffer
-   free(ln_response);
+   if ( ln_response != NULL ) {
+      free(ln_response);
+   }
 }
 
 

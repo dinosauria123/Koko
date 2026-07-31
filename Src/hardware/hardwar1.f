@@ -443,8 +443,13 @@ C       CHECK SYNTAX
           CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
           CALL dir_path_append(plotcommand, "drawcmd.gpl", plotcommand)
 
-          CALL shell_command( plotcommand )
-          
+          ! -n flag set by the embedded GUI: skip launching the native
+          ! gnuplot window. The .gpl files are still written and the
+          ! GUI will render the plot itself.
+          IF (.NOT. NOLAUNCH_GNUPLOT) THEN
+              CALL shell_command( plotcommand )
+          END IF
+
       END SUBROUTINE PDRAW
 
       
