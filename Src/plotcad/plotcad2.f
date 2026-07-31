@@ -1309,7 +1309,7 @@ C     **********************************
 C     DATA PLOTTING DONE
 C
 
-              call setonecolors
+              call settwocolors2
               IF(DFLAG.EQ.0) THEN
                   SAVE_KDP(1)=SAVEINPT(1)
                   INPUT='DRAW'
