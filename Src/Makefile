@@ -59,6 +59,13 @@ $(SUBDIRS):
 koko-cli: buildinfo.inc $(FOBJ)
 	$(FC) -o koko-cli $(FOBJ) $(LDIR) $(LIBS)
 
+# koko.o embeds buildinfo.inc (git commit number). Make sure it is
+# recompiled whenever buildinfo.inc changes, otherwise the running
+# binary can display a newer commit number than the code it was
+# actually built from (stale-build confusion).
+koko.o: koko.f buildinfo.inc
+	$(FC) -c $(FFLAGS) -I./include -I./modules $<
+
 .PHONY: buildinfo
 buildinfo:
 	./buildinfo
