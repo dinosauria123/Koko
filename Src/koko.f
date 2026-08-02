@@ -143,6 +143,7 @@
           ! for command line options
           CHARACTER          :: ch
           LOGICAL            :: quiet
+          LOGICAL            :: OPEN115, OPEN116, OPEN117, OPEN118, OPEN119, OPEN130, OPEN131, OPEN150
           INTEGER            :: prtcolor
           
 !--- Configuration Options ----------------------------------
@@ -245,7 +246,9 @@
                    ! Embedded Qt GUI (gui_py) passes -G so Koko
                    ! builds the .gpl scripts as usual and also
                    ! renders the plot to a PNG file for the GUI.
+                   ! Also suppress launching the native gnuplot window.
                    GENERATE_PLOT_PNG = .TRUE.
+                   NOLAUNCH_GNUPLOT = .TRUE.
                 CASE ('c')
                    CALL print_koko_config()
                    STOP
@@ -1782,56 +1785,90 @@
           ! Open gnuplot data files for both batch and interactive modes
           CALL dir_path_append(HOME, "gnuplot", gpl_dir)
 
-          ! open gnuplot data files
-          CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
-          OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
-          write(115,'(2I5)') 0, 0
-          write(115,*)
+          ! open gnuplot data files (only if not already open)
+          OPEN115=.FALSE.
+          INQUIRE(UNIT=115,OPENED=OPEN115)
+          IF(.NOT.OPEN115) THEN
+              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
+              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+              write(115,'(2I5)') 0, 0
+              write(115,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
-          OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
-          write(116,'(2I5)') 0, 0
-          write(116,*)
+          OPEN116=.FALSE.
+          INQUIRE(UNIT=116,OPENED=OPEN116)
+          IF(.NOT.OPEN116) THEN
+              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
+              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+              write(116,'(2I5)') 0, 0
+              write(116,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
-          OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
-          write(117,'(2I5)') 0, 0
-          write(117,*)
+          OPEN117=.FALSE.
+          INQUIRE(UNIT=117,OPENED=OPEN117)
+          IF(.NOT.OPEN117) THEN
+              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+              write(117,'(2I5)') 0, 0
+              write(117,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
-          OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
-          write(118,'(2I5)') 0, 0
-          write(118,*)
+          OPEN118=.FALSE.
+          INQUIRE(UNIT=118,OPENED=OPEN118)
+          IF(.NOT.OPEN118) THEN
+              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
+              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+              write(118,'(2I5)') 0, 0
+              write(118,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
-          OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+          OPEN119=.FALSE.
+          INQUIRE(UNIT=119,OPENED=OPEN119)
+          IF(.NOT.OPEN119) THEN
+              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
+              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+          END IF
 
-          CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
-          OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
-          write(130,'(2I5)') 0, 0
-          write(130,*)
+          OPEN130=.FALSE.
+          INQUIRE(UNIT=130,OPENED=OPEN130)
+          IF(.NOT.OPEN130) THEN
+              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
+              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+              write(130,'(2I5)') 0, 0
+              write(130,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
-          OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
-          write(131,'(2I5)') 0, 0
-          write(131,*)
+          OPEN131=.FALSE.
+          INQUIRE(UNIT=131,OPENED=OPEN131)
+          IF(.NOT.OPEN131) THEN
+              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
+              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+              write(131,'(2I5)') 0, 0
+              write(131,*)
+          END IF
 
-          CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
-          OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
+          OPEN150=.FALSE.
+          INQUIRE(UNIT=150,OPENED=OPEN150)
+          IF(.NOT.OPEN150) THEN
+              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
+              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
+          END IF
 
-          IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
+          IF ( IN == 5 .AND. (LEN_TRIM(BATCHFILE) > 0 .OR. GENERATE_PLOT_PNG) ) THEN
               HALTING=.FALSE.
 
               CALL userinput(CMDNO)
 
-              close(115)
-              close(116)
-              close(117)
-              close(118)
-              close(119)
-              close(130)
-              close(131)
-              close(150)
+              IF (.NOT. GENERATE_PLOT_PNG) THEN
+                  close(115)
+                  close(116)
+                  close(117)
+                  close(118)
+                  close(119)
+                  close(130)
+                  close(131)
+                  close(150)
+              END IF
 
               GO TO 1
           END IF

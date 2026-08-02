@@ -153,6 +153,7 @@ C///////////////////////////////////////////////////////////////////////
           IMPLICIT NONE
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
           INTEGER IOS
+          LOGICAL EXISJK
 
           INCLUDE 'datmai.inc'
 
@@ -295,28 +296,35 @@ C///////////////////////////////////////////////////////////////////////
 
       SUBROUTINE drawcmdsave
 
-          USE opsys
-          USE kokoconfig
-        
-          INCLUDE 'datmai.inc'
-          CHARACTER(LEN=256) :: file_a, file_b, file_out
-          CHARACTER(LEN=32)  :: gpterm, gpfont
+                USE opsys
+                USE kokoconfig
+                USE globals
+       
+                INCLUDE 'datmai.inc'
+                CHARACTER(LEN=256) :: file_a, file_b, file_out
+                CHARACTER(LEN=32)  :: gpterm, gpfont
+                LOGICAL :: gen_png
 
-          ! name of script header file
-          file_a = TRIM(HOME)
-          CALL dir_path_append(file_a, "gnuplot", file_a)
-          CALL dir_path_append(file_a, "drawcmd0.gpl", file_a)
+                ! name of script header file
+                file_a = TRIM(HOME)
+                CALL dir_path_append(file_a, "gnuplot", file_a)
+                CALL dir_path_append(file_a, "drawcmd0.gpl", file_a)
 
-          ! create new script header
-          CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
-          CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
-             
-          OPEN (213, STATUS='replace', FILE=TRIM(file_a))
-          WRITE(213,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
-          WRITE(213,*) 'set noborder'
-          WRITE(213,*) 'set nokey'
-          WRITE(213,*) 'set notics'
-          CLOSE(213)
+                ! create new script header
+                CALL CFG_get(koko_cfg, "graphics%fontsml",  gpfont)
+                CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
+                gen_png = GENERATE_PLOT_PNG
+            
+                OPEN (213, STATUS='replace', FILE=TRIM(file_a))
+                IF (gen_png) THEN
+                    WRITE(213,*) 'set terminal png size 1000,700 font "'//TRIM(gpfont)//'"'
+                ELSE
+                    WRITE(213,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
+                END IF
+                WRITE(213,*) 'set noborder'
+                WRITE(213,*) 'set nokey'
+                WRITE(213,*) 'set notics'
+                CLOSE(213)
           
           ! script body file
           file_b = TRIM(HOME)

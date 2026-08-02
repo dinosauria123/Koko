@@ -3112,15 +3112,17 @@ C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
           OPEN(UNIT=unit, FILE=TRIM(script_file), STATUS='NEW', IOSTAT=ios)
           IF (ios .NE. 0) RETURN
 
-          WRITE(unit, '(A)') 'set terminal pngcairo size 1000,700 font "Courier,5"'
+          WRITE(unit, '(A)') 'set terminal png size 1000,700 font "Courier,5"'
           WRITE(unit, '(A)') 'set noborder'
           WRITE(unit, '(A)') 'set nokey'
           WRITE(unit, '(A)') 'set notics'
           WRITE(unit, '(A,A,A)') 'set output "', TRIM(png_file), '"'
           WRITE(unit, '(A,A,A)') 'load "', TRIM(gpl_file), '"'
+          WRITE(unit, '(A)') 'set terminal png size 1000,700 font "Courier,5"'
+          WRITE(unit, '(A)') 'replot'
           CLOSE(unit)
 
-          cmd = 'gnuplot '//TRIM(script_file)
+          cmd = 'DISPLAY="" gnuplot '//TRIM(script_file)
           CALL shell_command(cmd)
 
       END SUBROUTINE render_plot_png

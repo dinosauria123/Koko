@@ -1943,21 +1943,33 @@ C SUB LENSREST.FOR
 C     DOES THE FILE EXIST?
           EXISJK=.FALSE.
 
-!     First check extension .koko
-          LFILENAME = TRIM(WS)//'.koko'
+!     First check the file as-is (user might provide full name with extension)
+          LFILENAME = TRIM(WS)
           INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+
+!     then check extension .koko
+          IF(.NOT. EXISJK) THEN
+             LFILENAME = TRIM(WS)//'.koko'
+             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          END IF
 
 !     then check KDP upper case .PRG extension
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.PRG'
              INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
-          END IF 
+          END IF
 
 !     if not found, check lower case extension too
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.prg'
              INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
-          END IF 
+          END IF
+
+!     if not found, check .koko extension
+          IF(.NOT. EXISJK) THEN
+             LFILENAME = TRIM(WS)//'.koko'
+             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          END IF
 
           IF (.NOT.EXISJK) THEN
               OUTLYNE=
