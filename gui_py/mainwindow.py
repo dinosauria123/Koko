@@ -534,14 +534,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             material = ""
             if len(parts) > 3:
                 kind = parts[3]
-                if kind in ("MODEL", "SCHOTT", "HIKARI", "OHARA", "HOYA",
-                            "CHANCE", "CORNIN", "RADHARD", "SCH2000"):
+                if kind in ("MODEL", "SCHOTT", "HIKARI", "OHARA",
+                            "OHARA-O", "HOYA", "CHANCE", "CORNIN", "RADHARD",
+                            "SCH2000"):
                     material = (kind + " " + (parts[4] if len(parts) > 4
-                                               else "")).strip()
+                                              else "")).strip()
                 else:
                     material = kind
             is_glass = material.startswith("MODEL") or material.startswith(
-                "SCHOTT")
+                "SCHOTT") or material.startswith("HIKARI") or \
+                material.startswith("OHARA") or material.startswith("HOYA") or \
+                material.startswith("CHANCE") or material.startswith("CORNIN") \
+                or material.startswith("RADHARD") or material.startswith(
+                "SCH2000")
             # Prefer inline INDEX/V-NUM (real koko RTG ALL); fall back to a
             # pending (MODEL DATA:) line that described a non-glass surface.
             index = parts[5] if (is_glass and len(parts) > 5) else (
@@ -552,6 +557,20 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             nxt_abbe = ""
             rows.append((surf, cur_type, radius, thickness, material,
                          index, abbe, ""))
+
+            # For catalog glasses (SCHOTT, OHARA, ...) koko's RTG ALL does NOT
+            # print n/V, so read the binary catalog here (mirrors the C++
+            # DataRead call inside ShowContextMenu*). This guarantees the
+            # Index n / Abbe V columns are filled right after the table is
+            # built, regardless of async RTG ordering.
+            if is_glass and not material.startswith("MODEL"):
+                gcat, _, gname = material.partition(" ")
+                if gcat and gname:
+                    gi, ga = self._calc_glass_nv(gcat, gname)
+                    if gi is not None:
+                        rows[-1] = (rows[-1][0], rows[-1][1], rows[-1][2],
+                                    rows[-1][3], rows[-1][4], gi, ga,
+                                    rows[-1][7])
 
         self.table.setRowCount(len(rows))
         self.table.setVerticalHeaderLabels([r[0] for r in rows])
@@ -686,11 +705,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     i += 1
                 if i + 8 > len(data):
                     break
-                name = data[i:i + 8].split(b'\x00')[0].decode(
+                name = data[i:i + 10].split(b'\x00')[0].decode(
                     'ascii', 'replace').strip()
                 if name:
                     names.append(name)
-                i += 100  # stride between glass records
+                i += 74  # stride between glass records (matches C++ i += 74)
             # the C++ reader drops the last two records
             if len(names) > 2:
                 names = names[:-2]
@@ -698,96 +717,92 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._glass_catalogs = cats
         return cats
 
-    def _read_glass_data(self, catalog, name, row):
-        """Read glass data from binary catalog and calculate nD, Abbe V.
-        Mirrors C++ DataRead function.
-        Updates table columns 5 (Index n) and 6 (Abbe V)."""
+    def _calc_glass_nv(self, catalog, name):
+        """Look up a glass in its binary catalog and return (nD, AbbeV).
+
+        Pure calculation helper mirroring the C++ ``DataRead`` routine.
+        Returns (None, None) if the glass cannot be found. Used both by
+        ``populate_table`` (to fill Index n / Abbe V right after RTG ALL)
+        and by ``_read_glass_data``.
+        """
         # Wavelengths in um (from C++ code)
         lF = 0.4861327  # F line
         lD = 0.5875618  # d line
         lC = 0.6562725  # C line
-        
+
         # Try both possible locations for LIBGLA directory
         fname = os.path.join(self.HOME, 'Libs', 'LIBGLA', catalog + '.BIN')
         if not os.path.exists(fname):
-            # Fallback to source tree location
             fname = os.path.join(os.path.dirname(os.path.dirname(
                 os.path.abspath(__file__))), 'Libs', 'LIBGLA', catalog + '.BIN')
         if not os.path.exists(fname):
-            return
-        
+            return (None, None)
+
         with open(fname, 'rb') as fh:
             data = fh.read()
-        
-        # Find the glass record
-        i = 132  # skip header (same as _load_glass_catalogs)
+
+        target = name.strip()
+        i = 2
         found = False
-        while i + 8 <= len(data):
-            # skip NUL padding
-            while i < len(data) and data[i] == 0x00:
+        n = len(data)
+        while i + 10 <= n:
+            while i < n and data[i] == 0x00:
                 i += 1
-            if i + 8 > len(data):
+            if i + 10 > n:
                 break
-            glass_name = data[i:i + 8].split(b'\x00')[0].decode(
+            glass_name = data[i:i + 10].split(b'\x00')[0].decode(
                 'ascii', 'replace').strip()
-            if glass_name == name:
+            if glass_name == target:
                 found = True
                 break
-            i += 100
-        
+            i += 74
         if not found:
-            return
-        
-        # Skip catalog number (10 bytes after name)
-        i += 10
-        
-        # Skip spaces
-        while i < len(data) and data[i] == 0x20:
+            return (None, None)
+
+        i += 10  # skip catalog number (10 bytes after name)
+        while i < n and data[i] == 0x20:
             i += 1
-        
-        # Skip catalog number
-        while i < len(data) and data[i] != 0x20:
+        while i < n and data[i] != 0x20:
             i += 1
-        while i < len(data) and data[i] == 0x20:
+        while i < n and data[i] == 0x20:
             i += 1
-        
-        # Read 6 doubles (A0-A5) at offsets 0,8,16,24,32,40
-        # Each double is 8 bytes in binary format
+
+        if i + 48 > n:
+            return (None, None)
         try:
-            import struct
-            A = []
-            for j in range(6):
-                offset = i + j * 8
-                if offset + 8 <= len(data):
-                    val = struct.unpack('<d', data[offset:offset+8])[0]
-                    A.append(val)
-                else:
-                    return
-            
-            A0, A1, A2, A3, A4, A5 = A
-            
-            # Calculate refractive indices using Sellmeier formula
-            # Different formulas for SCHOTT/SCH2000/OHARA vs others
-            if catalog in ('SCHOTT', 'SCH2000', 'OHARA', 'OHARA-O'):
-                # Sellmeier formula: n^2 = 1 + (A0*λ^2)/(λ^2-A3) + (A1*λ^2)/(λ^2-A4) + (A2*λ^2)/(λ^2-A5)
-                nF = math.sqrt(1 + (A[0]*lF*lF)/(lF*lF-A[3]) + (A[1]*lF*lF)/(lF*lF-A[4]) + (A[2]*lF*lF)/(lF*lF-A[5]))
-                nD = math.sqrt(1 + (A[0]*lD*lD)/(lD*lD-A[3]) + (A[1]*lD*lD)/(lD*lD-A[4]) + (A[2]*lD*lD)/(lD*lD-A[5]))
-                nC = math.sqrt(1 + (A[0]*lC*lC)/(lC*lC-A[3]) + (A[1]*lC*lC)/(lC*lC-A[4]) + (A[2]*lC*lC)/(lC*lC-A[5]))
-            else:
-                # Polynomial formula: n^2 = A0 + A1*λ^2 + A2/λ^2 + A3/λ^4 + A4/λ^6 + A5/λ^8
-                nF = math.sqrt(A[0] + A[1]*lF*lF + A[2]/(lF*lF) + A[3]/(lF**4) + A[4]/(lF**6) + A[5]/(lF**8))
-                nD = math.sqrt(A[0] + A[1]*lD*lD + A[2]/(lD*lD) + A[3]/(lD**4) + A[4]/(lD**6) + A[5]/(lD**8))
-                nC = math.sqrt(A[0] + A[1]*lC*lC + A[2]/(lC*lC) + A[3]/(lC**4) + A[4]/(lC**6) + A[5]/(lC**8))
-            
-            abbe = (nD - 1) / (nF - nC) if (nF - nC) != 0 else 0
-            
-            # Update table columns 5 (Index n) and 6 (Abbe V)
-            # Column 5 = Index n, Column 6 = Abbe V
-            self._set_cell(row, 5, f"{nD:.4f}")
-            self._set_cell(row, 6, f"{abbe:.1f}")
-            
-        except Exception as e:
-            pass  # Silently ignore errors
+            A = [struct.unpack('<d', data[i + j * 8:i + j * 8 + 8])[0]
+                 for j in range(6)]
+        except struct.error:
+            return (None, None)
+
+        if catalog in ('SCHOTT', 'SCH2000', 'OHARA', 'OHARA-O'):
+            nF = math.sqrt(1 + (A[0]*lF*lF)/(lF*lF-A[3]) + (A[1]*lF*lF)/(lF*lF-A[4]) + (A[2]*lF*lF)/(lF*lF-A[5]))
+            nD = math.sqrt(1 + (A[0]*lD*lD)/(lD*lD-A[3]) + (A[1]*lD*lD)/(lD*lD-A[4]) + (A[2]*lD*lD)/(lD*lD-A[5]))
+            nC = math.sqrt(1 + (A[0]*lC*lC)/(lC*lC-A[3]) + (A[1]*lC*lC)/(lC*lC-A[4]) + (A[2]*lC*lC)/(lC*lC-A[5]))
+        else:
+            nF = math.sqrt(A[0] + A[1]*lF*lF + A[2]/(lF*lF) + A[3]/(lF**4) + A[4]/(lF**6) + A[5]/(lF**8))
+            nD = math.sqrt(A[0] + A[1]*lD*lD + A[2]/(lD*lD) + A[3]/(lD**4) + A[4]/(lD**6) + A[5]/(lD**8))
+            nC = math.sqrt(A[0] + A[1]*lC*lC + A[2]/(lC*lC) + A[3]/(lC**4) + A[4]/(lC**6) + A[5]/(lC**8))
+
+        abbe = (nD - 1) / (nF - nC) if (nF - nC) != 0 else 0
+        return (f"{nD:.4f}", f"{abbe:.1f}")
+
+    def _read_glass_data(self, catalog, name, row):
+        """Read glass data from binary catalog and calculate nD, Abbe V.
+
+        Updates table columns 5 (Index n) and 6 (Abbe V). Mirrors the C++
+        ``DataRead`` routine (which writes the same two columns)."""
+
+        gi, ga = self._calc_glass_nv(catalog, name)
+        if gi is None:
+            return False
+        prev = self._table_updating
+        self._table_updating = True
+        self._set_cell(row, 5, gi)
+        self._set_cell(row, 6, ga)
+        self._table_updating = prev
+        return True
+
 
     def slot_show_context_menu(self, pos):
         """Right-click menu on the lens table (mirrors the C++ GUI)."""
@@ -867,8 +882,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def _ctx_glass(self, row, catalog, name):
         self._send_surface_cmd(row, "%s %s" % (catalog, name))
-        # After sending the glass command, read glass data to update n and V
-        self._read_glass_data(catalog, name, row)
+        # n and V are now filled by populate_table() once RTG ALL returns
+        # (mirrors C++ ShowContextMenu*, which calls DataRead immediately
+        # after sending the glass command). Calling _read_glass_data here is
+        # redundant and would race with the async RTG ALL reparse, so we let
+        # populate_table handle it.
 
     # ----- finished / error ---------------------------------------------
 
