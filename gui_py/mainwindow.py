@@ -191,7 +191,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             '/usr/local/bin/koko-cli',
             '/usr/bin/koko-cli',
             os.path.expanduser('~/bin/koko-cli'),
-            './koko-cli',
+            os.path.expanduser('~/Koko/Src/koko-cli'),
             '/tmp/Koko/Src/koko-cli',
         ]
         for p in paths:
@@ -213,11 +213,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             return False
 
         # Always start interactively; lens loading is done via LENSREST.
-        # Pass -n so koko does NOT auto-launch gnuplot: the GUI renders
-        # the plot itself (this is what distinguishes the GUI build from
-        # the cli build, which plots with the native gnuplot window).
+        # Pass -G so koko does NOT auto-launch gnuplot, but DOES render
+        # the plot to a PNG file for the embedded GUI to display.
         self.process.setWorkingDirectory(os.path.dirname(self.koko_path))
-        self.process.start(self.koko_path, ['-n'])
+        self.process.start(self.koko_path, ['-G'])
         if not self.process.waitForStarted(5000):
             QMessageBox.critical(self, "Error", "Failed to start koko-cli")
             return False
@@ -993,7 +992,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def slot_actionOpen(self):
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Open Lens File", "", "Lens Files (*.PRG *.prg)")
+            self, "Open Lens File", os.path.expanduser("~/KODS/LENSES"), "Lens Files (*.PRG *.prg)")
         if file_path:
             if self.process.state() == QProcess.ProcessState.Running:
                 self.load_lens(file_path)
@@ -1002,7 +1001,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def slot_actionSave(self):
         file_path, _ = QFileDialog.getSaveFileName(
-            self, "Save Lens File", "", "Lens Files (*.PRG)")
+            self, "Save Lens File", os.path.expanduser("~/KODS/LENSES"), "Lens Files (*.PRG)")
         if file_path:
             base = os.path.splitext(os.path.basename(file_path))[0]
             self.send_koko("LENSSAVE " + base)
@@ -1026,7 +1025,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def slot_actionImport_Zemax(self):
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Import Zemax File", "", "Zemax Files (*.ZMX)")
+            self, "Import Zemax File", os.path.expanduser("~/KODS/LENSES"), "Zemax Files (*.ZMX)")
         if file_path:
             self.send_koko("ZMX2PRG " + file_path)
             self.send_koko("LENSSAVE")
@@ -1035,7 +1034,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def slot_actionImport_CODE_V(self):
         file_path, _ = QFileDialog.getOpenFileName(
-            self, "Import Code-V File", "", "Code-V Files (*.SEQ)")
+            self, "Import Code-V File", os.path.expanduser("~/KODS/LENSES"), "Code-V Files (*.SEQ)")
         if file_path:
             self.send_koko("CV2PRG " + file_path)
             self.send_koko("LENSSAVE")
