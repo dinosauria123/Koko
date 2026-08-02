@@ -1906,6 +1906,7 @@ C SUB LENSREST.FOR
 
           CHARACTER LFILENAME*80
           LOGICAL EXISJK
+          LOGICAL FULLPATH
 
           INCLUDE 'datmac.inc'
           INCLUDE 'datmai.inc'
@@ -1943,32 +1944,61 @@ C SUB LENSREST.FOR
 C     DOES THE FILE EXIST?
           EXISJK=.FALSE.
 
+!     If the user supplied a path containing a directory separator, treat
+!     WS as a full (or relative) path and do NOT prepend DIRLEN. This lets
+!     the GUI open lenses from any directory, not just the lens directory.
+          IF(INDEX(TRIM(WS),'/').NE.0 .OR. INDEX(TRIM(WS),'\\').NE.0) THEN
+             FULLPATH = .TRUE.
+          ELSE
+             FULLPATH = .FALSE.
+          END IF
+
 !     First check the file as-is (user might provide full name with extension)
           LFILENAME = TRIM(WS)
-          INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          IF(FULLPATH) THEN
+             INQUIRE(FILE=TRIM(LFILENAME),EXIST=EXISJK)
+          ELSE
+             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+          END IF
 
 !     then check extension .koko
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.koko'
-             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             IF(FULLPATH) THEN
+                INQUIRE(FILE=TRIM(LFILENAME),EXIST=EXISJK)
+             ELSE
+                INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             END IF
           END IF
 
 !     then check KDP upper case .PRG extension
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.PRG'
-             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             IF(FULLPATH) THEN
+                INQUIRE(FILE=TRIM(LFILENAME),EXIST=EXISJK)
+             ELSE
+                INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             END IF
           END IF
 
 !     if not found, check lower case extension too
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.prg'
-             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             IF(FULLPATH) THEN
+                INQUIRE(FILE=TRIM(LFILENAME),EXIST=EXISJK)
+             ELSE
+                INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             END IF
           END IF
 
 !     if not found, check .koko extension
           IF(.NOT. EXISJK) THEN
              LFILENAME = TRIM(WS)//'.koko'
-             INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             IF(FULLPATH) THEN
+                INQUIRE(FILE=TRIM(LFILENAME),EXIST=EXISJK)
+             ELSE
+                INQUIRE(FILE=TRIM(DIRLEN)//TRIM(LFILENAME),EXIST=EXISJK)
+             END IF
           END IF
 
           IF (.NOT.EXISJK) THEN

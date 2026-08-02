@@ -223,9 +223,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             QMessageBox.critical(self, "Error", "Failed to start koko-cli")
             return False
 
-        # If a lens was requested, restore it the interactive way.
+        # If a lens was requested, restore it the interactive way. Defer
+        # slightly so koko has finished its startup banner/initialization
+        # and is ready to accept the IN FILE command.
         if lens_path:
-            self.load_lens(lens_path)
+            QTimer.singleShot(400, lambda: self.load_lens(lens_path))
 
         # give koko a moment, then ask for surface listing
         QTimer.singleShot(300, lambda: self.send_koko("RTG ALL"))
@@ -1096,10 +1098,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("LENSSAVE")
 
     def load_lens(self, file_path):
-        """Restore a lens file interactively via koko's LENSREST command."""
-        base = os.path.splitext(os.path.basename(file_path))[0]
+        """Restore a lens file via koko's IN FILE command.
+
+        We use ``IN FILE <fullpath>`` rather than ``LENSREST <name>``.
+        ``LENSREST`` passes its argument through koko's string-input
+        variable WS, which is uppercased by the command parser; on a
+        case-sensitive filesystem that breaks CamelCase lens files such
+        as ``CookeTriplet.koko``. ``IN FILE`` reads the path verbatim, so
+        any file (any directory, any case) loads correctly. This mirrors
+        the file-read sequence used inside koko's own LENSREST routine.
+        """
         self.current_lens = file_path
-        self.send_koko("LENSREST " + base)
+        self.send_koko("IN FILE " + file_path)
         self.send_koko("RTG ALL")
         QTimer.singleShot(500, lambda: self.send_koko("VIE XZ"))
 
