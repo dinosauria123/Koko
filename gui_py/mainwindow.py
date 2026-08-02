@@ -112,12 +112,18 @@ class OptimizeDialog(QDialog, Ui_Optimize):
 # --------------------------------------------------------------------------
 
 class KokoMainWindow(QMainWindow, Ui_MainWindow):
+    def closeEvent(self, event):
+        self._kill_koko()
+        super().closeEvent(event)
+
     def __init__(self):
         super().__init__()
         self.setupUi(self)
 
-        # koko-cli process
-        self.process = QProcess(self)
+        # koko-cli process (run inside a real PTY; see start_koko_cli)
+        self._koko_pid = None
+        self._koko_fd = None
+        self._koko_notifier = None
         self.koko_path = self.find_koko_cli()
 
         # directories
@@ -129,12 +135,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # font
         self.msgView.setFont(QFont("Noto Mono", 10, QFont.Weight.Bold))
         self.cmdLine.setFocus()
-
-        # process signals
-        self.process.readyReadStandardOutput.connect(self.on_stdout)
-        self.process.readyReadStandardError.connect(self.on_stderr)
-        self.process.finished.connect(self.on_finished)
-        self.process.errorOccurred.connect(self.on_error)
 
         # command line
         self.cmdLine.returnPressed.connect(self.execute_command)
@@ -203,10 +203,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         return None
 
     def start_koko_cli(self, lens_path=None):
-        """Launch koko-cli in interactive mode (no -b batch)."""
-        if self.process.state() == QProcess.ProcessState.Running:
-            self.process.write(b"EXIT\n")
-            self.process.waitForFinished(2000)
+        """Launch koko-cli inside a real pseudo-terminal.
+
+        koko is a Fortran program that uses linenoise for its interactive
+        prompt. It only reads commands and only flushes its text output
+        when its stdin/stdout are a real tty, so driving it through a
+        QProcess pipe (or a `script` wrapper) leaves it stuck at the
+        "1:cmd> " prompt with zero bytes of output. We therefore fork a
+        child connected to a pty pair: the child execs koko with the slave
+        ends as its std streams, and the GUI watches the master fd via
+        a QTimer poll and writes commands with os.write.
+        """
+        self._kill_koko()
 
         if not self.koko_path:
             QMessageBox.critical(
@@ -215,34 +223,119 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 "(see Src/Makefile).")
             return False
 
-        # Always start interactively; lens loading is done via LENSREST.
-        # Pass -G so koko does NOT auto-launch gnuplot, but DOES render
-        # the plot to a PNG file for the embedded GUI to display.
-        self.process.setWorkingDirectory(os.path.dirname(self.koko_path))
-        self.process.start(self.koko_path, ['-G'])
-        if not self.process.waitForStarted(5000):
-            QMessageBox.critical(self, "Error", "Failed to start koko-cli")
+        import subprocess, pty, os, fcntl, signal, termios, struct
+        master, slave = pty.openpty()
+        # non-blocking master so the GUI event loop is never stalled
+        fl = fcntl.fcntl(master, fcntl.F_GETFL)
+        fcntl.fcntl(master, fcntl.F_SETFL, fl | os.O_NONBLOCK)
+        # CRITICAL: set a window size on the slave pty. Without this koko
+        # (Fortran + linenoise) stays silent and emits nothing -- `script
+        # -qec` sets this internally, which is why it worked and a bare
+        # pty+execv did not.
+        winsize = struct.pack("HHHH", 24, 80, 0, 0)
+        fcntl.ioctl(slave, termios.TIOCSWINSZ, winsize)
+        # Launch koko via subprocess (NOT os.fork directly): forking inside
+        # a live QApplication corrupts the child and can leave the parent's
+        # post-fork code (timer setup) unreached. subprocess.Popen does a
+        # safe fork+exec and is the reliable path here.
+        try:
+            # Flags for the embedded Qt GUI (see Src/koko.f:237-251):
+            #   -G  -> GENERATE_PLOT_PNG: koko renders the plot to a PNG
+            #         file itself via "DISPLAY="" gnuplot ...". This HANGS in
+            #         this environment (koko never returns to its prompt after
+            #         VIE XZ), so we do NOT use -G.
+            #   -n  -> NOLAUNCH_GNUPLOT: koko writes the plot script to
+            #         $TMPDIR/gnuplot/drawcmd.gpl on VIE XZ but does NOT spawn
+            #         gnuplot, so it stays responsive. The GUI then runs
+            #         gnuplot itself (see render_plots) to produce the PNG.
+            proc = subprocess.Popen(
+                [self.koko_path, '-n'],
+                stdin=slave, stdout=slave, stderr=slave,
+                start_new_session=True, close_fds=True,
+            )
+        except Exception as _e:
+            QMessageBox.critical(self, "Error", "Failed to start koko-cli: %s" % _e)
+            os.close(master)
+            os.close(slave)
             return False
+        os.close(slave)
+        # parent
+        self._koko_pid = proc.pid
+        self._koko_fd = master
+        # Poll the pty master on a timer. (QSocketNotifier on the master fd
+        # proved unreliable here, whereas a periodic non-blocking os.read
+        # reliably drains koko's output -- matching the standalone pty test.)
+        self._koko_poll = QTimer(self)
+        self._koko_poll.timeout.connect(self._poll_koko_pty)
+        self._koko_poll.start(80)
+        # small safety: reap the child if it dies
+        self._koko_watch = QTimer(self)
+        self._koko_watch.timeout.connect(lambda: self._reap_koko())
+        self._koko_watch.start(1000)
 
         # If a lens was requested, restore it the interactive way. Defer
         # slightly so koko has finished its startup banner/initialization
-        # and is ready to accept the IN FILE command.
+        # and is ready to accept the LENSREST command.
         if lens_path:
-            QTimer.singleShot(400, lambda: self.load_lens(lens_path))
+            QTimer.singleShot(600, lambda: self.load_lens(lens_path))
 
         # give koko a moment, then ask for surface listing
-        QTimer.singleShot(300, lambda: self.send_koko("RTG ALL"))
+        QTimer.singleShot(400, lambda: self.send_koko("RTG ALL"))
         return True
+
+    def _reap_koko(self):
+        if self._koko_pid is None:
+            return
+        import os
+        try:
+            pid, _ = os.waitpid(self._koko_pid, os.WNOHANG)
+        except ChildProcessError:
+            pid = self._koko_pid
+        if pid:
+            self._koko_pid = None
+            if getattr(self, "_koko_poll", None) is not None:
+                self._koko_poll.stop()
+            if self._koko_notifier is not None:
+                self._koko_notifier.setEnabled(False)
+            self._koko_watch.stop()
+            self.append_msg("** koko-cli exited **")
+
+    def _kill_koko(self):
+        import os, signal
+        if getattr(self, "_koko_poll", None) is not None:
+            self._koko_poll.stop()
+            self._koko_poll = None
+        if self._koko_notifier is not None:
+            self._koko_notifier.setEnabled(False)
+            self._koko_notifier = None
+        if self._koko_fd is not None:
+            try:
+                os.close(self._koko_fd)
+            except OSError:
+                pass
+            self._koko_fd = None
+        if self._koko_pid is not None:
+            try:
+                os.kill(self._koko_pid, signal.SIGTERM)
+                os.waitpid(self._koko_pid, 0)
+            except (OSError, ChildProcessError):
+                pass
+            self._koko_pid = None
 
     # ----- command I/O ---------------------------------------------------
 
     def send_koko(self, command):
         """Write a single command line to the koko-cli process."""
-        if self.process.state() != QProcess.ProcessState.Running:
+        if self._koko_fd is None or self._koko_pid is None:
             self.append_msg("** koko-cli is not running **")
             return
         self.append_msg("> " + command.strip())
-        self.process.write((command + "\n").encode('utf-8'))
+        self._koko_idle = False  # we just issued a command; koko is busy
+        try:
+            os.write(self._koko_fd, (command + "\n").encode('utf-8'))
+        except OSError:
+            self.append_msg("** failed to write to koko-cli **")
+            return
         # If this is a plotting command, automatically render the graph
         tok = command.strip().upper()
         if tok:
@@ -266,12 +359,38 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko(command)
         self.cmdLine.clear()
 
-    def on_stdout(self):
-        data = self.process.readAllStandardOutput()
-        text = bytes(data.data()).decode('utf-8', errors='replace')
+    def _poll_koko_pty(self):
+        """Read whatever koko wrote to the PTY master and feed it to the
+        RTG parser. Called on a timer so we never depend on QSocketNotifier
+        quirks. Non-blocking read so we never stall the event loop.
+        Accumulates partial lines so a BASIC LENS DATA block split across
+        chunks is reassembled before _capture_rtg parses it."""
+        if self._koko_fd is None:
+            return
+        try:
+            data = os.read(self._koko_fd, 65536)
+        except (OSError, BlockingIOError):
+            return
+        if not data:
+            return
+        text = data.decode('utf-8', errors='replace')
         self.append_msg(text)
-        # Capture RTG ALL ("BASIC LENS DATA") blocks and populate the table.
-        self._capture_rtg(text)
+        # koko echoes a prompt like " 4:cmd> " (with ANSI escapes) after
+        # each command finishes. Mark it idle here (on the raw stream)
+        # because the prompt has no trailing newline, so it would otherwise
+        # stay stuck in _line_buf and never reach _capture_rtg's parser.
+        _clean = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+        if re.search(r'\d+:\s*cmd>', _clean):
+            self._koko_idle = True
+        if not hasattr(self, '_line_buf'):
+            self._line_buf = ""
+        self._line_buf += text
+        # split into complete lines (those ending in \n); keep the trailing
+        # incomplete fragment buffered for the next poll
+        parts = self._line_buf.split("\n")
+        self._line_buf = parts.pop()
+        for raw in parts:
+            self._capture_rtg(raw + "\n")
 
     def _capture_rtg(self, text):
         """Buffer koko's 'BASIC LENS DATA' output and parse it when complete.
@@ -282,16 +401,48 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """
         if not hasattr(self, '_rtg_buf'):
             self._rtg_buf = None
+        if not hasattr(self, '_koko_idle'):
+            self._koko_idle = True
+        # koko echoes a prompt like " 4:cmd> " (with ANSI color escapes)
+        # after each command finishes. Track idleness so load_lens() can
+        # avoid sending LENSREST while a prior command (esp. VIE XZ / PNG
+        # generation) is still running -- otherwise koko rejects it as
+        # INVALID CMD LEVEL and the table never refreshes on a lens switch.
+        # Strip ANSI escapes first; the raw prompt is "N:cmd>" at line end.
+        _clean = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+        if re.search(r'\d+:\s*cmd>\s*$', _clean.rstrip()):
+            self._koko_idle = True
+        # Always scan for the lens identifier, even outside a BASIC LENS
+        # DATA block: koko emits "LENS SAVED AS: <NAME>.PRG HAS BEEN
+        # RESTORED" right after LENSREST, BEFORE the RTG ALL table.
+        for line in text.splitlines():
+            stripped = line.strip()
+            m_li = re.match(r'(?i)^LI\s*,?\s*(.+)$', stripped)
+            if m_li:
+                self._li = m_li.group(1).strip()
+            else:
+                m_restored = re.search(
+                    r'LENS SAVED AS:\s*(\S+?)\.PRG\s+HAS BEEN RESTORED',
+                    stripped, re.IGNORECASE)
+                if m_restored:
+                    self._li = m_restored.group(1)
+                    # A new lens is being restored: discard any BASIC LENS
+                    # DATA block we were accumulating for the previous lens
+                    # so the upcoming RTG ALL is captured into a fresh buffer.
+                    self._rtg_buf = None
+                    # koko has confirmed the restore; now request the surface
+                    # listing. Doing RTG ALL here (instead of in load_lens)
+                    # guarantees it is sent only AFTER koko finished the
+                    # LENSREST, never while a prior VIE XZ is still running
+                    # (which would make koko reject the LENSREST as INVALID
+                    # CMD LEVEL and the table would never refresh).
+                    self.send_koko("RTG ALL")
         if 'BASIC LENS DATA' in text:
             self._rtg_buf = ''
         if self._rtg_buf is not None:
             self._rtg_buf += text
             for line in text.splitlines():
                 stripped = line.strip()
-                # Lens Identifier
-                m_li = re.match(r'(?i)^LI\s*,?\s*(.+)$', stripped)
-                if m_li:
-                    self._li = m_li.group(1).strip()
                 # Wavelengths: WV d.f.c [ND VD ...]
                 if stripped.startswith('WV') or re.match(r'(?i)^WV\s', stripped):
                     nums = re.findall(r'[\d.]+', stripped)
@@ -362,11 +513,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 if self._pending_vie:
                     self._pending_vie = False
                     self.send_koko("VIE XZ")
-
-    def on_stderr(self):
-        data = self.process.readAllStandardError()
-        text = bytes(data.data()).decode('utf-8', errors='replace')
-        self.append_msg(text)
+                    # koko now writes drawcmd.gpl; render the PNG once it does.
+                    self._schedule_plot_render()
 
     # ----- eventFilter (cmdLine Up/Down arrow history) -------------------
 
@@ -599,7 +747,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Forward an edited table cell to koko (mirrors the C++ GUI)."""
         if self._table_updating:
             return
-        if row < 0 or self.process.state() != QProcess.ProcessState.Running:
+        if row < 0 or self._koko_pid is None:
             return
         item = self.table.item(row, col)
         if item is None:
@@ -1044,6 +1192,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # Remember which plot family this was so render_plots can choose
         # the right gnuplot style.
         self._last_plot_cmd = " ".join(commands)
+        # koko writes drawcmd.gpl on the plotting command; render the PNG
+        # once it updates.
+        self._schedule_plot_render()
 
     @staticmethod
     def _is_point_plot(cmd_str):
@@ -1123,24 +1274,41 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """
         self.current_lens = file_path
         base = os.path.splitext(os.path.basename(file_path))[0]
-        self.send_koko("LENSREST " + base)
-        self.send_koko("RTG ALL")
-        # Defer VIE XZ until RTG ALL has fully returned (see _capture_rtg).
-        # Falls back to a timer in case no LAST SURFACE line appears.
+        # Defer the actual LENSREST until koko is idle. koko rejects a
+        # LENSREST as INVALID CMD LEVEL if it arrives while a prior command
+        # (notably VIE XZ / PNG generation) is still running, which would
+        # leave the table stuck on the previous lens. If koko is busy we
+        # poll briefly until it returns to its prompt.
+        self._pending_lens_base = base
         self._pending_vie = True
-        QTimer.singleShot(2000, self._flush_pending_vie)
+        self._try_send_lensrest()
+
+    def _try_send_lensrest(self):
+        """Send the pending LENSREST once koko is idle, else retry shortly."""
+        if getattr(self, '_koko_idle', True):
+            base = getattr(self, '_pending_lens_base', None)
+            if base is None:
+                return
+            self._pending_lens_base = None
+            self.send_koko("LENSREST " + base)
+            # _capture_rtg fires RTG ALL automatically on "LENS SAVED AS",
+            # and VIE XZ after RTG ALL's LAST SURFACE -- so VIE XZ always
+            # follows the table update and never races a running command.
+        else:
+            QTimer.singleShot(150, self._try_send_lensrest)
 
     def _flush_pending_vie(self):
         """Send VIE XZ if RTG ALL did not emit a LAST SURFACE line yet."""
         if self._pending_vie:
             self._pending_vie = False
             self.send_koko("VIE XZ")
+            self._schedule_plot_render()
 
     def slot_actionOpen(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Open Lens File", os.path.expanduser("~/KODS/LENSES"), "Lens Files (*.PRG *.prg)")
         if file_path:
-            if self.process.state() == QProcess.ProcessState.Running:
+            if self._koko_pid is not None:
                 self.load_lens(file_path)
             else:
                 self.start_koko_cli(lens_path=file_path)
@@ -1292,22 +1460,58 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     # ----- plotting -------------------------------------------------------
     def render_plots(self, fmt=None):
-        """Render koko's gnuplot script into a raster image.
+        """Render koko's plot to a PNG and display it.
 
-        The Fortran backend writes drawcmd.gpl and runs gnuplot itself
-        (pngcairo terminal), producing PNG at $TMPDIR/koko_gnuplot_plot.png.
-        This method simply reads that PNG and displays it in the Koko Plot
-        window -- no more spawning our own gnuplot subprocess.
+        koko is launched with ``-n`` (NOLAUNCH_GNUPLOT) so it writes the
+        plot script into ``$HOME/KODS/gnuplot/drawcmd.gpl`` on VIE XZ but
+        does NOT spawn gnuplot itself (launching gnuplot from koko hangs in
+        this environment). Instead we run gnuplot here to produce the PNG
+        and show it -- a fresh image on every lens switch.
         """
-        # Path where Fortran write() redirects the gnuplot PNG output
-        png_path = os.path.join(self.TMPDIR, 'koko_gnuplot_plot.png')
-
-        if not os.path.isfile(png_path) or os.path.getsize(png_path) == 0:
+        import subprocess as _sp
+        gpl = os.path.join(os.path.expanduser('~'), 'KODS', 'gnuplot',
+                           'drawcmd.gpl')
+        if not os.path.isfile(gpl) or os.path.getsize(gpl) == 0:
             self.append_msg(
-                "** %s not found or empty — did the plot command run? **"
-                % os.path.basename(png_path))
+                "** %s not found or empty -- did the plot command run? **"
+                % os.path.basename(gpl))
             return
-
+        # drawcmd.gpl ends with "pause -1" (interactive wait) and uses the
+        # wxt terminal; both would block/hang gnuplot in batch mode. Strip
+        # any "pause" line and let our pngcairo terminal + output win.
+        clean_gpl = os.path.join(self.TMPDIR, 'koko_gui_drawcmd.gpl')
+        with open(gpl, 'r') as src, open(clean_gpl, 'w') as dst:
+            for line in src:
+                low = line.strip().lower()
+                # Drop interactive/terminal lines: "pause -1" blocks gnuplot
+                # forever, and "set terminal wxt" would re-init wxWidgets
+                # (needs an X display) and override our pngcairo terminal.
+                if low.startswith('pause') or low.startswith('set terminal'):
+                    continue
+                dst.write(line)
+        png_path = os.path.join(self.TMPDIR, 'koko_gnuplot_plot.png')
+        try:
+            os.remove(png_path)
+        except OSError:
+            pass
+        # Build a self-contained gnuplot script that loads drawcmd.gpl and
+        # renders to PNG. Use pngcairo (no X display needed).
+        script = os.path.join(self.TMPDIR, 'koko_gui_render.gpl')
+        with open(script, 'w') as f:
+            f.write('set terminal pngcairo size 1000,700 font "DejaVu Sans,9"\n')
+            f.write('set output "%s"\n' % png_path)
+            f.write('load "%s"\n' % clean_gpl)
+        try:
+            env = dict(os.environ)
+            env['DISPLAY'] = ''
+            _sp.run(['gnuplot', script], env=env, check=True,
+                    stdout=_sp.DEVNULL, stderr=_sp.DEVNULL, timeout=30)
+        except Exception as e:  # noqa: BLE001
+            self.append_msg("** gnuplot failed: %s **" % e)
+            return
+        if not os.path.isfile(png_path) or os.path.getsize(png_path) == 0:
+            self.append_msg("** plot PNG not produced **")
+            return
         self.show_plot(png_path)
 
 
@@ -1340,9 +1544,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     # ----- shutdown -------------------------------------------------------
 
     def slot_quit2(self):
-        if self.process.state() == QProcess.ProcessState.Running:
-            self.process.write(b"EXIT\n")
-            self.process.waitForFinished(3000)
+        self._kill_koko()
         self.close()
 
 
