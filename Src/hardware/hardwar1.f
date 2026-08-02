@@ -448,6 +448,8 @@ C       CHECK SYNTAX
           ! GUI will render the plot itself.
           IF (.NOT. NOLAUNCH_GNUPLOT) THEN
               CALL shell_command( plotcommand )
+          ELSE IF (GENERATE_PLOT_PNG) THEN
+              CALL render_plot_png(TRIM(HOME)//'gnuplot/drawcmd.gpl')
           END IF
 
       END SUBROUTINE PDRAW
@@ -3085,3 +3087,40 @@ C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
          END IF
           
       END SUBROUTINE check_bounds
+
+      SUBROUTINE render_plot_png(gpl_file)
+          USE globals
+          USE opsys
+          IMPLICIT NONE
+          INCLUDE 'datmai.inc'
+          CHARACTER(len=*), INTENT(IN) :: gpl_file
+          CHARACTER(len=256) :: png_file, script_file, cmd
+          INTEGER :: unit, ios
+          LOGICAL :: unit_open
+
+          IF (.NOT. GENERATE_PLOT_PNG) RETURN
+
+          png_file = TRIM(TMPDIR)//'/koko_gnuplot_plot.png'
+          script_file = TRIM(TMPDIR)//'/koko_gnuplot_render.gpl'
+          CALL os_delete(png_file)
+          CALL os_delete(script_file)
+
+          unit = 113
+          INQUIRE(UNIT=unit, OPENED=unit_open)
+          IF (unit_open) CLOSE(unit)
+
+          OPEN(UNIT=unit, FILE=TRIM(script_file), STATUS='NEW', IOSTAT=ios)
+          IF (ios .NE. 0) RETURN
+
+          WRITE(unit, '(A)') 'set terminal pngcairo size 1000,700 font "Courier,5"'
+          WRITE(unit, '(A)') 'set noborder'
+          WRITE(unit, '(A)') 'set nokey'
+          WRITE(unit, '(A)') 'set notics'
+          WRITE(unit, '(A,A,A)') 'set output "', TRIM(png_file), '"'
+          WRITE(unit, '(A,A,A)') 'load "', TRIM(gpl_file), '"'
+          CLOSE(unit)
+
+          cmd = 'gnuplot '//TRIM(script_file)
+          CALL shell_command(cmd)
+
+      END SUBROUTINE render_plot_png

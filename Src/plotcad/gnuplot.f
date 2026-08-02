@@ -149,15 +149,20 @@ C///////////////////////////////////////////////////////////////////////
 
       SUBROUTINE drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)
 
-          implicit none
-          integer I1,I2,I3,I4,I5,I6,I7,I8
+          USE GLOBALS
+          IMPLICIT NONE
+          INTEGER I1,I2,I3,I4,I5,I6,I7,I8
+          INTEGER IOS
+
+          INCLUDE 'datmai.inc'
 
           if ((I1.eq.-1).and.(I2.eq.-1)) then
               write(130,*)
               write(115,*)
               write(116,*)
-              write(117,*)
+              write(117,*) 'END_RED_DATA'
               write(118,*)
+              flush(117)
               return
           end if
 
@@ -201,10 +206,13 @@ C///////////////////////////////////////////////////////////////////////
 
           if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
             if ((I4.eq.3).and.(I3.eq.1)) then
-                  write(117,'(2I5)') I1,I2    !yellow
+                  write(117,'(2I5)',IOSTAT=IOS) I1,I2
+                  flush(117)
             else if ((I4.eq.3).and.(I3.eq.0)) then
                   write(117,*)
+                  flush(117)
                   write(117,'(2I5)') I1,I2
+                  flush(117)
             end if
           end if
 

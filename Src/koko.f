@@ -218,10 +218,11 @@
           quiet     = .FALSE.
           batchmode = .FALSE.
           NOLAUNCH_GNUPLOT = .FALSE.
+          GENERATE_PLOT_PNG = .FALSE.
 
           IF ( command_argument_count() > 0 ) THEN
              DO
-                ch = getopt("bcdhnqt:")
+                ch = getopt("b:d:t:cnhqG")
                 SELECT CASE( ch )
                 CASE (char(0))
                    EXIT
@@ -230,6 +231,7 @@
                       WRITE (*,*) "Missing argument for command option -b"
                       STOP
                    END IF
+                   BATCHFILE = optarg
                    batchmode = .TRUE.
                 CASE ('n')
                    ! Suppress launching the gnuplot viewer. The
@@ -238,6 +240,12 @@
                    ! spawns gnuplot itself; the GUI renders the
                    ! plot in its own "Koko Plot" window.
                    NOLAUNCH_GNUPLOT = .TRUE.
+                CASE ('G')
+                   ! Generate plot PNG for embedded GUI.
+                   ! Embedded Qt GUI (gui_py) passes -G so Koko
+                   ! builds the .gpl scripts as usual and also
+                   ! renders the plot to a PNG file for the GUI.
+                   GENERATE_PLOT_PNG = .TRUE.
                 CASE ('c')
                    CALL print_koko_config()
                    STOP
@@ -1648,31 +1656,33 @@
           END IF
 
           IF( batchmode ) THEN
-              EXIS44=.FALSE.
-              OPEN44=.FALSE.
-              INQUIRE(FILE=BATCHFILE, EXIST=EXIS44)
-              INQUIRE(FILE=BATCHFILE, OPENED=OPEN44)
+                        EXIS44=.FALSE.
+                        OPEN44=.FALSE.
+                        INQUIRE(FILE=BATCHFILE, EXIST=EXIS44)
+                        INQUIRE(FILE=BATCHFILE, OPENED=OPEN44)
 
-              IF (.not.EXIS44) THEN
+                        IF (.not.EXIS44) THEN
 
-                 OUTLYNE='BATCH FILE DOES NOT EXIST'
-                 CALL SHOWIT(1)
-                 SQ=0
-                 SST=0
-                 SN=0
-                 STI=0
-                 CALL EXITT(1)
-                  
-               ELSE
+                           OUTLYNE='BATCH FILE DOES NOT EXIST'
+                           CALL SHOWIT(1)
+                           SQ=0
+                           SST=0
+                           SN=0
+                           STI=0
+                           CALL EXITT(1)
 
-                  IF(OPEN44) CALL CLOSE_FILE(44,1)
-!     OPEN AND PROCESS CONTENTS
-                  OPEN(UNIT=44,ACCESS='SEQUENTIAL',FILE=trim(HOME)//'BATCH.DAT',
-     1            FORM='FORMATTED',STATUS='UNKNOWN')
-                  REWIND(UNIT=44)
-!     READ AND PROCESS INSTRUCTIONS
-                  DO I=1,99999
-                      READ(UNIT=44,FMT=100,END=9743,ERR=9744) INPUT(1:140)
+                         ELSE
+
+                            IF(OPEN44) CALL CLOSE_FILE(44,1)
+          !     COPY BATCHFILE TO HOME/BATCH.DAT FOR PROCESSING
+                            CALL os_copy(trim(BATCHFILE), trim(HOME)//'BATCH.DAT')
+          !     OPEN AND PROCESS CONTENTS
+                            OPEN(UNIT=44,ACCESS='SEQUENTIAL',FILE=trim(HOME)//'BATCH.DAT',
+     1        FORM='FORMATTED',STATUS='UNKNOWN')
+                            REWIND(UNIT=44)
+          !     READ AND PROCESS INSTRUCTIONS
+                            DO I=1,99999
+                                READ(UNIT=44,FMT=100,END=9743,ERR=9744) INPUT(1:140)
                       IF(INPUT(1:3).NE.'OUT') THEN
                           IF(INPUT(1:1).EQ.' ') INPUT(1:140)=INPUT(2:140)//' '
                           IF(INPUT(1:1).EQ.' ') INPUT(1:140)=INPUT(2:140)//' '
@@ -1769,48 +1779,48 @@
               END IF
           END IF
 
+          ! Open gnuplot data files for both batch and interactive modes
+          CALL dir_path_append(HOME, "gnuplot", gpl_dir)
+
+          ! open gnuplot data files
+          CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
+          OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+          write(115,'(2I5)') 0, 0
+          write(115,*)
+
+          CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
+          OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+          write(116,'(2I5)') 0, 0
+          write(116,*)
+
+          CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+          OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+          write(117,'(2I5)') 0, 0
+          write(117,*)
+
+          CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
+          OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+          write(118,'(2I5)') 0, 0
+          write(118,*)
+
+          CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
+          OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+
+          CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
+          OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+          write(130,'(2I5)') 0, 0
+          write(130,*)
+
+          CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
+          OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+          write(131,'(2I5)') 0, 0
+          write(131,*)
+
+          CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
+          OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
+
           IF ( IN == 5 .AND. LEN_TRIM(BATCHFILE) > 0 ) THEN
               HALTING=.FALSE.
-
-              ! Libs/gnuplot directory
-              CALL dir_path_append(HOME, "gnuplot", gpl_dir)
-
-              ! open gnuplot data files
-              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
-              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
-              write(115,'(2I5)') 0, 0
-              write(115,*)
-
-              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
-              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
-              write(116,'(2I5)') 0, 0
-              write(116,*)
-
-              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
-              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
-              write(117,'(2I5)') 0, 0
-              write(117,*)
-
-              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
-              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
-              write(118,'(2I5)') 0, 0
-              write(118,*)
-
-              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
-              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
-
-              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
-              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
-              write(130,'(2I5)') 0, 0
-              write(130,*)
-
-              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
-              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
-              write(131,'(2I5)') 0, 0
-              write(131,*)
-
-              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
-              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
 
               CALL userinput(CMDNO)
 
@@ -2558,14 +2568,15 @@
 
       SUBROUTINE print_usage()
 
-        WRITE (*,*) "Usage: koko-cli [-h] [-c] [-q] [-n] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
-        WRITE (*,*) "Options and arguments:"
-        WRITE (*,*) " -h            :  print this help message"
-        WRITE (*,*) " -c            :  print Koko configuration settings"
-        WRITE (*,*) " -d <datadir>  :  set data directory for KODS"
-        WRITE (*,*) " -t <tempdir>  :  set temporary file directory"
-        WRITE (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
-        WRITE (*,*) " -q            :  run quietly, without printing the greeting"
-        WRITE (*,*) " -n            :  suppress launching the gnuplot viewer (used by the embedded Qt GUI)"
+             WRITE (*,*) "Usage: koko-cli [-h] [-c] [-q] [-n] [-G] [-d[=]<datadir>] [-t[=]<tempdir>] [-b[=]<batchfile>]"
+             WRITE (*,*) "Options and arguments:"
+             WRITE (*,*) " -h            :  print this help message"
+             WRITE (*,*) " -c            :  print Koko configuration settings"
+             WRITE (*,*) " -d <datadir>  :  set data directory for KODS"
+             WRITE (*,*) " -t <tempdir>  :  set temporary file directory"
+             WRITE (*,*) " -b <lensfile> :  excecute a lens file in batch mode"
+             WRITE (*,*) " -q            :  run quietly, without printing the greeting"
+             WRITE (*,*) " -n            :  suppress launching the gnuplot viewer (used by the embedded Qt GUI)"
+             WRITE (*,*) " -G            :  generate plot PNG for embedded GUI (used by the embedded Qt GUI)"
         
-      END SUBROUTINE print_usage
+           END SUBROUTINE print_usage

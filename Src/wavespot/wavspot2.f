@@ -1789,7 +1789,7 @@ C
                           IF(WC.EQ.'RED'.OR.WC.EQ.'SRED') THEN
                               IF(SYSTEM1(30).LT.3.0D0) THEN
                                   RED2=DSQRT((((XV-REDVLX)/JB)**2)+
-     2                                             (((YV-REDVLY/JA))**2))
+     2                            (((YV-REDVLY)/JA)**2))
                               ELSE
                                   RED2=DSQRT((((XV-REDVLX))**2)+
      2                                             (((YV-REDVLY))**2))
