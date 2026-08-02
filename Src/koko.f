@@ -2571,7 +2571,12 @@
           CALL SELECTKOKO(kkdp)
           WRITE (prompt,'(a,i0,a)') ' ',cmdno,':'//kkdp//'> '
           CALL nextline( prompt, LEN_TRIM(prompt)+1, INPUT, LEN(INPUT) )
-          CALL to_upper(INPUT)
+C         Do NOT uppercase the whole input line here. Uppercasing the
+C         entire line broke case-sensitive file paths (e.g.
+C         "IN FILE /path/CookeTriplet.koko" became ".../COOKETRIPLET.KOKO").
+C         Instead, only the command word is uppercased, which is done in
+C         subroutine PRO3 when COMMWD(I) is extracted. The string part of
+C         the input (file paths, glass names, etc.) keeps its original case.
 
           IF (INPUT.EQ.'') THEN
               INPUT=' '

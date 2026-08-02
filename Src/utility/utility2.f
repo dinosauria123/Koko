@@ -4370,6 +4370,7 @@ C       NEW FEATURE COMPLETE
 C SUB PRO3.FOR
       SUBROUTINE PRO3
           USE GLOBALS
+          USE strings
 C
           IMPLICIT NONE
 C
@@ -4631,6 +4632,12 @@ C
               COMMWD(I)=(INSTRC(I)(1:8))
               INSTRC(I)=(INSTRC(I)(9:140))
  1023         CONTINUE
+C             Uppercase only the command word so case-sensitive strings
+C             (file paths, glass names, etc.) in the rest of the line are
+C             preserved. This replaces the old "CALL to_upper(INPUT)" that
+C             uppercased the entire input and broke paths like
+C             "IN FILE /path/CookeTriplet.koko".
+              CALL to_upper(COMMWD(I))
 C
 C               NOW THE COMMAND WORD AND THE REMAINDER WITHOUT
 C               THE COMMAND WORD ARE STORED IN COMMWD(I) AND
@@ -5171,6 +5178,10 @@ C               REMAINDER IS REFILED INTO INSTRC(I) FOR FUTURE SEARCH
                       STATCO(I)=0
                       STBLK2(I)=0
                       STATBL(I)=0
+C             Uppercase the qualifier word too (mirrors the old
+C             to_upper(INPUT) behaviour so qualifiers like ALL/XZ/DIST
+C             keep working) while the string part stays case-sensitive.
+                      CALL to_upper(QUALWD(I))
                   END IF
 C
               ELSE

@@ -1100,13 +1100,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     def load_lens(self, file_path):
         """Restore a lens file via koko's IN FILE command.
 
-        We use ``IN FILE <fullpath>`` rather than ``LENSREST <name>``.
-        ``LENSREST`` passes its argument through koko's string-input
-        variable WS, which is uppercased by the command parser; on a
-        case-sensitive filesystem that breaks CamelCase lens files such
-        as ``CookeTriplet.koko``. ``IN FILE`` reads the path verbatim, so
-        any file (any directory, any case) loads correctly. This mirrors
-        the file-read sequence used inside koko's own LENSREST routine.
+        koko used to uppercase the entire input line, which broke
+        case-sensitive file paths (e.g. ``CookeTriplet.koko`` became
+        ``COOKETRIPLET.KOKO`` and was not found). The fix in koko.f now
+        uppercases only the leading command word, so ``IN FILE`` reads
+        the path verbatim. We pass the full path so any lens in any
+        directory loads regardless of its location or letter case. This
+        mirrors the file-read sequence used inside koko's own LENSREST
+        routine.
         """
         self.current_lens = file_path
         self.send_koko("IN FILE " + file_path)
