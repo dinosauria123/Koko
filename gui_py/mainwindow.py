@@ -1106,19 +1106,24 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     def load_lens(self, file_path):
         """Restore a lens file via koko's LENSREST command.
 
-        We pass the full path. With the Fortran fix in macro/macro2.f,
-        LENSREST treats an argument containing a directory separator as a
-        full (or relative) path (FULLPATH) and opens it verbatim instead of
-        prepending DIRLEN. This mirrors the C++ GUI, which uses
-        ``LENSREST <name>`` (base name only) and then parses the file
-        itself. Here we rely on koko to load the lens so RTG ALL reflects
-        the newly opened lens. Previously the GUI used ``IN FILE``, but
-        ``IN FILE`` only switches the input device and does not actually
-        load a lens in interactive mode, so every open showed the default
-        lens (Cooke Triplet).
+        Pass the BASE NAME only (no directory), exactly like the C++ GUI.
+        koko looks the name up under its lens directory (DIRLEN, i.e.
+        ~/KODS/LENSES) with .PRG/.koko extensions, so the lens is actually
+        loaded and RTG ALL reflects it.
+
+        We deliberately do NOT pass a full path here. koko's LENSREST has
+        a FULLPATH branch for directory separators, but it is currently
+        broken (it still prepends DIRLEN to the path, yielding
+        "~/KODS/LENSES//home/.../FILE.PRG"). Sending the base name avoids
+        that bug entirely and is what the C++ GUI does.
+
+        Previously the GUI used ``IN FILE``, but IN FILE only switches the
+        input device and does not load a lens in interactive mode, so every
+        open showed the default lens (Cooke Triplet).
         """
         self.current_lens = file_path
-        self.send_koko("LENSREST " + file_path)
+        base = os.path.splitext(os.path.basename(file_path))[0]
+        self.send_koko("LENSREST " + base)
         self.send_koko("RTG ALL")
         # Defer VIE XZ until RTG ALL has fully returned (see _capture_rtg).
         # Falls back to a timer in case no LAST SURFACE line appears.
