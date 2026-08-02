@@ -124,6 +124,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.HOME = os.path.expanduser('~/KODS')
         self.TMPDIR = '/tmp'
         self.current_lens = None
+        self._pending_vie = False
 
         # font
         self.msgView.setFont(QFont("Noto Mono", 10, QFont.Weight.Bold))
@@ -356,6 +357,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 buf = self._rtg_buf
                 self._rtg_buf = None
                 self.populate_table(buf)
+                # If a lens load asked us to issue VIE XZ after RTG ALL
+                # finished, do it now that the table is fully populated.
+                if self._pending_vie:
+                    self._pending_vie = False
+                    self.send_koko("VIE XZ")
 
     def on_stderr(self):
         data = self.process.readAllStandardError()
@@ -1112,7 +1118,16 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.current_lens = file_path
         self.send_koko("IN FILE " + file_path)
         self.send_koko("RTG ALL")
-        QTimer.singleShot(500, lambda: self.send_koko("VIE XZ"))
+        # Defer VIE XZ until RTG ALL has fully returned (see _capture_rtg).
+        # Falls back to a timer in case no LAST SURFACE line appears.
+        self._pending_vie = True
+        QTimer.singleShot(2000, self._flush_pending_vie)
+
+    def _flush_pending_vie(self):
+        """Send VIE XZ if RTG ALL did not emit a LAST SURFACE line yet."""
+        if self._pending_vie:
+            self._pending_vie = False
+            self.send_koko("VIE XZ")
 
     def slot_actionOpen(self):
         file_path, _ = QFileDialog.getOpenFileName(
