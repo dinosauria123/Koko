@@ -2020,7 +2020,11 @@ C     SAVE I/O
           CALL PROCES
           INPUT='OUT TP'
           CALL PROCES
-          INPUT='IN FILE '//TRIM(DIRLEN)//TRIM(LFILENAME)
+          IF(FULLPATH) THEN
+             INPUT='IN FILE '//TRIM(LFILENAME)
+          ELSE
+             INPUT='IN FILE '//TRIM(DIRLEN)//TRIM(LFILENAME)
+          END IF
           write(6,*) TRIM(DIRLEN)//TRIM(LFILENAME)
           CALL PROCES
           INPUT='IN TP'

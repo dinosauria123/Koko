@@ -1104,19 +1104,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("LENSSAVE")
 
     def load_lens(self, file_path):
-        """Restore a lens file via koko's IN FILE command.
+        """Restore a lens file via koko's LENSREST command.
 
-        koko used to uppercase the entire input line, which broke
-        case-sensitive file paths (e.g. ``CookeTriplet.koko`` became
-        ``COOKETRIPLET.KOKO`` and was not found). The fix in koko.f now
-        uppercases only the leading command word, so ``IN FILE`` reads
-        the path verbatim. We pass the full path so any lens in any
-        directory loads regardless of its location or letter case. This
-        mirrors the file-read sequence used inside koko's own LENSREST
-        routine.
+        We pass the full path. With the Fortran fix in macro/macro2.f,
+        LENSREST treats an argument containing a directory separator as a
+        full (or relative) path (FULLPATH) and opens it verbatim instead of
+        prepending DIRLEN. This mirrors the C++ GUI, which uses
+        ``LENSREST <name>`` (base name only) and then parses the file
+        itself. Here we rely on koko to load the lens so RTG ALL reflects
+        the newly opened lens. Previously the GUI used ``IN FILE``, but
+        ``IN FILE`` only switches the input device and does not actually
+        load a lens in interactive mode, so every open showed the default
+        lens (Cooke Triplet).
         """
         self.current_lens = file_path
-        self.send_koko("IN FILE " + file_path)
+        self.send_koko("LENSREST " + file_path)
         self.send_koko("RTG ALL")
         # Defer VIE XZ until RTG ALL has fully returned (see _capture_rtg).
         # Falls back to a timer in case no LAST SURFACE line appears.
