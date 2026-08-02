@@ -889,12 +889,14 @@ C     NO FAN WAS DONE
 C SUB PLTRED.FOR
       SUBROUTINE PLTRED
 C
+          USE opsys
           IMPLICIT NONE
 C
 C       THIS SUBROUTINE IS CALLED TO PLOT RED AT THE CMD LEVEL
 C
           CHARACTER BL20*20,NNTT1*99,CRANGE*8,LABX*40,LABY*40
      1    ,TMY*8,DTY*10,UNN*9,UNN1*9,BLNOTE*80,B*80
+     2    ,gpl_dir*256,gpl_script*256
 C
           REAL*8 GDTARP(1:101),GDTAR(1:101),AGDTARP(1:101),AGDTAR(1:101)
      1    ,DELX1,RDELA,LLIM,ULIM
@@ -1016,6 +1018,13 @@ C     DO A PLOT NEW
           CALL PLTDEV
           GRASET=.TRUE.
           PLEXIS=.TRUE.
+C     CLEAR GPL FILES FOR NEW PLOT
+          CLOSE(UNIT=117)
+          CALL dir_path_append(HOME, "gnuplot", gpl_dir)
+          CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+          OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+          write(117,'(2I5)') 0, 0
+          write(117,*)
 C     SET LETTER SIZE AND ANGLE
           BL20='                    '
           BLNOTE=BL20//BL20//BL20//BL20
