@@ -997,14 +997,14 @@ C
               RETURN
           END IF
           IF(ENNL.LT.10) THEN
-                        OUTLYNE=
-                1        'LESS THAN 10 ENERGY VALUES IN TABLE'
-                        CALL SHOWIT(1)
-                        OUTLYNE='NO ACTION TAKEN'
-                        CALL SHOWIT(1)
-                        CALL MACFAL
-                        RETURN
-                    END IF
+              OUTLYNE=
+     1        'LESS THAN 10 ENERGY VALUES IN TABLE'
+              CALL SHOWIT(1)
+              OUTLYNE='NO ACTION TAKEN'
+              CALL SHOWIT(1)
+              CALL MACFAL
+              RETURN
+          END IF
           IF(DF1.EQ.1.OR.DF1.EQ.0.AND.W1.EQ.0.0D0) DFLAG=0
           IF(DF1.EQ.0.AND.W1.NE.0.0D0) DFLAG=1
 C     GENERATE GRAPHIC
