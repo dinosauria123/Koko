@@ -377,13 +377,16 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if not data:
             return
         text = data.decode('utf-8', errors='replace')
+        # Strip ANSI escape sequences (color codes AND linenoise cursor
+        # movements like ESC[9G / ESC[J) so the GUI terminal shows plain
+        # text and the RTG parser never sees raw escape bytes.
+        text = re.sub(r'\x1b\[[0-9;?]*[A-Za-z]', '', text)
         self.append_msg(text)
-        # koko echoes a prompt like " 4:cmd> " (with ANSI escapes) after
-        # each command finishes. Mark it idle here (on the raw stream)
-        # because the prompt has no trailing newline, so it would otherwise
-        # stay stuck in _line_buf and never reach _capture_rtg's parser.
-        _clean = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
-        if re.search(r'\d+:\s*cmd>', _clean):
+        # koko echoes a prompt like " 4:cmd> " after each command finishes.
+        # Mark it idle here (on the cleaned stream) because the prompt has
+        # no trailing newline, so it would otherwise stay stuck in _line_buf
+        # and never reach _capture_rtg's parser.
+        if re.search(r'\d+:\s*cmd>', text):
             self._koko_idle = True
         if not hasattr(self, '_line_buf'):
             self._line_buf = ""
