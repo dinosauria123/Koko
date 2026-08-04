@@ -27,7 +27,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QDialogButtonBox, QInputDialog, QMenu,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
-from PyQt6.QtGui import QFont, QPixmap, QImage
+from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette
 
 
 # Commands that make koko write a plot script (drawcmd.gpl). Any of these,
@@ -908,7 +908,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         finally:
             self._table_updating = False
         # Highlight current row cyan; the previously selected row returns to
-        # grey (not white) so the "color returned" change is clearly visible.
+        # the table's alternate-base color (QPalette.AlternateBase), a soft
+        # tint that tracks the GUI's base color (so it is never a heavy gray)
+        # while still making the "color returned" change visible.
+        base_color = QApplication.palette().color(
+            QPalette.ColorRole.AlternateBase)
         for i in range(8):
             if self._row0 == row:
                 continue
@@ -917,7 +921,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     Qt.GlobalColor.cyan)
             if self.table.item(self._row0, i):
                 self.table.item(self._row0, i).setBackground(
-                    Qt.GlobalColor.lightGray)
+                    base_color)
         self._row0 = row
 
         # Defensive fallback: if wavelengths are still unset (e.g. the lens
