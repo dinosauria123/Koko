@@ -907,7 +907,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     self.table.setItem(self._row0, i, QTableWidgetItem(" "))
         finally:
             self._table_updating = False
-        # Highlight current row cyan, un-highlight previous white
+        # Highlight current row cyan; the previously selected row returns to
+        # grey (not white) so the "color returned" change is clearly visible.
         for i in range(8):
             if self._row0 == row:
                 continue
@@ -916,7 +917,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     Qt.GlobalColor.cyan)
             if self.table.item(self._row0, i):
                 self.table.item(self._row0, i).setBackground(
-                    Qt.GlobalColor.white)
+                    Qt.GlobalColor.lightGray)
         self._row0 = row
 
         # Defensive fallback: if wavelengths are still unset (e.g. the lens
