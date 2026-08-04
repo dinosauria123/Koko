@@ -840,8 +840,31 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                                     rows[-1][3], rows[-1][4], gi, ga,
                                     rows[-1][7])
 
+        # When the new row count is *smaller* than the existing one, Qt may
+        # emit a dataChanged() with an invalid (-1,-1) index range while it
+        # tears down the surplus rows. Guard that by explicitly removing the
+        # extra items before shrinking the row count (Qt 6.10 surfaces this as
+        # a "dataChanged() called with an invalid index range" warning).
+        if self.table.rowCount() > len(rows):
+            for r in range(len(rows), self.table.rowCount()):
+                for c in range(self.table.columnCount()):
+                    it = self.table.takeItem(r, c)
+                    if it is not None:
+                        del it
         self.table.setRowCount(len(rows))
-        self.table.setVerticalHeaderLabels([r[0] for r in rows])
+        # Avoid passing an empty label list to setVerticalHeaderLabels: an
+        # empty list drives QHeaderView to emit dataChanged(QModelIndex(-1,-1),
+        # QModelIndex(-1,-1)) which Qt 6.10 reports as the same warning. Only
+        # set labels when there is at least one row.
+        if len(rows) > 0:
+            self.table.setVerticalHeaderLabels([r[0] for r in rows])
+        # Re-enable updates BEFORE populating the cells. If updates are still
+        # disabled here, Qt 6.10.2 defers the dataChanged() emission and flushes
+        # it when updates are re-enabled, emitting dataChanged() with an invalid
+        # (-1,-1) index range -- which the new Qt 6.10 validation reports as the
+        # "dataChanged() called with an invalid index range" warning. Enabling
+        # first makes every setItem() emit with a valid index.
+        self.table.setUpdatesEnabled(True)
         for i, (surf, stype, radius, thickness, material, index,
                 abbe, ap) in enumerate(rows):
             self._set_cell(i, 0, surf)
@@ -853,7 +876,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._set_cell(i, 6, abbe)
             self._set_cell(i, 7, ap)
         self._table_updating = False
-        self.table.setUpdatesEnabled(True)
 
     # ----- material cell double-click -------------------------------------
 
