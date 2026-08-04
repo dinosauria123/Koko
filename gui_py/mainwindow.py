@@ -287,6 +287,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # parent
         self._koko_pid = proc.pid
         self._koko_fd = master
+        # Commands we have written to koko. koko (linenoise raw mode) echoes
+        # the typed command back into its pty output even with ECHO OFF, so
+        # the GUI strips these command strings from koko's raw output before
+        # displaying it -- the GUI already prints "> CMD" itself in send_koko,
+        # and we never want the command shown more than once.
+        self._sent_cmds = []
         # Poll the pty master on a timer. (QSocketNotifier on the master fd
         # proved unreliable here, whereas a periodic non-blocking os.read
         # reliably drains koko's output -- matching the standalone pty test.)
@@ -315,6 +321,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 self.current_lens = default_lens
                 self._read_lens_file_meta(default_lens)
 
+        # Disable koko's command echo-back. The GUI already echoes every
+        # command it sends (" > CMD" via send_koko/execute_command), so
+        # koko's own echo would just duplicate that output in the pane.
+        # Send ECHO OFF once koko has finished startup and is ready for
+        # input (it accepts commands after the initial prompt appears).
+        QTimer.singleShot(250, lambda: self.send_koko("ECHO OFF"))
         # give koko a moment, then ask for surface listing
         QTimer.singleShot(400, lambda: self.send_koko("RTG ALL"))
         return True
@@ -367,6 +379,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             return
         self.append_msg("> " + command.strip())
         self._koko_idle = False  # we just issued a command; koko is busy
+        # Remember what we sent so _poll_koko_pty can strip the echo koko
+        # writes back. Skip the bare "ECHO" query so its reply ("ECHO IS
+        # OFF/ON") is not accidentally truncated by the removal below.
+        cmd = command.strip()
+        if cmd.upper() != "ECHO":
+            self._sent_cmds.append(cmd)
+            if len(self._sent_cmds) > 8:
+                self._sent_cmds.pop(0)
         try:
             os.write(self._koko_fd, (command + "\n").encode('utf-8'))
         except OSError:
@@ -391,7 +411,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("LENSSAVE\n")
             self.send_koko("RTG ALL\n")
             return
-        self.append_msg("> " + command)
         self.send_koko(command)
         self.cmdLine.clear()
 
@@ -414,6 +433,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # movements like ESC[9G / ESC[J) so the GUI terminal shows plain
         # text and the RTG parser never sees raw escape bytes.
         text = re.sub(r'\x1b\[[0-9;?]*[A-Za-z]', '', text)
+        # Remove the command echo that koko (linenoise raw mode) writes back
+        # into its output: the typed command appears twice (once as the
+        # keystroke is drawn, once on enter) even with ECHO OFF. The GUI
+        # already prints "> CMD" in send_koko, so drop these echoes here to
+        # avoid the command being shown 2-3 times.
+        for c in getattr(self, '_sent_cmds', []):
+            if c:
+                text = text.replace(c, '')
         self.append_msg(text)
         # koko echoes a prompt like " 4:cmd> " after each command finishes.
         # Mark it idle here (on the cleaned stream) because the prompt has
