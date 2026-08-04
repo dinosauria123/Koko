@@ -601,6 +601,44 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.table.setItem(row, col, item)
         item.setText(str(value))
 
+    def _surface_type_str(self, surf):
+        """Compose the surface-type label for a row, mirroring the C++
+        surftypeCheck() accumulation in ReadFileToTable().
+
+        C++ maps each marker to a text token (independent checks on the
+        line content):
+          CC *    -> "Conic "
+          ASPH *  -> "Asphare "
+          TILT *  -> "Tilt "
+          REFS*   -> "REFS "
+          ASTOP*  -> "STOP "
+        The resulting string is what the C++ table puts in its column 0
+        (here column 1, "Surface Type"); the surface number itself is the
+        row index / vertical header, never part of this label.
+
+        NOTE: in the Python port both conic constants and the REFS/STOP
+        markers are recorded in self._ccv, so we must disambiguate by
+        content: a conic entry is a numeric value, while REFS/STOP entries
+        contain the literal tokens.
+        """
+        parts = []
+        ccv_val = self._ccv.get(surf, "") if hasattr(self, '_ccv') else ""
+        asph_val = self._asphv.get(surf, "") if hasattr(self, '_asphv') else ""
+        tilt_val = self._tiltv.get(surf, "") if hasattr(self, '_tiltv') else ""
+        # conic constant (numeric) -- only when not a REFS/STOP entry
+        if ccv_val and 'REFS' not in ccv_val and 'STOP' not in ccv_val \
+                and 'ASTOP' not in ccv_val:
+            parts.append("Conic")
+        if asph_val:
+            parts.append("Asphare")
+        if tilt_val:
+            parts.append("Tilt")
+        if 'REFS' in ccv_val:
+            parts.append("REFS")
+        if 'STOP' in ccv_val or 'ASTOP' in ccv_val:
+            parts.append("STOP")
+        return " ".join(parts)
+
     def populate_table(self, text):
         """Parse koko's 'BASIC LENS DATA' (RTG ALL) output into the table."""
         self._table_updating = True
@@ -717,8 +755,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 nxt_abbe if is_glass else "")
             nxt_index = ""
             nxt_abbe = ""
-            rows.append((surf, cur_type, radius, thickness, material,
-                         index, abbe, ""))
+            rows.append((surf, self._surface_type_str(int(surf)), radius,
+                         thickness, material, index, abbe, ""))
 
             # For catalog glasses (SCHOTT, OHARA, ...) koko's RTG ALL does NOT
             # print n/V, so read the binary catalog here (mirrors the C++
@@ -816,7 +854,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.lensPara.append("Wavelength (um): %.4f, %.4f, %.4f" % (
             self._lF, self._lD, self._lC))
 
-        surf_item = self.table.item(row, 0)
+        # Surface type lives in column 1 ("Surface Type"), mirroring the
+        # C++ table where column 0 holds the type text (here the surface
+        # number is the row's vertical header / the table row index).
+        surf_item = self.table.item(row, 1)
         surf_text = surf_item.text().strip() if surf_item else ""
         surf_type = "Surface type:"
         if not surf_text:
@@ -1280,6 +1321,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """
         self.current_lens = file_path
         base = os.path.splitext(os.path.basename(file_path))[0]
+        # Read lens metadata (LI, WV) straight from the .PRG file, mirroring
+        # the C++ GUI's ReadFileToTable(). RTG ALL does NOT echo the WV line,
+        # so parsing it from koko's terminal output (the old approach) left
+        # _lF/_lD/_lC at 0.0 and printed "Wavelength (um): 0.0000, ...".
+        self._read_lens_file_meta(file_path)
         # Defer the actual LENSREST until koko is idle. koko rejects a
         # LENSREST as INVALID CMD LEVEL if it arrives while a prior command
         # (notably VIE XZ / PNG generation) is still running, which would
@@ -1288,6 +1334,41 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._pending_lens_base = base
         self._pending_vie = True
         self._try_send_lensrest()
+
+    def _read_lens_file_meta(self, file_path):
+        """Extract LI (lens identifier) and WV (wavelengths) from the lens
+        .PRG file, exactly like the C++ MainWindow::ReadFileToTable().
+
+        koko's RTG ALL output omits the WV line, so the only reliable
+        source for wavelengths is the lens file itself. Set self._li and
+        self._lF/_lD/_lC (matching C++: lambda[0]=lD, [1]=lF, [2]=lC).
+        """
+        try:
+            with open(file_path, 'r', errors='replace') as fh:
+                lines = fh.readlines()
+        except OSError:
+            return
+        li = None
+        wv = None
+        for raw in lines:
+            line = raw.strip()
+            # LI line (lens identifier) -- same pattern the C++ uses
+            m_li = re.match(r'(?i)^LI\s*,?\s*(.+)$', line)
+            if m_li:
+                li = m_li.group(1).strip()
+            # WV line: "WV d f c [ND VD ...]"  (C++ scans for the three
+            # wavelength numbers around the dots)
+            if re.match(r'(?i)^WV\s', line):
+                nums = re.findall(r'[\d.]+', line)
+                if len(nums) >= 3:
+                    try:
+                        wv = (float(nums[0]), float(nums[1]), float(nums[2]))
+                    except ValueError:
+                        wv = None
+        if li is not None:
+            self._li = li
+        if wv is not None:
+            self._lD, self._lF, self._lC = wv
 
     def _try_send_lensrest(self):
         """Send the pending LENSREST once koko is idle, else retry shortly."""
