@@ -114,8 +114,11 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs )
    strncpy(tmp_prompt, prompt, nc);
    tmp_prompt[nc] = '\0';
 
-   // construct prompt with 8-bit color ESC sequences
-   sprintf(ln_prompt, "%c[38;5;%dm%s%c[38;5;15m", ESC, prompt_color, tmp_prompt, ESC);
+   // construct prompt WITHOUT ANSI color escape sequences.
+   // Color codes broke plain (non-ANSI) terminal capture and left raw
+   // escape bytes in the input stream, so emit the prompt as plain text.
+   strncpy(ln_prompt, tmp_prompt, nc);
+   ln_prompt[nc] = '\0';
    
    // prompt the user and return the answer
    ln_response = linenoise(ln_prompt);
