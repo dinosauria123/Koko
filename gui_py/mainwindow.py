@@ -160,6 +160,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.table.verticalHeader().setVisible(True)
         # lens data table: row click => lensPara detail (mirrors C++)
         self.table.cellClicked.connect(self.slot_lensInfo)
+        # Double-clicking Material/Index n/Abbe V opens the Material (nk)
+        # dialog. These columns are not directly editable (see _set_cell), so
+        # the only way to edit them is this dialog -- matching how koko's glass
+        # data is edited (via MODEL name,nd,vd).
+        self.table.cellDoubleClicked.connect(self._on_material_cell_double_clicked)
 
         # Editing is forwarded to koko only via the Return/Enter key handler
         # (eventFilter -> _send_table_current_cell), mirroring the C++ GUI
@@ -652,6 +657,17 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             item = QTableWidgetItem("")
             self.table.setItem(row, col, item)
         item.setText(str(value))
+        # Material / Index n / Abbe V columns (4/5/6) are NOT directly
+        # editable from the table: they are edited only through the Material
+        # (nk) dialog opened on double-click. Make them selectable but not
+        # editable so a normal cell edit can never fire for these columns.
+        if col in (4, 5, 6):
+            item.setFlags(Qt.ItemFlag.ItemIsSelectable
+                          | Qt.ItemFlag.ItemIsEnabled)
+        else:
+            item.setFlags(Qt.ItemFlag.ItemIsSelectable
+                          | Qt.ItemFlag.ItemIsEnabled
+                          | Qt.ItemFlag.ItemIsEditable)
 
     def _surface_type_str(self, surf):
         """Compose the surface-type label for a row, mirroring the C++
@@ -838,6 +854,40 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._set_cell(i, 7, ap)
         self._table_updating = False
         self.table.setUpdatesEnabled(True)
+
+    # ----- material cell double-click -------------------------------------
+
+    def _on_material_cell_double_clicked(self, row, col):
+        """Open the Material (nk) dialog when Material/Index n/Abbe V are
+        double-clicked. These columns are not directly editable, so this is the
+        only way to edit glass data. Mirrors the C++ Input Model flow."""
+        if self._koko_pid is None or row <= 0:
+            return
+        if col not in (4, 5, 6):   # Material / Index n / Abbe V only
+            return
+        dlg = NKDialog(self)
+        # Pre-fill from the current table values where available.
+        mat = self.table.item(row, 4)
+        idx = self.table.item(row, 5)
+        abb = self.table.item(row, 6)
+        name = mat.text().strip() if mat else ""
+        n = idx.text().strip() if idx else ""
+        v = abb.text().strip() if abb else ""
+        dlg.lineEdit.setText(name)
+        dlg.lineEdit_2.setText(n)
+        dlg.lineEdit_3.setText(v)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            name, n, v = dlg.values()
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % row)
+            cmd = "MODEL " + name
+            if n:
+                cmd += "," + n
+            if v:
+                cmd += "," + v
+            self.send_koko(cmd)
+            self.send_koko("EOS")
+            self.send_koko("RTG ALL")
 
     # ----- lens info (row click) ------------------------------------------
 
