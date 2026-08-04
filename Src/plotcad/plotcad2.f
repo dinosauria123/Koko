@@ -2061,7 +2061,7 @@ C
 C
           CHARACTER VIEWQ*8
           CHARACTER(LEN=256) :: gpl_dir, gpl_script
-          LOGICAL OPEN115,OPEN116,OPEN117,OPEN118,OPEN119,OPEN130,OPEN131
+          LOGICAL OPEN115,OPEN116,OPEN117,OPEN118,OPEN119,OPEN130,OPEN131,OPEN150
 C
           REAL*8 VIEW1,VIEW2,VIEW3,MDX,MDY,SFI,GAMGAM
 C
@@ -2260,6 +2260,18 @@ C       "CLEAR GPL FILES" block at PLTRED (which links fine here).
               IF(OPEN131) CLOSE(UNIT=131)
               CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
               OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+C       CLEAR THE DRAWCMD3 (UNIT 150) SCRIPT TOO. koko opens unit 150 only
+C       once at startup (koko.f:1850, guarded by IF(.NOT.OPEN150)), so the
+C       plot-body script keeps ACCUMULATING every VIE/DIST/SPD block for the
+C       life of the process. That makes drawcmd.gpl (header + drawcmd3) grow
+C       with every plot command, so the GUI's rendered figure overplots the
+C       previous lens/plot on top of the new one. Reopen 150 with
+C       STATUS='replace' here so each plot starts from a clean body -- the
+C       embedded GUI then sees exactly one (the latest) plot block.
+              INQUIRE(UNIT=150, OPENED=OPEN150)
+              IF(OPEN150) CLOSE(UNIT=150)
+              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
+              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
               CALL PLTDEV1
               GRASET=.TRUE.
 C     DO A FRAME
