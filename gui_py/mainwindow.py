@@ -77,11 +77,22 @@ class NKDialog(QDialog, Ui_nkDialog):
         super().__init__(parent)
         self.setupUi(self)
 
+    def values(self):
+        """Return the entered (name, n, v) without (re)showing the dialog.
+
+        Call this AFTER exec() has already returned. get_value() below
+        shows the dialog itself; calling get_value() after a prior exec()
+        would pop the dialog a second time (the "Cancel/OK re-opens it"
+        bug), so the callers that do `if dlg.exec() == Accepted:` must use
+        values() instead of get_value().
+        """
+        return (self.lineEdit.text().strip(),
+                self.lineEdit_2.text().strip(),
+                self.lineEdit_3.text().strip())
+
     def get_value(self):
         if self.exec() == QDialog.DialogCode.Accepted:
-            return (self.lineEdit.text().strip(),
-                    self.lineEdit_2.text().strip(),
-                    self.lineEdit_3.text().strip())
+            return self.values()
         return None
 
 
@@ -609,7 +620,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             dlg = NKDialog(self)
             dlg.lineEdit.setText(val)
             if dlg.exec() == QDialog.DialogCode.Accepted:
-                name, n, v = dlg.get_value()
+                name, n, v = dlg.values()
                 command = "MODEL " + name
                 if n:
                     command += "," + n
@@ -843,7 +854,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             dlg.lineEdit.setText(val)
             res = dlg.exec()
             if res == QDialog.DialogCode.Accepted:
-                name, n, v = dlg.get_value()
+                name, n, v = dlg.values()
                 cmd = "MODEL " + name
                 if n:
                     cmd += "," + n
@@ -1103,7 +1114,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Mirror C++ slot_actionModeldialog: open nkDialog, set MODEL."""
         dlg = NKDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            name, n, v = dlg.get_value()
+            name, n, v = dlg.values()
             cmd = "MODEL " + name
             if n:
                 cmd += "," + n
@@ -1487,7 +1498,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             row = 0
         dlg = NKDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            name, n, v = dlg.get_value()
+            name, n, v = dlg.values()
             cmd = "MODEL " + name
             if n:
                 cmd += "," + n
