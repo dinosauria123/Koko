@@ -873,8 +873,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 self.send_koko(cmd)
         elif col == 7:        # Aperture (CLAP) - C++ case 6 (col 6 in 0-based C++ table)
             self.send_koko("CLAP " + val)
-        else:
-            self.send_koko("RD " + val)  # fallback: treat unknown col as radius
+        # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
+        # directly editable in koko (C++ cases 0/4/5 do nothing), so send
+        # nothing. The previous "else: RD <val>" fallback wrongly turned an
+        # Abbe/Index edit into a Radius (RD) command, overwriting Radius
+        # with the Abbe value -- the reported "Abbe ends up in Radius" bug.
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
