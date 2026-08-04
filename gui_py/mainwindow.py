@@ -310,7 +310,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             # (mirrors C++ ReadFileToTable). Without this, _lF/_lD/_lC stay
             # 0.0 and the row-click panel shows "Wavelength (um): 0.0000".
             default_lens = os.path.join(
-                self.HOME, 'KODS', 'LENSES', 'COOCK.PRG')
+                self.HOME, 'LENSES', 'COOCK.PRG')
             if os.path.exists(default_lens):
                 self.current_lens = default_lens
                 self._read_lens_file_meta(default_lens)
@@ -472,11 +472,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     # load path -- startup default, explicit Open, and any
                     # LENSREST -- because they all emit this message.
                     for cand in (
-                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                        os.path.join(self.HOME, 'LENSES',
                                      name + '.PRG'),
-                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                        os.path.join(self.HOME, 'LENSES',
                                      name + '.prg'),
-                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                        os.path.join(self.HOME, 'LENSES',
                                      name + '.koko'),
                         name + '.PRG',
                         name + '.prg',
