@@ -161,9 +161,15 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # lens data table: row click => lensPara detail (mirrors C++)
         self.table.cellClicked.connect(self.slot_lensInfo)
 
-        # editing: forward cell edits to koko
+        # Editing is forwarded to koko only via the Return/Enter key handler
+        # (eventFilter -> _send_table_current_cell), mirroring the C++ GUI
+        # which uses slot_action_value_entered (returnPressed) and NOT a
+        # cellChanged signal. Connecting cellChanged here too caused a double
+        # dialog: editing a cell fired BOTH the Return-key path and this
+        # handler, so the nkDialog (Material edit) popped up twice -- and on
+        # Cancel it re-appeared as well. So we intentionally do NOT connect
+        # cellChanged.
         self._table_updating = False
-        self.table.cellChanged.connect(self.on_cell_changed)
         # right-click context menu (mirrors the C++ GUI)
         self.table.setContextMenuPolicy(
             Qt.ContextMenuPolicy.CustomContextMenu)
@@ -832,54 +838,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._set_cell(i, 7, ap)
         self._table_updating = False
         self.table.setUpdatesEnabled(True)
-
-    def on_cell_changed(self, row, col):
-        """Forward an edited table cell to koko (mirrors the C++ GUI)."""
-        if self._table_updating:
-            return
-        if row < 0 or self._koko_pid is None:
-            return
-        item = self.table.item(row, col)
-        if item is None:
-            return
-        val = item.text().strip()
-        if not val:
-            # Empty cell (e.g. a freshly-created " " placeholder from
-            # slot_lensInfo, or the user cleared the cell): never forward an
-            # empty RD/TH/MODEL command to koko, which would corrupt the lens.
-            return
-
-        # Surface 0 (object) is not editable in koko
-        if row == 0:
-            return
-
-        self.send_koko("U L")
-        self.send_koko("CHG %d" % row)
-        if col == 2:          # Radius
-            self.send_koko("RD " + val)
-        elif col == 3:        # Thickness
-            self.send_koko("TH " + val)
-        elif col == 4:        # Material -> use the nk dialog
-            dlg = NKDialog(self)
-            dlg.lineEdit.setText(val)
-            res = dlg.exec()
-            if res == QDialog.DialogCode.Accepted:
-                name, n, v = dlg.values()
-                cmd = "MODEL " + name
-                if n:
-                    cmd += "," + n
-                if v:
-                    cmd += "," + v
-                self.send_koko(cmd)
-        elif col == 7:        # Aperture (CLAP) - C++ case 6 (col 6 in 0-based C++ table)
-            self.send_koko("CLAP " + val)
-        # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
-        # directly editable in koko (C++ cases 0/4/5 do nothing), so send
-        # nothing. The previous "else: RD <val>" fallback wrongly turned an
-        # Abbe/Index edit into a Radius (RD) command, overwriting Radius
-        # with the Abbe value -- the reported "Abbe ends up in Radius" bug.
-        self.send_koko("EOS")
-        self.send_koko("RTG ALL")
 
     # ----- lens info (row click) ------------------------------------------
 
