@@ -91,60 +91,66 @@ C///////////////////////////////////////////////////////////////////////
           integer I1,I2,I3,I4            
 
             if (I4.eq.0) then
-              if (I3.eq.1) then
-                  write(130,'(2I5)') I1,I2    !black
-              else
-                  write(130,*)
-                  write(130,'(2I5)') I1,I2
+                if (I3.eq.1) then
+                    write(130,'(2I5)') I1,I2    !black
+                else
+                    write(130,*)
+                    write(130,'(2I5)') I1,I2
+                end if
+                flush(130)
               end if
+
+             if (I4.eq.1) then
+                if (I3.eq.1) then
+                    write(115,'(2I5)') I1,I2    !yellow
+                else
+                    write(115,*)
+                    write(115,'(2I5)') I1,I2
+                end if
+                flush(115)
+              end if
+
+             if (I4.eq.2) then
+                if (I3.eq.1) then
+                    write(116,'(2I5)') I1,I2    !magenta
+                else
+                    write(116,*)
+                    write(116,'(2I5)') I1,I2
+                end if
+                flush(116)
+             end if
+
+             if (I4.eq.3) then
+                if (I3.eq.1) then
+                    write(117,'(2I5)') I1,I2    !red
+                else
+                    write(117,*)
+                    write(117,'(2I5)') I1,I2
+                end if
+                flush(117)
+             end if
+
+             if (I4.eq.4) then
+                if (I3.eq.1) then
+                    write(118,'(2I5)') I1,I2    !cyan
+                else
+                    write(118,*)
+                    write(118,'(2I5)') I1,I2
+                end if
+                flush(118)
+              end if
+
+            if (I4.eq.2) then
+                if (I3.eq.1) then
+                    write(131,'(2I5)') I1,I2    !break black (dashed ???)
+                else
+                    write(131,*)
+                    write(131,'(2I5)') I1,I2
+                end if
+                flush(131)
             end if
 
-           if (I4.eq.1) then
-              if (I3.eq.1) then
-                  write(115,'(2I5)') I1,I2    !yellow
-              else
-                  write(115,*)
-                  write(115,'(2I5)') I1,I2
-              end if
-            end if
-
-           if (I4.eq.2) then
-              if (I3.eq.1) then
-                  write(116,'(2I5)') I1,I2    !magenta
-              else
-                  write(116,*)
-                  write(116,'(2I5)') I1,I2
-              end if
-           end if
-
-           if (I4.eq.3) then
-              if (I3.eq.1) then
-                  write(117,'(2I5)') I1,I2    !red
-              else
-                  write(117,*)
-                  write(117,'(2I5)') I1,I2
-              end if        
-           end if
-
-           if (I4.eq.4) then
-              if (I3.eq.1) then
-                  write(118,'(2I5)') I1,I2    !cyan
-              else
-                  write(118,*)
-                  write(118,'(2I5)') I1,I2
-              end if
-            end if
-
-          if (I4.eq.2) then
-              if (I3.eq.1) then
-                  write(131,'(2I5)') I1,I2    !break black (dashed ???)
-              else
-                  write(131,*)
-                  write(131,'(2I5)') I1,I2
-              end if
-          end if
-
-      END SUBROUTINE drawdatasave
+            END SUBROUTINE drawdatasave
 
 
       SUBROUTINE drawdatasave2(I1,I2,I3,I4,I5,I6,I7,I8)

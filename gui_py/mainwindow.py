@@ -240,16 +240,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # safe fork+exec and is the reliable path here.
         try:
             # Flags for the embedded Qt GUI (see Src/koko.f:237-251):
-            #   -G  -> GENERATE_PLOT_PNG: koko renders the plot to a PNG
-            #         file itself via "DISPLAY="" gnuplot ...". This HANGS in
-            #         this environment (koko never returns to its prompt after
-            #         VIE XZ), so we do NOT use -G.
-            #   -n  -> NOLAUNCH_GNUPLOT: koko writes the plot script to
-            #         $TMPDIR/gnuplot/drawcmd.gpl on VIE XZ but does NOT spawn
-            #         gnuplot, so it stays responsive. The GUI then runs
-            #         gnuplot itself (see render_plots) to produce the PNG.
+            #   -G  -> GENERATE_PLOT_PNG: koko writes the gnuplot data files
+            #         (black/yellow/red.gpl under ~/KODS/gnuplot) on VIE XZ.
+            #         It used to also call render_plot_png (an internal gnuplot
+            #         that hung the prompt with no X display); that call is now
+            #         skipped in PDRAW (hardwar1.f), so koko stays responsive
+            #         and the GUI renders the PNG itself via render_plots.
+            #         -G is REQUIRED: only GENERATE_PLOT_PNG makes koko emit
+            #         the actual trace data into the .gpl files (otherwise they
+            #         stay empty and the plot shows no lens lines).
+            #   -n  -> NOLAUNCH_GNUPLOT: keeps koko from spawning the native
+            #         gnuplot wxt window; set implicitly by -G as well.
             proc = subprocess.Popen(
-                [self.koko_path, '-n'],
+                [self.koko_path, '-G'],
                 stdin=slave, stdout=slave, stderr=slave,
                 start_new_session=True, close_fds=True,
             )

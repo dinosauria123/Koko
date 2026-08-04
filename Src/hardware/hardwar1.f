@@ -446,10 +446,19 @@ C       CHECK SYNTAX
           ! -n flag set by the embedded GUI: skip launching the native
           ! gnuplot window. The .gpl files are still written and the
           ! GUI will render the plot itself.
+          !
+          ! When GENERATE_PLOT_PNG is set (the -G flag, used by the
+          ! embedded PyQt GUI) koko writes the gnuplot data files
+          ! (black/yellow/red.gpl) itself, but we must NOT call
+          ! render_plot_png here: that spawns an internal gnuplot which
+          ! hangs the interactive prompt (no X display, wxt terminal in
+          ! drawcmd.gpl). The GUI reads the data files and renders the
+          ! PNG itself, so we just skip the native render and return.
           IF (.NOT. NOLAUNCH_GNUPLOT) THEN
               CALL shell_command( plotcommand )
           ELSE IF (GENERATE_PLOT_PNG) THEN
-              CALL render_plot_png(TRIM(HOME)//'gnuplot/drawcmd.gpl')
+              ! data files already written; GUI renders the PNG.
+              CONTINUE
           END IF
 
       END SUBROUTINE PDRAW

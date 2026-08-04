@@ -2045,6 +2045,7 @@ C     HERE WE DO THE PLOT LI AND PLOT AXIS DRAWING
 C SUB VIE.FOR
       SUBROUTINE VIE(CACOCHVIE)
 C
+          USE opsys
           IMPLICIT NONE
 C
 C       THIS PROGRAM CONTROLS THE "VIE" AND "VIECO" COMMANDS
@@ -2059,6 +2060,8 @@ C
      1    ,VS3,I,J,CACOCHVIE
 C
           CHARACTER VIEWQ*8
+          CHARACTER(LEN=256) :: gpl_dir, gpl_script
+          LOGICAL OPEN115,OPEN116,OPEN117,OPEN118,OPEN119,OPEN130,OPEN131
 C
           REAL*8 VIEW1,VIEW2,VIEW3,MDX,MDY,SFI,GAMGAM
 C
@@ -2220,6 +2223,43 @@ C******************************************
 C
           IF(.NOT.VIEOVERLAY) THEN
 C       NOT A VIE OVERLAY
+C       CLEAR GPL TRACE FILES FOR A FRESH PLOT: without this, the previous
+C       lens's points accumulate in black/yellow/red.gpl and the embedded
+C       GUI's rendered plot keeps stale traces on a lens switch. Close and
+C       reopen each unit with STATUS='replace' (empties the file). Guard
+C       every CLOSE with INQUIRE(OPENED=) since some units may not be open
+C       yet at VIE entry (a bare CLOSE on an unopened unit aborts koko).
+C       Use dir_path_append exactly like the startup init and the existing
+C       "CLEAR GPL FILES" block at PLTRED (which links fine here).
+              CALL dir_path_append(HOME, "gnuplot", gpl_dir)
+              INQUIRE(UNIT=115, OPENED=OPEN115)
+              IF(OPEN115) CLOSE(UNIT=115)
+              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
+              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=116, OPENED=OPEN116)
+              IF(OPEN116) CLOSE(UNIT=116)
+              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
+              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=117, OPENED=OPEN117)
+              IF(OPEN117) CLOSE(UNIT=117)
+              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=118, OPENED=OPEN118)
+              IF(OPEN118) CLOSE(UNIT=118)
+              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
+              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=119, OPENED=OPEN119)
+              IF(OPEN119) CLOSE(UNIT=119)
+              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
+              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=130, OPENED=OPEN130)
+              IF(OPEN130) CLOSE(UNIT=130)
+              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
+              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+              INQUIRE(UNIT=131, OPENED=OPEN131)
+              IF(OPEN131) CLOSE(UNIT=131)
+              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
+              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
               CALL PLTDEV1
               GRASET=.TRUE.
 C     DO A FRAME
