@@ -612,11 +612,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("U L")
         self.send_koko("CHG %d" % row)
         command = None
-        if col == 1:
+        # NOTE: Python's table has a leading "Surf" column, so its column
+        # indices are +1 vs the C++ table the original switch() was written
+        # for. These must match on_cell_changed() below.
+        if col == 2:          # Radius
             command = "RD " + val
-        elif col == 2:
+        elif col == 3:        # Thickness
             command = "TH " + val
-        elif col == 3:
+        elif col == 4:        # Material -> use the nk dialog
             dlg = NKDialog(self)
             dlg.lineEdit.setText(val)
             if dlg.exec() == QDialog.DialogCode.Accepted:
@@ -626,8 +629,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     command += "," + n
                 if v:
                     command += "," + v
-        elif col == 6:
+        elif col == 7:        # Aperture (CLAP)
             command = "CLAP " + val
+        # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
+        # directly editable in koko (matches C++ case 0/4/5 which do nothing).
         if command:
             self.send_koko(command)
         self.send_koko("EOS")
