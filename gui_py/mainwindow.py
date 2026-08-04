@@ -838,6 +838,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if item is None:
             return
         val = item.text().strip()
+        if not val:
+            # Empty cell (e.g. a freshly-created " " placeholder from
+            # slot_lensInfo, or the user cleared the cell): never forward an
+            # empty RD/TH/MODEL command to koko, which would corrupt the lens.
+            return
 
         # Surface 0 (object) is not editable in koko
         if row == 0:
@@ -872,14 +877,22 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     def slot_lensInfo(self, row, col):
         """Show surface detail info when clicking a table row (mirrors C++)."""
+        # Fill any empty cells in the clicked/previous row so background
+        # highlighting works. Do this under the _table_updating guard so the
+        # programmatic setText does NOT fire cellChanged -> on_cell_changed
+        # (which would otherwise emit a spurious RD/TH command and rewrite
+        # the Radius when a cell happens to be empty).
+        self._table_updating = True
+        try:
+            for i in range(8):
+                if self.table.item(row, i) is None:
+                    self.table.setItem(row, i, QTableWidgetItem(" "))
+                if self.table.item(self._row0, i) is None:
+                    self.table.setItem(self._row0, i, QTableWidgetItem(" "))
+        finally:
+            self._table_updating = False
         # Highlight current row cyan, un-highlight previous white
         for i in range(8):
-            item_row = self.table.item(row, i)
-            item_prev = self.table.item(self._row0, i)
-            if item_row is None:
-                self._set_cell(row, i, " ")
-            if item_prev is None:
-                self._set_cell(self._row0, i, " ")
             if self._row0 == row:
                 continue
             if self.table.item(row, i):
