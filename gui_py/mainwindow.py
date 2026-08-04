@@ -281,6 +281,17 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # and is ready to accept the LENSREST command.
         if lens_path:
             QTimer.singleShot(600, lambda: self.load_lens(lens_path))
+        else:
+            # No explicit lens: koko auto-loads its default (Cooke Triplet)
+            # into memory but emits NO "LENS SAVED AS" message and NO LI/WV
+            # line, so read the default lens file's metadata directly here
+            # (mirrors C++ ReadFileToTable). Without this, _lF/_lD/_lC stay
+            # 0.0 and the row-click panel shows "Wavelength (um): 0.0000".
+            default_lens = os.path.join(
+                self.HOME, 'KODS', 'LENSES', 'COOCK.PRG')
+            if os.path.exists(default_lens):
+                self.current_lens = default_lens
+                self._read_lens_file_meta(default_lens)
 
         # give koko a moment, then ask for surface listing
         QTimer.singleShot(400, lambda: self.send_koko("RTG ALL"))
@@ -431,7 +442,26 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     r'LENS SAVED AS:\s*(\S+?)\.PRG\s+HAS BEEN RESTORED',
                     stripped, re.IGNORECASE)
                 if m_restored:
-                    self._li = m_restored.group(1)
+                    name = m_restored.group(1)
+                    self._li = name
+                    # C++ reads LI/WV straight from the lens file; koko's
+                    # RTG ALL does NOT echo the WV line, so parse the lens
+                    # file here (mirrors C++ ReadFileToTable). Covers every
+                    # load path -- startup default, explicit Open, and any
+                    # LENSREST -- because they all emit this message.
+                    for cand in (
+                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                                     name + '.PRG'),
+                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                                     name + '.prg'),
+                        os.path.join(self.HOME, 'KODS', 'LENSES',
+                                     name + '.koko'),
+                        name + '.PRG',
+                        name + '.prg',
+                    ):
+                        if os.path.exists(cand):
+                            self._read_lens_file_meta(cand)
+                            break
                     # A new lens is being restored: discard any BASIC LENS
                     # DATA block we were accumulating for the previous lens
                     # so the upcoming RTG ALL is captured into a fresh buffer.
@@ -848,6 +878,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 self.table.item(self._row0, i).setBackground(
                     Qt.GlobalColor.white)
         self._row0 = row
+
+        # Defensive fallback: if wavelengths are still unset (e.g. the lens
+        # was loaded without a file read), try to recover them from the
+        # current lens file. Mirrors C++ ReadFileToTable reading the .PRG.
+        cur = getattr(self, 'current_lens', None)
+        if self._lF == 0.0 and isinstance(cur, str) and cur and \
+                os.path.exists(cur):
+            self._read_lens_file_meta(cur)
 
         self.lensPara.clear()
         self.lensPara.append(self._li)
