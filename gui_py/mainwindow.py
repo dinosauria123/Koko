@@ -1695,17 +1695,39 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 "** %s not found or empty -- did the plot command run? **"
                 % os.path.basename(gpl))
             return
-        # drawcmd.gpl ends with "pause -1" (interactive wait) and uses the
-        # wxt terminal; both would block/hang gnuplot in batch mode. Strip
-        # any "pause" line and let our pngcairo terminal + output win.
+        # drawcmd.gpl is a concatenation of MULTIPLE independent plot
+        # blocks (e.g. X-Z layout, field curvature, spot diagram), each
+        # terminated by "pause -1". koko appends every block for the
+        # current draw into one file, so loading the whole thing makes
+        # gnuplot overplot all blocks on a single canvas (the "graph
+        # overprint" bug). We render ONLY the LAST block -- that is the
+        # figure the user actually requested. We split on "pause" lines
+        # (the block separators) and keep the trailing fragment.
+        # Also strip any "set terminal" line so our pngcairo terminal wins.
+        with open(gpl, 'r') as src:
+            raw_lines = src.readlines()
+        # Split into blocks at every line starting with "pause" (case-
+        # insensitive); keep the last non-empty block.
+        blocks = []
+        cur = []
+        for line in raw_lines:
+            if line.strip().lower().startswith('pause'):
+                if cur:
+                    blocks.append(cur)
+                cur = []
+            else:
+                cur.append(line)
+        if cur:
+            blocks.append(cur)
+        # Fallback: if splitting yielded nothing (no pause markers), use
+        # the whole file.
+        last_block = blocks[-1] if blocks else raw_lines
         clean_gpl = os.path.join(self.TMPDIR, 'koko_gui_drawcmd.gpl')
-        with open(gpl, 'r') as src, open(clean_gpl, 'w') as dst:
-            for line in src:
+        with open(clean_gpl, 'w') as dst:
+            for line in last_block:
                 low = line.strip().lower()
-                # Drop interactive/terminal lines: "pause -1" blocks gnuplot
-                # forever, and "set terminal wxt" would re-init wxWidgets
-                # (needs an X display) and override our pngcairo terminal.
-                if low.startswith('pause') or low.startswith('set terminal'):
+                # Drop any terminal line so our pngcairo terminal wins.
+                if low.startswith('set terminal'):
                     continue
                 dst.write(line)
         png_path = os.path.join(self.TMPDIR, 'koko_gnuplot_plot.png')
