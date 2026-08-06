@@ -324,7 +324,8 @@ C///////////////////////////////////////////////////////////////////////
                 CHARACTER(LEN=256) :: file_a, file_b, file_out
                 CHARACTER(LEN=32)  :: gpterm, gpfont
                 LOGICAL :: gen_png
-      
+                LOGICAL :: OPEN150
+
                 ! Reset the per-plot-block clear flag so the NEXT plot
                 ! command starts from a clean body (overprint fix).
                 GPL_BLK_START = .TRUE.
@@ -360,6 +361,10 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(file_out, "gnuplot", file_out)
           CALL dir_path_append(file_out, "drawcmd.gpl", file_out)
 
+          ! Flush any buffered gnuplot body (unit 150 / drawcmd3.gpl) so the
+          ! cat-based append_files below sees the complete content.
+          INQUIRE(UNIT=150, OPENED=OPEN150)
+          IF(OPEN150) FLUSH(150)
           ! create full gnuplot script
           CALL append_files(file_a, file_b, file_out)
 
@@ -373,6 +378,7 @@ C///////////////////////////////////////////////////////////////////////
         
           INCLUDE 'datmai.inc'
           CHARACTER(LEN=256) :: file_a, file_b, file_out
+          LOGICAL :: OPEN150
 
           ! Reset the per-plot-block clear flag so the NEXT plot command
           ! starts from a clean body (overprint fix).
@@ -393,6 +399,10 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(file_out, "gnuplot", file_out)
           CALL dir_path_append(file_out, "drawcmd.gpl", file_out)
 
+          ! Flush any buffered gnuplot body (unit 150 / drawcmd3.gpl) so the
+          ! cat-based append_files below sees the complete content.
+          INQUIRE(UNIT=150, OPENED=OPEN150)
+          IF(OPEN150) FLUSH(150)
           ! create full gnuplot script
           CALL append_files(file_a, file_b, file_out)
 

@@ -2225,17 +2225,9 @@ C******************************************
 C
           IF(.NOT.VIEOVERLAY) THEN
 C       NOT A VIE OVERLAY
-C       CLEAR GPL TRACE FILES FOR A FRESH PLOT: without this, the previous
-C       lens's points accumulate in black/yellow/red.gpl and the embedded
-C       GUI's rendered plot keeps stale traces on a lens switch. Close and
-C       reopen each unit with STATUS='replace' (empties the file). Guard
-C       every CLOSE with INQUIRE(OPENED=) since some units may not be open
-C       yet at VIE entry (a bare CLOSE on an unopened unit aborts koko).
-C       Use dir_path_append exactly like the startup init and the existing
-C       "CLEAR GPL FILES" block at PLTRED (which links fine here).
-              CALL gpl_trace_clear
-              GPL_BLK_START = .TRUE.
-              CALL drawcmd3_clear
+C       PLTDEV1 (called below) truncates unit 150 / drawcmd3.gpl and resets
+C       gpl_trace_clear + GPL_BLK_START, so the per-plot fresh-block
+C       invariant is established there. No double-clear here.
               CALL PLTDEV1
               GRASET=.TRUE.
 C     DO A FRAME
