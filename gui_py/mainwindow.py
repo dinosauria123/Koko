@@ -27,7 +27,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QDialogButtonBox, QInputDialog, QMenu,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
-from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor
+from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
 
 
 # Commands that make koko write a plot script (drawcmd.gpl). Any of these,
@@ -719,6 +719,16 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             item.setFlags(Qt.ItemFlag.ItemIsSelectable
                           | Qt.ItemFlag.ItemIsEnabled
                           | Qt.ItemFlag.ItemIsEditable)
+        # Explicitly give every cell a real background + foreground. Under
+        # PyQt6.10 an item with no explicit background renders with an
+        # invalid QColor (observed as black), and combined with the default
+        # (black) foreground text becomes invisible -- this is what made the
+        # Surface (col 0) number look "gone". White base + black text keeps
+        # every cell legible from the moment the table is populated, before
+        # any click. (slot_lensInfo later re-applies highlight colors.)
+        item.setBackground(QBrush(QApplication.palette().color(
+            QPalette.ColorRole.Base)))
+        item.setForeground(QBrush(QColor('black')))
 
     def _surface_type_str(self, surf):
         """Compose the surface-type label for a row, mirroring the C++
@@ -1009,6 +1019,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     it.setBackground(sel_color)
                 else:
                     it.setBackground(base_color)
+                # Explicitly pin the foreground to black. After setBackground,
+                # PyQt6 may still render the cell with the palette's
+                # HighlightedText (white) foreground -- e.g. when the item stays
+                # in a selected state -- which on a white base color makes the
+                # text invisible (white-on-white). Black foreground keeps the
+                # Surface number (and every other cell) legible on both the
+                # white base and the cyan highlight.
+                it.setForeground(QBrush(QColor('black')))
         self._row0 = row
 
         # Defensive fallback: if wavelengths are still unset (e.g. the lens
