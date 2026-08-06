@@ -1784,9 +1784,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 dst.write(line)
         # Unique PNG path per render so two renders can never clobber the
         # same file and show a half-written / stale image.
-        png_base = 'koko_gnuplot_plot_%d.png' % (getattr(self, '_png_seq', 0) + 1)
         self._png_seq = getattr(self, '_png_seq', 0) + 1
-        png_path = os.path.join(self.TMPDIR, png_base)
+        png_path = os.path.join(self.TMPDIR,
+                                'koko_gnuplot_plot_%d.png' % self._png_seq)
         try:
             os.remove(png_path)
         except OSError:
@@ -1870,9 +1870,14 @@ class PlotWindow(QMainWindow):
         self._owner = owner
 
     def closeEvent(self, event):
-        super().closeEvent(event)
+        # Notify the owner BEFORE the default close (which may tear the
+        # widget down) so it can delete the PNG and reset its reference
+        # while the window is still fully alive.
         if self._owner is not None:
             self._owner._on_plot_window_closed()
+            self._owner = None
+        event.accept()
+        super().closeEvent(event)
 
 
 def main():
