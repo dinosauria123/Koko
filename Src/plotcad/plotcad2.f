@@ -888,7 +888,7 @@ C     NO FAN WAS DONE
 
 C SUB PLTRED.FOR
       SUBROUTINE PLTRED
-C
+          USE gplblk_mod
           USE opsys
           IMPLICIT NONE
 C
@@ -924,6 +924,7 @@ C
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           INCLUDE 'dathgr.inc'
+          GPL_BLK_START = .TRUE.
           SQUARE=.FALSE.
           ROUND=.FALSE.
           IF(EXTRED.OR.DEXTRED) THEN
@@ -2044,6 +2045,7 @@ C     HERE WE DO THE PLOT LI AND PLOT AXIS DRAWING
 
 C SUB VIE.FOR
       SUBROUTINE VIE(CACOCHVIE)
+          USE gplblk_mod
 C
           USE opsys
           IMPLICIT NONE
@@ -2231,47 +2233,9 @@ C       every CLOSE with INQUIRE(OPENED=) since some units may not be open
 C       yet at VIE entry (a bare CLOSE on an unopened unit aborts koko).
 C       Use dir_path_append exactly like the startup init and the existing
 C       "CLEAR GPL FILES" block at PLTRED (which links fine here).
-              CALL dir_path_append(HOME, "gnuplot", gpl_dir)
-              INQUIRE(UNIT=115, OPENED=OPEN115)
-              IF(OPEN115) CLOSE(UNIT=115)
-              CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
-              OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=116, OPENED=OPEN116)
-              IF(OPEN116) CLOSE(UNIT=116)
-              CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
-              OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=117, OPENED=OPEN117)
-              IF(OPEN117) CLOSE(UNIT=117)
-              CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
-              OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=118, OPENED=OPEN118)
-              IF(OPEN118) CLOSE(UNIT=118)
-              CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
-              OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=119, OPENED=OPEN119)
-              IF(OPEN119) CLOSE(UNIT=119)
-              CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
-              OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=130, OPENED=OPEN130)
-              IF(OPEN130) CLOSE(UNIT=130)
-              CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
-              OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
-              INQUIRE(UNIT=131, OPENED=OPEN131)
-              IF(OPEN131) CLOSE(UNIT=131)
-              CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
-              OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
-C       CLEAR THE DRAWCMD3 (UNIT 150) SCRIPT TOO. koko opens unit 150 only
-C       once at startup (koko.f:1850, guarded by IF(.NOT.OPEN150)), so the
-C       plot-body script keeps ACCUMULATING every VIE/DIST/SPD block for the
-C       life of the process. That makes drawcmd.gpl (header + drawcmd3) grow
-C       with every plot command, so the GUI's rendered figure overplots the
-C       previous lens/plot on top of the new one. Reopen 150 with
-C       STATUS='replace' here so each plot starts from a clean body -- the
-C       embedded GUI then sees exactly one (the latest) plot block.
-              INQUIRE(UNIT=150, OPENED=OPEN150)
-              IF(OPEN150) CLOSE(UNIT=150)
-              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
-              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
+              CALL gpl_trace_clear
+              GPL_BLK_START = .TRUE.
+              CALL drawcmd3_clear
               CALL PLTDEV1
               GRASET=.TRUE.
 C     DO A FRAME
@@ -5896,3 +5860,48 @@ C     HERE WE DO THE PLOT LI AND PLOT AXIS DRAWING
           RETURN
       END
 
+
+
+      SUBROUTINE gpl_trace_clear
+C     Empty every gnuplot trace file (yellow/magenta/red/cyan/contdata/
+C     black/breakblack) so a new plot starts from a clean canvas instead of
+C     accumulating the previous lens/plot's points. Called by VIE, DIST,
+C     PLTDIST, SPD, etc. (via PLTDEV/PLTDEV1 and the VIE path) so ANY plot
+C     command gets a fresh set of trace files -- this is what stops the
+C     "black overlay" overprint the embedded GUI was showing.
+          USE opsys
+          USE gplblk_mod
+          IMPLICIT NONE
+          INCLUDE 'datmai.inc'
+          CHARACTER(LEN=256) :: gpl_dir, gpl_script
+          LOGICAL OPEN115,OPEN116,OPEN117,OPEN118,OPEN119,OPEN130,OPEN131
+          CALL dir_path_append(HOME, "gnuplot", gpl_dir)
+          INQUIRE(UNIT=115, OPENED=OPEN115)
+          IF(OPEN115) CLOSE(UNIT=115)
+          CALL dir_path_append(gpl_dir, "yellow.gpl", gpl_script)
+          OPEN(UNIT=115, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=116, OPENED=OPEN116)
+          IF(OPEN116) CLOSE(UNIT=116)
+          CALL dir_path_append(gpl_dir, "magenta.gpl", gpl_script)
+          OPEN(UNIT=116, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=117, OPENED=OPEN117)
+          IF(OPEN117) CLOSE(UNIT=117)
+          CALL dir_path_append(gpl_dir, "red.gpl", gpl_script)
+          OPEN(UNIT=117, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=118, OPENED=OPEN118)
+          IF(OPEN118) CLOSE(UNIT=118)
+          CALL dir_path_append(gpl_dir, "cyan.gpl", gpl_script)
+          OPEN(UNIT=118, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=119, OPENED=OPEN119)
+          IF(OPEN119) CLOSE(UNIT=119)
+          CALL dir_path_append(gpl_dir, "contdata.gpl", gpl_script)
+          OPEN(UNIT=119, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=130, OPENED=OPEN130)
+          IF(OPEN130) CLOSE(UNIT=130)
+          CALL dir_path_append(gpl_dir, "black.gpl", gpl_script)
+          OPEN(UNIT=130, STATUS='replace', FILE=TRIM(gpl_script))
+          INQUIRE(UNIT=131, OPENED=OPEN131)
+          IF(OPEN131) CLOSE(UNIT=131)
+          CALL dir_path_append(gpl_dir, "breakblack.gpl", gpl_script)
+          OPEN(UNIT=131, STATUS='replace', FILE=TRIM(gpl_script))
+      END SUBROUTINE gpl_trace_clear

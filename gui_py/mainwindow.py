@@ -185,6 +185,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
         # plot image window
         self.plot_window = None
+        # Path of the PNG currently shown in plot_window (so we can delete it
+        # when the window is closed). None when no plot is shown.
+        self._plot_png_path = None
+        # Render serialization: a plot command may fire while a previous
+        # render is still polling or running. Without guards, VIE XZ / DIST /
+        # PLTDIST issued in quick succession spawn several concurrent
+        # poll+render chains that write the same fixed PNG path and the
+        # stale image gets shown on top of the new one (the "overprint"
+        # the user sees). These flags force a single in-flight render.
+        self._plot_poll_active = False   # a poll chain is currently running
+        self._rendering = False          # render_plots() is executing
+        self._render_pending = False     # a render was requested during a run
 
         # surface detail storage (mirrors C++ ccv/asphv/asph2v/tiltv vectors)
         self._ccv = {}
@@ -1382,7 +1394,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         return ('SPD' in up) or ('PSF' in up) or ('CAPFN' in up)
 
     def _schedule_plot_render(self):
-        """Wait until koko updates drawcmd.gpl, then render the graph."""
+        """Wait until koko updates drawcmd.gpl, then render the graph.
+
+        Serialized: if a poll chain is already in flight, just mark a
+        pending request so the running chain re-renders once more at the
+        end instead of spawning a second concurrent chain (which would
+        write the same fixed PNG path and overprint the image).
+        """
+        if self._plot_poll_active:
+            self._render_pending = True
+            return
+        self._plot_poll_active = True
+        self._render_pending = False
         gpl = os.path.join(self.HOME, 'gnuplot', 'drawcmd.gpl')
         try:
             base = os.path.getmtime(gpl)
@@ -1399,6 +1422,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         except OSError:
             m = 0.0
         if m > self._plot_poll['base'] or self._plot_poll['tries'] >= 12:
+            # Stop polling; hand off to render_plots (which is itself
+            # serialized so two chains can never render at once).
+            self._plot_poll_active = False
             self.render_plots()
         else:
             QTimer.singleShot(400, self._poll_plot_render)
@@ -1686,7 +1712,27 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         does NOT spawn gnuplot itself (launching gnuplot from koko hangs in
         this environment). Instead we run gnuplot here to produce the PNG
         and show it -- a fresh image on every lens switch.
+
+        Serialized: only one render runs at a time. If a new plot request
+        arrives while we are mid-render, it is queued (at most one) and
+        replayed on exit, so rapid VIE XZ / DIST / PLTDIST clicks can never
+        write the same PNG path concurrently and overprint the image.
         """
+        # If already rendering, queue a single replay and bail.
+        if self._rendering:
+            self._render_pending = True
+            return
+        self._rendering = True
+        try:
+            self._render_plots_inner(fmt)
+        finally:
+            self._rendering = False
+            # If another plot arrived during this render, replay once.
+            if self._render_pending:
+                self._render_pending = False
+                self.render_plots(fmt)
+
+    def _render_plots_inner(self, fmt=None):
         import subprocess as _sp
         gpl = os.path.join(os.path.expanduser('~'), 'KODS', 'gnuplot',
                            'drawcmd.gpl')
@@ -1730,7 +1776,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 if low.startswith('set terminal'):
                     continue
                 dst.write(line)
-        png_path = os.path.join(self.TMPDIR, 'koko_gnuplot_plot.png')
+        # Unique PNG path per render so two renders can never clobber the
+        # same file and show a half-written / stale image.
+        png_base = 'koko_gnuplot_plot_%d.png' % (getattr(self, '_png_seq', 0) + 1)
+        self._png_seq = getattr(self, '_png_seq', 0) + 1
+        png_path = os.path.join(self.TMPDIR, png_base)
         try:
             os.remove(png_path)
         except OSError:
@@ -1766,11 +1816,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # never be hidden behind the main window.
         if self.plot_window is None:
             from PyQt6.QtWidgets import QLabel
-            self.plot_window = QMainWindow()
+            self.plot_window = PlotWindow(self)
             self.plot_window.setWindowTitle("Koko Plot")
             self._plot_label = QLabel()
             self._plot_label.setScaledContents(True)
             self.plot_window.setCentralWidget(self._plot_label)
+        self._plot_png_path = path
         self._plot_label.setPixmap(pix)
         # Enforce a sensible minimum size so a degenerate pixmap can't
         # collapse the window to 0x0 (which looks like "nothing appears").
@@ -1782,11 +1833,40 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.plot_window.show()
         self.plot_window.raise_()
 
+    def _on_plot_window_closed(self):
+        """Plot window closed: drop its PNG and reset so the next plot is clean."""
+        if self._plot_png_path:
+            try:
+                os.remove(self._plot_png_path)
+            except OSError:
+                pass
+            self._plot_png_path = None
+        self.plot_window = None
+
     # ----- shutdown -------------------------------------------------------
 
     def slot_quit2(self):
         self._kill_koko()
         self.close()
+
+
+class PlotWindow(QMainWindow):
+    """Top-level plot viewer window.
+
+    On close it notifies its owner (the KokoMainWindow) so the PNG it was
+    displaying can be deleted and the window reference reset -- the next
+    plot then builds a fresh window + fresh PNG instead of reusing a stale
+    one (which caused the "overprint" artifact).
+    """
+
+    def __init__(self, owner):
+        super().__init__()
+        self._owner = owner
+
+    def closeEvent(self, event):
+        super().closeEvent(event)
+        if self._owner is not None:
+            self._owner._on_plot_window_closed()
 
 
 def main():

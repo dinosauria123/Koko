@@ -247,6 +247,7 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE gnuplotlabel(IX,IY,label,I3,I4)
 
           USE kokoconfig
+          USE gplblk_mod
         
           IMPLICIT NONE
           
@@ -255,6 +256,12 @@ C///////////////////////////////////////////////////////////////////////
           
           REAL              :: X,Y
           CHARACTER(LEN=32) :: font
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          ELSE
+          END IF
 
           ! font to be used
           CALL CFG_get(koko_cfg, "graphics%fontlrg", font)
@@ -284,12 +291,18 @@ C///////////////////////////////////////////////////////////////////////
 
       SUBROUTINE contlabel(X0,Y0,label)
 
+          USE gplblk_mod
           IMPLICIT NONE
 
           REAL, INTENT(IN)             :: X0,Y0
           CHARACTER(LEN=*), INTENT(IN) :: label
 
           REAL :: X,Y
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           X=REAL(300.0/10000.0*X0)
           Y=REAL(210.0/7000.0*Y0)
@@ -305,11 +318,16 @@ C///////////////////////////////////////////////////////////////////////
                 USE opsys
                 USE kokoconfig
                 USE globals
+                USE gplblk_mod
        
                 INCLUDE 'datmai.inc'
                 CHARACTER(LEN=256) :: file_a, file_b, file_out
                 CHARACTER(LEN=32)  :: gpterm, gpfont
                 LOGICAL :: gen_png
+      
+                ! Reset the per-plot-block clear flag so the NEXT plot
+                ! command starts from a clean body (overprint fix).
+                GPL_BLK_START = .TRUE.
 
                 ! name of script header file
                 file_a = TRIM(HOME)
@@ -351,9 +369,14 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE drawcmdsave2
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
           CHARACTER(LEN=256) :: file_a, file_b, file_out
+
+          ! Reset the per-plot-block clear flag so the NEXT plot command
+          ! starts from a clean body (overprint fix).
+          GPL_BLK_START = .TRUE.
 
           ! name of first script file
           file_a = TRIM(HOME)
@@ -379,11 +402,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE setonecolors
 
           USE opsys
+          USE gplblk_mod
           
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -405,11 +434,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE setonecolors2
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -435,11 +470,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE settwocolors
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -466,11 +507,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE settwocolors2
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
-          CHARACTER(LEN=256) :: script1, script2
+          CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -497,11 +544,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE settwocolors3
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -528,11 +581,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE setthreecolors
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -564,11 +623,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE setthreecolors2
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -600,11 +665,17 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE setfourcolors
 
           USE opsys
+          USE gplblk_mod
         
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=256) :: script1, script2, script3, script4
           CHARACTER(LEN=16)  :: lwstr
+
+          IF (GPL_BLK_START) THEN
+              CALL drawcmd3_clear
+              GPL_BLK_START = .FALSE.
+          END IF
 
           CALL retrieve_linewidth(lwstr)
 
@@ -794,3 +865,33 @@ C///////////////////////////////////////////////////////////////////////
         lw_str = ADJUSTL(lw_str)
 
       END SUBROUTINE retrieve_linewidth
+
+
+      SUBROUTINE drawcmd3_clear
+C       Truncate (empty) the plot-body script drawcmd3.gpl (unit 150) so the
+C       NEXT plot command starts from a clean body instead of accumulating on
+C       top of the previous figure (the overprint bug). koko opens unit 150
+C       once at startup (koko.f), so without this every VIE/DIST/SPD/PLTDIST
+C       block piles up for the life of the process. Labels (set label) are
+C       written AFTER this clear during each plot command, so they are
+C       preserved -- only the stale previous block is dropped.
+C
+C       We close unit 150 (if open) WITHOUT deleting the file, then re-open it
+C       with STATUS='REPLACE'. REPLACE truncates the existing file to empty (or
+C       creates it if absent) in a single atomic step, so there is no
+C       delete-then-open race. The earlier code used CLOSE(STATUS='DELETE')
+C       followed by OPEN(STATUS='NEW'); under gfortran the DELETE was not
+C       always visible before the NEW open, so OPEN(NEW) failed with "file
+C       exists" on the 2nd+ plot -- leaving unit 150 closed and the stale body
+C       intact, which made PLTDIST (the 2nd plot in a session) accumulate
+C       labels on top of the previous figure.
+          USE opsys
+          INCLUDE 'datmai.inc'
+          CHARACTER(LEN=256) :: gp
+          LOGICAL            :: OPEN150
+          INQUIRE(UNIT=150, OPENED=OPEN150)
+          IF (OPEN150) CLOSE(UNIT=150)
+          CALL dir_path_append(TRIM(HOME), "gnuplot", gp)
+          CALL dir_path_append(gp, "drawcmd3.gpl", gp)
+          OPEN(UNIT=150, STATUS='REPLACE', FILE=TRIM(gp))
+      END SUBROUTINE drawcmd3_clear

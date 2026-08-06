@@ -1847,12 +1847,14 @@
               write(131,*)
           END IF
 
-          OPEN150=.FALSE.
-          INQUIRE(UNIT=150,OPENED=OPEN150)
-          IF(.NOT.OPEN150) THEN
-              CALL dir_path_append(gpl_dir, "drawcmd3.gpl", gpl_script)
-              OPEN(UNIT=150, STATUS='replace', FILE=TRIM(gpl_script))
-          END IF
+C         NOTE: unit 150 (drawcmd3.gpl) is intentionally NOT opened here.
+C         drawcmd3_clear (gnuplot.f) owns unit 150 and opens it with
+C         STATUS='REPLACE' on first use and after every plot command, which
+C         truncates the body to empty. Opening it here left the unit
+C         permanently connected, so the later REPLACE re-open in
+C         drawcmd3_clear was rejected by gfortran ("already open") and the
+C         stale body kept accumulating labels across VIE/DIST/PLTDIST plots
+C         (the overprint bug).
 
           IF ( IN == 5 .AND. (LEN_TRIM(BATCHFILE) > 0 .OR. GENERATE_PLOT_PNG) ) THEN
               HALTING=.FALSE.

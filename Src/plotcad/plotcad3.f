@@ -3795,6 +3795,7 @@ C SUB PLTDEV.FOR
       SUBROUTINE PLTDEV
           USE GLOBALS
           USE NSSMOD
+          USE gplblk_mod
 C
           IMPLICIT NONE
 C
@@ -3815,6 +3816,9 @@ C
 C
 C       THIS ROUTINE SETS GRASET AND DEVTYP
           GLOBE=.FALSE.
+          GPL_BLK_START = .TRUE.
+          CALL gpl_trace_clear
+          CALL drawcmd3_clear
           CALL PLTRST
           XL=0.0
           XU=0.0
@@ -4229,6 +4233,7 @@ C SUB PLTDEV1.FOR
       SUBROUTINE PLTDEV1
           USE GLOBALS
           USE NSSMOD
+          USE gplblk_mod
 C
           IMPLICIT NONE
 C
@@ -4249,6 +4254,9 @@ C
 C
 C       THIS ROUTINE SETS GRASET AND DEVTYP
           GLOBE=.FALSE.
+          GPL_BLK_START = .TRUE.
+          CALL gpl_trace_clear
+          CALL drawcmd3_clear
           CALL PLTRST1
           XL=0.0
           XU=0.0
