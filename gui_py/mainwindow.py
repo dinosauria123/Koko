@@ -404,14 +404,20 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         except OSError:
             self.append_msg("** failed to write to koko-cli **")
             return
-        # If this is a plotting command, automatically render the graph
-        tok = command.strip().upper()
-        if tok:
+        # If this is a plotting command, automatically render the graph.
+        # Check every line (a menu command may be "GOTF\nPLTGOTF" etc.),
+        # not just the first, so PLTGOTF/PLTDOTF/PLTSPD embedded after a
+        # setup line still trigger the render.
+        for line in command.strip().splitlines():
+            tok = line.strip().upper()
+            if not tok:
+                continue
             first = tok.split()[0]
             if any(tok.startswith(p) for p in PLOT_TRIGGER_PREFIXES) \
                     or first.startswith('PLT') or first.startswith('VIE') \
                     or first.startswith('FANS'):
                 self._schedule_plot_render()
+                break
 
     def execute_command(self):
         command = self.cmdLine.text().strip()
