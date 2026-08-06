@@ -975,67 +975,64 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     # ----- lens info (row click) ------------------------------------------
 
     def slot_lensInfo(self, row, col):
-        """Show surface detail info when clicking a table row (mirrors C++)."""
-        # Fill any empty cells in the clicked/previous row so background
-        # highlighting works. Do this under the _table_updating guard so the
-        # programmatic setText does NOT fire cellChanged -> on_cell_changed
-        # (which would otherwise emit a spurious RD/TH command and rewrite
-        # the Radius when a cell happens to be empty).
-        self._table_updating = True
-        try:
-            for i in range(8):
-                # Never blank the Surface number column (col 0) with " ".
-                # The number is the row identity and must stay visible; the
-                # empty-cell fill was overwriting col 0 of the clicked/previous
-                # row with " ", which is what made "the Surface number
-                # disappear on a click". The number is shown twice -- once in
-                # the vertical header (setVerticalHeaderLabels) and once in
-                # col 0 -- so it is never lost.
-                if i == 0:
-                    continue
-                if self.table.item(row, i) is None:
-                    self.table.setItem(row, i, QTableWidgetItem(" "))
-                if self.table.item(self._row0, i) is None:
-                    self.table.setItem(self._row0, i, QTableWidgetItem(" "))
-        finally:
-            self._table_updating = False
-        # Highlight current row cyan; the previously selected row returns to
-        # the table's base color. NOTE: do NOT use QPalette.ColorRole.AlternateBase
-        # for the "restored" color -- on a stock Qt6/Linux palette AlternateBase
-        # is often unset and falls back to the Window color (a heavy gray), so
-        # the deselected row turned gray instead of returning to the table base.
-        # ColorRole.Base is the actual table viewport background, which is what
-        # we want the row to blend back into.
+        """Show surface detail info when clicking a table row (mirrors C++).
+
+        Mirrors MainWindow::slot_lensInfo(int,int) from QtGui/mainwindow.cpp:
+          - Operate ONLY on the clicked row and the previously-clicked row.
+          - Skip entirely when row == _row0 (same row clicked again).
+          - Do NOT touch other rows' items at all.
+        """
+        # --- Save col-0 texts before ANY modification --------------------------
+        # Protect against Qt-side text mutation from setBackground/setItem.
+        max_r = max(row, self._row0)
+        saved_texts = {}
+        for r in range(max_r + 1):
+            it = self.table.item(r, 0)
+            if it is not None:
+                saved_texts[r] = it.text()
+        # Also protect rows beyond max_r if they exist.
+        for r in range(len(saved_texts), self.table.rowCount()):
+            it = self.table.item(r, 0)
+            if it is not None:
+                saved_texts[r] = it.text()
+
         base_color = QApplication.palette().color(
             QPalette.ColorRole.Base)
         sel_color = QColor('cyan')
-        # Highlight the clicked row cyan and reset EVERY row's background.
-        # We set the background on all rows (not just the clicked and the
-        # previously-selected one) because an item that was never given an
-        # explicit background has an invalid QColor under Qt6/Linux and is
-        # rendered with the theme's unset/fallback color, which is often a
-        # near-black on light themes -- this made the Surface (col 0) numbers
-        # of the other rows look "gone" on a click. By setting a real color
-        # on every cell we get a consistent table base everywhere.
-        for r in range(self.table.rowCount()):
-            is_sel = (r == row)
-            is_prev = (r == self._row0) and r != row
+
+        self._table_updating = True
+        try:
+            # Single loop: mirrors C++ structure exactly (one pass over cols)
             for i in range(8):
-                it = self.table.item(r, i)
-                if it is None:
+                # Empty-cell guard: create placeholder if missing.
+                # Col 0 is NEVER overwritten with blank text (preserves surf number).
+                if i != 0:
+                    if self.table.item(row, i) is None:
+                        self.table.setItem(row, i, QTableWidgetItem(" "))
+                    if self.table.item(self._row0, i) is None:
+                        self.table.setItem(self._row0, i, QTableWidgetItem(" "))
+
+                # C++ guard: skip highlight when clicking the already-selected row.
+                if self._row0 == row:
                     continue
-                if is_sel:
-                    it.setBackground(sel_color)
                 else:
-                    it.setBackground(base_color)
-                # Explicitly pin the foreground to black. After setBackground,
-                # PyQt6 may still render the cell with the palette's
-                # HighlightedText (white) foreground -- e.g. when the item stays
-                # in a selected state -- which on a white base color makes the
-                # text invisible (white-on-white). Black foreground keeps the
-                # Surface number (and every other cell) legible on both the
-                # white base and the cyan highlight.
-                it.setForeground(QBrush(QColor('black')))
+                    # Only the clicked row (_cyan_) and the previous row get
+                    # background colour changed -- matches C++ behaviour.
+                    cr = self.table.item(row, i)
+                    cp = self.table.item(self._row0, i)
+                    if cr is not None:
+                        cr.setBackground(sel_color)
+                    if cp is not None:
+                        cp.setBackground(base_color)
+        finally:
+            self._table_updating = False
+
+        # --- Restore col-0 texts after all modifications ----------------------
+        for r, txt in saved_texts.items():
+            it = self.table.item(r, 0)
+            if it is not None:
+                it.setText(txt)
+
         self._row0 = row
 
         # Defensive fallback: if wavelengths are still unset (e.g. the lens
