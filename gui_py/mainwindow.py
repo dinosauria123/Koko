@@ -27,7 +27,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QDialogButtonBox, QInputDialog, QMenu,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
-from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette
+from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor
 
 
 # Commands that make koko write a plot script (drawcmd.gpl). Any of these,
@@ -989,15 +989,26 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # we want the row to blend back into.
         base_color = QApplication.palette().color(
             QPalette.ColorRole.Base)
-        for i in range(8):
-            if self._row0 == row:
-                continue
-            if self.table.item(row, i):
-                self.table.item(row, i).setBackground(
-                    Qt.GlobalColor.cyan)
-            if self.table.item(self._row0, i):
-                self.table.item(self._row0, i).setBackground(
-                    base_color)
+        sel_color = QColor('cyan')
+        # Highlight the clicked row cyan and reset EVERY row's background.
+        # We set the background on all rows (not just the clicked and the
+        # previously-selected one) because an item that was never given an
+        # explicit background has an invalid QColor under Qt6/Linux and is
+        # rendered with the theme's unset/fallback color, which is often a
+        # near-black on light themes -- this made the Surface (col 0) numbers
+        # of the other rows look "gone" on a click. By setting a real color
+        # on every cell we get a consistent table base everywhere.
+        for r in range(self.table.rowCount()):
+            is_sel = (r == row)
+            is_prev = (r == self._row0) and r != row
+            for i in range(8):
+                it = self.table.item(r, i)
+                if it is None:
+                    continue
+                if is_sel:
+                    it.setBackground(sel_color)
+                else:
+                    it.setBackground(base_color)
         self._row0 = row
 
         # Defensive fallback: if wavelengths are still unset (e.g. the lens
