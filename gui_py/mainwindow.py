@@ -706,7 +706,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # editable from the table: they are edited only through the Material
         # (nk) dialog opened on double-click. Make them selectable but not
         # editable so a normal cell edit can never fire for these columns.
-        if col in (4, 5, 6):
+        # The Surface column (0) is koko's identifier and is likewise
+        # read-only (mirrors the C++ GUI, where surface number is never an
+        # editable field); leaving it editable made a click enter edit mode
+        # and momentarily hide the row number. Everything else is editable,
+        # matching the C++ case 0/1/2/3/7 which forward Radius/Thickness/
+        # Material/Aperture edits to koko.
+        if col in (0, 4, 5, 6):
             item.setFlags(Qt.ItemFlag.ItemIsSelectable
                           | Qt.ItemFlag.ItemIsEnabled)
         else:
@@ -975,11 +981,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         finally:
             self._table_updating = False
         # Highlight current row cyan; the previously selected row returns to
-        # the table's alternate-base color (QPalette.AlternateBase), a soft
-        # tint that tracks the GUI's base color (so it is never a heavy gray)
-        # while still making the "color returned" change visible.
+        # the table's base color. NOTE: do NOT use QPalette.ColorRole.AlternateBase
+        # for the "restored" color -- on a stock Qt6/Linux palette AlternateBase
+        # is often unset and falls back to the Window color (a heavy gray), so
+        # the deselected row turned gray instead of returning to the table base.
+        # ColorRole.Base is the actual table viewport background, which is what
+        # we want the row to blend back into.
         base_color = QApplication.palette().color(
-            QPalette.ColorRole.AlternateBase)
+            QPalette.ColorRole.Base)
         for i in range(8):
             if self._row0 == row:
                 continue
