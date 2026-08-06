@@ -984,6 +984,15 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._table_updating = True
         try:
             for i in range(8):
+                # Never blank the Surface number column (col 0) with " ".
+                # The number is the row identity and must stay visible; the
+                # empty-cell fill was overwriting col 0 of the clicked/previous
+                # row with " ", which is what made "the Surface number
+                # disappear on a click". The number is shown twice -- once in
+                # the vertical header (setVerticalHeaderLabels) and once in
+                # col 0 -- so it is never lost.
+                if i == 0:
+                    continue
                 if self.table.item(row, i) is None:
                     self.table.setItem(row, i, QTableWidgetItem(" "))
                 if self.table.item(self._row0, i) is None:
