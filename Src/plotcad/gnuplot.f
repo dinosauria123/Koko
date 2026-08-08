@@ -80,6 +80,9 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
 
           INCLUDE 'datmai.inc'
+C     color->unit mapping: 0=black/130, 1=yellow/115, 2=magenta/116, 3=red/117, 4=cyan/118
+          INTEGER, PARAMETER :: units(0:4) = (/130,115,116,117,118/)
+          integer :: j
 
           if ((I1.eq.-1).and.(I2.eq.-1)) then
               write(130,*)
@@ -100,56 +103,22 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
               return
           end if
 
-          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if (I4.eq.0) then
-              if (I3.eq.1) then
-                  write(130,'(2I5)') I1,I2    !black
-              else
-                  write(130,*)
-                  write(130,'(2I5)') I1,I2
+          ! Range-gated routing via DO loop over color index
+
+          do j = 0, 4
+              if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
+                  if ((I4.eq.j).and.(I3.eq.1)) then
+                      write(units(j),'(2I5)') I1,I2
+                  else if ((I4.eq.j).and.(I3.eq.0)) then
+                      write(units(j),*)
+                      write(units(j),'(2I5)') I1,I2
+                  end if
               end if
-            end if
-          end if
-
-          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if ((I4.eq.1).and.(I3.eq.1)) then
-                  write(115,'(2I5)') I1,I2    !yellow
-            else if ((I4.eq.1).and.(I3.eq.0)) then
-                  write(115,*)
-                  write(115,'(2I5)') I1,I2
-            end if
-          end if
-
-          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if ((I4.eq.2).and.(I3.eq.1)) then
-                  write(116,'(2I5)') I1,I2    !magenta
-            else if ((I4.eq.2).and.(I3.eq.0)) then
-                  write(116,*)
-                  write(116,'(2I5)') I1,I2
-            end if
-          end if
-
-          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if ((I4.eq.3).and.(I3.eq.1)) then
-                  write(117,'(2I5)') I1,I2    !red
-            else if ((I4.eq.3).and.(I3.eq.0)) then
-                  write(117,*)
-                  write(117,'(2I5)') I1,I2
-            end if
-          end if
-
-          if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-            if ((I4.eq.4).and.(I3.eq.1)) then
-                  write(118,'(2I5)') I1,I2    !cyan
-            else if ((I4.eq.4).and.(I3.eq.0)) then
-                  write(118,*)
-                  write(118,'(2I5)') I1,I2
-            end if
-          end if
+          end do
 
           if (I4.eq.2) then
               if (I3.eq.1) then
-                  write(131,'(2I5)') I1,I2    !break black
+                  write(131,'(2I5)') I1,I2    !breakblack
               else
                   write(131,*)
                   write(131,'(2I5)') I1,I2
@@ -334,10 +303,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -366,10 +332,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -402,10 +365,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -439,10 +399,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -476,10 +433,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -513,10 +467,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -555,10 +506,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2, script3
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
@@ -597,10 +545,7 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           CHARACTER(LEN=256) :: script1, script2, script3, script4
           CHARACTER(LEN=16)  :: lwstr
 
-          IF (GPL_BLK_START) THEN
-              CALL drawcmd3_clear
-              GPL_BLK_START = .FALSE.
-          END IF
+
 
           CALL retrieve_linewidth(lwstr)
 
