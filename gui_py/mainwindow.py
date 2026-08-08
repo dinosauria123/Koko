@@ -17,7 +17,6 @@ PNG and shows it in a separate window.
 import os
 import re
 import math
-import shutil
 import subprocess
 import struct
 
@@ -1290,121 +1289,95 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     # ----- menu wiring ----------------------------------------------------
 
     def _wire_menus(self):
-        # File
-        self.actionNew.triggered.connect(self.slot_actionNew)
-        self.actionOpen.triggered.connect(self.slot_actionOpen)
-        self.actionSave.triggered.connect(self.slot_actionSave)
-        self.actionQuit.triggered.connect(self.slot_quit2)
-        self.actionExport_JPEG.triggered.connect(
-            lambda: self.slot_export("jpeg"))
-        self.actionExport_EPS.triggered.connect(
-            lambda: self.slot_export("eps"))
-        self.actionExport_PDF.triggered.connect(
-            lambda: self.slot_export("pdf"))
-        self.actionImport_Zemax.triggered.connect(self.slot_actionImport_Zemax)
-        self.actionImport_Code_V.triggered.connect(self.slot_actionImport_CODE_V)
-        self.actionExport_Zemax.triggered.connect(self.slot_actionExport_Zemax)
-        self.actionExport_Code_V.triggered.connect(self.slot_actionExport_CODE_V)
+        """Wire all menu actions using a data-driven dispatch table."""
+        # Helper to connect an action by its generated slot name attribute
+        def connect(attr_name, handler, *handler_args):
+            action = getattr(self, attr_name)
+            if handler_args:
+                action.triggered.connect(lambda h=handler, a=handler_args: h(*a))
+            else:
+                action.triggered.connect(handler)
 
-        # Lens View (plots)
-        self.actionXZ.triggered.connect(lambda: self.slot_plot("VIE XZ"))
-        self.actionOrtho.triggered.connect(lambda: self.slot_plot("VIE ORTHO"))
+        # Action dispatch table: [(action_attr, target_method_or_lambda, *args)]
+        actions = [
+            # File
+            ('actionNew', self.slot_actionNew),
+            ('actionOpen', self.slot_actionOpen),
+            ('actionSave', self.slot_actionSave),
+            ('actionQuit', self.slot_quit2),
+            ('actionExport_JPEG', 'slot_export', 'jpeg'),
+            ('actionExport_EPS', 'slot_export', 'eps'),
+            ('actionExport_PDF', 'slot_export', 'pdf'),
+            ('actionImport_Zemax', self.slot_actionImport_Zemax),
+            ('actionImport_Code_V', self.slot_actionImport_CODE_V),
+            ('actionExport_Zemax', self.slot_actionExport_Zemax),
+            ('actionExport_Code_V', self.slot_actionExport_CODE_V),
+            # Lens View (plots)
+            ('actionXZ', self.slot_plot, 'VIE XZ'),
+            ('actionOrtho', self.slot_plot, 'VIE ORTHO'),
+            # Analyze -> spot / wavefront / PSF
+            ('actionSpot_Diagram', self.slot_plot, 'SPD', 'PLTSPD'),
+            ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
+            ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
+            ('actionPoint_Spread_Function', self.slot_plot, 'PSF'),
+            ('actionDistortion', self.slot_plot, 'DIST', 'PLTDIST'),
+            ('actionField_Curvature', self.slot_plot, 'FLDCV', 'PLTFLDCV'),
+            ('actionAstigmatism', self.slot_plot, 'AST', 'PLTAST'),
+            ('actionGeometical', self.slot_text, 'GOTF\\nPLTGOTF'),
+            ('actionGeometical_Leica', self.slot_text, 'GOTF\\nPLTGOTF LEICA'),
+            ('actionDiffraction', self.slot_text, 'DOTF\\nPLTDOTF'),
+            ('actionDiffraction_Leica', self.slot_text, 'DOTF\\nPLTDOTF LEICA'),
+            ('actionParaxial_Chromatic_Focus_Shift', self.slot_plot, 'CHRSHIFT', 'PLTCHRSH'),
+            # Aberration fans
+            ('actionXYFAN', self.slot_plot, 'FANS XYFAN'),
+            ('actionYXFAN', self.slot_plot, 'FANS YXFAN'),
+            ('actionXFAN', self.slot_plot, 'FANS XFAN'),
+            ('actionYFAN', self.slot_plot, 'FANS YFAN'),
+            ('actionNFAN', self.slot_plot, 'FANS NFAN'),
+            ('actionPFAN', self.slot_plot, 'FANS PFAN'),
+            ('actionXYOPD', self.slot_plot, 'FANS XYOPD'),
+            ('actionYOPD', self.slot_plot, 'FANS YOPD'),
+            ('actionNOPD', self.slot_plot, 'FANS NOPD'),
+            ('actionPOPD', self.slot_plot, 'FANS POPD'),
+            ('actionXCD', self.slot_plot, 'FANS XCD'),
+            ('actionYCD', self.slot_plot, 'FANS YCD'),
+            ('actionXYCD', self.slot_plot, 'FANS XYCD'),
+            ('actionYXCD', self.slot_plot, 'FANS YXCD'),
+            ('actionNCD', self.slot_plot, 'FANS NCD'),
+            ('actionPCD', self.slot_plot, 'FANS PCD'),
+            ('actionXLA', self.slot_plot, 'FANS XLA'),
+            ('actionYLA', self.slot_plot, 'FANS YLA'),
+            ('actionXYLA', self.slot_plot, 'FANS XYLA'),
+            ('actionYXLA', self.slot_plot, 'FANS YXLA'),
+            ('actionNLA', self.slot_plot, 'FANS NLA'),
+            ('actionPLA', self.slot_plot, 'FANS PLA'),
+            # Edit
+            ('actionInsert_Surface', self.slot_text_insert_surface),
+            ('actionDelete_Surface', self.slot_text_delete_surface),
+            ('actionInput_Glass_Model', self.slot_actionModeldialog),
+            ('actionInput_Lens_Idenfier', self.slot_actionInput_LensIdentifier),
+            ('actionAll_Lens_Data', self.slot_text, 'RTG ALL'),
+            # Lens view
+            ('actionSet_ray_input_angle', self.slot_actionRay_input_angle),
+            ('actionSet_Focus', self.slot_actionFocus),
+            # Optimize
+            ('actionInput_Variables', self.slot_actionInput_Variables),
+        ]
 
-        # Analyze -> spot / wavefront / PSF
-        self.actionSpot_Diagram.triggered.connect(
-            lambda: self.slot_plot("SPD", "PLTSPD"))
-        self.actionWavefront_Phase.triggered.connect(
-            lambda: self.slot_plot("CAPFN", "PLOT CAPFNOPD"))
-        self.actionWavefront_Intensity.triggered.connect(
-            lambda: self.slot_plot("CAPFN", "PLOT CAPFNAPD"))
-        self.actionPoint_Spread_Function.triggered.connect(
-            lambda: self.slot_plot("PSF"))
-        self.actionDistortion.triggered.connect(
-            lambda: self.slot_plot("DIST", "PLTDIST"))
-        self.actionField_Curvature.triggered.connect(
-            lambda: self.slot_plot("FLDCV", "PLTFLDCV"))
-        self.actionAstigmatism.triggered.connect(
-            lambda: self.slot_plot("AST", "PLTAST"))
-        self.actionGeometical.triggered.connect(
-            lambda: self.slot_text("GOTF\nPLTGOTF"))
-        self.actionGeometical_Leica.triggered.connect(
-            lambda: self.slot_text("GOTF\nPLTGOTF LEICA"))
-        self.actionDiffraction.triggered.connect(
-            lambda: self.slot_text("DOTF\nPLTDOTF"))
-        self.actionDiffraction_Leica.triggered.connect(
-            lambda: self.slot_text("DOTF\nPLTDOTF LEICA"))
-        self.actionParaxial_Chromatic_Focus_Shift.triggered.connect(
-            lambda: self.slot_plot("CHRSHIFT", "PLTCHRSH"))
+        for entry in actions:
+            attr_name = entry[0]
+            handler = entry[1]
+            args = entry[2:]
 
-        # Aberration fans (FANS <qualifier>)
-        self.actionXYFAN.triggered.connect(
-            lambda: self.slot_plot("FANS XYFAN"))
-        self.actionYXFAN.triggered.connect(
-            lambda: self.slot_plot("FANS YXFAN"))
-        self.actionXFAN.triggered.connect(
-            lambda: self.slot_plot("FANS XFAN"))
-        self.actionYFAN.triggered.connect(
-            lambda: self.slot_plot("FANS YFAN"))
-        self.actionNFAN.triggered.connect(
-            lambda: self.slot_plot("FANS NFAN"))
-        self.actionPFAN.triggered.connect(
-            lambda: self.slot_plot("FANS PFAN"))
-        self.actionXYOPD.triggered.connect(
-            lambda: self.slot_plot("FANS XYOPD"))
-        self.actionYOPD.triggered.connect(
-            lambda: self.slot_plot("FANS YOPD"))
-        self.actionNOPD.triggered.connect(
-            lambda: self.slot_plot("FANS NOPD"))
-        self.actionPOPD.triggered.connect(
-            lambda: self.slot_plot("FANS POPD"))
-        self.actionXCD.triggered.connect(
-            lambda: self.slot_plot("FANS XCD"))
-        self.actionYCD.triggered.connect(
-            lambda: self.slot_plot("FANS YCD"))
-        self.actionXYCD.triggered.connect(
-            lambda: self.slot_plot("FANS XYCD"))
-        self.actionYXCD.triggered.connect(
-            lambda: self.slot_plot("FANS YXCD"))
-        self.actionNCD.triggered.connect(
-            lambda: self.slot_plot("FANS NCD"))
-        self.actionPCD.triggered.connect(
-            lambda: self.slot_plot("FANS PCD"))
-        self.actionXLA.triggered.connect(
-            lambda: self.slot_plot("FANS XLA"))
-        self.actionYLA.triggered.connect(
-            lambda: self.slot_plot("FANS YLA"))
-        self.actionXYLA.triggered.connect(
-            lambda: self.slot_plot("FANS XYLA"))
-        self.actionYXLA.triggered.connect(
-            lambda: self.slot_plot("FANS YXLA"))
-        self.actionNLA.triggered.connect(
-            lambda: self.slot_plot("FANS NLA"))
-        self.actionPLA.triggered.connect(
-            lambda: self.slot_plot("FANS PLA"))
+            # If handler is a string attribute name, resolve it
+            if isinstance(handler, str):
+                handler = getattr(self, handler)
 
-        # Edit
-        self.actionInsert_Surface.triggered.connect(
-            self.slot_text_insert_surface)
-        self.actionDelete_Surface.triggered.connect(
-            self.slot_text_delete_surface)
-        self.actionInput_Glass_Model.triggered.connect(
-            self.slot_actionModeldialog)
-        self.actionInput_Lens_Idenfier.triggered.connect(
-            self.slot_actionInput_LensIdentifier)
-        self.actionAll_Lens_Data.triggered.connect(
-            lambda: self.slot_text("RTG ALL"))
-
-        # Lens view
-        self.actionSet_ray_input_angle.triggered.connect(
-            self.slot_actionRay_input_angle)
-        self.actionSet_Focus.triggered.connect(
-            self.slot_actionFocus)
-
-        # Optimize
-        self.actionInput_Variables.triggered.connect(
-            self.slot_actionInput_Variables)
-
-    # ----- command helpers ------------------------------------------------
+            action = getattr(self, attr_name)
+            if args:
+                action.triggered.connect(lambda h=handler, a=args: h(*a))
+            else:
+                action.triggered.connect(handler)
 
     def slot_text(self, command):
         """Send a command and let its textual output appear in msgView."""
