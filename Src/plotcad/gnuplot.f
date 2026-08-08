@@ -43,6 +43,7 @@ C///////////////////////////////////////////////////////////////////////
                   WRITE(130,*)
                   WRITE(130,'(2I5)') IX,IY
               END IF
+              FLUSH(130)
           END IF
 
           IF (IC.EQ.1) THEN
@@ -53,6 +54,7 @@ C///////////////////////////////////////////////////////////////////////
                   WRITE(115,'(2I5)') IX,IY
 
               END IF
+              FLUSH(115)
           END IF
 
           IF (IC.EQ.2) THEN
@@ -62,6 +64,7 @@ C///////////////////////////////////////////////////////////////////////
                   WRITE(116,*)
                   WRITE(116,'(2I5)') IX,IY
               END IF
+              FLUSH(116)
           END IF
 
           IF (IC.EQ.3) THEN
@@ -71,6 +74,7 @@ C///////////////////////////////////////////////////////////////////////
                   WRITE(117,*)
                   WRITE(117,'(2I5)') IX,IY
               END IF
+              FLUSH(117)
           END IF
 
           IF (IC.EQ.4) THEN
@@ -80,6 +84,7 @@ C///////////////////////////////////////////////////////////////////////
                   WRITE(118,*)
                   WRITE(118,'(2I5)') IX,IY
               END IF
+              FLUSH(118)
           END IF
 
       END SUBROUTINE datacolorssave
@@ -140,16 +145,6 @@ C///////////////////////////////////////////////////////////////////////
                 flush(118)
               end if
 
-            if (I4.eq.2) then
-                if (I3.eq.1) then
-                    write(131,'(2I5)') I1,I2    !break black (dashed ???)
-                else
-                    write(131,*)
-                    write(131,'(2I5)') I1,I2
-                end if
-                flush(131)
-            end if
-
             END SUBROUTINE drawdatasave
 
 
@@ -158,8 +153,6 @@ C///////////////////////////////////////////////////////////////////////
           USE GLOBALS
           IMPLICIT NONE
           INTEGER I1,I2,I3,I4,I5,I6,I7,I8
-          INTEGER IOS
-          LOGICAL EXISJK
 
           INCLUDE 'datmai.inc'
 
@@ -204,7 +197,7 @@ C///////////////////////////////////////////////////////////////////////
 
           if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
             if ((I4.eq.2).and.(I3.eq.1)) then
-                  write(116,'(2I5)') I1,I2    !yellow
+                  write(116,'(2I5)') I1,I2    !magenta
             else if ((I4.eq.2).and.(I3.eq.0)) then
                   write(116,*)
                   write(116,'(2I5)') I1,I2
@@ -213,19 +206,16 @@ C///////////////////////////////////////////////////////////////////////
 
           if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
             if ((I4.eq.3).and.(I3.eq.1)) then
-                  write(117,'(2I5)',IOSTAT=IOS) I1,I2
-                  flush(117)
+                  write(117,'(2I5)') I1,I2    !red
             else if ((I4.eq.3).and.(I3.eq.0)) then
                   write(117,*)
-                  flush(117)
                   write(117,'(2I5)') I1,I2
-                  flush(117)
             end if
           end if
 
           if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
             if ((I4.eq.4).and.(I3.eq.1)) then
-                  write(118,'(2I5)') I1,I2    !yellow
+                  write(118,'(2I5)') I1,I2    !cyan
             else if ((I4.eq.4).and.(I3.eq.0)) then
                   write(118,*)
                   write(118,'(2I5)') I1,I2
@@ -582,7 +572,7 @@ C///////////////////////////////////////////////////////////////////////
 
           WRITE(150,*) 'plot [0:10000] [0:7000] "'//
      &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
-     &TRIM(script2)//'" lc rgb "red" pt 7 ps 0.3'
+     &TRIM(script2)//'" lc rgb "red" w points'
           WRITE(150,*) 'pause -1'
 
       END SUBROUTINE settwocolors3
@@ -700,7 +690,7 @@ C///////////////////////////////////////////////////////////////////////
           CALL dir_path_append(script3, "magenta.gpl", script3)
 
           CALL dir_path_append(TRIM(HOME), "gnuplot", script4)
-          CALL dir_path_append(script3, "red.gpl", script4)
+          CALL dir_path_append(script4, "red.gpl", script4)
 
 #if defined(WINDOWS)
           call replace_slash(script1)
