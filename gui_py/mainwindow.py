@@ -891,102 +891,83 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
     # ----- lens info (row click) ------------------------------------------
 
-    def slot_lensInfo(self, row, col):
-        """Show surface detail info when clicking a table row (mirrors C++).
-
-        Mirrors MainWindow::slot_lensInfo(int,int) from QtGui/mainwindow.cpp:
-          - Operate ONLY on the clicked row and the previously-clicked row.
-          - Skip entirely when row == _row0 (same row clicked again).
-          - Do NOT touch other rows' items at all.
+    def _highlight_rows(self, clicked, prev):
+        """Swap background colours between the clicked row and the previous selection.
+        
+        Mirrors C++ MainWindow::slot_lensInfo: only modify cells on rows
+        'clicked' and 'prev'. Skip entirely when they are equal.
         """
-        # --- Save col-0 texts before ANY modification --------------------------
-        # Protect against Qt-side text mutation from setBackground/setItem.
-        max_r = max(row, self._row0)
+        # Save col-0 texts BEFORE any modification to protect against
+        # Qt-side text mutation from setBackground/setItem calls.
+        max_r = max(clicked, prev)
         saved_texts = {}
         for r in range(max_r + 1):
             it = self.table.item(r, 0)
             if it is not None:
                 saved_texts[r] = it.text()
-        # Also protect rows beyond max_r if they exist.
+        # Rows beyond max_r
         for r in range(len(saved_texts), self.table.rowCount()):
             it = self.table.item(r, 0)
             if it is not None:
                 saved_texts[r] = it.text()
-
-        base_color = QApplication.palette().color(
-            QPalette.ColorRole.Base)
+        
+        base_color = QApplication.palette().color(QPalette.ColorRole.Base)
         sel_color = QColor('cyan')
-
+        
         self._table_updating = True
         try:
-            # Single loop: mirrors C++ structure exactly (one pass over cols)
             for i in range(8):
-                # Empty-cell guard: create placeholder if missing.
-                # Col 0 is NEVER overwritten with blank text (preserves surf number).
                 if i != 0:
-                    if self.table.item(row, i) is None:
-                        self.table.setItem(row, i, QTableWidgetItem(" "))
-                    if self.table.item(self._row0, i) is None:
-                        self.table.setItem(self._row0, i, QTableWidgetItem(" "))
-
-                # C++ guard: skip highlight when clicking the already-selected row.
-                if self._row0 == row:
+                    if self.table.item(clicked, i) is None:
+                        self.table.setItem(clicked, i, QTableWidgetItem(" "))
+                    if self.table.item(prev, i) is None:
+                        self.table.setItem(prev, i, QTableWidgetItem(" "))
+                
+                if clicked == prev:
                     continue
-                else:
-                    # Only the clicked row (_cyan_) and the previous row get
-                    # background colour changed -- matches C++ behaviour.
-                    cr = self.table.item(row, i)
-                    cp = self.table.item(self._row0, i)
-                    if cr is not None:
-                        cr.setBackground(sel_color)
-                    if cp is not None:
-                        cp.setBackground(base_color)
+                
+                cr = self.table.item(clicked, i)
+                cp = self.table.item(prev, i)
+                if cr is not None:
+                    cr.setBackground(sel_color)
+                if cp is not None:
+                    cp.setBackground(base_color)
         finally:
             self._table_updating = False
-
-        # --- Restore col-0 texts after all modifications ----------------------
+        
+        # Restore col-0 texts after all modifications
         for r, txt in saved_texts.items():
             it = self.table.item(r, 0)
             if it is not None:
                 it.setText(txt)
 
-        self._row0 = row
-
-        # Defensive fallback: if wavelengths are still unset (e.g. the lens
-        # was loaded without a file read), try to recover them from the
-        # current lens file. Mirrors C++ ReadFileToTable reading the .PRG.
+    def _show_surface_panel(self, row):
+        """Populate lensPara list box with metadata and surface detail for row."""
+        # Defensive fallback: recover wavelengths from current lens file
         cur = getattr(self, 'current_lens', None)
-        if self._lF == 0.0 and isinstance(cur, str) and cur and \
-                os.path.exists(cur):
+        if self._lF == 0.0 and isinstance(cur, str) and cur and os.path.exists(cur):
             self._read_lens_file_meta(cur)
-
+        
         self.lensPara.clear()
         self.lensPara.append(self._li)
-        self.lensPara.append("Wavelength (um): %.4f, %.4f, %.4f" % (
-            self._lF, self._lD, self._lC))
-
-        # Surface type lives in column 1 ("Surface Type"), mirroring the
-        # C++ table where column 0 holds the type text (here the surface
-        # number is the row's vertical header / the table row index).
+        self.lensPara.append(
+            "Wavelength (um): %.4f, %.4f, %.4f" % (self._lF, self._lD, self._lC))
+        
         surf_item = self.table.item(row, 1)
-        surf_text = surf_item.text().strip() if surf_item else ""
-        surf_type = "Surface type:"
-        if not surf_text:
-            surf_type = "Surface type: Spherical"
+        surf_text = surf_item.text().strip() if surf_item else "Spherical"
         self.lensPara.append("Surface No. %d" % row)
-        self.lensPara.append(surf_type + " " + surf_text)
+        self.lensPara.append("Surface type: " + surf_text)
+        
+        for attr in ('_ccv', '_asphv', '_asph2v', '_tiltv'):
+            d = getattr(self, attr, {})
+            if row in d and d[row]:
+                self.lensPara.append(str(d[row]))
 
-        if row in self._ccv and self._ccv[row]:
-            self.lensPara.append(str(self._ccv[row]))
-        if row in self._asphv and self._asphv[row]:
-            self.lensPara.append(str(self._asphv[row]))
-        if row in self._asph2v and self._asph2v[row]:
-            self.lensPara.append(str(self._asph2v[row]))
-        if row in self._tiltv and self._tiltv[row]:
-            self.lensPara.append(str(self._tiltv[row]))
-
-    # ----- table context menu (right-click) ------------------------------
-
+    def slot_lensInfo(self, row, col):
+        """Show surface detail info when clicking a table row (mirrors C++)."""
+        self._highlight_rows(row, self._row0)
+        self._row0 = row
+        self._show_surface_panel(row)
     def _load_glass_catalogs(self):
         """Lazily read glass names from Libs/LIBGLA/*.BIN (mirrors C++ GN1..9)."""
         if self._glass_catalogs is not None:
