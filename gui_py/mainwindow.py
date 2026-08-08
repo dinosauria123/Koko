@@ -224,55 +224,25 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 return p
         return None
 
-    def start_koko_cli(self, lens_path=None):
-        """Launch koko-cli inside a real pseudo-terminal.
-
-        koko is a Fortran program that uses linenoise for its interactive
-        prompt. It only reads commands and only flushes its text output
-        when its stdin/stdout are a real tty, so driving it through a
-        QProcess pipe (or a `script` wrapper) leaves it stuck at the
-        "1:cmd> " prompt with zero bytes of output. We therefore fork a
-        child connected to a pty pair: the child execs koko with the slave
-        ends as its std streams, and the GUI watches the master fd via
-        a QTimer poll and writes commands with os.write.
+    def _launch_koko_process(self):
+        """Start koko-cli inside a real PTY and return (pid, fd).
+        
+        Returns None on failure. On success sets self._koko_pid and
+        self._koko_fd. The child is launched in its own session so it
+        can be killed by group later if needed.
         """
-        self._kill_koko()
+        import pty, os, fcntl, struct, signal
 
-        if not self.koko_path:
-            QMessageBox.critical(
-                self, "Error",
-                "koko-cli not found. Please build Koko first "
-                "(see Src/Makefile).")
-            return False
-
-        import subprocess, pty, os, fcntl, signal, termios, struct
         master, slave = pty.openpty()
         # non-blocking master so the GUI event loop is never stalled
         fl = fcntl.fcntl(master, fcntl.F_GETFL)
         fcntl.fcntl(master, fcntl.F_SETFL, fl | os.O_NONBLOCK)
         # CRITICAL: set a window size on the slave pty. Without this koko
-        # (Fortran + linenoise) stays silent and emits nothing -- `script
-        # -qec` sets this internally, which is why it worked and a bare
-        # pty+execv did not.
+        # (Fortran + linenoise) stays silent and emits nothing.
         winsize = struct.pack("HHHH", 24, 80, 0, 0)
         fcntl.ioctl(slave, termios.TIOCSWINSZ, winsize)
-        # Launch koko via subprocess (NOT os.fork directly): forking inside
-        # a live QApplication corrupts the child and can leave the parent's
-        # post-fork code (timer setup) unreached. subprocess.Popen does a
-        # safe fork+exec and is the reliable path here.
+
         try:
-            # Flags for the embedded Qt GUI (see Src/koko.f:237-251):
-            #   -G  -> GENERATE_PLOT_PNG: koko writes the gnuplot data files
-            #         (black/yellow/red.gpl under ~/KODS/gnuplot) on VIE XZ.
-            #         It used to also call render_plot_png (an internal gnuplot
-            #         that hung the prompt with no X display); that call is now
-            #         skipped in PDRAW (hardwar1.f), so koko stays responsive
-            #         and the GUI renders the PNG itself via render_plots.
-            #         -G is REQUIRED: only GENERATE_PLOT_PNG makes koko emit
-            #         the actual trace data into the .gpl files (otherwise they
-            #         stay empty and the plot shows no lens lines).
-            #   -n  -> NOLAUNCH_GNUPLOT: keeps koko from spawning the native
-            #         gnuplot wxt window; set implicitly by -G as well.
             proc = subprocess.Popen(
                 [self.koko_path, '-G'],
                 stdin=slave, stdout=slave, stderr=slave,
@@ -284,53 +254,51 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             os.close(slave)
             return False
         os.close(slave)
-        # parent
+
         self._koko_pid = proc.pid
         self._koko_fd = master
-        # Commands we have written to koko. koko (linenoise raw mode) echoes
-        # the typed command back into its pty output even with ECHO OFF, so
-        # the GUI strips these command strings from koko's raw output before
-        # displaying it -- the GUI already prints "> CMD" itself in send_koko,
-        # and we never want the command shown more than once.
-        self._sent_cmds = []
-        # Poll the pty master on a timer. (QSocketNotifier on the master fd
-        # proved unreliable here, whereas a periodic non-blocking os.read
-        # reliably drains koko's output -- matching the standalone pty test.)
+        self._sent_cmds = []  # strip echo-back from koko output
+        
+        # Poll the pty master on a timer
         self._koko_poll = QTimer(self)
         self._koko_poll.timeout.connect(self._poll_koko_pty)
         self._koko_poll.start(80)
-        # small safety: reap the child if it dies
+        
+        # Reap the child if it dies
         self._koko_watch = QTimer(self)
         self._koko_watch.timeout.connect(lambda: self._reap_koko())
         self._koko_watch.start(1000)
+        
+        return True
 
-        # If a lens was requested, restore it the interactive way. Defer
-        # slightly so koko has finished its startup banner/initialization
-        # and is ready to accept the LENSREST command.
+    def start_koko_cli(self, lens_path=None):
+        """Launch koko-cli and set up initial command schedule."""
+        self._kill_koko()
+        
+        if not self.koko_path:
+            QMessageBox.critical(
+                self, "Error",
+                "koko-cli not found. Please build Koko first "
+                "(see Src/Makefile).")
+            return False
+        
+        if not self._launch_koko_process():
+            return False
+        
+        # If a lens was requested, restore it after startup banner
         if lens_path:
             QTimer.singleShot(600, lambda: self.load_lens(lens_path))
         else:
-            # No explicit lens: koko auto-loads its default (Cooke Triplet)
-            # into memory but emits NO "LENS SAVED AS" message and NO LI/WV
-            # line, so read the default lens file's metadata directly here
-            # (mirrors C++ ReadFileToTable). Without this, _lF/_lD/_lC stay
-            # 0.0 and the row-click panel shows "Wavelength (um): 0.0000".
             default_lens = os.path.join(
                 self.HOME, 'LENSES', 'COOCK.PRG')
             if os.path.exists(default_lens):
                 self.current_lens = default_lens
                 self._read_lens_file_meta(default_lens)
-
-        # Disable koko's command echo-back. The GUI already echoes every
-        # command it sends (" > CMD" via send_koko/execute_command), so
-        # koko's own echo would just duplicate that output in the pane.
-        # Send ECHO OFF once koko has finished startup and is ready for
-        # input (it accepts commands after the initial prompt appears).
+        
+        # Disable command echo-back, then request surface listing
         QTimer.singleShot(250, lambda: self.send_koko("ECHO OFF"))
-        # give koko a moment, then ask for surface listing
         QTimer.singleShot(400, lambda: self.send_koko("RTG ALL"))
         return True
-
     def _reap_koko(self):
         if self._koko_pid is None:
             return
