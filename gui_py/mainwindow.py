@@ -465,147 +465,127 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._capture_rtg(raw + "\n")
 
     def _capture_rtg(self, text):
-        """Buffer koko's 'BASIC LENS DATA' output and parse it when complete.
-
-        Extracts lens metadata (LI, WV, UNITS) and per-surface detail
-        markers (CC, ASPH, ASPH2, TILT, CLAP) so slot_lensInfo can show
-        them when the user clicks a table row.
-        """
+        """Orchestrate RTG output parsing."""
         if not hasattr(self, '_rtg_buf'):
             self._rtg_buf = None
         if not hasattr(self, '_koko_idle'):
             self._koko_idle = True
-        # koko echoes a prompt like " 4:cmd> " (with ANSI color escapes)
-        # after each command finishes. Track idleness so load_lens() can
-        # avoid sending LENSREST while a prior command (esp. VIE XZ / PNG
-        # generation) is still running -- otherwise koko rejects it as
-        # INVALID CMD LEVEL and the table never refreshes on a lens switch.
-        # Strip ANSI escapes first; the raw prompt is "N:cmd>" at line end.
-        _clean = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
-        if re.search(r'\d+:\s*cmd>\s*$', _clean.rstrip()):
-            self._koko_idle = True
-        # Always scan for the lens identifier, even outside a BASIC LENS
-        # DATA block: koko emits "LENS SAVED AS: <NAME>.PRG HAS BEEN
-        # RESTORED" right after LENSREST, BEFORE the RTG ALL table.
-        for line in text.splitlines():
-            stripped = line.strip()
-            m_li = re.match(r'(?i)^LI\s*,?\s*(.+)$', stripped)
-            if m_li:
-                self._li = m_li.group(1).strip()
-            else:
-                m_restored = re.search(
-                    r'LENS SAVED AS:\s*(\S+?)\.PRG\s+HAS BEEN RESTORED',
-                    stripped, re.IGNORECASE)
-                if m_restored:
-                    name = m_restored.group(1)
-                    self._li = name
-                    # C++ reads LI/WV straight from the lens file; koko's
-                    # RTG ALL does NOT echo the WV line, so parse the lens
-                    # file here (mirrors C++ ReadFileToTable). Covers every
-                    # load path -- startup default, explicit Open, and any
-                    # LENSREST -- because they all emit this message.
-                    for cand in (
-                        os.path.join(self.HOME, 'LENSES',
-                                     name + '.PRG'),
-                        os.path.join(self.HOME, 'LENSES',
-                                     name + '.prg'),
-                        os.path.join(self.HOME, 'LENSES',
-                                     name + '.koko'),
-                        name + '.PRG',
-                        name + '.prg',
-                    ):
-                        if os.path.exists(cand):
-                            self._read_lens_file_meta(cand)
-                            break
-                    # A new lens is being restored: discard any BASIC LENS
-                    # DATA block we were accumulating for the previous lens
-                    # so the upcoming RTG ALL is captured into a fresh buffer.
-                    self._rtg_buf = None
-                    # koko has confirmed the restore; now request the surface
-                    # listing. Doing RTG ALL here (instead of in load_lens)
-                    # guarantees it is sent only AFTER koko finished the
-                    # LENSREST, never while a prior VIE XZ is still running
-                    # (which would make koko reject the LENSREST as INVALID
-                    # CMD LEVEL and the table would never refresh).
-                    self.send_koko("RTG ALL")
+        
+        self._check_prompt_idle(text)
+        self._parse_rtg_meta(text)
+        
         if 'BASIC LENS DATA' in text:
             self._rtg_buf = ''
         if self._rtg_buf is not None:
             self._rtg_buf += text
-            for line in text.splitlines():
-                stripped = line.strip()
-                # Wavelengths: WV d.f.c [ND VD ...]
-                if stripped.startswith('WV') or re.match(r'(?i)^WV\s', stripped):
-                    nums = re.findall(r'[\d.]+', stripped)
-                    if len(nums) >= 3:
-                        try:
-                            self._lD = float(nums[0])
-                            self._lF = float(nums[1])
-                            self._lC = float(nums[2])
-                        except ValueError:
-                            pass
-                # Units
-                m_units = re.match(r'(?i)^UNITS\s+(.+)$', stripped)
-                if m_units:
-                    self._units = m_units.group(1).strip().lower()
-                # Surface-numbered markers: "N*CC ...", "N*ASPH ...", etc.
-                m_surf = re.match(r'^(\d+)\s*\*\s*(CC|ASPH2?|TILT|REFS|ASTOP)\b(.*)', stripped, re.IGNORECASE)
-                if m_surf:
-                    s = int(m_surf.group(1))
-                    kind = m_surf.group(2).upper()
-                    rest = m_surf.group(3).strip()
-                    if kind == 'CC':
-                        self._ccv[s] = rest if rest else line.strip()
-                    elif kind == 'ASPH2':
-                        self._asph2v[s] = rest if rest else line.strip()
-                    elif kind == 'ASPH':
-                        self._asphv[s] = rest if rest else line.strip()
-                    elif kind == 'TILT':
-                        self._tiltv[s] = rest if rest else line.strip()
-                # Standalone CC / ASPH / TILT without "*N" prefix
-                if not m_surf:
-                    m_cc = re.match(r'(?i)^CC\s+(.+)$', stripped)
-                    if m_cc:
-                        for s in (self._ccv.keys()):
-                            if s not in self._ccv or not self._ccv[s]:
-                                self._ccv[s] = m_cc.group(1).strip()
-                                break
-                    m_asph = re.match(r'(?i)^ASPH\s+(.+)$', stripped)
-                    if m_asph:
-                        for s in (self._asphv.keys() if hasattr(self, '_asphv') else []):
-                            if s not in self._asphv or not self._asphv[s]:
-                                self._asphv[s] = m_asph.group(1).strip()
-                                break
-                    m_tilt = re.match(r'(?i)^TILT\s+(.+)$', stripped)
-                    if m_tilt:
-                        for s in (self._tiltv.keys() if hasattr(self, '_tiltv') else []):
-                            if s not in self._tiltv or not self._tiltv[s]:
-                                self._tiltv[s] = m_tilt.group(1).strip()
-                                break
-                # Standalone CLAP value
-                m_clap = re.match(r'(?i)^CLAP\s+([\d.eE+-]+)', stripped)
-                if m_clap:
+            self._parse_rtg_surface_details(text)
+            if 'LAST SURFACE' in text or 'NO SURFACES' in text:
+                self._on_rtg_complete(self._rtg_buf)
+                self._rtg_buf = None
+
+    def _check_prompt_idle(self, text):
+        """Detect koko's 'N:cmd>' prompt after stripping ANSI escapes."""
+        _clean = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', text)
+        if re.search(r'\d+:\s*cmd>\s*$', _clean.rstrip()):
+            self._koko_idle = True
+
+    def _parse_rtg_meta(self, text):
+        """Scan for lens metadata: LI, WV, UNITS, LENS RESTORED."""
+        for line in text.splitlines():
+            stripped = line.strip()
+            
+            m_li = re.match(r'(?i)^LI\s*,?\s*(.+)$', stripped)
+            if m_li:
+                self._li = m_li.group(1).strip()
+                continue
+            
+            m_restored = re.search(
+                r'LENS SAVED AS:\s*(\S+?)\.PRG\s+HAS BEEN RESTORED',
+                stripped, re.IGNORECASE)
+            if m_restored:
+                name = m_restored.group(1)
+                self._li = name
+                for cand in (
+                    os.path.join(self.HOME, 'LENSES', name + '.PRG'),
+                    os.path.join(self.HOME, 'LENSES', name + '.prg'),
+                    os.path.join(self.HOME, 'LENSES', name + '.koko'),
+                    name + '.PRG', name + '.prg',
+                ):
+                    if os.path.exists(cand):
+                        self._read_lens_file_meta(cand)
+                        break
+                self._rtg_buf = None
+                self.send_koko("RTG ALL")
+                continue
+            
+            if self._rtg_buf is not None and (stripped.startswith('WV')
+                   or re.match(r'(?i)^WV\s', stripped)):
+                nums = re.findall(r'[\d.]+', stripped)
+                if len(nums) >= 3:
                     try:
-                        ap_val = float(m_clap.group(1))
-                        # find a plausible row to attach this to
-                        for r in range(self.table.rowCount()):
-                            itm = self.table.item(r, 7)
-                            if itm is None or not itm.text().strip():
-                                self._set_cell(r, 7, str(ap_val))
-                                break
+                        self._lD = float(nums[0])
+                        self._lF = float(nums[1])
+                        self._lC = float(nums[2])
                     except ValueError:
                         pass
-            if 'LAST SURFACE' in text or 'NO SURFACES' in text:
-                buf = self._rtg_buf
-                self._rtg_buf = None
-                self.populate_table(buf)
-                # If a lens load asked us to issue VIE XZ after RTG ALL
-                # finished, do it now that the table is fully populated.
-                if self._pending_vie:
-                    self._pending_vie = False
-                    self.send_koko("VIE XZ")
-                    # koko now writes drawcmd.gpl; render the PNG once it does.
-                    self._schedule_plot_render()
+                continue
+            
+            m_units = re.match(r'(?i)^UNITS\s+(.+)$', stripped)
+            if m_units:
+                self._units = m_units.group(1).strip().lower()
+
+    def _parse_rtg_surface_details(self, text):
+        """Extract per-surface markers: CC, ASPH, TILT, CLAP."""
+        for line in text.splitlines():
+            stripped = line.strip()
+            
+            m_surf = re.match(r'^(\d+)\s*\*\s*(CC|ASPH2?|TILT|REFS|ASTOP)\b(.*)',
+                              stripped, re.IGNORECASE)
+            if m_surf:
+                s = int(m_surf.group(1))
+                kind = m_surf.group(2).upper()
+                rest = m_surf.group(3).strip()
+                store_map = {'CC': self._ccv, 'ASPH2': self._asph2v,
+                             'ASPH': self._asphv, 'TILT': self._tiltv}
+                if kind in store_map:
+                    store_map[kind][s] = rest if rest else line.strip()
+                elif kind == 'REFS':
+                    self._ccv[s] = 'REFS'
+                elif kind == 'ASTOP':
+                    self._ccv[s] = 'ASTOP'
+                continue
+            
+            for pat, attr in [('(?i)^CC\s+(.+)$', '_ccv'),
+                              ('(?i)^ASPH\s+(.+)$', '_asphv'),
+                              ('(?i)^TILT\s+(.+)$', '_tiltv')]:
+                m = re.match(pat, stripped)
+                if m:
+                    src = getattr(self, attr, {})
+                    for s in list(src.keys()):
+                        if s not in src or not src[s]:
+                            src[s] = m.group(1).strip()
+                            break
+                    break
+            
+            m_clap = re.match(r'(?i)^CLAP\s+([\d.eE+-]+)', stripped)
+            if m_clap:
+                try:
+                    ap_val = float(m_clap.group(1))
+                    for r in range(self.table.rowCount()):
+                        itm = self.table.item(r, 7)
+                        if itm is None or not itm.text().strip():
+                            self._set_cell(r, 7, str(ap_val))
+                            break
+                except ValueError:
+                    pass
+
+    def _on_rtg_complete(self, buf):
+        """Dispatch populated buffer to table and schedule plot render."""
+        self.populate_table(buf)
+        if self._pending_vie:
+            self._pending_vie = False
+            self.send_koko("VIE XZ")
+            self._schedule_plot_render()
 
     # ----- eventFilter (cmdLine Up/Down arrow history) -------------------
 
@@ -756,22 +736,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             parts.append("STOP")
         return " ".join(parts)
 
-    def populate_table(self, text):
-        """Parse koko's 'BASIC LENS DATA' (RTG ALL) output into the table."""
-        self._table_updating = True
-        self.table.setUpdatesEnabled(False)
+    def _build_rtg_rows(self, text):
+        """Parse koko's 'BASIC LENS DATA' output into a list of row tuples."""
         rows = []
-        cur_type = ""
         nxt_index = ""
         nxt_abbe = ""
+
         for line in text.splitlines():
-            line = line.rstrip()
-            if line.startswith("(MODEL DATA:"):
-                # Describes the glass surface emitted on the previous line.
-                m = re.search(r"Nd=\s*([\d.]+)", line)
-                v = re.search(r"Vd=\s*([\d.]+)", line)
-                mi = m.group(1) if m else ""
-                ma = v.group(1) if v else ""
+            stripped = line.rstrip()
+            
+            # MODEL DATA block -> provides n/V for preceding non-glass surface
+            if stripped.startswith("(MODEL DATA:"):
+                m_nd = re.search(r"Nd=\s*([\d.]+)", stripped)
+                m_vd = re.search(r"Vd=\s*([\d.]+)", stripped)
+                mi = m_nd.group(1) if m_nd else ""
+                ma = m_vd.group(1) if m_vd else ""
                 if rows and rows[-1][4].startswith(("MODEL", "SCHOTT")):
                     prev = rows[-1]
                     rows[-1] = (prev[0], prev[1], prev[2], prev[3], prev[4],
@@ -780,106 +759,93 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     nxt_index = mi
                     nxt_abbe = ma
                 continue
-            if "SURF" in line and "RADIUS" in line:
+            
+            if "SURF" in stripped and "RADIUS" in stripped:
                 continue
-            if not line.strip():
+            if not stripped.strip():
                 continue
-            # Surface-type / property markers (e.g. "6*REFS,STOP")
-            if "*" in line and not line.split()[0].replace("*", "").replace(
-                    "-", "").isdigit():
-                marker = line.split("*", 1)[1].strip().rstrip(",")
-                if rows:
-                    rows[-1] = (rows[-1][0], (rows[-1][1] + " " + marker).strip(),
-                                rows[-1][2], rows[-1][3], rows[-1][4],
-                                rows[-1][5], rows[-1][6], rows[-1][7])
-                # Also store surface detail markers (mirrors C++ ccv/asphv/etc.)
-                surf_m = re.match(r'(\d+)\*', line)
-                surf_num = int(surf_m.group(1)) if surf_m else None
-                parts_detail = marker.split(',')
-                for pd in parts_detail:
-                    pd = pd.strip()
-                    if pd.startswith('REFS') or pd == 'REFS':
-                        if surf_num is not None:
-                            self._ccv[surf_num] = pd
-                    elif pd.startswith('ASTOP') or pd == 'ASTOP':
-                        if surf_num is not None:
-                            self._ccv[surf_num] = pd
-                    elif pd.startswith('TILT'):
-                        if surf_num is not None:
-                            self._tiltv[surf_num] = pd
-                    elif pd.startswith('ASPH'):
-                        if surf_num is not None:
-                            self._asphv[surf_num] = pd
-                    elif pd.startswith('ASPH2'):
-                        if surf_num is not None:
-                            self._asph2v[surf_num] = pd
-                continue
-            # Try to parse a CC * line (conic constant)
-            cc_match = re.match(r'^\s*(\d+?)\s*\*?\s*CC\s+(.*)', line)
+            
+            # Surface-type markers ("6*REFS,STOP" etc.)
+            if "*" in stripped:
+                first_word = stripped.split()[0].replace("*", "").replace("-", "")
+                if not first_word.isdigit():
+                    marker = stripped.split("*", 1)[1].strip().rstrip(",")
+                    if rows:
+                        rows[-1] = (rows[-1][0], (rows[-1][1] + " " + marker).strip(),
+                                    rows[-1][2], rows[-1][3], rows[-1][4],
+                                    rows[-1][5], rows[-1][6], rows[-1][7])
+                    surf_m = re.match(r"(\d+)\*", stripped)
+                    surf_num = int(surf_m.group(1)) if surf_m else None
+                    for pd in marker.split(","):
+                        pd = pd.strip()
+                        if pd == "REFS" or pd.startswith("REFS"):
+                            if surf_num is not None: self._ccv[surf_num] = pd
+                        elif pd == "ASTOP" or pd.startswith("ASTOP"):
+                            if surf_num is not None: self._ccv[surf_num] = pd
+                        elif pd.startswith("TILT"):
+                            if surf_num is not None: self._tiltv[surf_num] = pd
+                        elif pd.startswith("ASPH"):
+                            if surf_num is not None: self._asphv[surf_num] = pd
+                        elif pd.startswith("ASPH2"):
+                            if surf_num is not None: self._asph2v[surf_num] = pd
+                    continue
+            
+            # Standalone CC / ASPH / TILT lines (no *N prefix)
+            cc_match = re.match(r"^\s*(\d+?)\s*\*?\s*CC\s+(.*)", stripped)
             if cc_match:
-                s = int(cc_match.group(1))
-                self._ccv[s] = cc_match.group(2).strip()
+                self._ccv[int(cc_match.group(1))] = cc_match.group(2).strip()
                 continue
-            # Try to parse ASPH lines
-            asph_match = re.match(r'^\s*(\d+?)\s*\*?\s*ASPH\s+(.*)', line)
+            asph_match = re.match(r"^\s*(\d+?)\s*\*?\s*ASPH\s+(.*)", stripped)
             if asph_match:
-                s = int(asph_match.group(1))
-                self._asphv[s] = asph_match.group(2).strip()
+                self._asphv[int(asph_match.group(1))] = asph_match.group(2).strip()
                 continue
-            # Try to parse ASPH2 lines
-            asph2_match = re.match(r'^\s*(\d+?)\s*\*?\s*ASPH2\s+(.*)', line)
+            asph2_match = re.match(r"^\s*(\d+?)\s*\*?\s*ASPH2\s+(.*)", stripped)
             if asph2_match:
-                s = int(asph2_match.group(1))
-                self._asph2v[s] = asph2_match.group(2).strip()
+                self._asph2v[int(asph2_match.group(1))] = asph2_match.group(2).strip()
                 continue
-            # Try to parse TILT lines
-            tilt_match = re.match(r'^\s*(\d+?)\s*\*?\s*TILT\s+(.*)', line)
+            tilt_match = re.match(r"^\s*(\d+?)\s*\*?\s*TILT\s+(.*)", stripped)
             if tilt_match:
-                s = int(tilt_match.group(1))
-                self._tiltv[s] = tilt_match.group(2).strip()
+                self._tiltv[int(tilt_match.group(1))] = tilt_match.group(2).strip()
                 continue
-            parts = line.split()
+            
+            # Regular surface data line
+            parts = stripped.split()
             if not parts:
                 continue
-            surf = parts[0].replace("*", "").strip()
             try:
-                int(surf)
+                int(parts[0].replace("*", ""))
             except ValueError:
                 continue
+            
+            surf = parts[0].replace("*", "").strip()
             radius = parts[1] if len(parts) > 1 else ""
             thickness = parts[2] if len(parts) > 2 else ""
+            
             material = ""
             if len(parts) > 3:
                 kind = parts[3]
-                if kind in ("MODEL", "SCHOTT", "HIKARI", "OHARA",
-                            "OHARA-O", "HOYA", "CHANCE", "CORNIN", "RADHARD",
-                            "SCH2000"):
-                    material = (kind + " " + (parts[4] if len(parts) > 4
-                                              else "")).strip()
+                valid_glasses = ("MODEL", "SCHOTT", "HIKARI", "OHARA", "OHARA-O",
+                                 "HOYA", "CHANCE", "CORNIN", "RADHARD", "SCH2000")
+                if kind in valid_glasses:
+                    material = (kind + " " + (parts[4] if len(parts) > 4 else "")).strip()
                 else:
                     material = kind
-            is_glass = material.startswith("MODEL") or material.startswith(
-                "SCHOTT") or material.startswith("HIKARI") or \
-                material.startswith("OHARA") or material.startswith("HOYA") or \
-                material.startswith("CHANCE") or material.startswith("CORNIN") \
-                or material.startswith("RADHARD") or material.startswith(
-                "SCH2000")
-            # Prefer inline INDEX/V-NUM (real koko RTG ALL); fall back to a
-            # pending (MODEL DATA:) line that described a non-glass surface.
+            
+            is_glass = any(material.startswith(p) for p in 
+                          ("MODEL", "SCHOTT", "HIKARI", "OHARA", "HOYA",
+                           "CHANCE", "CORNIN", "RADHARD", "SCH2000"))
+            
             index = parts[5] if (is_glass and len(parts) > 5) else (
                 nxt_index if is_glass else "")
             abbe = parts[6] if (is_glass and len(parts) > 6) else (
                 nxt_abbe if is_glass else "")
             nxt_index = ""
             nxt_abbe = ""
-            rows.append((surf, self._surface_type_str(int(surf)), radius,
-                         thickness, material, index, abbe, ""))
-
-            # For catalog glasses (SCHOTT, OHARA, ...) koko's RTG ALL does NOT
-            # print n/V, so read the binary catalog here (mirrors the C++
-            # DataRead call inside ShowContextMenu*). This guarantees the
-            # Index n / Abbe V columns are filled right after the table is
-            # built, regardless of async RTG ordering.
+            
+            row = (surf, self._surface_type_str(int(surf)), radius,
+                   thickness, material, index, abbe, "")
+            rows.append(row)
+            
             if is_glass and not material.startswith("MODEL"):
                 gcat, _, gname = material.partition(" ")
                 if gcat and gname:
@@ -888,34 +854,29 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                         rows[-1] = (rows[-1][0], rows[-1][1], rows[-1][2],
                                     rows[-1][3], rows[-1][4], gi, ga,
                                     rows[-1][7])
+        
+        return rows
 
-        # When the new row count is *smaller* than the existing one, Qt may
-        # emit a dataChanged() with an invalid (-1,-1) index range while it
-        # tears down the surplus rows. Guard that by explicitly removing the
-        # extra items before shrinking the row count (Qt 6.10 surfaces this as
-        # a "dataChanged() called with an invalid index range" warning).
+    def populate_table(self, text):
+        """Render parsed RTG ALL output in the surface table."""
+        self._table_updating = True
+        self.table.setUpdatesEnabled(False)
+        
+        rows = self._build_rtg_rows(text)
+        
         if self.table.rowCount() > len(rows):
             for r in range(len(rows), self.table.rowCount()):
                 for c in range(self.table.columnCount()):
                     it = self.table.takeItem(r, c)
                     if it is not None:
                         del it
+        
         self.table.setRowCount(len(rows))
-        # Avoid passing an empty label list to setVerticalHeaderLabels: an
-        # empty list drives QHeaderView to emit dataChanged(QModelIndex(-1,-1),
-        # QModelIndex(-1,-1)) which Qt 6.10 reports as the same warning. Only
-        # set labels when there is at least one row.
         if len(rows) > 0:
             self.table.setVerticalHeaderLabels([r[0] for r in rows])
-        # Re-enable updates BEFORE populating the cells. If updates are still
-        # disabled here, Qt 6.10.2 defers the dataChanged() emission and flushes
-        # it when updates are re-enabled, emitting dataChanged() with an invalid
-        # (-1,-1) index range -- which the new Qt 6.10 validation reports as the
-        # "dataChanged() called with an invalid index range" warning. Enabling
-        # first makes every setItem() emit with a valid index.
+        
         self.table.setUpdatesEnabled(True)
-        for i, (surf, stype, radius, thickness, material, index,
-                abbe, ap) in enumerate(rows):
+        for i, (surf, stype, radius, thickness, material, index, abbe, ap) in enumerate(rows):
             self._set_cell(i, 0, surf)
             self._set_cell(i, 1, stype)
             self._set_cell(i, 2, radius)
