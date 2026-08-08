@@ -31,60 +31,26 @@ C///////////////////////////////////////////////////////////////////////
 
           IMPLICIT NONE
           INTEGER, INTENT(IN) :: IX,IY ! plotter coordinates
-          INTEGER, INTENT(IN) :: I3    ! ???
-          INTEGER, INTENT(IN) :: IC    ! plot color
+          INTEGER, INTENT(IN) :: I3    ! pen state (1=no blank, 0=pen-up)
+          INTEGER, INTENT(IN) :: IC    ! plot color (0=black,1=yellow,2=magenta,3=red,4=cyan)
 
           ! canvas size: x in [0,10000], y in [0,7000]
+          ! color→unit mapping: 0→130(black), 1→115(yellow), 2→116(magenta),
+          !                      3→117(red),   4→118(cyan)
+          INTEGER :: i, u
+          INTEGER, PARAMETER :: units(0:4) = (/130,115,116,117,118/)
 
-          IF (IC.EQ.0) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(130,'(2I5)') IX,IY
-              ELSE
-                  WRITE(130,*)
-                  WRITE(130,'(2I5)') IX,IY
-              END IF
-              FLUSH(130)
-          END IF
-
-          IF (IC.EQ.1) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(115,'(2I5)') IX,IY
-              ELSE
-                  WRITE(115,*)
-                  WRITE(115,'(2I5)') IX,IY
-
-              END IF
-              FLUSH(115)
-          END IF
-
-          IF (IC.EQ.2) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(116,'(2I5)') IX,IY
-              ELSE
-                  WRITE(116,*)
-                  WRITE(116,'(2I5)') IX,IY
-              END IF
-              FLUSH(116)
-          END IF
-
-          IF (IC.EQ.3) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(117,'(2I5)') IX,IY
-              ELSE
-                  WRITE(117,*)
-                  WRITE(117,'(2I5)') IX,IY
-              END IF
-              FLUSH(117)
-          END IF
-
-          IF (IC.EQ.4) THEN
-              IF (I3.EQ.1) THEN
-                  WRITE(118,'(2I5)') IX,IY
-              ELSE
-                  WRITE(118,*)
-                  WRITE(118,'(2I5)') IX,IY
-              END IF
-              FLUSH(118)
+          IF(IC.GE.0.AND.IC.LE.4) THEN
+              ! Write data point: once for pen-up blank line if I3=0, once for coords
+              DO i = 1, 2
+                  IF(I3.EQ.0) WRITE(units(IC),'(A)') ' '
+                  IF(I3.EQ.1) THEN
+                      WRITE(units(IC),'(2I5)') IX,IY
+                  ELSE
+                      WRITE(units(IC),'(2I5)') IX,IY
+                  END IF
+              END DO
+              FLUSH(units(IC))
           END IF
 
       END SUBROUTINE datacolorssave
@@ -93,57 +59,16 @@ C///////////////////////////////////////////////////////////////////////
       SUBROUTINE drawdatasave(I1,I2,I3,I4)
 
           implicit none
-          integer I1,I2,I3,I4            
+          integer I1,I2,I3,I4
+          INTEGER :: u
+C     unit lookup table for color routing: black=130, yellow=115, magenta=116, red=117, cyan=118
+          INTEGER, PARAMETER :: units(0:4) = (/130,115,116,117,118/)
 
-            if (I4.eq.0) then
-                if (I3.eq.1) then
-                    write(130,'(2I5)') I1,I2    !black
-                else
-                    write(130,*)
-                    write(130,'(2I5)') I1,I2
-                end if
-                flush(130)
-              end if
-
-             if (I4.eq.1) then
-                if (I3.eq.1) then
-                    write(115,'(2I5)') I1,I2    !yellow
-                else
-                    write(115,*)
-                    write(115,'(2I5)') I1,I2
-                end if
-                flush(115)
-              end if
-
-             if (I4.eq.2) then
-                if (I3.eq.1) then
-                    write(116,'(2I5)') I1,I2    !magenta
-                else
-                    write(116,*)
-                    write(116,'(2I5)') I1,I2
-                end if
-                flush(116)
-             end if
-
-             if (I4.eq.3) then
-                if (I3.eq.1) then
-                    write(117,'(2I5)') I1,I2    !red
-                else
-                    write(117,*)
-                    write(117,'(2I5)') I1,I2
-                end if
-                flush(117)
-             end if
-
-             if (I4.eq.4) then
-                if (I3.eq.1) then
-                    write(118,'(2I5)') I1,I2    !cyan
-                else
-                    write(118,*)
-                    write(118,'(2I5)') I1,I2
-                end if
-                flush(118)
-              end if
+          IF(I4.LT.0.OR.I4.GT.4) RETURN
+          ! Write data point: once for pen-up blank line if I3=0, once for coords
+          IF(I3.EQ.0) WRITE(units(I4),'(A)') ' '
+          WRITE(units(I4),'(2I5)') I1,I2
+          FLUSH(units(I4))
 
             END SUBROUTINE drawdatasave
 
