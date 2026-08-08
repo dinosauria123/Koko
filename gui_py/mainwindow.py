@@ -50,27 +50,36 @@ from gui_py.ui_optimize import Ui_Optimize
 # Dialogs
 # --------------------------------------------------------------------------
 
-class LIDialog(QDialog, Ui_LIDialog):
+class StringDialog(QDialog):
+    """Generic single-line string-input dialog. Subclasses set _ui_cls."""
+    _ui_cls = None
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setupUi(self)
+        self._ui = self._ui_cls()
+        self._ui.setupUi(self)
 
     def get_value(self):
+        """Show dialog; return trimmed text on OK, or None."""
         if self.exec() == QDialog.DialogCode.Accepted:
-            return self.lineEdit.text().strip()
+            return self._ui.lineEdit.text().strip()
         return None
 
 
-class NewDialog(QDialog, Ui_NewDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
+class LIDialog(StringDialog):
+    _ui_cls = Ui_LIDialog
 
-    def get_value(self):
-        if self.exec() == QDialog.DialogCode.Accepted:
-            return self.lineEdit.text().strip()
-        return None
 
+class NewDialog(StringDialog):
+    _ui_cls = Ui_NewDialog
+
+
+class RayInputDialog(StringDialog):
+    _ui_cls = Ui_rayinputDialog
+
+
+class OptimizeDialog(StringDialog):
+    _ui_cls = Ui_Optimize
 
 class NKDialog(QDialog, Ui_nkDialog):
     def __init__(self, parent=None):
@@ -96,26 +105,6 @@ class NKDialog(QDialog, Ui_nkDialog):
         return None
 
 
-class RayInputDialog(QDialog, Ui_rayinputDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
-
-    def get_value(self):
-        if self.exec() == QDialog.DialogCode.Accepted:
-            return self.lineEdit.text().strip()
-        return None
-
-
-class OptimizeDialog(QDialog, Ui_Optimize):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setupUi(self)
-
-    def get_value(self):
-        if self.exec() == QDialog.DialogCode.Accepted:
-            return self.lineEdit.text().strip()
-        return None
 
 
 # --------------------------------------------------------------------------
