@@ -231,7 +231,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._koko_fd. The child is launched in its own session so it
         can be killed by group later if needed.
         """
-        import pty, os, fcntl, struct, signal
+        import pty, os, fcntl, struct, signal, termios
 
         master, slave = pty.openpty()
         # non-blocking master so the GUI event loop is never stalled
@@ -523,9 +523,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     self._ccv[s] = 'ASTOP'
                 continue
             
-            for pat, attr in [('(?i)^CC\s+(.+)$', '_ccv'),
-                              ('(?i)^ASPH\s+(.+)$', '_asphv'),
-                              ('(?i)^TILT\s+(.+)$', '_tiltv')]:
+            for pat, attr in [(r'(?i)^CC\s+(.+)$', '_ccv'),
+                              (r'(?i)^ASPH\s+(.+)$', '_asphv'),
+                              (r'(?i)^TILT\s+(.+)$', '_tiltv')]:
                 m = re.match(pat, stripped)
                 if m:
                     src = getattr(self, attr, {})
@@ -1204,7 +1204,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         def connect(attr_name, handler, *handler_args):
             action = getattr(self, attr_name)
             if handler_args:
-                action.triggered.connect(lambda h=handler, a=handler_args: h(*a))
+                action.triggered.connect(
+                    lambda _checked=False, h=handler, a=handler_args: h(*a))
             else:
                 action.triggered.connect(handler)
 
@@ -1245,8 +1246,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionYFAN', self.slot_plot, 'FANS YFAN'),
             ('actionNFAN', self.slot_plot, 'FANS NFAN'),
             ('actionPFAN', self.slot_plot, 'FANS PFAN'),
-            ('actionXYOPD', self.slot_plot, 'FANS XYOPD'),
+            ('actionXOPD', self.slot_plot, 'FANS XOPD'),
             ('actionYOPD', self.slot_plot, 'FANS YOPD'),
+            ('actionXYOPD', self.slot_plot, 'FANS XYOPD'),
             ('actionNOPD', self.slot_plot, 'FANS NOPD'),
             ('actionPOPD', self.slot_plot, 'FANS POPD'),
             ('actionXCD', self.slot_plot, 'FANS XCD'),
@@ -1285,7 +1287,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
             action = getattr(self, attr_name)
             if args:
-                action.triggered.connect(lambda h=handler, a=args: h(*a))
+                action.triggered.connect(
+                    lambda _checked=False, h=handler, a=args: h(*a))
             else:
                 action.triggered.connect(handler)
 
