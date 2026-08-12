@@ -62,6 +62,7 @@ from gui_py.ui_stopdialog import Ui_StopDialog
 from gui_py.ui_refdialog import Ui_RefDialog
 from gui_py.ui_decdialog import Ui_DecDialog
 from gui_py.ui_macrodialog import Ui_MacroDialog
+from gui_py.ui_nssdialog import Ui_NssDialog
 
 
 # --------------------------------------------------------------------------
@@ -547,6 +548,63 @@ class MacroDialog(QDialog, Ui_MacroDialog):
             if op.startswith("Edit"):
                 return dict(op="EDIT", name=name)
         return None
+
+
+class NssDialog(QDialog, Ui_NssDialog):
+    """Non-sequential (NSS) database dialog.
+
+    koko implements NSS fully: NSSNEW creates the in-memory database,
+    after which NSSUNITS/NSSWV/UNIVERSE/OBJECT/ONAME/NSSSAVE/NSSREST/
+    NSSTRACE/NSSLIST/NSSDEL all work. This dialog wires those commands
+    to buttons (mirrors KDP2 NSS-menu intent).
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_NssDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_new.clicked.connect(lambda: self._send("NSSNEW"))
+        ui.btn_apply.clicked.connect(self._apply_settings)
+        ui.btn_object.clicked.connect(self._define_object)
+        ui.btn_trace.clicked.connect(lambda: self._send("NSSTRACE"))
+        ui.btn_list.clicked.connect(lambda: self._send("NSSLIST"))
+        ui.btn_save.clicked.connect(self._save)
+        ui.btn_rest.clicked.connect(self._restore)
+        ui.btn_del.clicked.connect(lambda: self._send("NSSDEL"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        if main is not None and hasattr(main, "send_koko"):
+            main.send_koko(cmd)
+
+    def _apply_settings(self):
+        ui = self._ui
+        units = ui.combo_units.currentText()
+        try:
+            wv = float(ui.lineEdit_wv.text().strip() or "0.55")
+            uni = float(ui.lineEdit_uni.text().strip() or "100.0")
+        except ValueError:
+            return
+        self._send("NSSUNITS %s" % units)
+        self._send("NSSWV %s" % repr(wv))
+        self._send("UNIVERSE %s" % repr(uni))
+
+    def _define_object(self):
+        ui = self._ui
+        name = ui.lineEdit_oname.text().strip() or "OBJ1"
+        self._send("OBJECT")
+        self._send("ONAME %s" % name)
+
+    def _save(self):
+        fname = self._ui.lineEdit_file.text().strip()
+        if fname:
+            self._send("NSSSAVE %s" % fname)
+
+    def _restore(self):
+        fname = self._ui.lineEdit_file.text().strip()
+        if fname:
+            self._send("NSSREST %s" % fname)
 
 
 class LIDialog(StringDialog):
@@ -2167,6 +2225,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionRef', self.slot_actionRef),
             ('actionDec', self.slot_actionDec),
             ('actionMacro', self.slot_actionMacro),
+            ('actionNss', self.slot_actionNss),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2798,6 +2857,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             return
         # RUN
         self.send_koko("MACRO %s" % name)
+
+    def slot_actionNss(self):
+        """Non-sequential database: open the NSS dialog (mirrors KDP2
+        NSS-menu intent). koko implements NSS fully via NSSCALL."""
+        dlg = NssDialog(self)
+        dlg.exec()
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
