@@ -3319,7 +3319,12 @@ class GlassMapDialog(QDialog):
         import os
         import tempfile
         import subprocess
+        import shutil
         import gui_py.glassmap as gm
+
+        gnuplot_bin = shutil.which("gnuplot") or "gnuplot"
+        env = dict(os.environ)
+        env["DISPLAY"] = ""
 
         cats = [c for c, cb in self._cat_checks.items() if cb.isChecked()]
         if not cats:
@@ -3345,11 +3350,11 @@ class GlassMapDialog(QDialog):
         gm.build_gnuplot_script(data_path, script_path, png_path,
                                 "Glass Map (n vs v)", vmin, vmax, nmin, nmax)
 
-        r = subprocess.run(["gnuplot", script_path],
-                           capture_output=True, text=True)
+        r = subprocess.run([gnuplot_bin, script_path], env=env,
+                           capture_output=True, text=True, timeout=30)
         if r.returncode != 0 or not os.path.exists(png_path):
             QMessageBox.critical(self, "Glass Map",
-                                 "gnuplot failed:\n" + r.stderr)
+                                 "gnuplot failed:\n" + (r.stderr or r.stdout))
             return
 
         owner = self.parent()
