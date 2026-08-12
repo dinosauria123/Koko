@@ -20,7 +20,7 @@
 | 点列図 (DOTF) | IDD_DOTF | `DOTF` `PLTDOTF` `DIFLEICA NO,n` | **実装済み** (SPACE I/O+FAR+DOTF+PLTDOTF,,1) |
 | 幾何 OTF (GOTF) | IDD_GOTF | `GOTF` `PLTGOTF` `GEOLEICA NO,n` | **実装済み** (SPACE I/O+FAR+GOTF+PLTGOTF,1) |
 | PSF | IDD_PSF / PSFENERGY / PSFSTREAK / PSFSTREHL | `PSF` `PSFLOG` `PSFWRITE` `PSFROT` `STREAK *` `STREHL` `APSTREHL` | **実装済み** (PSFWRITE YES+PSFLOG+PSFPLOT YES+PSF,1+CAPFNOUT) |
-| ファン図（横/縦/対角/OPD/CD/LA） | IDD_FAN1 | `PLTXFAN` `PLTYFAN` `PLTXYFAN` `PLTNFAN` `PLTPFAN` (+CD/LA/OPD) | **実装済み** (SPOT RING+SPD+PLT* — koko が SPD の光線追跡データを要求するため前置。GUI で PNG 生成確認済み) |
+| ファン図（横/縦/対角/OPD/CD/LA） | IDD_FAN1 | `FANS XFAN` `FANS YFAN` `FANS XYFAN` `FANS NFAN` `FANS PFAN` (+CD/LA/OPD) | **実装済み** (FANS <qualifier> — KDP2 RIMS サブルーチン経由。PTY/GUI で PNG 生成確認済み) |
 | 単一光線追跡 | IDD_RAY | `RAY` `FOB` `AIMRAY ON` | **未実装**（メニュー項目なし、要ダイアログ） |
 | 近軸 (PARAXIAL) | IDD_PARAX1/2/3 | `PARAX` 系 | **未実装**（要ダイアログ） |
 | 表示制御 (VIE) | IDD_VIE | `VIE` `PLOT *`（NOTE/PEN/FRAME/AXIS/UPLOT） | 部分（VIE XZ のみ、PLOT 詳細制御なし） |
