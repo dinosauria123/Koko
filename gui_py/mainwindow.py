@@ -61,6 +61,7 @@ from gui_py.ui_glasslibdialog import Ui_GlassLibDialog
 from gui_py.ui_stopdialog import Ui_StopDialog
 from gui_py.ui_refdialog import Ui_RefDialog
 from gui_py.ui_decdialog import Ui_DecDialog
+from gui_py.ui_macrodialog import Ui_MacroDialog
 
 
 # --------------------------------------------------------------------------
@@ -514,6 +515,37 @@ class DecDialog(QDialog, Ui_DecDialog):
                 return dict(surf=surf, x=x, y=y, z=z)
             except ValueError:
                 return None
+        return None
+
+
+class MacroDialog(QDialog, Ui_MacroDialog):
+    """Macro-library (MACRO) dialog.
+
+    koko's macro library lives in $HOME/KODS/LIBMAC/MAC.DAT and must be
+    initialized once with IMF + PROCEED. Then:
+        MACRO  <name>  -> run macro
+        MDEL   <name>  -> delete macro
+        MACED  <name>  -> enter mac> edit mode (MACSAVE to store)
+    The init button is enabled only when the library file is missing.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_MacroDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        if self.exec() == QDialog.DialogCode.Accepted:
+            name = self._ui.lineEdit_name.text().strip()
+            op = self._ui.combo_op.currentText()
+            if not name:
+                return None
+            if op.startswith("Run"):
+                return dict(op="RUN", name=name)
+            if op.startswith("Delete"):
+                return dict(op="DEL", name=name)
+            if op.startswith("Edit"):
+                return dict(op="EDIT", name=name)
         return None
 
 
@@ -2134,6 +2166,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionStop', self.slot_actionStop),
             ('actionRef', self.slot_actionRef),
             ('actionDec', self.slot_actionDec),
+            ('actionMacro', self.slot_actionMacro),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2741,6 +2774,30 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             repr(vals["x"]), repr(vals["y"]), repr(vals["z"])))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
+
+    def slot_actionMacro(self):
+        """Macro library: init (once), run, delete, or edit a macro.
+        Mirrors KDP2 IDD_MACRO intent for the subset koko supports."""
+        dlg = MacroDialog(self)
+        # Keep the init button in sync with actual library state.
+        import os
+        libmac = os.path.join(os.path.expanduser("~"), "KODS", "LIBMAC")
+        dlg._ui.btn_init.setEnabled(
+            not os.path.isdir(libmac) or
+            not os.path.exists(os.path.join(libmac, "MAC.DAT")))
+        vals = dlg.get_values()
+        if not vals:
+            return
+        name = vals["name"]
+        if vals["op"] == "EDIT":
+            # Enter mac> mode; user types commands then MACSAVE.
+            self.send_koko("MACED %s" % name)
+            return
+        if vals["op"] == "DEL":
+            self.send_koko("MDEL %s" % name)
+            return
+        # RUN
+        self.send_koko("MACRO %s" % name)
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either

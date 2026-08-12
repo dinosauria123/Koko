@@ -44,7 +44,7 @@
 | パラメータ拾い (PIKUP) | IDD_PIKSLV / IDD_PIKED1/2/3 | `PIKUP *` (CV/RD/CC/TH/AD/AE/AF/AG/TOR/ALPHA/BETA/GAMMA/XD/YD/GLASS/PRO/PIVX/Y/Z 等44種) `PIKD *` `SLV` | **実装済み** (PikupDialog: 面番号+種別+値 → U L + PIKUP <TYPE>,<surf>,<val> + EOS + RTG ALL。koko が受付確認済み。PIKD/SLV は未実装) |
 | ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS NORMAL` `PIVAXIS VERTEX` `PIVOT,X,Y,Z` `PIVAXIS ?` | **実装済み**（PivaxisDialog: NORMAL または VERTEX(座標指定)、または表示のみ(PIVAXIS ?)→U L+CHG+PIVAXIS NORMAL / PIVAXIS VERTEX+PIVOT,X,Y,Z / PIVAXIS ?+EOS+RTG ALL。koko 受付確認済み） |
 | ガラスライブラリ | IDD_GLASSP / EDGLASS / LLIB | `LIB GET/PUT/DEL` `LENADD` `LIBSAVE` `LIBREST` `GLASSP` | 部分（FINDGLASS + Lens Library LIB GET/PUT/DEL 実装。koko が LIB GET/PUT/DEL をサポートすることを確認済み。LIB REST/SAVE/LIST は koko 未サポート、GLASSP は送信のみ） |
-| マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 未実装 |
+| マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 部分（MacroDialog: ライブラリ初期化 IMF+PROCEED（~/KODS/LIBMAC/ 未作成時のみ有効）、実行(MACRO name)/削除(MDEL name)/編集(MACED name→mac>モード)。koko が ~/KODS/LIBMAC/MAC.DAT を要求し、IMF+PROCEED で初期化できることを確認済み。MACED 編集時の複数行入力+MACSAVE は koko 側 mac> モードで手動扱い） |
 | 有効径 (APERTURE/CLAP) | IDD_APECIRC 系 | `CLAP` `COBS` `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | **実装済み**（円形 CLAP: ApertureDialog → U L + CHG <surf> + CLAP <rad> <xdecenter> <ydecenter> 0 0 + EOS + RTG ALL。koko 受付確認済み。APCX/APCY/APX/APY/CAPFN は未実装） |
 | 面種別 (SURTYPE) | （KDP2 にも設定ダイアログなし / 表示コマンドのみ） | `SURTYPE <surface>` `SURTYPE ALL` | **実装済み**（SurtypeDialog: 面番号またはALL→SURTYPE <surf>/ALL 送信。koko が REAL/PARAXIAL をテキスト出力。GUI 経由で koko 受付確認済み。msgView 表示は既知の非同期読み取りタイミング問題あり＝PARAXIAL/RAY と同じ） |
 | コーティング (COATING) | — | `COATING <n>` `COATING ?` | **実装済み**（CoatingDialog: 面番号+コーティング番号(0=none)、または表示のみ(COATING ?)→U L+CHG+COATING <n>/?+EOS+RTG ALL。koko 受付確認済み） |
