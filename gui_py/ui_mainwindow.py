@@ -189,8 +189,6 @@ class Ui_MainWindow(object):
         self.statusBar = QtWidgets.QStatusBar(parent=MainWindow)
         self.statusBar.setObjectName("statusBar")
         MainWindow.setStatusBar(self.statusBar)
-        self.actionInput_Variables = QtGui.QAction(parent=MainWindow)
-        self.actionInput_Variables.setObjectName("actionInput_Variables")
         self.actionOptimizer = QtGui.QAction(parent=MainWindow)
         self.actionOptimizer.setObjectName("actionOptimizer")
         self.actionOpen = QtGui.QAction(parent=MainWindow)
@@ -509,7 +507,6 @@ class Ui_MainWindow(object):
         self.menuImage_Evaluation.addAction(self.actionApod_Settings)
         self.menuImage_Evaluation.addAction(self.actionDifset_Settings)
         self.menuGraphs.addAction(self.menuImage_Evaluation.menuAction())
-        self.menuOptimize.addAction(self.actionInput_Variables)
         self.menuOptimize.addAction(self.actionOptimizer)
         self.menuBar.addAction(self.menuFile.menuAction())
         self.menuBar.addAction(self.menuEdit.menuAction())
@@ -520,7 +517,6 @@ class Ui_MainWindow(object):
         self.menuBar.addAction(self.menuMacros.menuAction())
 
         self.retranslateUi(MainWindow)
-        #         self.actionInput_Variables.triggered.connect(MainWindow.slot_actionInput_Variables) # type: ignore
         #         self.actionOpen.triggered.connect(MainWindow.slot_actionOpen) # type: ignore
         #         self.actionQuit.triggered.connect(MainWindow.slot_quit2) # type: ignore
         #         self.actionSave.triggered.connect(MainWindow.slot_actionSave) # type: ignore
@@ -679,7 +675,6 @@ class Ui_MainWindow(object):
         self.menuOptimize.setTitle(_translate("MainWindow", "Optimize"))
         self.menuTolerancing.setTitle(_translate("MainWindow", "Tolerancing"))
         self.menuMacros.setTitle(_translate("MainWindow", "Macros"))
-        self.actionInput_Variables.setText(_translate("MainWindow", "Input Variables"))
         self.actionOptimizer.setText(_translate("MainWindow", "Optimizer"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.actionSave.setText(_translate("MainWindow", "Save"))

@@ -16,7 +16,36 @@ class Ui_OptimizeDialog(object):
         self.verticalLayout.setObjectName("verticalLayout")
 
         # ------------------------------------------------------------------
-        # Group 1: Damped Least Squares Controls
+        # Group 1: Variables & Operands
+        # Integrated here (mirrors the original IDD_VARED variable/operand
+        # setup) so the user can define variables and the default merit
+        # function in the same dialog before running ITER / PFIND / etc.
+        # Placed at the top because variables/operands must be defined
+        # before any optimization run.
+        # ------------------------------------------------------------------
+        self.groupBox_Var = QtWidgets.QGroupBox("Variables & Operands")
+        self.groupBox_Var.setObjectName("groupBox_Var")
+        self.gridLayout_Var = QtWidgets.QGridLayout(self.groupBox_Var)
+        self.gridLayout_Var.setContentsMargins(9, 16, 9, 9)
+        self.gridLayout_Var.setSpacing(6)
+        self.gridLayout_Var.setObjectName("gridLayout_Var")
+
+        self.pushButton_varEditor = QtWidgets.QPushButton(
+            "OPEN VARIABLE EDITOR")
+        self.pushButton_varEditor.setObjectName("pushButton_varEditor")
+        self.gridLayout_Var.addWidget(self.pushButton_varEditor, 0, 0, 1, 1)
+
+        self.label_varHint = QtWidgets.QLabel(
+            "Define optimization variables and the default merit function "
+            "(EFL target) before running ITER.")
+        self.label_varHint.setObjectName("label_varHint")
+        self.label_varHint.setWordWrap(True)
+        self.gridLayout_Var.addWidget(self.label_varHint, 1, 0, 1, 1)
+
+        self.verticalLayout.addWidget(self.groupBox_Var)
+
+        # ------------------------------------------------------------------
+        # Group 2: Damped Least Squares Controls
         # ------------------------------------------------------------------
         self.groupBox_DLS = QtWidgets.QGroupBox("Damped Least Squares Controls")
         self.groupBox_DLS.setObjectName("groupBox_DLS")
@@ -75,7 +104,7 @@ class Ui_OptimizeDialog(object):
         self.verticalLayout.addWidget(self.groupBox_DLS)
 
         # ------------------------------------------------------------------
-        # Group 2: Optimize
+        # Group 3: Optimize
         # ------------------------------------------------------------------
         self.groupBox_Opt = QtWidgets.QGroupBox("Optimize")
         self.groupBox_Opt.setObjectName("groupBox_Opt")

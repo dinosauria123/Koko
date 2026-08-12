@@ -101,6 +101,49 @@ class RayInputDialog(StringDialog):
 class OptimizeDialog(StringDialog):
     _ui_cls = Ui_Optimize
 
+    def apply_commands(self):
+        """Return the koko command sequence that defines the optimization
+        variables and the default merit function (EFL target), mirroring the
+        original IDD_VARED / FLCLTH / VARIABLES flow.
+
+        Verified command sequence (tested against koko-cli):
+          MERIT            -> enter merit-creation level (F27=1), resets OPCNT
+          FLCLTH <target>  -> add focal-length operand (target = EFL in mm);
+                               surface range defaults to the whole lens
+          EOS              -> leave merit-creation level (operand is committed)
+          VARIABLES        -> enter variable-definition level
+          <CV 1> etc.      -> one variable spec per line
+          EOS              -> leave variable level
+          VB               -> turn the variable block ON
+        The ITER run is left to the Optimizer dialog so the user controls
+        when/how many cycles to execute (avoids an uncontrolled ITER FULL
+        that can crash koko when variables/operands are still empty).
+        """
+        efl = self._ui.lineEdit_efl.text().strip()
+        var_text = self._ui.plainEdit_var.toPlainText().strip()
+        # Normalize the EFL target: a bare number is the target; if the user
+        # typed something else, just pass it through.
+        try:
+            float(efl)
+        except ValueError:
+            efl = "0.0"
+        cmds = [
+            "MERIT",
+            "FLCLTH %s" % efl,
+            "EOS",
+            "VARIABLES",
+        ]
+        # Each non-empty line is one variable spec (e.g. "CV 1", "TH 3").
+        for line in var_text.splitlines():
+            line = line.strip()
+            if line:
+                cmds.append(line)
+        cmds.extend([
+            "EOS",
+            "VB",
+        ])
+        return cmds
+
 class OptimizeRunDialog(QDialog, Ui_OptimizeDialog):
     """Optimization run dialog (mirrors original IDD_OPTIM).
 
@@ -134,6 +177,19 @@ class OptimizeRunDialog(QDialog, Ui_OptimizeDialog):
         self.pushButton_iterp.clicked.connect(self._on_iterp)
         self.pushButton_robb.clicked.connect(self._on_robb)
         self.pushButton_exit.clicked.connect(self.reject)
+        self.pushButton_varEditor.clicked.connect(self._on_open_var_editor)
+
+    def _on_open_var_editor(self):
+        """Open the variable/operand editor (original IDD_VARED flow) from
+        within the Optimizer dialog, so variables and the default merit
+        function can be defined before running ITER / PFIND / etc."""
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        dlg = OptimizeDialog(self)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            for cmd in dlg.apply_commands():
+                mw.send_koko(cmd)
 
     def _verbose_prefix(self):
         """Return the OVERBOSE command for the current checkbox state."""
@@ -530,8 +586,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if self._koko_fd is None or self._koko_pid is None:
             self.append_msg("** koko-cli is not running **")
             return
-        self.append_msg("> " + command.strip())
+        # Suppress the "> command" echo in GUI mode only when explicitly
+        # disabled. Set KOKO_GUI_ECHO=0 to hide the echo (koko is launched
+        # with -G, GUI mode). The default is echo ON so command flow is
+        # visible during normal use.
+        if os.environ.get("KOKO_GUI_ECHO", "1") == "1":
+            self.append_msg("> " + command.strip())
         self._koko_idle = False  # we just issued a command; koko is busy
+
         # Remember what we sent so _poll_koko_pty can strip the echo koko
         # writes back. Skip the bare "ECHO" query so its reply ("ECHO IS
         # OFF/ON") is not accidentally truncated by the removal below.
@@ -1696,7 +1758,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionApod_Settings', self.slot_actionApod_Settings),
             ('actionDifset_Settings', self.slot_actionDifset_Settings),
             # Optimize
-            ('actionInput_Variables', self.slot_actionInput_Variables),
             ('actionOptimizer', self.slot_actionOptimizer),
         ]
 
@@ -2023,25 +2084,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if dlg.exec() == QDialog.DialogCode.Accepted:
             for cmd in dlg.apply_commands():
                 self.send_koko(cmd)
-
-    def slot_actionInput_Variables(self):
-        dlg = OptimizeDialog(self)
-        val = dlg.get_value()
-        if val is None or not val:
-            return
-        # Parse variables from dialog (e.g. "R1 1 10 R2 2 20 ...")
-        var_str = val
-        self.send_koko("MERIT")
-        self.send_koko("FLCLTH %s 1 0 0" % var_str.strip())
-        self.send_koko("EOS")
-        self.send_koko("VARIABLES")
-        for part in var_str.split():
-            self.send_koko(part)
-        self.send_koko("EOS")
-        self.send_koko("VB")
-        self.send_koko("OPRD")
-        self.send_koko("ITER FULL")
-        self.send_koko("RTG ALL")
 
     def slot_actionOptimizer(self):
         """Optimize menu -> Optimizer (mirrors original IDD_OPTIM)."""
