@@ -51,6 +51,7 @@
 | 多構成 (CONFIGS) | IDD_CONFIGS | `CONFIGS ALL` `UPDATE LENS` `CFG` | **実装済み** (menuLensData → CONFIGS ALL 配線済み。GUI 動作確認済み) |
 | 非シーケンシャル (NSS) | — | `NSSNEW` `NSSUNITS` `NSSWV` `UNIVERSE` `OBJECT` `ONAME` `NSSSAVE` `NSSREST` `NSSTRACE` `NSSLIST` `NSSDEL` | **実装済み**（NssDialog: 新規作成/単位/波長/ユニバース/オブジェクト定義/レイトレース/一覧/保存/復元/削除ボタン。koko が NSSNEW でデータベース作成後、全 NSS コマンドをサポートすることを PTY で確認済み） |
 | 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | **実装済み**（ToperDialog: TVARモードで公差変数(TH/RD_FR/CV_FR/CC/AD/AE/AF/AG/XD/YD/PIVX/Y/Z)定義→TOPERモードでオペランド(FUNCxx)定義→SENSI/MONTE解析。koko が TVAR→tvb>、TOPER→top>、SENSI/MONTE を完全サポートし、TVAR+TOPER+SENSI で感度解析レポートを出力することを PTY で確認済み。TOLNRD でグリッド設定） |
+| ガラスマップ (GLASS MAP) | menuGraphs | — | **実装済み**（GlassMapDialog: カタログ選択(CDGM/Schott/Hoya/Ohara/Hikari/Sumita)→AGF/CSVから Nd,Vd を抽出→gnuplot(pngcairo)で n-v 散布図を PNG 出力→GlassMapWindow で表示。クリックするとピクセル座標を (n,v) に逆変換し、最寄りのガラス名・n・v を msgView に表示。858 ガラスを読み込み、N-BK7 で逆変換精度を確認済み） |
 
 ## C. 実装済み（OK）
 

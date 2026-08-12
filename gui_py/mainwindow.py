@@ -24,7 +24,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem,
     QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton,
     QComboBox, QDialogButtonBox, QInputDialog, QMenu, QWidget, QFrame,
-    QSizePolicy, QStyledItemDelegate,
+    QSizePolicy, QStyledItemDelegate, QCheckBox,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
 from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
@@ -2301,6 +2301,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionMacro', self.slot_actionMacro),
             ('actionNss', self.slot_actionNss),
             ('actionToper', self.slot_actionToper),
+            ('actionGlassMap', self.slot_actionGlassMap),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2945,6 +2946,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg = ToperDialog(self)
         dlg.exec()
 
+    def slot_actionGlassMap(self):
+        """Glass map (n vs v): open the catalog picker and render the map."""
+        dlg = GlassMapDialog(self)
+        dlg.exec()
+
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
         trace the ray (text output) or plot its transverse-aberration fan.
@@ -3214,6 +3220,144 @@ class PlotWindow(QMainWindow):
             self._owner = None
         event.accept()
         super().closeEvent(event)
+
+
+class GlassMapWindow(PlotWindow):
+    """n-v glass-map viewer. Clicking the plot maps the pixel coordinate
+    back to (n, v) data space (using the fixed gnuplot margins/ranges the
+    PNG was rendered with) and reports the nearest glass."""
+
+    def __init__(self, owner, glasses, geom):
+        super().__init__(owner)
+        self._glasses = glasses
+        # geom: dict with vmin,vmax,nmin,nmax,width,height,lmargin,rmargin,
+        #       tmargin,bmargin
+        self._geom = geom
+        self._click_label = None
+        # Build the plot label up front so _plot in the dialog can set the
+        # pixmap directly.
+        self._plot_label = QLabel()
+        self._plot_label.setScaledContents(True)
+        self.setCentralWidget(self._plot_label)
+
+    def mousePressEvent(self, event):
+        if self._glasses and self._geom:
+            self._report_click(event.position().x(), event.position().y())
+        super().mousePressEvent(event)
+
+    def _report_click(self, px, py):
+        g = self._geom
+        plot_w = g["width"] - g["lmargin"] - g["rmargin"]
+        plot_h = g["height"] - g["tmargin"] - g["bmargin"]
+        if plot_w <= 0 or plot_h <= 0:
+            return
+        # Clamp to plot area.
+        x = min(max(px, g["lmargin"]), g["lmargin"] + plot_w)
+        y = min(max(py, g["tmargin"]), g["tmargin"] + plot_h)
+        # Map pixel -> data. x axis: v (Abbe); y axis: n (index), top=max.
+        frac_x = (x - g["lmargin"]) / plot_w
+        frac_y = (y - g["tmargin"]) / plot_h
+        v = g["vmin"] + frac_x * (g["vmax"] - g["vmin"])
+        n = g["nmax"] - frac_y * (g["nmax"] - g["nmin"])
+        # Nearest glass in (v, n) space.
+        best = None
+        best_d = None
+        for gl in self._glasses:
+            d = (gl["vd"] - v) ** 2 + (gl["nd"] - n) ** 2
+            if best_d is None or d < best_d:
+                best_d = d
+                best = gl
+        if best is not None:
+            msg = ("Glass: %s  (catalog %s)\n"
+                   "  n (Nd) = %.5f\n"
+                   "  v (Vd) = %.3f" % (best["name"], best["catalog"],
+                                       best["nd"], best["vd"]))
+            self._owner.append_msg(">> Glass map click: " + msg.replace("\n", "  "))
+            self.setWindowTitle("Glass Map — " + msg.splitlines()[0])
+
+
+class GlassMapDialog(QDialog):
+    """Dialog to choose glass catalogs and render the n-v (index vs Abbe)
+    glass map. Renders via gnuplot (pngcairo) and opens a GlassMapWindow
+    where clicking reports the nearest glass."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Glass Map (n vs v)")
+        self.resize(360, 200)
+        self._glasses = []
+
+        vbox = QVBoxLayout(self)
+        hdr = QLabel("Glass catalog n–v map")
+        hdr.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        hdr.setStyleSheet(
+            "QLabel { background-color: #eef0f2; border-bottom: 1px solid "
+            "#c8ccd0; padding: 6px; font-weight: bold; }")
+        vbox.addWidget(hdr)
+
+        vbox.addWidget(QLabel("Select catalogs to plot:"))
+
+        self._cat_checks = {}
+        import gui_py.glassmap as gm
+        for cat in gm.list_catalogs():
+            cb = QCheckBox(cat)
+            cb.setChecked(True)
+            self._cat_checks[cat] = cb
+            vbox.addWidget(cb)
+
+        hbox = QHBoxLayout()
+        self.btn_plot = QPushButton("Plot")
+        self.btn_close = QPushButton("Close")
+        hbox.addWidget(self.btn_plot)
+        hbox.addWidget(self.btn_close)
+        vbox.addLayout(hbox)
+
+        self.btn_plot.clicked.connect(self._plot)
+        self.btn_close.clicked.connect(self.reject)
+
+    def _plot(self):
+        import os
+        import tempfile
+        import subprocess
+        import gui_py.glassmap as gm
+
+        cats = [c for c, cb in self._cat_checks.items() if cb.isChecked()]
+        if not cats:
+            QMessageBox.information(self, "Glass Map",
+                                    "Select at least one catalog.")
+            return
+        glasses = gm.load_all_glasses(catalogs=cats)
+        if not glasses:
+            QMessageBox.information(self, "Glass Map", "No glasses found.")
+            return
+        self._glasses = glasses
+
+        vmin, vmax, nmin, nmax = gm.compute_ranges(glasses)
+        geom = dict(vmin=vmin, vmax=vmax, nmin=nmin, nmax=nmax,
+                    width=900, height=650, lmargin=80, rmargin=30,
+                    tmargin=45, bmargin=55)
+
+        tmp = tempfile.mkdtemp(prefix="koko_glassmap_")
+        data_path = os.path.join(tmp, "glassmap.dat")
+        script_path = os.path.join(tmp, "glassmap.gpl")
+        png_path = os.path.join(tmp, "glassmap.png")
+        gm.write_gnuplot_data(glasses, data_path)
+        gm.build_gnuplot_script(data_path, script_path, png_path,
+                                "Glass Map (n vs v)", vmin, vmax, nmin, nmax)
+
+        r = subprocess.run(["gnuplot", script_path],
+                           capture_output=True, text=True)
+        if r.returncode != 0 or not os.path.exists(png_path):
+            QMessageBox.critical(self, "Glass Map",
+                                 "gnuplot failed:\n" + r.stderr)
+            return
+
+        owner = self.parent()
+        win = GlassMapWindow(owner, glasses, geom)
+        win.setWindowTitle("Glass Map (n vs v) — %d glasses" % len(glasses))
+        win._plot_label.setPixmap(QPixmap(png_path))
+        win.show()
+        win.raise_()
 
 
 def main():
