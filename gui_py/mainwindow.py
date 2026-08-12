@@ -91,25 +91,41 @@ class StringDialog(QDialog):
 class RayDialog(QDialog, Ui_RayDialog):
     """Single-ray trace dialog (mirrors KDP2 IDD_RAY / RAYS.INC).
 
-    The user enters normalized field (X,Y) coordinates; on accept we send
-    the koko ``RAY X Y`` command, which traces that one ray and prints the
-    results into the message view.
+    The user enters normalized field (X,Y) coordinates. Two actions are
+    offered:
+      * "Trace"    -> FOB X Y + RAY + PRXYZ ALL (text output in msgView)
+      * "Plot Fan" -> FANS XFAN (transverse-aberration fan graph)
     """
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._ui = Ui_RayDialog()
         self._ui.setupUi(self)
+        self._mode = None
+        self._ui.pushButton_trace.clicked.connect(
+            lambda: self._accept("trace"))
+        self._ui.pushButton_fan.clicked.connect(
+            lambda: self._accept("fan"))
+
+    def _accept(self, mode):
+        self._mode = mode
+        # validate inputs before accepting
+        try:
+            float(self._ui.lineEdit_x.text().strip() or "0.0")
+            float(self._ui.lineEdit_y.text().strip() or "0.0")
+        except ValueError:
+            return
+        self.accept()
 
     def get_values(self):
-        """Show dialog; return (x, y) floats on OK, or None."""
+        """Show dialog; return (mode, x, y) or None on cancel."""
         if self.exec() == QDialog.DialogCode.Accepted:
             try:
                 x = float(self._ui.lineEdit_x.text().strip() or "0.0")
                 y = float(self._ui.lineEdit_y.text().strip() or "0.0")
             except ValueError:
                 return None
-            return (x, y)
+            return (self._mode, x, y)
         return None
 
 
@@ -2098,13 +2114,22 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("VIE")
 
     def slot_actionRay_single(self):
-        """Single-ray trace: prompt for normalized field (X,Y) and send
-        koko's RAY command. Mirrors KDP2 IDD_RAY / RAYS.INC."""
+        """Single-ray trace: prompt for normalized field (X,Y) and either
+        trace the ray (text output) or plot its transverse-aberration fan.
+        Mirrors KDP2 IDD_RAY / RAYS.INC."""
         dlg = RayDialog(self)
         vals = dlg.get_values()
-        if vals:
-            x, y = vals
-            self.send_koko("RAY %s %s" % (x, y))
+        if not vals:
+            return
+        mode, x, y = vals
+        if mode == "fan":
+            # transverse-aberration fan for this field point
+            self.send_koko("FANS XFAN")
+        else:
+            # trace the single ray and list its coordinates per surface
+            self.send_koko("FOB %s %s" % (x, y))
+            self.send_koko("RAY")
+            self.send_koko("PRXYZ ALL")
 
     def slot_actionFocus(self):
         """Set focus: adjust last surface PY to bring best focus (mirrors C++ slot_focus)."""

@@ -1,7 +1,9 @@
 # Form implementation for the single-ray trace dialog.
 # Mirrors the original IDD_RAY (KDP2 RAYS.INC / GUICODE.FOR) flow:
-# the user supplies normalized field (X,Y) coordinates and koko traces
-# that single ray with the RAY command.
+#   - the user supplies normalized field (X,Y) coordinates
+#   - "Trace" traces that single ray (FOB + RAY + PRXYZ ALL, text output)
+#   - "Plot Fan" draws the transverse-aberration fan for that field
+#     (FANS XFAN, the same engine path used by the Aberration menu).
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -9,7 +11,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_RayDialog(object):
     def setupUi(self, RayDialog):
         RayDialog.setObjectName("RayDialog")
-        RayDialog.resize(320, 180)
+        RayDialog.resize(340, 210)
         RayDialog.setWindowTitle("Single Ray Trace")
 
         self.verticalLayout = QtWidgets.QVBoxLayout(RayDialog)
@@ -47,17 +49,24 @@ class Ui_RayDialog(object):
 
         self.verticalLayout.addLayout(self.formLayout)
 
-        # Buttons
+        # Buttons: Trace (text) / Plot Fan (graph) / Cancel
         self.buttonBox = QtWidgets.QDialogButtonBox(RayDialog)
         self.buttonBox.setObjectName("buttonBox")
-        self.buttonBox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.StandardButton.Ok |
+        self.pushButton_trace = QtWidgets.QPushButton("Trace")
+        self.pushButton_trace.setObjectName("pushButton_trace")
+        self.pushButton_fan = QtWidgets.QPushButton("Plot Fan")
+        self.pushButton_fan.setObjectName("pushButton_fan")
+        self.buttonBox.addButton(
+            self.pushButton_trace,
+            QtWidgets.QDialogButtonBox.ButtonRole.ActionRole)
+        self.buttonBox.addButton(
+            self.pushButton_fan,
+            QtWidgets.QDialogButtonBox.ButtonRole.ActionRole)
+        self.buttonBox.addButton(
             QtWidgets.QDialogButtonBox.StandardButton.Cancel)
         self.verticalLayout.addWidget(self.buttonBox)
 
         self.retranslateUi(RayDialog)
-        self.buttonBox.accepted.connect(RayDialog.accept)
-        self.buttonBox.rejected.connect(RayDialog.reject)
         QtCore.QMetaObject.connectSlotsByName(RayDialog)
 
     def retranslateUi(self, RayDialog):
