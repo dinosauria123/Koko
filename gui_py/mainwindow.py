@@ -681,10 +681,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if col == 2:          # Radius / Curvature (toggle via combo box)
             # In Curvature mode the cell shows 1/R, so send CV (curvature);
             # in Radius mode send RD (radius). Mirrors original RDM flag.
+            # Validate numeric input (C++ uses WDIALOGGETDOUBLE).
+            try:
+                new_val = float(val)
+            except ValueError:
+                return
             if self._curvature_mode:
                 command = "CV " + val
+                # Curvature input -> cache the equivalent radius (1/CV).
+                self._radius_values[row] = (1.0 / new_val) if new_val != 0.0 else 0.0
             else:
                 command = "RD " + val
+                # Radius input -> cache the radius directly.
+                self._radius_values[row] = new_val
         elif col == 3:        # Thickness
             command = "TH " + val
         elif col == 4:        # Material -> use the nk dialog
