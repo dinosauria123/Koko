@@ -52,6 +52,7 @@ from gui_py.ui_raydialog import Ui_RayDialog
 from gui_py.ui_pikupdialog import Ui_PikupDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
+from gui_py.ui_tiltdialog import Ui_TiltDialog
 
 
 # --------------------------------------------------------------------------
@@ -240,6 +241,44 @@ class ObscurationDialog(QDialog, Ui_ObscurationDialog):
                 hy = float(self._ui.lineEdit_hy.text().strip() or "0.0")
                 return dict(shape=shape, surf=surf, hx=hx, hy=hy,
                             xdec=xdec, ydec=ydec, tilt=tilt)
+            except ValueError:
+                return None
+        return None
+
+
+class TiltDialog(QDialog, Ui_TiltDialog):
+    """Surface-tilt (TILT) dialog (mirrors KDP2 IDD_TILTS / IDD_TILT /
+    IDD_TILTAUTO / IDD_TILTBEN / IDD_TILTRET / IDD_TILTDAR / IDD_TILTREV).
+
+    The user picks a tilt type and (for basic tilt) the alpha/beta/gamma
+    angles; on accept we send, inside UPDATE LENS mode:
+        U L
+        CHG <surface>
+        TILT <a> <b> <g>          (basic)
+        TILT AUTO | TILT DARD | TILT BEND | TILT REV   (special)
+        RTILT                     (reverse)
+        TILTD                     (delete)
+        EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_TiltDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            ttype = self._ui.combo_type.currentText()
+            try:
+                surf = self._ui.spin_surf.value()
+                if ttype.startswith("Basic"):
+                    a = float(self._ui.lineEdit_alpha.text().strip() or "0.0")
+                    b = float(self._ui.lineEdit_beta.text().strip() or "0.0")
+                    g = float(self._ui.lineEdit_gamma.text().strip() or "0.0")
+                    return dict(ttype=ttype, surf=surf,
+                                alpha=a, beta=b, gamma=g)
+                return dict(ttype=ttype, surf=surf)
             except ValueError:
                 return None
         return None
@@ -1853,6 +1892,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionPikup', self.slot_actionPikup),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
+            ('actionTilt', self.slot_actionTilt),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2302,6 +2342,35 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 repr(vals["hx"]), repr(vals["hy"]),
                 repr(vals["xdec"]), repr(vals["ydec"])))
             self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionTilt(self):
+        """Surface tilt: prompt for tilt type/angles and send koko's TILT
+        command inside UPDATE LENS mode. Mirrors KDP2 IDD_TILTS family."""
+        dlg = TiltDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        ttype = str(vals["ttype"])
+        if ttype.startswith("Basic"):
+            self.send_koko("TILT %s %s %s" % (
+                repr(vals["alpha"]), repr(vals["beta"]), repr(vals["gamma"])))
+        elif ttype == "Auto":
+            self.send_koko("TILT AUTO")
+        elif ttype == "DARD":
+            self.send_koko("TILT DARD")
+        elif ttype == "BEND":
+            self.send_koko("TILT BEND")
+        elif ttype == "REV":
+            self.send_koko("TILT REV")
+        elif ttype.startswith("RTILT"):
+            self.send_koko("RTILT")
+        elif ttype.startswith("TILTD"):
+            self.send_koko("TILTD")
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
