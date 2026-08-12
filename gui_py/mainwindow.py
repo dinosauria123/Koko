@@ -55,6 +55,7 @@ from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
 from gui_py.ui_viedialog import Ui_VieDialog
 from gui_py.ui_surtypedialog import Ui_SurtypeDialog
+from gui_py.ui_coatingdialog import Ui_CoatingDialog
 
 
 # --------------------------------------------------------------------------
@@ -338,6 +339,34 @@ class SurtypeDialog(QDialog, Ui_SurtypeDialog):
                 return dict(all_surfs=True, surf=None)
             return dict(all_surfs=False,
                         surf=self._ui.spin_surf.value())
+        return None
+
+
+class CoatingDialog(QDialog, Ui_CoatingDialog):
+    """Surface-coating (COATING) dialog.
+
+    koko's COATING command (inside UPDATE LENS mode):
+        CHG <surface>
+        COATING <n>      (set coating index; 0 = no coating)
+        COATING ?        (display current coating number)
+    Mirrors the original KDP2 COATING command.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_CoatingDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            show_only = self._ui.check_show.isChecked()
+            if show_only:
+                return dict(show_only=True,
+                            surf=self._ui.spin_surf.value())
+            return dict(show_only=False,
+                        surf=self._ui.spin_surf.value(),
+                        index=self._ui.spin_index.value())
         return None
 
 
@@ -1952,6 +1981,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionTilt', self.slot_actionTilt),
             ('actionVie', self.slot_actionVie),
             ('actionSurtype', self.slot_actionSurtype),
+            ('actionCoating', self.slot_actionCoating),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2461,6 +2491,23 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("SURTYPE ALL")
         else:
             self.send_koko("SURTYPE %d" % vals["surf"])
+
+    def slot_actionCoating(self):
+        """Surface coating: prompt for surface/coating index and send koko's
+        COATING command inside UPDATE LENS mode. Mirrors KDP2 COATING."""
+        dlg = CoatingDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        if vals["show_only"]:
+            self.send_koko("COATING ?")
+        else:
+            self.send_koko("COATING %d" % vals["index"])
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either

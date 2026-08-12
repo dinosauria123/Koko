@@ -47,7 +47,7 @@
 | マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 未実装 |
 | 有効径 (APERTURE/CLAP) | IDD_APECIRC 系 | `CLAP` `COBS` `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | **実装済み**（円形 CLAP: ApertureDialog → U L + CHG <surf> + CLAP <rad> <xdecenter> <ydecenter> 0 0 + EOS + RTG ALL。koko 受付確認済み。APCX/APCY/APX/APY/CAPFN は未実装） |
 | 面種別 (SURTYPE) | （KDP2 にも設定ダイアログなし / 表示コマンドのみ） | `SURTYPE <surface>` `SURTYPE ALL` | **実装済み**（SurtypeDialog: 面番号またはALL→SURTYPE <surf>/ALL 送信。koko が REAL/PARAXIAL をテキスト出力。GUI 経由で koko 受付確認済み。msgView 表示は既知の非同期読み取りタイミング問題あり＝PARAXIAL/RAY と同じ） |
-| コーティング (COATING) | — | `COATING` | 未実装 |
+| コーティング (COATING) | — | `COATING <n>` `COATING ?` | **実装済み**（CoatingDialog: 面番号+コーティング番号(0=none)、または表示のみ(COATING ?)→U L+CHG+COATING <n>/?+EOS+RTG ALL。koko 受付確認済み） |
 | 多構成 (CONFIGS) | IDD_CONFIGS | `CONFIGS ALL` `UPDATE LENS` `CFG` | **実装済み** (menuLensData → CONFIGS ALL 配線済み。GUI 動作確認済み) |
 | 非シーケンシャル (NSS) | — | `NSSLENO` `GLASSWV` `GET *VERT` `GRAOUT` | 未実装 |
 | 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | 未実装 |
