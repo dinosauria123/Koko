@@ -207,6 +207,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # Cancel it re-appeared as well. So we intentionally do NOT connect
         # cellChanged.
         self._table_updating = False
+        # Radius/Curvature display mode (mirrors original RDM flag).
+        # False = Radius mode (default), True = Curvature mode (shows 1/R).
+        self._curvature_mode = False
+        # Cache of raw radius values per row so we can toggle display mode
+        # without re-querying koko. row -> radius (float or None).
+        self._radius_values = {}
         # right-click context menu (mirrors the C++ GUI)
         self.table.setContextMenuPolicy(
             Qt.ContextMenuPolicy.CustomContextMenu)
@@ -651,8 +657,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # NOTE: Python's table has a leading "Surf" column, so its column
         # indices are +1 vs the C++ table the original switch() was written
         # for. These must match on_cell_changed() below.
-        if col == 2:          # Radius
-            command = "RD " + val
+        if col == 2:          # Radius / Curvature (toggle via combo box)
+            # In Curvature mode the cell shows 1/R, so send CV (curvature);
+            # in Radius mode send RD (radius). Mirrors original RDM flag.
+            if self._curvature_mode:
+                command = "CV " + val
+            else:
+                command = "RD " + val
         elif col == 3:        # Thickness
             command = "TH " + val
         elif col == 4:        # Material -> use the nk dialog
@@ -897,7 +908,47 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._set_cell(i, 5, index)
             self._set_cell(i, 6, abbe)
             self._set_cell(i, 7, ap)
+            # Cache raw radius (col 2 in _build_rtg_rows output) so the
+            # Radius/Curvature display toggle can update without koko.
+            try:
+                self._radius_values[i] = float(radius)
+            except (ValueError, TypeError):
+                self._radius_values[i] = None
         self._table_updating = False
+        # Apply the current Radius/Curvature display mode to the Radius column.
+        self._refresh_radius_display()
+
+    def _refresh_radius_display(self):
+        """Re-draw the Radius column according to the Radius/Curvature mode.
+
+        Mirrors the original LOADSHEET.INC behaviour: in Radius mode the
+        raw radius is shown; in Curvature mode 1/R (curvature) is shown.
+        The cached self._radius_values holds the raw radius per row.
+        """
+        prev = self._table_updating
+        self._table_updating = True
+        for row, radius in self._radius_values.items():
+            if row < 0 or row >= self.table.rowCount():
+                continue
+            if radius is None:
+                self._set_cell(row, 2, "")
+                continue
+            if self._curvature_mode:
+                # Curvature = 1 / Radius. Guard against infinite radius
+                # (plane surface, R=0 in koko convention -> blank).
+                if radius == 0.0:
+                    display = ""
+                else:
+                    display = "%.6g" % (1.0 / radius)
+            else:
+                display = "%.6g" % radius
+            self._set_cell(row, 2, display)
+        self._table_updating = prev
+
+    def _on_radius_curvature_changed(self, text):
+        """Combo box handler: switch Radius/Curvature display mode."""
+        self._curvature_mode = (text == "Curvature")
+        self._refresh_radius_display()
 
     # ----- material cell double-click -------------------------------------
 
@@ -1376,6 +1427,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     lambda _checked=False, h=handler, a=args: h(*a))
             else:
                 action.triggered.connect(handler)
+
+        # Radius/Curvature display-mode combo box (mirrors original RDM flag).
+        self.comboRadiusCurvature.currentTextChanged.connect(
+            self._on_radius_curvature_changed)
 
     def slot_text(self, command):
         """Send a command and let its textual output appear in msgView."""
