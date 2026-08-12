@@ -1673,7 +1673,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionOrtho', self.slot_plot, 'VIE ORTHO'),
             # Analyze -> spot / wavefront / PSF
             ('actionSpot_Diagram', self.slot_plot, 'SPOT RING', 'SPD',
-             'STATS FULL', 'OUT TP'),
+             'PLTSPD'),
             ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_plot, 'PSFWRITE YES',
