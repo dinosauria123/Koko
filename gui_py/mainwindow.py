@@ -54,6 +54,7 @@ from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
 from gui_py.ui_viedialog import Ui_VieDialog
+from gui_py.ui_surtypedialog import Ui_SurtypeDialog
 
 
 # --------------------------------------------------------------------------
@@ -311,6 +312,32 @@ class VieDialog(QDialog, Ui_VieDialog):
                 return dict(vtype=vtype, factor=factor, vig=vig, sym=sym)
             except ValueError:
                 return None
+        return None
+
+
+class SurtypeDialog(QDialog, Ui_SurtypeDialog):
+    """Surface-type (SURTYPE) query dialog.
+
+    koko's SURTYPE is a display command (KDP2 has no SURTYPE *setting*
+    dialog either):
+        SURTYPE <surface>   -> prints REAL / PARAXIAL for that surface
+        SURTYPE ALL         -> prints the whole surface-type table
+    The output is shown in the message view.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_SurtypeDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            all_surfs = self._ui.check_all.isChecked()
+            if all_surfs:
+                return dict(all_surfs=True, surf=None)
+            return dict(all_surfs=False,
+                        surf=self._ui.spin_surf.value())
         return None
 
 
@@ -1924,6 +1951,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
             ('actionVie', self.slot_actionVie),
+            ('actionSurtype', self.slot_actionSurtype),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2421,6 +2449,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.send_koko("VIESYM OFF")
         self.send_koko("VIE %s,%s" % (vals["vtype"], repr(vals["factor"])))
+
+    def slot_actionSurtype(self):
+        """Surface type: prompt for surface (or all) and send koko's SURTYPE
+        display command. koko's SURTYPE prints REAL/PARAXIAL per surface."""
+        dlg = SurtypeDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        if vals["all_surfs"]:
+            self.send_koko("SURTYPE ALL")
+        else:
+            self.send_koko("SURTYPE %d" % vals["surf"])
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
