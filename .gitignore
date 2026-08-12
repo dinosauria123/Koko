@@ -20,4 +20,13 @@ plot.png
 # MacOS cruft
 .DS_Store
 
+# build artifacts
+Src/buildinfo.inc
+Src/modules/regex_f90.inc
+Src/modules/regex_t_size
+
+# Python cache
+__pycache__/
+*.pyc
+
 
