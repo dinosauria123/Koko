@@ -1009,6 +1009,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
         # plot image window
         self.plot_window = None
+        # Glass-map window (kept alive while open so it isn't GC'd)
+        self.glass_map_window = None
         # Path of the PNG currently shown in plot_window (so we can delete it
         # when the window is closed). None when no plot is shown.
         self._plot_png_path = None
@@ -3245,6 +3247,12 @@ class GlassMapWindow(PlotWindow):
             self._report_click(event.position().x(), event.position().y())
         super().mousePressEvent(event)
 
+    def closeEvent(self, event):
+        super().closeEvent(event)
+        if self._owner is not None and hasattr(self._owner, "glass_map_window"):
+            self._owner.glass_map_window = None
+        self._owner = None
+
     def _report_click(self, px, py):
         g = self._geom
         plot_w = g["width"] - g["lmargin"] - g["rmargin"]
@@ -3361,6 +3369,10 @@ class GlassMapDialog(QDialog):
         win = GlassMapWindow(owner, glasses, geom)
         win.setWindowTitle("Glass Map (n vs v) — %d glasses" % len(glasses))
         win._plot_label.setPixmap(QPixmap(png_path))
+        # Keep the window referenced by the owner so it is not garbage-collected
+        # (and thus immediately closed) when this method returns.
+        if owner is not None and hasattr(owner, "glass_map_window"):
+            owner.glass_map_window = win
         win.show()
         win.raise_()
 
