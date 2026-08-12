@@ -172,8 +172,8 @@ def write_gnuplot_data(glasses, data_path):
 
 def build_gnuplot_script(data_path, script_path, png_path, title,
                          xmin, xmax, ymin, ymax,
-                         width=900, height=650,
-                         lmargin=80, rmargin=30, tmargin=45, bmargin=55):
+                         width=1400, height=1010,
+                         lmargin=110, rmargin=40, tmargin=60, bmargin=75):
     """Write a gnuplot script that renders an n-v scatter plot with glass
     names printed next to each point.
 

@@ -3241,6 +3241,20 @@ class GlassMapWindow(PlotWindow):
         self._plot_label = QLabel()
         self._plot_label.setScaledContents(True)
         self.setCentralWidget(self._plot_label)
+        # Start large (most of the screen) so the n-v map is readable. The
+        # user can still resize freely afterward.
+        self.setMinimumSize(800, 560)
+        screen = self.screen()
+        if screen is not None:
+            sr = screen.availableGeometry()
+            w = int(sr.width() * 0.90)
+            h = int(sr.height() * 0.90)
+            # Keep the plot's ~1.38:1 aspect so labels aren't distorted.
+            if w / h > 1.38:
+                w = int(h * 1.38)
+            else:
+                h = int(w / 1.38)
+            self.resize(w, h)
 
     def mousePressEvent(self, event):
         if self._glasses and self._geom:
@@ -3347,8 +3361,8 @@ class GlassMapDialog(QDialog):
 
         vmin, vmax, nmin, nmax = gm.compute_ranges(glasses)
         geom = dict(vmin=vmin, vmax=vmax, nmin=nmin, nmax=nmax,
-                    width=900, height=650, lmargin=80, rmargin=30,
-                    tmargin=45, bmargin=55)
+                    width=1400, height=1010, lmargin=110, rmargin=40,
+                    tmargin=60, bmargin=75)
 
         tmp = tempfile.mkdtemp(prefix="koko_glassmap_")
         data_path = os.path.join(tmp, "glassmap.dat")
