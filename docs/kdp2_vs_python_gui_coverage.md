@@ -42,7 +42,7 @@
 | 開口/遮蔽（CLAP/COBS 派生形） | IDD_APECIRC/APERECT/APEELIP/APERCTK + IDD_APECIRC2/APERECT2/APEELIP2 | `CLAP`(円) `CLAP RECT` `CLAP ELIP` `CLAP RCTK` `CLAP TILT` `COBS`(円) `COBS RECT` `COBS ELIP` `COBS TILT` | **実装済み**（ApertureDialog=CLAP全形状、ObscurationDialog=COBS円/矩形/楕円。koko 受付確認済み。COBS RCTK(枠)は未実装） |
 | 傾斜 (TILT 系列) | IDD_TILTS / IDD_TILT / IDD_TILTAUTO / IDD_TILTBEN / IDD_TILTRET / IDD_TILTDAR / IDD_TILTREV | `TILT`(基本3軸) `TILT AUTO` `TILT DARD` `TILT BEND` `TILT REV` `RTILT` `TILTD` | **実装済み**（TiltDialog: タイプ選択＋基本はα/β/γ入力。U L+CHG+対応TILTコマンド+EOS+RTG ALL。koko 受付確認済み） |
 | パラメータ拾い (PIKUP) | IDD_PIKSLV / IDD_PIKED1/2/3 | `PIKUP *` (CV/RD/CC/TH/AD/AE/AF/AG/TOR/ALPHA/BETA/GAMMA/XD/YD/GLASS/PRO/PIVX/Y/Z 等44種) `PIKD *` `SLV` | **実装済み** (PikupDialog: 面番号+種別+値 → U L + PIKUP <TYPE>,<surf>,<val> + EOS + RTG ALL。koko が受付確認済み。PIKD/SLV は未実装) |
-| ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS` `PIVOT` `PIVAXIS NORMAL/VERTEX` | 未実装 |
+| ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS NORMAL` `PIVAXIS VERTEX` `PIVOT,X,Y,Z` `PIVAXIS ?` | **実装済み**（PivaxisDialog: NORMAL または VERTEX(座標指定)、または表示のみ(PIVAXIS ?)→U L+CHG+PIVAXIS NORMAL / PIVAXIS VERTEX+PIVOT,X,Y,Z / PIVAXIS ?+EOS+RTG ALL。koko 受付確認済み） |
 | ガラスライブラリ | IDD_GLASSP / EDGLASS / LLIB | `LIB GET/PUT/DEL` `LENADD` `LIBSAVE` `LIBREST` `GLASSP` | 部分（FINDGLASS のみ） |
 | マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 未実装 |
 | 有効径 (APERTURE/CLAP) | IDD_APECIRC 系 | `CLAP` `COBS` `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | **実装済み**（円形 CLAP: ApertureDialog → U L + CHG <surf> + CLAP <rad> <xdecenter> <ydecenter> 0 0 + EOS + RTG ALL。koko 受付確認済み。APCX/APCY/APX/APY/CAPFN は未実装） |

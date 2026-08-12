@@ -56,6 +56,7 @@ from gui_py.ui_tiltdialog import Ui_TiltDialog
 from gui_py.ui_viedialog import Ui_VieDialog
 from gui_py.ui_surtypedialog import Ui_SurtypeDialog
 from gui_py.ui_coatingdialog import Ui_CoatingDialog
+from gui_py.ui_pivaxisdialog import Ui_PivaxisDialog
 
 
 # --------------------------------------------------------------------------
@@ -367,6 +368,46 @@ class CoatingDialog(QDialog, Ui_CoatingDialog):
             return dict(show_only=False,
                         surf=self._ui.spin_surf.value(),
                         index=self._ui.spin_index.value())
+        return None
+
+
+class PivaxisDialog(QDialog, Ui_PivaxisDialog):
+    """Pivot-axis (PIVAXIS) dialog (mirrors KDP2 IDD_PIVAX).
+
+    The user picks a mode (NORMAL or VERTEX with explicit coordinates);
+    on accept we send, inside UPDATE LENS mode:
+        U L
+        CHG <surface>
+        PIVAXIS NORMAL                      (NORMAL mode)
+        PIVAXIS VERTEX + PIVOT,X,Y,Z       (VERTEX mode)
+        EOS
+    koko also supports "PIVAXIS ?" to display the current setting.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_PivaxisDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            show_only = self._ui.check_show.isChecked()
+            if show_only:
+                return dict(show_only=True,
+                            surf=self._ui.spin_surf.value())
+            mode = self._ui.combo_mode.currentText()
+            try:
+                surf = self._ui.spin_surf.value()
+                if mode.startswith("NORMAL"):
+                    return dict(show_only=False, surf=surf, mode="NORMAL")
+                x = float(self._ui.lineEdit_x.text().strip() or "0.0")
+                y = float(self._ui.lineEdit_y.text().strip() or "0.0")
+                z = float(self._ui.lineEdit_z.text().strip() or "0.0")
+                return dict(show_only=False, surf=surf, mode="VERTEX",
+                            x=x, y=y, z=z)
+            except ValueError:
+                return None
         return None
 
 
@@ -1982,6 +2023,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionVie', self.slot_actionVie),
             ('actionSurtype', self.slot_actionSurtype),
             ('actionCoating', self.slot_actionCoating),
+            ('actionPivaxis', self.slot_actionPivaxis),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2506,6 +2548,32 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("COATING ?")
         else:
             self.send_koko("COATING %d" % vals["index"])
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionPivaxis(self):
+        """Pivot axis: prompt for mode/coords and send koko's PIVAXIS command
+        inside UPDATE LENS mode. Mirrors KDP2 IDD_PIVAX."""
+        dlg = PivaxisDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        if vals["show_only"]:
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("PIVAXIS ?")
+            self.send_koko("EOS")
+            self.send_koko("RTG ALL")
+            return
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        if vals["mode"] == "NORMAL":
+            self.send_koko("PIVAXIS NORMAL")
+        else:  # VERTEX
+            self.send_koko("PIVAXIS VERTEX")
+            self.send_koko("PIVOT,%s,%s,%s" % (
+                repr(vals["x"]), repr(vals["y"]), repr(vals["z"])))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
