@@ -3246,9 +3246,9 @@ class GlassMapWindow(PlotWindow):
         self.setMinimumSize(800, 560)
         screen = self.screen()
         if screen is not None:
-            sr = screen.availableGeometry()
-            w = int(sr.width() * 0.90)
-            h = int(sr.height() * 0.90)
+            sr = screen.geometry()
+            w = int(sr.width() * 0.95)
+            h = int(sr.height() * 0.95)
             # Keep the plot's ~1.38:1 aspect so labels aren't distorted.
             if w / h > 1.38:
                 w = int(h * 1.38)
@@ -3387,8 +3387,10 @@ class GlassMapDialog(QDialog):
         # (and thus immediately closed) when this method returns.
         if owner is not None and hasattr(owner, "glass_map_window"):
             owner.glass_map_window = win
-        win.show()
-        win.raise_()
+        # Fallback size in case showMaximized is constrained by the WM/decorations;
+        # the resize in __init__ already tried screen.geometry()*0.95.
+        win.resize(1920, 1080)
+        win.showMaximized()
 
 
 def main():
