@@ -1272,6 +1272,16 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             # Lens view
             ('actionSet_ray_input_angle', self.slot_actionRay_input_angle),
             ('actionSet_Focus', self.slot_actionFocus),
+            # Lens Data (Non-surface)
+            ('actionLensData_LI', self.slot_text, 'LI\nLIC'),
+            ('actionLensData_UNITS', self.slot_text, 'UNITS'),
+            ('actionLensData_INI', self.slot_text, 'INI'),
+            ('actionLensData_LTYPE', self.slot_text, 'LTYPE'),
+            ('actionLensData_SPTWT', self.slot_text, 'SPTWT\nCW\nPCW\nSCW'),
+            ('actionLensData_MODE', self.slot_text, 'MODE'),
+            ('actionLensData_STOP', self.slot_text, 'ASTOP\nREFS'),
+            ('actionLensData_FIELD', self.slot_actionLensData_FIELD),
+            ('actionLensData_APS', self.slot_text, 'CAOB ALL'),
             # Optimize
             ('actionInput_Variables', self.slot_actionInput_Variables),
         ]
@@ -1594,6 +1604,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("OPRD")
         self.send_koko("ITER FULL")
         self.send_koko("RTG ALL")
+
+    def slot_actionLensData_FIELD(self):
+        """Lens Data (Non-surface) -> Field of View Data.
+
+        Mirrors the original Windows GUI (ID_FIELD in GUICODE.FOR), which
+        prints the reference-object spec and (when field points exist)
+        the field-of-view area layout. We send the same sequence of koko
+        commands. SYSTEM(51..54,94,95,98,99) conditions are not exposed to
+        the GUI, so we just emit all of the relevant display commands; koko
+        ignores the ones that do not apply to the current lens.
+        """
+        for cmd in ('SCY', 'SCY FANG', 'SCX', 'SCX FANG',
+                    'PYIM', 'PYIM FANG', 'PXIM', 'PXIM FANG',
+                    'FLDSARE'):
+            self.send_koko(cmd)
 
     def slot_text_insert_surface(self):
         """Edit menu -> Insert Surface (mirrors C++ slot_actionInsert_surface)."""
