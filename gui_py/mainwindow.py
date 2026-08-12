@@ -987,6 +987,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 # ("Radius" / "Curvature"). Style it to sit inside the
                 # header band rather than as a detached floating widget.
                 self.comboRadiusCurvature.setFixedWidth(110)
+                # Make the displayed (current) text centered. A non-editable
+                # QComboBox left-aligns its text, so we use a read-only line
+                # edit and center it, plus center the popup items.
+                self.comboRadiusCurvature.setEditable(True)
+                self.comboRadiusCurvature.lineEdit().setReadOnly(True)
+                self.comboRadiusCurvature.lineEdit().setAlignment(
+                    Qt.AlignmentFlag.AlignCenter)
                 self.comboRadiusCurvature.setStyleSheet(
                     "QComboBox {"
                     "  background-color: #eef0f2;"
@@ -999,6 +1006,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     "QComboBox::drop-down {"
                     "  border: none;"
                     "  width: 12px;"
+                    "}"
+                    "QComboBox QAbstractItemView {"
+                    "  text-align: center;"
                     "}"
                 )
                 self.comboRadiusCurvature.setCurrentIndex(0)
