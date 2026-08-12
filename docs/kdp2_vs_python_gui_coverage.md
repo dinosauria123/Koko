@@ -36,9 +36,9 @@
 |------|----------------------|---------------------|-----------------|
 | アポディゼーション | IDD_APOD | `APOD GAUSS` `APOD NONE` | **実装済み** (ApodDialog → APOD GAUSS,<val> / APOD NONE。GUI 動作確認済み) |
 | 回折設定 | IDD_DIFSET | `DIFFOB` `DIFRAY` `DIFLEICA` | OK（実装済み） |
-| 絞り面 (STOP) | IDD_STOPSURF | `ASTOP` `ASTOP EN` `ASTOP EX` `ASTOP ENEX` | 部分（New で REFS 送信のみ、ASTOP ダイアログなし） |
-| 参照面 (REF) | IDD_REFSSURF | `REFS` | 部分（New で送信のみ） |
-| 偏心 (DEC) | IDD_DEC | `DEC` `DEC 0 0 0` | 部分（New で DEC 0 0 0 送信のみ） |
+| 絞り面 (STOP) | IDD_STOPSURF | `ASTOP` `ASTOP EN` `ASTOP EX` `ASTOP ENEX` | **実装済み**（StopDialog: 面番号+瞳孔調整オプション→U L+CHG+ASTOP[ EN/EX/ENEX]+EOS+RTG ALL。koko 受付確認済み） |
+| 参照面 (REF) | IDD_REFSSURF | `REFS` | **実装済み**（RefDialog: 面番号+回転角→U L+CHG+REFS <rot>+EOS+RTG ALL。koko 受付確認済み） |
+| 偏心 (DEC) | IDD_DEC | `DEC` `DEC 0 0 0` | **実装済み**（DecDialog: 面番号+X/Y/Z→U L+CHG+DEC X Y Z+EOS+RTG ALL。koko 受付確認済み。KDP2 の DEC,Y,X,Z 順序を X/Y/Z 表示にマップ） |
 | 開口/遮蔽（CLAP/COBS 派生形） | IDD_APECIRC/APERECT/APEELIP/APERCTK + IDD_APECIRC2/APERECT2/APEELIP2 | `CLAP`(円) `CLAP RECT` `CLAP ELIP` `CLAP RCTK` `CLAP TILT` `COBS`(円) `COBS RECT` `COBS ELIP` `COBS TILT` | **実装済み**（ApertureDialog=CLAP全形状、ObscurationDialog=COBS円/矩形/楕円。koko 受付確認済み。COBS RCTK(枠)は未実装） |
 | 傾斜 (TILT 系列) | IDD_TILTS / IDD_TILT / IDD_TILTAUTO / IDD_TILTBEN / IDD_TILTRET / IDD_TILTDAR / IDD_TILTREV | `TILT`(基本3軸) `TILT AUTO` `TILT DARD` `TILT BEND` `TILT REV` `RTILT` `TILTD` | **実装済み**（TiltDialog: タイプ選択＋基本はα/β/γ入力。U L+CHG+対応TILTコマンド+EOS+RTG ALL。koko 受付確認済み） |
 | パラメータ拾い (PIKUP) | IDD_PIKSLV / IDD_PIKED1/2/3 | `PIKUP *` (CV/RD/CC/TH/AD/AE/AF/AG/TOR/ALPHA/BETA/GAMMA/XD/YD/GLASS/PRO/PIVX/Y/Z 等44種) `PIKD *` `SLV` | **実装済み** (PikupDialog: 面番号+種別+値 → U L + PIKUP <TYPE>,<surf>,<val> + EOS + RTG ALL。koko が受付確認済み。PIKD/SLV は未実装) |

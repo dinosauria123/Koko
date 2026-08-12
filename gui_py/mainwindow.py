@@ -58,6 +58,9 @@ from gui_py.ui_surtypedialog import Ui_SurtypeDialog
 from gui_py.ui_coatingdialog import Ui_CoatingDialog
 from gui_py.ui_pivaxisdialog import Ui_PivaxisDialog
 from gui_py.ui_glasslibdialog import Ui_GlassLibDialog
+from gui_py.ui_stopdialog import Ui_StopDialog
+from gui_py.ui_refdialog import Ui_RefDialog
+from gui_py.ui_decdialog import Ui_DecDialog
 
 
 # --------------------------------------------------------------------------
@@ -436,6 +439,81 @@ class GlassLibDialog(QDialog, Ui_GlassLibDialog):
                 return dict(op="PUT", slot=slot)
             if op.startswith("Delete"):
                 return dict(op="DEL", slot=slot)
+        return None
+
+
+class StopDialog(QDialog, Ui_StopDialog):
+    """Aperture-stop (ASTOP) dialog (mirrors KDP2 IDD_STOPSURF).
+
+    koko sets the stop on the currently-CHG'd surface:
+        U L -> CHG <surf> -> ASTOP[ EN|EX|ENEX] -> EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_StopDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        if self.exec() == QDialog.DialogCode.Accepted:
+            surf = self._ui.spin_surf.value()
+            adj = self._ui.combo_adj.currentText()
+            if adj.startswith("None"):
+                qual = ""
+            elif adj.startswith("Entrance"):
+                qual = " EN"
+            elif adj.startswith("Exit"):
+                qual = " EX"
+            else:
+                qual = " ENEX"
+            return dict(surf=surf, qual=qual)
+        return None
+
+
+class RefDialog(QDialog, Ui_RefDialog):
+    """Reference-surface (REFS) dialog (mirrors KDP2 IDD_REFSSURF).
+
+    koko: U L -> CHG <surf> -> REFS <rotation> -> EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_RefDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        if self.exec() == QDialog.DialogCode.Accepted:
+            try:
+                surf = self._ui.spin_surf.value()
+                rot = float(self._ui.lineEdit_rot.text().strip() or "0.0")
+                return dict(surf=surf, rot=rot)
+            except ValueError:
+                return None
+        return None
+
+
+class DecDialog(QDialog, Ui_DecDialog):
+    """Decenter (DEC) dialog (mirrors KDP2 IDD_DEC).
+
+    koko: U L -> CHG <surf> -> DEC <x> <y> <z> -> EOS
+    (KDP2 uses DEC,Y,X,Z order; we expose X/Y/Z to the user.)
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_DecDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        if self.exec() == QDialog.DialogCode.Accepted:
+            try:
+                surf = self._ui.spin_surf.value()
+                x = float(self._ui.lineEdit_x.text().strip() or "0.0")
+                y = float(self._ui.lineEdit_y.text().strip() or "0.0")
+                z = float(self._ui.lineEdit_z.text().strip() or "0.0")
+                return dict(surf=surf, x=x, y=y, z=z)
+            except ValueError:
+                return None
         return None
 
 
@@ -2053,6 +2131,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionCoating', self.slot_actionCoating),
             ('actionPivaxis', self.slot_actionPivaxis),
             ('actionGlassLib', self.slot_actionGlassLib),
+            ('actionStop', self.slot_actionStop),
+            ('actionRef', self.slot_actionRef),
+            ('actionDec', self.slot_actionDec),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2620,6 +2701,46 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("LIB PUT %d" % slot)
         elif vals["op"] == "DEL":
             self.send_koko("LIB DEL %d" % slot)
+
+    def slot_actionStop(self):
+        """Aperture stop: prompt for surface/pupil-adjust and send koko's
+        ASTOP command inside UPDATE LENS mode. Mirrors KDP2 IDD_STOPSURF."""
+        dlg = StopDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % vals["surf"])
+        self.send_koko("ASTOP%s" % vals["qual"])
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionRef(self):
+        """Reference surface: prompt for surface/rotation and send koko's
+        REFS command inside UPDATE LENS mode. Mirrors KDP2 IDD_REFSSURF."""
+        dlg = RefDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % vals["surf"])
+        self.send_koko("REFS %s" % repr(vals["rot"]))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionDec(self):
+        """Decenter: prompt for surface/X/Y/Z and send koko's DEC command
+        inside UPDATE LENS mode. Mirrors KDP2 IDD_DEC."""
+        dlg = DecDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % vals["surf"])
+        self.send_koko("DEC %s %s %s" % (
+            repr(vals["x"]), repr(vals["y"]), repr(vals["z"])))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
