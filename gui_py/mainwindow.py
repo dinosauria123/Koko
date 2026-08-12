@@ -38,6 +38,8 @@ PLOT_TRIGGER_PREFIXES = (
 )
 
 from gui_py.ui_mainwindow import Ui_MainWindow
+from gui_py.ui_apoddialog import Ui_ApodDialog
+from gui_py.ui_difsetdialog import Ui_DifsetDialog
 from gui_py.ui_lidialog import Ui_LIDialog
 from gui_py.ui_newdialog import Ui_NewDialog
 from gui_py.ui_nkdialog import Ui_nkDialog
@@ -102,6 +104,48 @@ class NKDialog(QDialog, Ui_nkDialog):
         if self.exec() == QDialog.DialogCode.Accepted:
             return self.values()
         return None
+
+
+class ApodDialog(QDialog, Ui_ApodDialog):
+    """Aperture Apodization Settings (mirrors original IDD_APOD / APODGUI)."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+    def apply_command(self):
+        """Return the koko command string for the current settings."""
+        if self.radioGaussian.isChecked():
+            val = self.doubleApod.value()
+            return "APOD GAUSS,%s" % repr(val)
+        return "APOD NONE"
+
+
+class DifsetDialog(QDialog, Ui_DifsetDialog):
+    """General Diffraction Calculation Settings (mirrors original IDD_DIFSET)."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+
+    def apply_commands(self):
+        """Return the koko command strings for the current settings.
+
+        Mirrors rays.inc IDD_DIFSET handler: exit-pupil choice then
+        reference-sphere choice.
+        """
+        cmds = []
+        if self.radioEx1.isChecked():
+            cmds.append("EXPUP AUTO")
+        elif self.radioEx2.isChecked():
+            cmds.append("EXPUP NOAUTO")
+        if self.radioRef1.isChecked():
+            cmds.append("RSPH NOTILT")
+        elif self.radioRef2.isChecked():
+            cmds.append("RSPH BEST")
+        elif self.radioRef3.isChecked():
+            cmds.append("RSPH CHIEF")
+        return cmds
 
 
 
@@ -1310,6 +1354,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionLensData_GRT', self.slot_text, 'GRT ALL'),
             ('actionLensData_PRSPR', self.slot_text, 'PRSPR ALL'),
             ('actionLensData_CONFIGS', self.slot_text, 'CONFIGS ALL'),
+            # Image Evaluation
+            ('actionApod_Settings', self.slot_actionApod_Settings),
+            ('actionDifset_Settings', self.slot_actionDifset_Settings),
             # Optimize
             ('actionInput_Variables', self.slot_actionInput_Variables),
         ]
@@ -1613,6 +1660,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
         self.send_koko("VIE")
+
+    def slot_actionApod_Settings(self):
+        """Image Evaluation -> Aperture Apodization Settings (mirrors IDD_APOD)."""
+        dlg = ApodDialog(self)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            self.send_koko(dlg.apply_command())
+
+    def slot_actionDifset_Settings(self):
+        """Image Evaluation -> General Diffraction Calculation Settings."""
+        dlg = DifsetDialog(self)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            for cmd in dlg.apply_commands():
+                self.send_koko(cmd)
 
     def slot_actionInput_Variables(self):
         dlg = OptimizeDialog(self)
