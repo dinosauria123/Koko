@@ -53,6 +53,7 @@ from gui_py.ui_pikupdialog import Ui_PikupDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
+from gui_py.ui_viedialog import Ui_VieDialog
 
 
 # --------------------------------------------------------------------------
@@ -279,6 +280,35 @@ class TiltDialog(QDialog, Ui_TiltDialog):
                     return dict(ttype=ttype, surf=surf,
                                 alpha=a, beta=b, gamma=g)
                 return dict(ttype=ttype, surf=surf)
+            except ValueError:
+                return None
+        return None
+
+
+class VieDialog(QDialog, Ui_VieDialog):
+    """View-control (VIE) dialog (mirrors KDP2 IDD_VIE / LENSED.INC).
+
+    The user picks a view (XZ/XY/ORTHO) and an optional scale factor, plus
+    vignetting/symmetric display toggles; on accept we send:
+        [VIEVIG ON|OFF]
+        [VIESYM ON|OFF]
+        VIE <type>,<factor>
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_VieDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            try:
+                vtype = self._ui.combo_type.currentText()
+                factor = float(self._ui.lineEdit_factor.text().strip() or "0.10")
+                vig = self._ui.check_vig.isChecked()
+                sym = self._ui.check_sym.isChecked()
+                return dict(vtype=vtype, factor=factor, vig=vig, sym=sym)
             except ValueError:
                 return None
         return None
@@ -1893,6 +1923,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
+            ('actionVie', self.slot_actionVie),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2373,6 +2404,23 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("TILTD")
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
+
+    def slot_actionVie(self):
+        """View control: prompt for view type/factor/toggles and send koko's
+        VIE command sequence. Mirrors KDP2 IDD_VIE / LENSED.INC."""
+        dlg = VieDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        if vals["vig"]:
+            self.send_koko("VIEVIG ON")
+        else:
+            self.send_koko("VIEVIG OFF")
+        if vals["sym"]:
+            self.send_koko("VIESYM ON")
+        else:
+            self.send_koko("VIESYM OFF")
+        self.send_koko("VIE %s,%s" % (vals["vtype"], repr(vals["factor"])))
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
