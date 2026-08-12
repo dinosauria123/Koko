@@ -7,6 +7,31 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtWidgets import QComboBox, QStylePainter, QStyleOptionComboBox, QStyle
+from PyQt6.QtGui import QPalette
+from PyQt6.QtCore import Qt
+
+
+class CenterTextComboBox(QComboBox):
+    """QComboBox whose currently-selected text is drawn centered (the default
+    QComboBox left-aligns it). Drop-down still opens normally on click.
+    Used for the Radius/Curvature header toggle.
+    """
+
+    def paintEvent(self, event):
+        painter = QStylePainter(self)
+        opt = QStyleOptionComboBox()
+        self.initStyleOption(opt)
+        painter.drawComplexControl(QStyle.ComplexControl.CC_ComboBox, opt)
+        text = self.currentText()
+        if text:
+            rect = self.style().subControlRect(
+                QStyle.ComplexControl.CC_ComboBox,
+                opt,
+                QStyle.SubControl.SC_ComboBoxEditField,
+                self)
+            painter.setPen(self.palette().color(QPalette.ColorRole.ButtonText))
+            painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, text)
 
 
 class Ui_MainWindow(object):
@@ -55,7 +80,7 @@ class Ui_MainWindow(object):
         self.gridLayout.addLayout(self.verticalLayout, 1, 0, 1, 1)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setSpacing(0)
-        self.comboRadiusCurvature = QtWidgets.QComboBox(parent=self.centralWidget)
+        self.comboRadiusCurvature = CenterTextComboBox(parent=self.centralWidget)
         self.comboRadiusCurvature.setObjectName("comboRadiusCurvature")
         self.comboRadiusCurvature.addItem("")
         self.comboRadiusCurvature.addItem("")
