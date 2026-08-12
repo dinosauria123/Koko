@@ -51,6 +51,7 @@ from gui_py.ui_optimdialog import Ui_OptimizeDialog
 from gui_py.ui_raydialog import Ui_RayDialog
 from gui_py.ui_pikupdialog import Ui_PikupDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
+from gui_py.ui_obsdialog import Ui_ObscurationDialog
 
 
 # --------------------------------------------------------------------------
@@ -197,6 +198,46 @@ class ApertureDialog(QDialog, Ui_ApertureDialog):
                     fr = float(self._ui.lineEdit_fr.text().strip() or "0.0")
                     return dict(shape=shape, surf=surf, hx=hx, hy=hy,
                                 xdec=xdec, ydec=ydec, tilt=tilt, fr=fr)
+                return dict(shape=shape, surf=surf, hx=hx, hy=hy,
+                            xdec=xdec, ydec=ydec, tilt=tilt)
+            except ValueError:
+                return None
+        return None
+
+
+class ObscurationDialog(QDialog, Ui_ObscurationDialog):
+    """Clear-obscuration (COBS) dialog (mirrors KDP2 IDD_APECIRC2 /
+    IDD_APERECT2 / IDD_APEELIP2).
+
+    The user picks a shape (circular / rectangular / elliptical) and enters
+    the corresponding parameters; on accept we send, inside UPDATE LENS mode:
+        U L
+        CHG <surface>
+        COBS <shape> <params...>      (circular: COBS R YDEC XDEC)
+        [COBS TILT <angle>]           (rect/elip only)
+        EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_ObscurationDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            shape = self._ui.combo_shape.currentText()
+            try:
+                surf = self._ui.spin_surf.value()
+                xdec = float(self._ui.lineEdit_xdec.text().strip() or "0.0")
+                ydec = float(self._ui.lineEdit_ydec.text().strip() or "0.0")
+                if shape == "Circular":
+                    rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, rad=rad,
+                                xdec=xdec, ydec=ydec)
+                tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
+                hx = float(self._ui.lineEdit_hx.text().strip() or "0.0")
+                hy = float(self._ui.lineEdit_hy.text().strip() or "0.0")
                 return dict(shape=shape, surf=surf, hx=hx, hy=hy,
                             xdec=xdec, ydec=ydec, tilt=tilt)
             except ValueError:
@@ -1811,6 +1852,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionRay_Single', self.slot_actionRay_single),
             ('actionPikup', self.slot_actionPikup),
             ('actionAperture', self.slot_actionAperture),
+            ('actionObscuration', self.slot_actionObscuration),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2232,6 +2274,34 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 repr(vals["hx"]), repr(vals["hy"]),
                 repr(vals["xdec"]), repr(vals["ydec"]), repr(vals["fr"])))
             self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionObscuration(self):
+        """Clear-obscuration (COBS): prompt for shape/params and send koko's
+        COBS command(s) inside UPDATE LENS mode. Mirrors KDP2 IDD_APECIRC2 /
+        IDD_APERECT2 / IDD_APEELIP2."""
+        dlg = ObscurationDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        if vals["shape"] == "Circular":
+            # koko: COBS <R> <YDEC> <XDEC>
+            self.send_koko("COBS %s %s %s" % (
+                repr(vals["rad"]), repr(vals["ydec"]), repr(vals["xdec"])))
+        elif vals["shape"] == "Rectangular":
+            self.send_koko("COBS RECT %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Elliptical":
+            self.send_koko("COBS ELIP %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
