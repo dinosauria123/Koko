@@ -46,6 +46,7 @@ from gui_py.ui_newdialog import Ui_NewDialog
 from gui_py.ui_nkdialog import Ui_nkDialog
 from gui_py.ui_rayinputdialog import Ui_rayinputDialog
 from gui_py.ui_optimize import Ui_Optimize
+from gui_py.ui_optimdialog import Ui_OptimizeDialog
 
 
 # --------------------------------------------------------------------------
@@ -99,6 +100,119 @@ class RayInputDialog(StringDialog):
 
 class OptimizeDialog(StringDialog):
     _ui_cls = Ui_Optimize
+
+class OptimizeRunDialog(QDialog, Ui_OptimizeDialog):
+    """Optimization run dialog (mirrors original IDD_OPTIM).
+
+    Each button forwards the corresponding koko command:
+      SET DAMPING FACTOR -> PFAC (Meiron damping factor, local var)
+      FIND BEST DAMPING  -> PFIND,<CY>,<CF>
+      RESTORE / RESTORE MIN / RESTORE ORIG -> RESTORE / RESTORE MIN / RESTORE ORIG
+      ITER     -> ITER,<NITER>
+      ITER FULL -> ITER FULL,<NITERFULL>
+      ITER POWELL -> IT P,<NITERP>
+      PERFORM ROBB -> ROBB,<BETA>,<DELTA>,<NROBB>
+    The Verbose checkbox toggles OVERBOSE YES/NO before the command.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self._wire()
+
+    def _wire(self):
+        self.pushButton_setPfac.clicked.connect(self._on_set_pfac)
+        self.pushButton_pfind.clicked.connect(self._on_pfind)
+        self.pushButton_rest1.clicked.connect(
+            lambda: self._send_verbose("RESTORE"))
+        self.pushButton_rest2.clicked.connect(
+            lambda: self._send_verbose("RESTORE MIN"))
+        self.pushButton_rest3.clicked.connect(
+            lambda: self._send_verbose("RESTORE ORIG"))
+        self.pushButton_iter.clicked.connect(self._on_iter)
+        self.pushButton_iterfull.clicked.connect(self._on_iterfull)
+        self.pushButton_iterp.clicked.connect(self._on_iterp)
+        self.pushButton_robb.clicked.connect(self._on_robb)
+        self.pushButton_exit.clicked.connect(self.reject)
+
+    def _verbose_prefix(self):
+        """Return the OVERBOSE command for the current checkbox state."""
+        if self.checkBox_verbose.isChecked():
+            return "OVERBOSE YES"
+        return "OVERBOSE NO"
+
+    def _send_verbose(self, cmd):
+        mw = self.parent()
+        if hasattr(mw, "send_koko"):
+            mw.send_koko(self._verbose_prefix())
+            mw.send_koko(cmd)
+
+    def _on_set_pfac(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        txt = self.lineEdit_pfac.text().strip()
+        try:
+            val = float(txt)
+        except ValueError:
+            return
+        # Mirror original IDD_OPTIM / IDF_MEIRON: PFAC is a local damping
+        # factor held by the dialog, NOT a koko command. The original only
+        # does WRITE(OUTLYNE,*) 'PFAC RESET TO: <val>' + SHOWIT and then
+        # PFAC=<val>; it never sends anything to koko. So we just echo it
+        # to the message view, not to the engine.
+        mw.append_msg("PFAC RESET TO: %s" % repr(val))
+        mw.append_msg("PFAC = %s" % repr(val))
+
+    def _on_pfind(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        cy = self.spinBox_cy.value()
+        cf = self.lineEdit_cf.text().strip()
+        try:
+            cfv = float(cf)
+        except ValueError:
+            cfv = 0.6
+        mw.send_koko(self._verbose_prefix())
+        mw.send_koko("PFIND,%d,%s" % (cy, repr(cfv)))
+
+    def _on_iter(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        n = self.spinBox_niter.value()
+        mw.send_koko(self._verbose_prefix())
+        mw.send_koko("ITER,%d" % n)
+
+    def _on_iterfull(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        n = self.spinBox_niterfull.value()
+        mw.send_koko(self._verbose_prefix())
+        mw.send_koko("ITER FULL,%d" % n)
+
+    def _on_iterp(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        n = self.spinBox_niterp.value()
+        mw.send_koko(self._verbose_prefix())
+        mw.send_koko("IT P,%d" % n)
+
+    def _on_robb(self):
+        mw = self.parent()
+        if not hasattr(mw, "send_koko"):
+            return
+        try:
+            beta = float(self.lineEdit_beta.text().strip())
+            delta = float(self.lineEdit_delta.text().strip())
+        except ValueError:
+            return
+        n = self.spinBox_nrobb.value()
+        mw.send_koko(self._verbose_prefix())
+        mw.send_koko("ROBB,%s,%s,%d" % (repr(beta), repr(delta), n))
 
 class NKDialog(QDialog, Ui_nkDialog):
     def __init__(self, parent=None):
@@ -1583,6 +1697,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionDifset_Settings', self.slot_actionDifset_Settings),
             # Optimize
             ('actionInput_Variables', self.slot_actionInput_Variables),
+            ('actionOptimizer', self.slot_actionOptimizer),
         ]
 
         for entry in actions:
@@ -1927,6 +2042,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("OPRD")
         self.send_koko("ITER FULL")
         self.send_koko("RTG ALL")
+
+    def slot_actionOptimizer(self):
+        """Optimize menu -> Optimizer (mirrors original IDD_OPTIM)."""
+        dlg = OptimizeRunDialog(self)
+        dlg.exec()
 
     def slot_actionLensData_FIELD(self):
         """Lens Data (Non-surface) -> Field of View Data.
