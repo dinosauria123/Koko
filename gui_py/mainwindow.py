@@ -63,6 +63,7 @@ from gui_py.ui_refdialog import Ui_RefDialog
 from gui_py.ui_decdialog import Ui_DecDialog
 from gui_py.ui_macrodialog import Ui_MacroDialog
 from gui_py.ui_nssdialog import Ui_NssDialog
+from gui_py.ui_toperdialog import Ui_ToperDialog
 
 
 # --------------------------------------------------------------------------
@@ -605,6 +606,79 @@ class NssDialog(QDialog, Ui_NssDialog):
         fname = self._ui.lineEdit_file.text().strip()
         if fname:
             self._send("NSSREST %s" % fname)
+
+
+class ToperDialog(QDialog, Ui_ToperDialog):
+    """Tolerancing (TOPER/TVAR) dialog.
+
+    koko implements tolerancing with a multi-mode flow:
+      TVAR  -> tvb> mode -> define tolerance VARIABLES (TH/RD_FR/CV_FR/...)
+      TOPER -> top> mode -> define tolerance OPERANDS (FUNCxx / built-ins)
+      SENSI / MONTE -> run sensitivity / Monte-Carlo analysis
+    Verified via PTY: TVAR + TOPER + SENSI produces a full report.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_ToperDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_addvar.clicked.connect(self._add_var)
+        ui.btn_delvar.clicked.connect(
+            lambda: ui.table_vars.removeRow(ui.table_vars.currentRow())
+            if ui.table_vars.currentRow() >= 0 else None)
+        ui.btn_addop.clicked.connect(self._add_op)
+        ui.btn_delop.clicked.connect(
+            lambda: ui.table_ops.removeRow(ui.table_ops.currentRow())
+            if ui.table_ops.currentRow() >= 0 else None)
+        ui.btn_setup.clicked.connect(self._setup)
+        ui.btn_sensi.clicked.connect(lambda: self._send("SENSI"))
+        ui.btn_monte.clicked.connect(lambda: self._send("MONTE"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        if main is not None and hasattr(main, "send_koko"):
+            main.send_koko(cmd)
+
+    def _add_var(self):
+        ui = self._ui
+        vtype = ui.combo_vtype.currentText()
+        surf = ui.spin_vsurf.value()
+        try:
+            delta = float(ui.line_vdelta.text().strip() or "0.01")
+        except ValueError:
+            return
+        row = ui.table_vars.rowCount()
+        ui.table_vars.insertRow(row)
+        ui.table_vars.setItem(row, 0, QTableWidgetItem(vtype))
+        ui.table_vars.setItem(row, 1, QTableWidgetItem(str(surf)))
+        ui.table_vars.setItem(row, 2, QTableWidgetItem(repr(delta)))
+
+    def _add_op(self):
+        ui = self._ui
+        op = ui.combo_op.currentText()
+        args = ui.line_opargs.text().strip() or "1 1"
+        row = ui.table_ops.rowCount()
+        ui.table_ops.insertRow(row)
+        ui.table_ops.setItem(row, 0, QTableWidgetItem(op))
+        ui.table_ops.setItem(row, 1, QTableWidgetItem(args))
+
+    def _setup(self):
+        ui = self._ui
+        grid = ui.spin_grid.value()
+        self._send("TOLNRD %d" % grid)
+        self._send("TVAR")
+        for r in range(ui.table_vars.rowCount()):
+            vtype = ui.table_vars.item(r, 0).text()
+            surf = ui.table_vars.item(r, 1).text()
+            delta = ui.table_vars.item(r, 2).text()
+            self._send("%s %s %s" % (vtype, surf, delta))
+        self._send("EOS")
+        self._send("TOPER")
+        for r in range(ui.table_ops.rowCount()):
+            args = ui.table_ops.item(r, 1).text()
+            self._send("FUNC00 %s" % args)
+        self._send("EOS")
 
 
 class LIDialog(StringDialog):
@@ -2226,6 +2300,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionDec', self.slot_actionDec),
             ('actionMacro', self.slot_actionMacro),
             ('actionNss', self.slot_actionNss),
+            ('actionToper', self.slot_actionToper),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2862,6 +2937,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Non-sequential database: open the NSS dialog (mirrors KDP2
         NSS-menu intent). koko implements NSS fully via NSSCALL."""
         dlg = NssDialog(self)
+        dlg.exec()
+
+    def slot_actionToper(self):
+        """Tolerancing: open the tolerancing dialog (mirrors KDP2 tolerance
+        editor intent). koko implements TVAR/TOPER/SENSI/MONTE fully."""
+        dlg = ToperDialog(self)
         dlg.exec()
 
     def slot_actionRay_single(self):

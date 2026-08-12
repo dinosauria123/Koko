@@ -50,7 +50,7 @@
 | コーティング (COATING) | — | `COATING <n>` `COATING ?` | **実装済み**（CoatingDialog: 面番号+コーティング番号(0=none)、または表示のみ(COATING ?)→U L+CHG+COATING <n>/?+EOS+RTG ALL。koko 受付確認済み） |
 | 多構成 (CONFIGS) | IDD_CONFIGS | `CONFIGS ALL` `UPDATE LENS` `CFG` | **実装済み** (menuLensData → CONFIGS ALL 配線済み。GUI 動作確認済み) |
 | 非シーケンシャル (NSS) | — | `NSSNEW` `NSSUNITS` `NSSWV` `UNIVERSE` `OBJECT` `ONAME` `NSSSAVE` `NSSREST` `NSSTRACE` `NSSLIST` `NSSDEL` | **実装済み**（NssDialog: 新規作成/単位/波長/ユニバース/オブジェクト定義/レイトレース/一覧/保存/復元/削除ボタン。koko が NSSNEW でデータベース作成後、全 NSS コマンドをサポートすることを PTY で確認済み） |
-| 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | 未実装 |
+| 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | **実装済み**（ToperDialog: TVARモードで公差変数(TH/RD_FR/CV_FR/CC/AD/AE/AF/AG/XD/YD/PIVX/Y/Z)定義→TOPERモードでオペランド(FUNCxx)定義→SENSI/MONTE解析。koko が TVAR→tvb>、TOPER→top>、SENSI/MONTE を完全サポートし、TVAR+TOPER+SENSI で感度解析レポートを出力することを PTY で確認済み。TOLNRD でグリッド設定） |
 
 ## C. 実装済み（OK）
 
