@@ -1562,8 +1562,15 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 action.triggered.connect(handler)
 
         # Radius/Curvature display-mode combo box (mirrors original RDM flag).
+        # Connect both signals: currentTextChanged (programmatic / editable
+        # line-edit updates) and activated (user picks from the drop-down,
+        # which does NOT reliably fire currentTextChanged when the box is
+        # editable + read-only).
         self.comboRadiusCurvature.currentTextChanged.connect(
             self._on_radius_curvature_changed)
+        self.comboRadiusCurvature.activated.connect(
+            lambda idx: self._on_radius_curvature_changed(
+                self.comboRadiusCurvature.itemText(idx)))
 
     def slot_text(self, command):
         """Send a command and let its textual output appear in msgView."""
