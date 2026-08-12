@@ -48,6 +48,7 @@ from gui_py.ui_nkdialog import Ui_nkDialog
 from gui_py.ui_rayinputdialog import Ui_rayinputDialog
 from gui_py.ui_optimize import Ui_Optimize
 from gui_py.ui_optimdialog import Ui_OptimizeDialog
+from gui_py.ui_raydialog import Ui_RayDialog
 
 
 # --------------------------------------------------------------------------
@@ -84,6 +85,31 @@ class StringDialog(QDialog):
         """Show dialog; return trimmed text on OK, or None."""
         if self.exec() == QDialog.DialogCode.Accepted:
             return self._ui.lineEdit.text().strip()
+        return None
+
+
+class RayDialog(QDialog, Ui_RayDialog):
+    """Single-ray trace dialog (mirrors KDP2 IDD_RAY / RAYS.INC).
+
+    The user enters normalized field (X,Y) coordinates; on accept we send
+    the koko ``RAY X Y`` command, which traces that one ray and prints the
+    results into the message view.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_RayDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return (x, y) floats on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            try:
+                x = float(self._ui.lineEdit_x.text().strip() or "0.0")
+                y = float(self._ui.lineEdit_y.text().strip() or "0.0")
+            except ValueError:
+                return None
+            return (x, y)
         return None
 
 
@@ -1690,6 +1716,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionDiffraction_Leica', self.slot_plot, 'SPACE I', 'SPACE O',
              'FAR', 'DOTF', 'PLTDOTF LEICA,,1'),
             ('actionParaxial_Chromatic_Focus_Shift', self.slot_plot, 'CHRSHIFT', 'PLTCHRSH'),
+            # Ray (single ray trace) and Paraxial data displays
+            ('actionRay_Single', self.slot_actionRay_single),
+            ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
+            ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
+            ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
+            ('actionParaxial_SCD3', self.slot_text, 'SCD3 ALL'),
+            ('actionParaxial_PRXYZ', self.slot_text, 'PRXYZ ALL'),
+            ('actionParaxial_PRR', self.slot_text, 'PRR ALL'),
             # Aberration fans (koko 'FANS <qualifier>' command, per KDP2 RIMS)
             ('actionXYFAN', self.slot_plot, 'FANS XYFAN'),
             ('actionYXFAN', self.slot_plot, 'FANS YXFAN'),
@@ -2062,6 +2096,15 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("SCY FANG " + val)
             self.send_koko("EOS")
             self.send_koko("VIE")
+
+    def slot_actionRay_single(self):
+        """Single-ray trace: prompt for normalized field (X,Y) and send
+        koko's RAY command. Mirrors KDP2 IDD_RAY / RAYS.INC."""
+        dlg = RayDialog(self)
+        vals = dlg.get_values()
+        if vals:
+            x, y = vals
+            self.send_koko("RAY %s %s" % (x, y))
 
     def slot_actionFocus(self):
         """Set focus: adjust last surface PY to bring best focus (mirrors C++ slot_focus)."""

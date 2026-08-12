@@ -21,8 +21,8 @@
 | 幾何 OTF (GOTF) | IDD_GOTF | `GOTF` `PLTGOTF` `GEOLEICA NO,n` | **実装済み** (SPACE I/O+FAR+GOTF+PLTGOTF,1) |
 | PSF | IDD_PSF / PSFENERGY / PSFSTREAK / PSFSTREHL | `PSF` `PSFLOG` `PSFWRITE` `PSFROT` `STREAK *` `STREHL` `APSTREHL` | **実装済み** (PSFWRITE YES+PSFLOG+PSFPLOT YES+PSF,1+CAPFNOUT) |
 | ファン図（横/縦/対角/OPD/CD/LA） | IDD_FAN1 | `FANS XFAN` `FANS YFAN` `FANS XYFAN` `FANS NFAN` `FANS PFAN` (+CD/LA/OPD) | **実装済み** (FANS <qualifier> — KDP2 RIMS サブルーチン経由。PTY/GUI で PNG 生成確認済み) |
-| 単一光線追跡 | IDD_RAY | `RAY` `FOB` `AIMRAY ON` | **未実装**（メニュー項目なし、要ダイアログ） |
-| 近軸 (PARAXIAL) | IDD_PARAX1/2/3 | `PARAX` 系 | **未実装**（要ダイアログ） |
+| 単一光線追跡 | IDD_RAY | `RAY` `FOB` `AIMRAY ON` | **実装済み** (RayDialog → RAY X Y。koko が追跡実行、msgView に出力。GUI 動作確認済み) |
+| 近軸 (PARAXIAL) | IDD_PARAX1/2/3 | `FCHY ALL` `FCHX ALL` `PCD3 ALL` `SCD3 ALL` `PRXYZ ALL` `PRR ALL` | **実装済み** (menuParaxial 配下の各項目 → slot_text で対応コマンド送信。koko がテキスト出力。GUI 動作確認済み) |
 | 表示制御 (VIE) | IDD_VIE | `VIE` `PLOT *`（NOTE/PEN/FRAME/AXIS/UPLOT） | 部分（VIE XZ のみ、PLOT 詳細制御なし） |
 
 ### A 群 実装メモ（2026-08-12 コミット c88725c）
