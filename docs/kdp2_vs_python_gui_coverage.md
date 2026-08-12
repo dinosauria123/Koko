@@ -45,7 +45,7 @@
 | ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS` `PIVOT` `PIVAXIS NORMAL/VERTEX` | 未実装 |
 | ガラスライブラリ | IDD_GLASSP / EDGLASS / LLIB | `LIB GET/PUT/DEL` `LENADD` `LIBSAVE` `LIBREST` `GLASSP` | 部分（FINDGLASS のみ） |
 | マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 未実装 |
-| 有効径 (APERTURE) | IDD_APECIRC 系 16個 | `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | 未実装 |
+| 有効径 (APERTURE/CLAP) | IDD_APECIRC 系 | `CLAP` `COBS` `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | **実装済み**（円形 CLAP: ApertureDialog → U L + CHG <surf> + CLAP <rad> <xdecenter> <ydecenter> 0 0 + EOS + RTG ALL。koko 受付確認済み。APCX/APCY/APX/APY/CAPFN は未実装） |
 | 面種別 (SURTYPE) | — | `SURTYPE` | 未実装 |
 | コーティング (COATING) | — | `COATING` | 未実装 |
 | 多構成 (CONFIGS) | IDD_CONFIGS | `CONFIGS ALL` `UPDATE LENS` `CFG` | **実装済み** (menuLensData → CONFIGS ALL 配線済み。GUI 動作確認済み) |

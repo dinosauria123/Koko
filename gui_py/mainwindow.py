@@ -50,6 +50,7 @@ from gui_py.ui_optimize import Ui_Optimize
 from gui_py.ui_optimdialog import Ui_OptimizeDialog
 from gui_py.ui_raydialog import Ui_RayDialog
 from gui_py.ui_pikupdialog import Ui_PikupDialog
+from gui_py.ui_aperturedialog import Ui_ApertureDialog
 
 
 # --------------------------------------------------------------------------
@@ -155,6 +156,36 @@ class PikupDialog(QDialog, Ui_PikupDialog):
             except ValueError:
                 return None
             return (surf, ptype, val)
+        return None
+
+
+class ApertureDialog(QDialog, Ui_ApertureDialog):
+    """Circular clear-aperture (CLAP) dialog (mirrors KDP2 IDD_APECIRC).
+
+    The user enters a surface number, a clear-aperture radius, and optional
+    X/Y decenter; on accept we send, inside UPDATE LENS mode:
+        U L
+        CHG <surface>
+        CLAP <rad> <xdecenter> <ydecenter> 0 0
+        EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_ApertureDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return (surface, radius, xdec, ydec) on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            surf = self._ui.spin_surf.value()
+            try:
+                rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                xdec = float(self._ui.lineEdit_xdec.text().strip() or "0.0")
+                ydec = float(self._ui.lineEdit_ydec.text().strip() or "0.0")
+            except ValueError:
+                return None
+            return (surf, rad, xdec, ydec)
         return None
 
 
@@ -1764,6 +1795,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             # Ray (single ray trace) and Paraxial data displays
             ('actionRay_Single', self.slot_actionRay_single),
             ('actionPikup', self.slot_actionPikup),
+            ('actionAperture', self.slot_actionAperture),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2153,6 +2185,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         surf, ptype, val = vals
         self.send_koko("U L")
         self.send_koko("PIKUP %s,%d,%s" % (ptype, surf, repr(val)))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionAperture(self):
+        """Circular clear-aperture (CLAP): prompt for surface/radius/decenter
+        and send koko's CLAP command inside UPDATE LENS mode.
+        Mirrors KDP2 IDD_APECIRC."""
+        dlg = ApertureDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf, rad, xdec, ydec = vals
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        self.send_koko("CLAP %s %s %s 0 0" % (repr(rad), repr(xdec), repr(ydec)))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
