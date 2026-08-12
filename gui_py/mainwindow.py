@@ -24,7 +24,7 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem,
     QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton,
     QComboBox, QDialogButtonBox, QInputDialog, QMenu, QWidget, QFrame,
-    QSizePolicy,
+    QSizePolicy, QStyledItemDelegate,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
 from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
@@ -46,6 +46,23 @@ from gui_py.ui_newdialog import Ui_NewDialog
 from gui_py.ui_nkdialog import Ui_nkDialog
 from gui_py.ui_rayinputdialog import Ui_rayinputDialog
 from gui_py.ui_optimize import Ui_Optimize
+
+
+# --------------------------------------------------------------------------
+# Helpers
+# --------------------------------------------------------------------------
+
+class CenterComboDelegate(QStyledItemDelegate):
+    """Center-aligns the text of a (non-editable) QComboBox, both the
+    current item shown in the box and the items in its drop-down popup.
+    A non-editable QComboBox left-aligns its text, and making it editable
+    just to center it breaks mouse interaction with the drop-down, so we
+    use a delegate instead.
+    """
+
+    def paint(self, painter, option, index):
+        option.displayAlignment = Qt.AlignmentFlag.AlignCenter
+        super().paint(painter, option, index)
 
 
 # --------------------------------------------------------------------------
@@ -987,13 +1004,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 # ("Radius" / "Curvature"). Style it to sit inside the
                 # header band rather than as a detached floating widget.
                 self.comboRadiusCurvature.setFixedWidth(110)
-                # Make the displayed (current) text centered. A non-editable
-                # QComboBox left-aligns its text, so we use a read-only line
-                # edit and center it, plus center the popup items.
-                self.comboRadiusCurvature.setEditable(True)
-                self.comboRadiusCurvature.lineEdit().setReadOnly(True)
-                self.comboRadiusCurvature.lineEdit().setAlignment(
-                    Qt.AlignmentFlag.AlignCenter)
+                # Center the displayed text without making the box editable
+                # (an editable+read-only box stops the drop-down from opening
+                # on mouse click). A center-aligning delegate handles both the
+                # current item and the popup items.
+                self.comboRadiusCurvature.setItemDelegate(
+                    CenterComboDelegate(self.comboRadiusCurvature))
                 self.comboRadiusCurvature.setStyleSheet(
                     "QComboBox {"
                     "  background-color: #eef0f2;"
@@ -1006,9 +1022,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     "QComboBox::drop-down {"
                     "  border: none;"
                     "  width: 12px;"
-                    "}"
-                    "QComboBox QAbstractItemView {"
-                    "  text-align: center;"
                     "}"
                 )
                 self.comboRadiusCurvature.setCurrentIndex(0)
