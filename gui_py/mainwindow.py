@@ -23,7 +23,8 @@ import struct
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem,
     QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton,
-    QComboBox, QDialogButtonBox, QInputDialog, QMenu,
+    QComboBox, QDialogButtonBox, QInputDialog, QMenu, QWidget, QFrame,
+    QSizePolicy,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
 from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
@@ -188,8 +189,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # table headers (matching the C++ GUI columns)
         self.table.setHorizontalHeaderLabels(
             ['Surf', 'Surface Type', 'Radius', 'Thickness',
-             'Material', 'Index n', 'Abbe V', 'Aperture'])
+             'Glass', 'Index n', 'Abbe V', 'Aperture'])
         self.table.verticalHeader().setVisible(True)
+        # Build a custom header row so the Radius/Curvature combo box is
+        # embedded in the Radius column title (mirrors original RDM GUI).
+        self._build_header_row()
         # lens data table: row click => lensPara detail (mirrors C++)
         self.table.cellClicked.connect(self.slot_lensInfo)
         # Double-clicking Material/Index n/Abbe V opens the Material (nk)
@@ -949,6 +953,125 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Combo box handler: switch Radius/Curvature display mode."""
         self._curvature_mode = (text == "Curvature")
         self._refresh_radius_display()
+
+    def _build_header_row(self):
+        """Build a custom header row above the table so the Radius/Curvature
+        combo box sits inside the Radius column's title (mirrors the original
+        Windows GUI where the column header toggles the RDM flag).
+
+        The built-in QTableWidget horizontal header can only show text, so we
+        hide it and replace it with a QWidget row whose children line up with
+        the table columns. The Radius column (col 2) hosts the combo box.
+        """
+        # Hide the default text header; our custom row replaces it.
+        self.table.horizontalHeader().setVisible(False)
+
+        # Build the header band as a light-grey stripe so it reads as a
+        # column-header band directly above the grid (the default Qt header
+        # is hidden; this replaces it).
+        self._header_widget = QWidget(self.centralWidget)
+        self._header_widget.setAutoFillBackground(True)
+        hp = self._header_widget.palette()
+        hp.setColor(QPalette.ColorRole.Window, QColor('#eef0f2'))
+        self._header_widget.setPalette(hp)
+
+        hbox = QHBoxLayout(self._header_widget)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
+
+        headers = ['Surf', 'Surface Type', 'Radius', 'Thickness',
+                   'Glass', 'Index n', 'Abbe V', 'Aperture']
+        for i, h in enumerate(headers):
+            if i == 2:
+                # Radius column: the combo box IS the header label
+                # ("Radius" / "Curvature"). Style it to sit inside the
+                # header band rather than as a detached floating widget.
+                self.comboRadiusCurvature.setFixedWidth(110)
+                self.comboRadiusCurvature.setStyleSheet(
+                    "QComboBox {"
+                    "  background-color: #eef0f2;"
+                    "  border: 1px solid #999999;"
+                    "  border-radius: 2px;"
+                    "  padding: 2px 4px;"
+                    "  font: 9pt \"Noto Sans\";"
+                    "  color: #222;"
+                    "}"
+                    "QComboBox::drop-down {"
+                    "  border: none;"
+                    "  width: 12px;"
+                    "}"
+                )
+                self.comboRadiusCurvature.setCurrentIndex(0)
+                hbox.addWidget(self.comboRadiusCurvature)
+            else:
+                lbl = QLabel(h, parent=self._header_widget)
+                lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                lbl.setSizePolicy(
+                    QSizePolicy.Policy.Expanding,
+                    QSizePolicy.Policy.Preferred)
+                lbl.setFont(QFont("Noto Sans", 9, QFont.Weight.Bold))
+                lbl.setStyleSheet(
+                    "QLabel {"
+                    "  color: #333333;"
+                    "  background-color: #eef0f2;"
+                    "  padding: 3px 2px;"
+                    "  border-right: 1px solid #d8dadc;"
+                    "}"
+                )
+                hbox.addWidget(lbl)
+
+        # ---- bottom separator line (table-like header rule) ----
+        self._header_line = QFrame(self.centralWidget)
+        self._header_line.setFrameShape(QFrame.Shape.HLine)
+        self._header_line.setFrameShadow(QFrame.Shadow.Plain)
+        self._header_line.setLineWidth(1)
+        self._header_line.setMidLineWidth(0)
+        self._header_line.setStyleSheet("color: #9a9da2;")
+
+        # ---- insert into the table's parent layout:
+        #        0: header_widget, 1: separator line, 2: table ----
+        self.verticalLayout_2.insertWidget(0, self._header_widget)
+        self.verticalLayout_2.insertWidget(1, self._header_line)
+
+        # Keep the custom header column widths in sync with the table.
+        self.table.horizontalHeader().sectionResized.connect(
+            self._sync_header_widths)
+        # First sync after the layout/layout-pass settles.
+        QTimer.singleShot(0, self._sync_initial_header_widths)
+
+    def _sync_initial_header_widths(self):
+        """Initial column-width sync once the table has settled on its
+        default sizes (e.g. AdjustToContents has run)."""
+        if not hasattr(self, '_header_widget'):
+            return
+        hbox = self._header_widget.layout()
+        for i in range(self.table.columnCount()):
+            if i >= hbox.count():
+                break
+            item = hbox.itemAt(i)
+            if item is None or item.widget() is None:
+                continue
+            w = max(40, self.table.columnWidth(i))
+            if i == 2:      # combo box: fixed width, don't overwrite
+                continue
+            item.widget().setMinimumWidth(w)
+            item.widget().setMaximumWidth(16777215)
+
+    def _sync_header_widths(self, logicalIndex, oldSize, newSize):
+        """Mirror table column width changes onto the custom header row."""
+        if not hasattr(self, '_header_widget'):
+            return
+        hbox = self._header_widget.layout()
+        if logicalIndex < 0 or logicalIndex >= hbox.count():
+            return
+        item = hbox.itemAt(logicalIndex)
+        if item is None or item.widget() is None:
+            return
+        if logicalIndex == 2:     # combo box: fixed width
+            return
+        w = max(40, newSize)
+        item.widget().setMinimumWidth(w)
+        item.widget().setMaximumWidth(16777215)
 
     # ----- material cell double-click -------------------------------------
 
