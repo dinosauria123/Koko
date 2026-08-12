@@ -57,6 +57,7 @@ from gui_py.ui_viedialog import Ui_VieDialog
 from gui_py.ui_surtypedialog import Ui_SurtypeDialog
 from gui_py.ui_coatingdialog import Ui_CoatingDialog
 from gui_py.ui_pivaxisdialog import Ui_PivaxisDialog
+from gui_py.ui_glasslibdialog import Ui_GlassLibDialog
 
 
 # --------------------------------------------------------------------------
@@ -408,6 +409,33 @@ class PivaxisDialog(QDialog, Ui_PivaxisDialog):
                             x=x, y=y, z=z)
             except ValueError:
                 return None
+        return None
+
+
+class GlassLibDialog(QDialog, Ui_GlassLibDialog):
+    """Lens-library (LIB) dialog (mirrors KDP2 IDD_LLIB subset koko supports):
+        LIB GET <n>   -> restore library lens n
+        LIB PUT <n>   -> store current lens into slot n
+        LIB DEL <n>   -> delete library slot n
+    koko does not support LIB REST / LIB SAVE / LIB LIST.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_GlassLibDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            op = self._ui.combo_op.currentText()
+            slot = self._ui.spin_slot.value()
+            if op.startswith("Get"):
+                return dict(op="GET", slot=slot)
+            if op.startswith("Put"):
+                return dict(op="PUT", slot=slot)
+            if op.startswith("Delete"):
+                return dict(op="DEL", slot=slot)
         return None
 
 
@@ -2024,6 +2052,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionSurtype', self.slot_actionSurtype),
             ('actionCoating', self.slot_actionCoating),
             ('actionPivaxis', self.slot_actionPivaxis),
+            ('actionGlassLib', self.slot_actionGlassLib),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2576,6 +2605,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 repr(vals["x"]), repr(vals["y"]), repr(vals["z"])))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
+
+    def slot_actionGlassLib(self):
+        """Lens library: prompt for operation/slot and send koko's LIB command.
+        Mirrors KDP2 IDD_LLIB (GET/PUT/DEL subset koko supports)."""
+        dlg = GlassLibDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        slot = vals["slot"]
+        if vals["op"] == "GET":
+            self.send_koko("LIB GET %d" % slot)
+        elif vals["op"] == "PUT":
+            self.send_koko("LIB PUT %d" % slot)
+        elif vals["op"] == "DEL":
+            self.send_koko("LIB DEL %d" % slot)
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either
