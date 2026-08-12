@@ -218,15 +218,15 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # the only way to edit them is this dialog -- matching how koko's glass
         # data is edited (via MODEL name,nd,vd).
         self.table.cellDoubleClicked.connect(self._on_material_cell_double_clicked)
-
-        # Editing is forwarded to koko only via the Return/Enter key handler
-        # (eventFilter -> _send_table_current_cell), mirroring the C++ GUI
-        # which uses slot_action_value_entered (returnPressed) and NOT a
-        # cellChanged signal. Connecting cellChanged here too caused a double
-        # dialog: editing a cell fired BOTH the Return-key path and this
-        # handler, so the nkDialog (Material edit) popped up twice -- and on
-        # Cancel it re-appeared as well. So we intentionally do NOT connect
-        # cellChanged.
+        # Forward an edited cell to koko when the edit is committed
+        # (Enter, or moving focus to another cell). Mirrors the C++ GUI
+        # slot_action_value_entered. We connect cellChanged (guarded by
+        # self._table_updating so populate_table's own writes never
+        # trigger a send) instead of only the Return-key path, so an edit
+        # committed by clicking away is also sent. Material/Index/Abbe
+        # columns are not directly editable, so they can never fire here;
+        # the nkDialog double-click path handles those.
+        self.table.cellChanged.connect(self._on_cell_changed)
         self._table_updating = False
         # Radius/Curvature display mode (mirrors original RDM flag).
         # False = Radius mode (default), True = Curvature mode (shows 1/R).
@@ -654,10 +654,28 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if obj is self.table:
             if event.type() == QEvent.Type.KeyPress:
                 if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
-                    self._send_table_current_cell()
-                    return True
+                    # Let the default handler commit the edit; cellChanged
+                    # will then fire and forward the value to koko. Returning
+                    # False (instead of consuming the key) is what allows the
+                    # edit to be committed on Enter.
+                    return False
 
         return super().eventFilter(obj, event)
+
+    def _on_cell_changed(self, row, col):
+        """Forward a committed cell edit to koko (mirrors C++ slot_action_
+        value_entered). Fires on Enter and on focus-loss commit. Guarded by
+        self._table_updating so populate_table's own writes are ignored.
+        Only Radius/Curvature (2), Thickness (3) and Aperture (7) are
+        directly editable; other columns are read-only and never reach here.
+        """
+        if self._table_updating:
+            return
+        if row == 0:          # OBJ row is never edited
+            return
+        if col not in (2, 3, 7):
+            return
+        self._send_table_current_cell()
 
     def _send_table_current_cell(self):
         """Mirror C++ slot_action_value_entered for the current table cell."""
