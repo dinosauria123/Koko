@@ -49,6 +49,7 @@ from gui_py.ui_rayinputdialog import Ui_rayinputDialog
 from gui_py.ui_optimize import Ui_Optimize
 from gui_py.ui_optimdialog import Ui_OptimizeDialog
 from gui_py.ui_raydialog import Ui_RayDialog
+from gui_py.ui_pikupdialog import Ui_PikupDialog
 
 
 # --------------------------------------------------------------------------
@@ -126,6 +127,34 @@ class RayDialog(QDialog, Ui_RayDialog):
             except ValueError:
                 return None
             return (self._mode, x, y)
+        return None
+
+
+class PikupDialog(QDialog, Ui_PikupDialog):
+    """Parameter-pickup dialog (mirrors KDP2 IDD_PIKSLV / IDD_PIKED1-3).
+
+    The user enters a surface number, a pickup type (CV/RD/CC/TH/...), and a
+    value; on accept we send, inside UPDATE LENS mode:
+        U L
+        PIKUP <TYPE>,<surface>,<value>
+        EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_PikupDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return (surface, type, value) on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            surf = self._ui.spin_surf.value()
+            ptype = self._ui.combo_type.currentText()
+            try:
+                val = float(self._ui.lineEdit_val.text().strip() or "0.0")
+            except ValueError:
+                return None
+            return (surf, ptype, val)
         return None
 
 
@@ -1734,6 +1763,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionParaxial_Chromatic_Focus_Shift', self.slot_plot, 'CHRSHIFT', 'PLTCHRSH'),
             # Ray (single ray trace) and Paraxial data displays
             ('actionRay_Single', self.slot_actionRay_single),
+            ('actionPikup', self.slot_actionPikup),
             ('actionParaxial_FCHY', self.slot_text, 'FCHY ALL'),
             ('actionParaxial_FCHX', self.slot_text, 'FCHX ALL'),
             ('actionParaxial_PCD3', self.slot_text, 'PCD3 ALL'),
@@ -2112,6 +2142,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("SCY FANG " + val)
             self.send_koko("EOS")
             self.send_koko("VIE")
+
+    def slot_actionPikup(self):
+        """Parameter pickup: prompt for surface/type/value and send koko's
+        PIKUP command inside UPDATE LENS mode. Mirrors KDP2 IDD_PIKSLV."""
+        dlg = PikupDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf, ptype, val = vals
+        self.send_koko("U L")
+        self.send_koko("PIKUP %s,%d,%s" % (ptype, surf, repr(val)))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
 
     def slot_actionRay_single(self):
         """Single-ray trace: prompt for normalized field (X,Y) and either

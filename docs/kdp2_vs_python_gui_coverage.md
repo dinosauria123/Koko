@@ -34,21 +34,21 @@
 
 | 機能 | オリジナル ダイアログ | オリジナル コマンド | Python GUI 状態 |
 |------|----------------------|---------------------|-----------------|
-| アポディゼーション | IDD_APOD | `APOD GAUSS` `APOD NONE` | actionApod のみ、送信なし |
+| アポディゼーション | IDD_APOD | `APOD GAUSS` `APOD NONE` | **実装済み** (ApodDialog → APOD GAUSS,<val> / APOD NONE。GUI 動作確認済み) |
 | 回折設定 | IDD_DIFSET | `DIFFOB` `DIFRAY` `DIFLEICA` | OK（実装済み） |
 | 絞り面 (STOP) | IDD_STOPSURF | `ASTOP` `ASTOP EN` `ASTOP EX` `ASTOP ENEX` | 部分（New で REFS 送信のみ、ASTOP ダイアログなし） |
 | 参照面 (REF) | IDD_REFSSURF | `REFS` | 部分（New で送信のみ） |
 | 偏心 (DEC) | IDD_DEC | `DEC` `DEC 0 0 0` | 部分（New で DEC 0 0 0 送信のみ） |
 | 開口/遮蔽（派生形） | IDD_CLAPS | `CLAP RECT/ELIP/RCTK/POLY/TILT/ERASE` `COBS *` `MULTCLAP` `MULTCOBS` | 部分（基本 CLAP/COBS のみ、派生形なし） |
 | 傾斜 (TILT 系列) | IDD_TILT 系 9個 | `TILT *` `RTILT` `TILTD` `TILT AUTO/DARD/BEND/REV` | 部分（基本 TILT のみ） |
-| パラメータ拾い (PIKUP) | IDD_PIKED1/2/3 / PIKSLV / SLVED | `PIKUP *` (CV/RD/TH/CLAP/COBS/PIV 等 40種) `PIKD *` `SLV` | 未実装 |
+| パラメータ拾い (PIKUP) | IDD_PIKSLV / IDD_PIKED1/2/3 | `PIKUP *` (CV/RD/CC/TH/AD/AE/AF/AG/TOR/ALPHA/BETA/GAMMA/XD/YD/GLASS/PRO/PIVX/Y/Z 等44種) `PIKD *` `SLV` | **実装済み** (PikupDialog: 面番号+種別+値 → U L + PIKUP <TYPE>,<surf>,<val> + EOS + RTG ALL。koko が受付確認済み。PIKD/SLV は未実装) |
 | ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS` `PIVOT` `PIVAXIS NORMAL/VERTEX` | 未実装 |
 | ガラスライブラリ | IDD_GLASSP / EDGLASS / LLIB | `LIB GET/PUT/DEL` `LENADD` `LIBSAVE` `LIBREST` `GLASSP` | 部分（FINDGLASS のみ） |
 | マクロ | IDD_MACRO | `MACSAVE` `MACREST` `MAC_EDIT` `MACROOPT` | 未実装 |
 | 有効径 (APERTURE) | IDD_APECIRC 系 16個 | `APCX` `APCY` `APX` `APY` `CAPFN` `CAPFNOUT` | 未実装 |
 | 面種別 (SURTYPE) | — | `SURTYPE` | 未実装 |
 | コーティング (COATING) | — | `COATING` | 未実装 |
-| 多構成 (CONFIGS) | — | `CONFIGS ALL` `UPDATE LENS` `CFG` | 未実装 |
+| 多構成 (CONFIGS) | IDD_CONFIGS | `CONFIGS ALL` `UPDATE LENS` `CFG` | **実装済み** (menuLensData → CONFIGS ALL 配線済み。GUI 動作確認済み) |
 | 非シーケンシャル (NSS) | — | `NSSLENO` `GLASSWV` `GET *VERT` `GRAOUT` | 未実装 |
 | 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | 未実装 |
 
