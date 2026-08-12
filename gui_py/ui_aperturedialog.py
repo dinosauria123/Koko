@@ -1,7 +1,13 @@
-# Form implementation for the circular clear-aperture (CLAP) dialog.
-# Mirrors the original IDD_APECIRC (KDP2 GUICODE.FOR) flow:
-#   U L -> CHG <surface> -> CLAP <rad> <xdecenter> <ydecenter> 0 0 -> EOS
-# Sets a circular clear aperture on the given surface.
+# Form implementation for the clear-aperture (CLAP) dialog.
+# Mirrors the original IDD_APECIRC / IDD_APERECT / IDD_APEELIP / IDD_APERCTK
+# (KDP2 GUICODE.FOR) flows:
+#   circular : U L -> CHG <surf> -> CLAP <R> <XDEC> <YDEC> 0 0 -> EOS
+#   rect     : U L -> CHG <surf> -> CLAP RECT <HX> <HY> <XDEC> <YDEC>
+#                              -> CLAP TILT <ANG> -> EOS
+#   ellipse  : U L -> CHG <surf> -> CLAP ELIP <HX> <HY> <XDEC> <YDEC>
+#                              -> CLAP TILT <ANG> -> EOS
+#   rect+frame: U L -> CHG <surf> -> CLAP RCTK <HX> <HY> <XDEC> <YDEC> <FR>
+#                              -> CLAP TILT <ANG> -> EOS
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -9,8 +15,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_ApertureDialog(object):
     def setupUi(self, ApertureDialog):
         ApertureDialog.setObjectName("ApertureDialog")
-        ApertureDialog.resize(340, 220)
-        ApertureDialog.setWindowTitle("Circular Aperture (CLAP)")
+        ApertureDialog.resize(360, 320)
+        ApertureDialog.setWindowTitle("Clear Aperture (CLAP)")
 
         self.verticalLayout = QtWidgets.QVBoxLayout(ApertureDialog)
         self.verticalLayout.setObjectName("verticalLayout")
@@ -18,7 +24,7 @@ class Ui_ApertureDialog(object):
         # Header band
         self.header = QtWidgets.QLabel(ApertureDialog)
         self.header.setObjectName("header")
-        self.header.setText("Set circular clear aperture")
+        self.header.setText("Set clear aperture")
         self.header.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.header.setStyleSheet(
             "QLabel#header { background-color: #eef0f2; "
@@ -26,11 +32,11 @@ class Ui_ApertureDialog(object):
             "font-weight: bold; }")
         self.verticalLayout.addWidget(self.header)
 
-        # inputs
         self.formLayout = QtWidgets.QFormLayout()
         self.formLayout.setObjectName("formLayout")
         self.formLayout.setContentsMargins(12, 12, 12, 12)
 
+        # Surface #
         self.label_surf = QtWidgets.QLabel(ApertureDialog)
         self.label_surf.setText("Surface #")
         self.spin_surf = QtWidgets.QSpinBox(ApertureDialog)
@@ -40,6 +46,16 @@ class Ui_ApertureDialog(object):
         self.spin_surf.setValue(2)
         self.formLayout.addRow(self.label_surf, self.spin_surf)
 
+        # Shape
+        self.label_shape = QtWidgets.QLabel(ApertureDialog)
+        self.label_shape.setText("Shape")
+        self.combo_shape = QtWidgets.QComboBox(ApertureDialog)
+        self.combo_shape.setObjectName("combo_shape")
+        self.combo_shape.addItems(
+            ["Circular", "Rectangular", "Elliptical", "Rectangular + Frame"])
+        self.formLayout.addRow(self.label_shape, self.combo_shape)
+
+        # Radius (circular only)
         self.label_rad = QtWidgets.QLabel(ApertureDialog)
         self.label_rad.setText("Radius")
         self.lineEdit_rad = QtWidgets.QLineEdit(ApertureDialog)
@@ -47,6 +63,30 @@ class Ui_ApertureDialog(object):
         self.lineEdit_rad.setText("5.0")
         self.formLayout.addRow(self.label_rad, self.lineEdit_rad)
 
+        # Half-width X / Half-width Y (rect/elip/rctk)
+        self.label_hx = QtWidgets.QLabel(ApertureDialog)
+        self.label_hx.setText("Half-width X")
+        self.lineEdit_hx = QtWidgets.QLineEdit(ApertureDialog)
+        self.lineEdit_hx.setObjectName("lineEdit_hx")
+        self.lineEdit_hx.setText("5.0")
+        self.formLayout.addRow(self.label_hx, self.lineEdit_hx)
+
+        self.label_hy = QtWidgets.QLabel(ApertureDialog)
+        self.label_hy.setText("Half-width Y")
+        self.lineEdit_hy = QtWidgets.QLineEdit(ApertureDialog)
+        self.lineEdit_hy.setObjectName("lineEdit_hy")
+        self.lineEdit_hy.setText("3.0")
+        self.formLayout.addRow(self.label_hy, self.lineEdit_hy)
+
+        # Frame width (rctk only)
+        self.label_fr = QtWidgets.QLabel(ApertureDialog)
+        self.label_fr.setText("Frame width")
+        self.lineEdit_fr = QtWidgets.QLineEdit(ApertureDialog)
+        self.lineEdit_fr.setObjectName("lineEdit_fr")
+        self.lineEdit_fr.setText("1.0")
+        self.formLayout.addRow(self.label_fr, self.lineEdit_fr)
+
+        # X decenter / Y decenter
         self.label_xdec = QtWidgets.QLabel(ApertureDialog)
         self.label_xdec.setText("X decenter")
         self.lineEdit_xdec = QtWidgets.QLineEdit(ApertureDialog)
@@ -61,6 +101,14 @@ class Ui_ApertureDialog(object):
         self.lineEdit_ydec.setText("0.0")
         self.formLayout.addRow(self.label_ydec, self.lineEdit_ydec)
 
+        # Tilt angle (rect/elip/rctk)
+        self.label_tilt = QtWidgets.QLabel(ApertureDialog)
+        self.label_tilt.setText("Tilt angle")
+        self.lineEdit_tilt = QtWidgets.QLineEdit(ApertureDialog)
+        self.lineEdit_tilt.setObjectName("lineEdit_tilt")
+        self.lineEdit_tilt.setText("0.0")
+        self.formLayout.addRow(self.label_tilt, self.lineEdit_tilt)
+
         self.verticalLayout.addLayout(self.formLayout)
 
         # Buttons
@@ -74,7 +122,23 @@ class Ui_ApertureDialog(object):
         self.retranslateUi(ApertureDialog)
         self.buttonBox.accepted.connect(ApertureDialog.accept)
         self.buttonBox.rejected.connect(ApertureDialog.reject)
+        self.combo_shape.currentTextChanged.connect(self._on_shape_changed)
         QtCore.QMetaObject.connectSlotsByName(ApertureDialog)
+        self._on_shape_changed(self.combo_shape.currentText())
+
+    def _on_shape_changed(self, text):
+        is_circ = (text == "Circular")
+        is_rctk = (text == "Rectangular + Frame")
+        self.label_rad.setVisible(is_circ)
+        self.lineEdit_rad.setVisible(is_circ)
+        self.label_hx.setVisible(not is_circ)
+        self.lineEdit_hx.setVisible(not is_circ)
+        self.label_hy.setVisible(not is_circ)
+        self.lineEdit_hy.setVisible(not is_circ)
+        self.label_fr.setVisible(is_rctk)
+        self.lineEdit_fr.setVisible(is_rctk)
+        self.label_tilt.setVisible(not is_circ)
+        self.lineEdit_tilt.setVisible(not is_circ)
 
     def retranslateUi(self, ApertureDialog):
         pass

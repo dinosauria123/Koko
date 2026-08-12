@@ -39,7 +39,7 @@
 | 絞り面 (STOP) | IDD_STOPSURF | `ASTOP` `ASTOP EN` `ASTOP EX` `ASTOP ENEX` | 部分（New で REFS 送信のみ、ASTOP ダイアログなし） |
 | 参照面 (REF) | IDD_REFSSURF | `REFS` | 部分（New で送信のみ） |
 | 偏心 (DEC) | IDD_DEC | `DEC` `DEC 0 0 0` | 部分（New で DEC 0 0 0 送信のみ） |
-| 開口/遮蔽（派生形） | IDD_CLAPS | `CLAP RECT/ELIP/RCTK/POLY/TILT/ERASE` `COBS *` `MULTCLAP` `MULTCOBS` | 部分（基本 CLAP/COBS のみ、派生形なし） |
+| 開口/遮蔽（CLAP 派生形） | IDD_APECIRC/APERECT/APEELIP/APERCTK | `CLAP`(円) `CLAP RECT` `CLAP ELIP` `CLAP RCTK` `CLAP TILT` `COBS *` | **実装済み**（ApertureDialog: 形状選択付き。円=CLAP R XDEC YDEC 0 0 / 矩形=CLAP RECT HX HY XDEC YDEC + CLAP TILT / 楕円=CLAP ELIP ... / 枠=CLAP RCTK HX HY XDEC YDEC FR + CLAP TILT。koko 受付確認済み。COBS は未実装） |
 | 傾斜 (TILT 系列) | IDD_TILT 系 9個 | `TILT *` `RTILT` `TILTD` `TILT AUTO/DARD/BEND/REV` | 部分（基本 TILT のみ） |
 | パラメータ拾い (PIKUP) | IDD_PIKSLV / IDD_PIKED1/2/3 | `PIKUP *` (CV/RD/CC/TH/AD/AE/AF/AG/TOR/ALPHA/BETA/GAMMA/XD/YD/GLASS/PRO/PIVX/Y/Z 等44種) `PIKD *` `SLV` | **実装済み** (PikupDialog: 面番号+種別+値 → U L + PIKUP <TYPE>,<surf>,<val> + EOS + RTG ALL。koko が受付確認済み。PIKD/SLV は未実装) |
 | ピボット軸 (PIVAXIS) | IDD_PIVAX | `PIVAXIS` `PIVOT` `PIVAXIS NORMAL/VERTEX` | 未実装 |

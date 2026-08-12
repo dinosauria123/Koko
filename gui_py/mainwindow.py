@@ -160,13 +160,16 @@ class PikupDialog(QDialog, Ui_PikupDialog):
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
-    """Circular clear-aperture (CLAP) dialog (mirrors KDP2 IDD_APECIRC).
+    """Clear-aperture (CLAP) dialog (mirrors KDP2 IDD_APECIRC / IDD_APERECT /
+    IDD_APEELIP / IDD_APERCTK).
 
-    The user enters a surface number, a clear-aperture radius, and optional
-    X/Y decenter; on accept we send, inside UPDATE LENS mode:
+    The user picks a shape (circular / rectangular / elliptical / rectangular
+    with frame) and enters the corresponding parameters; on accept we send,
+    inside UPDATE LENS mode:
         U L
         CHG <surface>
-        CLAP <rad> <xdecenter> <ydecenter> 0 0
+        CLAP <shape> <params...>      (circular: CLAP R XDEC YDEC 0 0)
+        [CLAP TILT <angle>]           (rect/elip/rctk only)
         EOS
     """
 
@@ -176,16 +179,28 @@ class ApertureDialog(QDialog, Ui_ApertureDialog):
         self._ui.setupUi(self)
 
     def get_values(self):
-        """Show dialog; return (surface, radius, xdec, ydec) on OK, or None."""
+        """Show dialog; return dict of values on OK, or None."""
         if self.exec() == QDialog.DialogCode.Accepted:
-            surf = self._ui.spin_surf.value()
+            shape = self._ui.combo_shape.currentText()
             try:
-                rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                surf = self._ui.spin_surf.value()
                 xdec = float(self._ui.lineEdit_xdec.text().strip() or "0.0")
                 ydec = float(self._ui.lineEdit_ydec.text().strip() or "0.0")
+                if shape == "Circular":
+                    rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, rad=rad,
+                                xdec=xdec, ydec=ydec)
+                tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
+                hx = float(self._ui.lineEdit_hx.text().strip() or "0.0")
+                hy = float(self._ui.lineEdit_hy.text().strip() or "0.0")
+                if shape == "Rectangular + Frame":
+                    fr = float(self._ui.lineEdit_fr.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, hx=hx, hy=hy,
+                                xdec=xdec, ydec=ydec, tilt=tilt, fr=fr)
+                return dict(shape=shape, surf=surf, hx=hx, hy=hy,
+                            xdec=xdec, ydec=ydec, tilt=tilt)
             except ValueError:
                 return None
-            return (surf, rad, xdec, ydec)
         return None
 
 
@@ -2189,17 +2204,34 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("RTG ALL")
 
     def slot_actionAperture(self):
-        """Circular clear-aperture (CLAP): prompt for surface/radius/decenter
-        and send koko's CLAP command inside UPDATE LENS mode.
-        Mirrors KDP2 IDD_APECIRC."""
+        """Clear-aperture (CLAP): prompt for shape/params and send koko's CLAP
+        command(s) inside UPDATE LENS mode. Mirrors KDP2 IDD_APECIRC /
+        IDD_APERECT / IDD_APEELIP / IDD_APERCTK."""
         dlg = ApertureDialog(self)
         vals = dlg.get_values()
         if not vals:
             return
-        surf, rad, xdec, ydec = vals
+        surf = vals["surf"]
         self.send_koko("U L")
         self.send_koko("CHG %d" % surf)
-        self.send_koko("CLAP %s %s %s 0 0" % (repr(rad), repr(xdec), repr(ydec)))
+        if vals["shape"] == "Circular":
+            self.send_koko("CLAP %s %s %s 0 0" % (
+                repr(vals["rad"]), repr(vals["xdec"]), repr(vals["ydec"])))
+        elif vals["shape"] == "Rectangular":
+            self.send_koko("CLAP RECT %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Elliptical":
+            self.send_koko("CLAP ELIP %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Rectangular + Frame":
+            self.send_koko("CLAP RCTK %s %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"]), repr(vals["fr"])))
+            self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
