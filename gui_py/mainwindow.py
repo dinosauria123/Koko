@@ -3377,8 +3377,11 @@ class GlassMapDialog(QDialog):
 
         vmin, vmax, nmin, nmax = gm.compute_ranges(glasses)
         geom = dict(vmin=vmin, vmax=vmax, nmin=nmin, nmax=nmax,
-                    width=640, height=480, lmargin=60, rmargin=15,
-                    tmargin=50, bmargin=55)
+                    width=640, height=480,
+                    # gnuplot margins in CHARACTER CELLS (for script)
+                    gp_lmargin=8, gp_rmargin=2, gp_tmargin=4, gp_bmargin=6,
+                    # click mapping margins in PIXELS (for _report_click)
+                    px_lmargin=60, px_rmargin=15, px_tmargin=50, px_bmargin=55)
 
         tmp = tempfile.mkdtemp(prefix="koko_glassmap_")
         data_path = os.path.join(tmp, "glassmap.dat")
@@ -3388,8 +3391,8 @@ class GlassMapDialog(QDialog):
         gm.build_gnuplot_script(data_path, script_path, png_path,
                                 "Glass Map (n vs v)", nmin, nmax, vmin, vmax,
                                 width=geom["width"], height=geom["height"],
-                                lmargin=geom["lmargin"], rmargin=geom["rmargin"],
-                                tmargin=geom["tmargin"], bmargin=geom["bmargin"])
+                                lmargin=geom["gp_lmargin"], rmargin=geom["gp_rmargin"],
+                                tmargin=geom["gp_tmargin"], bmargin=geom["gp_bmargin"])
 
         r = subprocess.run([gnuplot_bin, script_path], env=env,
                            capture_output=True, text=True, timeout=30)
