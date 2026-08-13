@@ -3335,6 +3335,10 @@ class GlassMapWindow(PlotWindow):
         sy = g["height"] / label_size.height() if label_size.height() else 1.0
         px *= sx
         py *= sy
+        # px, py are now in the logical 640x480 plot coordinate system but in
+        # Qt's TOP-left origin. gnuplot's term_* values use a BOTTOM-left
+        # (PNG) origin, so flip Y to match before mapping.
+        py = g["height"] - py
         # Prefer gnuplot's ACTUAL rendered plot rectangle (term_*) so the
         # click maps exactly to what was drawn. Fall back to the margin-based
         # rectangle if gnuplot didn't report one.
