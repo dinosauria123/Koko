@@ -164,15 +164,16 @@ def list_catalogs():
 
 
 def write_gnuplot_data(glasses, data_path):
-    """Write ``n v name`` rows (space separated) for gnuplot.
+    """Write ``v n name`` rows (space separated) for gnuplot.
 
-    Column 1 is the refractive index n (Nd), plotted on the x axis; column
-    2 is the Abbe number v (Vd), plotted on the y axis. This matches the
-    conventional glass-map orientation (x = n, y = v).
+    Column 1 is the Abbe number v (Vd), plotted on the x axis with larger
+    values to the LEFT; column 2 is the refractive index n (Nd), plotted on
+    the y axis. This orientation puts the high-Abbe (crown) glasses on the
+    left, matching the user's preferred layout.
     """
     with open(data_path, "w") as fh:
         for g in glasses:
-            fh.write("%r %r %s\n" % (g["nd"], g["vd"], g["name"]))
+            fh.write("%r %r %s\n" % (g["vd"], g["nd"], g["name"]))
 
 
 def build_gnuplot_script(data_path, script_path, png_path, title,
@@ -201,13 +202,13 @@ def build_gnuplot_script(data_path, script_path, png_path, title,
         "set terminal pngcairo size {w},{h} enhanced font 'DejaVuSans,10'\n"
         "set output '{png}'\n"
         "set title '{title}'\n"
-        "set xlabel 'Refractive index  n  (Nd)'\n"
-        "set ylabel 'Abbe number  v  (Vd)'\n"
+        "set xlabel 'Abbe number  v  (Vd)'\n"
+        "set ylabel 'Refractive index  n  (Nd)'\n"
         "set grid\n"
         "set key off\n"
         "set clip points\n"
-        "set ytics 10\n"
-        "set xtics 0.1\n"
+        "set ytics 0.1\n"
+        "set xtics 10\n"
         "set mytics 2\n"
         "set mxtics 2\n"
         "set lmargin at screen {lm}\n"

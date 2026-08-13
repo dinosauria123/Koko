@@ -3358,12 +3358,15 @@ class GlassMapWindow(PlotWindow):
         # Clamp to plot area.
         x = min(max(px, x0), x1)
         y = min(max(py, y0), y1)
-        # Map pixel -> data. x axis: n (index, Nd); y axis: v (Abbe, Vd),
-        # top=max. Note gnuplot's Y origin is the LOWER edge of the PNG.
+        # Map pixel -> data.
+        #   x axis = Abbe number v (Vd), LARGE at LEFT  -> xrange [vmax, vmin]
+        #   y axis = refractive index n (Nd), small at bottom -> [nmin, nmax]
+        # gnuplot's Y origin is the LOWER edge of the PNG (py already flipped
+        # to bottom-left above).
         frac_x = (x - x0) / plot_w
         frac_y = (y - y0) / plot_h
-        n = g["nmin"] + frac_x * (g["nmax"] - g["nmin"])
-        v = g["vmin"] + frac_y * (g["vmax"] - g["vmin"])
+        v = g["vmax"] - frac_x * (g["vmax"] - g["vmin"])
+        n = g["nmin"] + frac_y * (g["nmax"] - g["nmin"])
         # Nearest glass in (n, v) space. We also measure the click-to-glass
         # distance in PLOT PIXELS so we can reject clicks that landed in empty
         # space (no dot near the cursor). The plotted dots are ~ps 1.1, so we
@@ -3378,9 +3381,9 @@ class GlassMapWindow(PlotWindow):
             if best_d is None or d < best_d:
                 best_d = d
                 best = gl
-                # pixel distance from click to this glass' plotted position
-                gfx = (gl["nd"] - g["nmin"]) / (g["nmax"] - g["nmin"]) * plot_w
-                gfy = (gl["vd"] - g["vmin"]) / (g["vmax"] - g["vmin"]) * plot_h
+                # pixel position of this glass: x from v (left=large), y from n
+                gfx = (g["vmax"] - gl["vd"]) / (g["vmax"] - g["vmin"]) * plot_w
+                gfy = (gl["nd"] - g["nmin"]) / (g["nmax"] - g["nmin"]) * plot_h
                 best_px = ((x - (x0 + gfx)) ** 2 + (y - (y0 + gfy)) ** 2) ** 0.5
         # Hit radius in plot pixels: dots are ~5px radius (ps 1.1), so a
         # generous radius keeps clicks that land just off-center from being
@@ -3484,7 +3487,7 @@ class GlassMapDialog(QDialog):
         png_path = os.path.join(tmp, "glassmap.png")
         gm.write_gnuplot_data(glasses, data_path)
         gm.build_gnuplot_script(data_path, script_path, png_path,
-                                "Glass Map (n vs v)", nmin, nmax, vmin, vmax,
+                                "Glass Map (v vs n)", vmax, vmin, nmin, nmax,
                                 width=geom["width"], height=geom["height"],
                                 lmargin=geom["lmargin"], rmargin=geom["rmargin"],
                                 tmargin=geom["tmargin"], bmargin=geom["bmargin"])
