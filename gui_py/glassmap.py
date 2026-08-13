@@ -178,15 +178,25 @@ def write_gnuplot_data(glasses, data_path):
 def build_gnuplot_script(data_path, script_path, png_path, title,
                          xmin, xmax, ymin, ymax,
                          width=1400, height=1010,
-                         lmargin=8, rmargin=2, tmargin=4, bmargin=6):
+                         lmargin=70, rmargin=20, tmargin=50, bmargin=60):
     """Write a gnuplot script that renders an n-v scatter plot.
 
     Glass-name labels are NOT drawn on the plot (with ~800+ glasses they
     would overlap into an unreadable mess); clicking a point reports the
-    nearest glass name instead. Axis ranges and margins are FIXED (in
-    pixels) so a mouse click on the resulting PNG can be mapped back to
-    (n, v) data space by the caller.
+    nearest glass name instead.
+
+    Margins are supplied in PIXELS (relative to the requested width/height)
+    and converted to gnuplot ``at screen`` fractions so the rendered plot
+    area exactly matches the pixel coordinates used by the GUI's
+    click-to-glass mapping (see GlassMapWindow._report_click).
     """
+    # Convert pixel margins to gnuplot screen fractions (0..1, origin at the
+    # lower-left). lmargin/rmargin are measured from the left/right edges,
+    # tmargin/bmargin from the top/bottom edges.
+    lf = lmargin / width
+    rf = 1.0 - rmargin / width
+    tf = 1.0 - tmargin / height
+    bf = bmargin / height
     script = (
         "set terminal pngcairo size {w},{h} enhanced font 'DejaVuSans,10'\n"
         "set output '{png}'\n"
@@ -200,15 +210,15 @@ def build_gnuplot_script(data_path, script_path, png_path, title,
         "set xtics 0.1\n"
         "set mytics 2\n"
         "set mxtics 2\n"
-        "set lmargin {lm}\n"
-        "set rmargin {rm}\n"
-        "set tmargin {tm}\n"
-        "set bmargin {bm}\n"
+        "set lmargin at screen {lm}\n"
+        "set rmargin at screen {rm}\n"
+        "set tmargin at screen {tm}\n"
+        "set bmargin at screen {bm}\n"
         "set xrange [{xmin}:{xmax}]\n"
         "set yrange [{ymin}:{ymax}]\n"
         "plot '{dat}' using 1:2 with points pt 7 ps 1.1 lc rgb '#1f5fa8' notitle\n"
     ).format(w=width, h=height, png=png_path, title=title,
-             lm=lmargin, rm=rmargin, tm=tmargin, bm=bmargin,
+             lm=lf, rm=rf, tm=tf, bm=bf,
              xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dat=data_path)
     with open(script_path, "w") as fh:
         fh.write(script)

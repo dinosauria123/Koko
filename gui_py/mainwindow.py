@@ -3376,12 +3376,13 @@ class GlassMapDialog(QDialog):
         self._glasses = glasses
 
         vmin, vmax, nmin, nmax = gm.compute_ranges(glasses)
+        # Margins are PIXELS (relative to the 640x480 render). They are used
+        # both by gnuplot (converted to screen fractions in glassmap.py) and
+        # by the click-to-glass mapping in GlassMapWindow._report_click, so
+        # the two coordinate systems stay exactly in sync.
         geom = dict(vmin=vmin, vmax=vmax, nmin=nmin, nmax=nmax,
                     width=640, height=480,
-                    # gnuplot margins in CHARACTER CELLS (for script)
-                    gp_lmargin=8, gp_rmargin=2, gp_tmargin=4, gp_bmargin=6,
-                    # click mapping margins in PIXELS (for _report_click)
-                    px_lmargin=60, px_rmargin=15, px_tmargin=50, px_bmargin=55)
+                    lmargin=70, rmargin=20, tmargin=50, bmargin=60)
 
         tmp = tempfile.mkdtemp(prefix="koko_glassmap_")
         data_path = os.path.join(tmp, "glassmap.dat")
@@ -3391,8 +3392,8 @@ class GlassMapDialog(QDialog):
         gm.build_gnuplot_script(data_path, script_path, png_path,
                                 "Glass Map (n vs v)", nmin, nmax, vmin, vmax,
                                 width=geom["width"], height=geom["height"],
-                                lmargin=geom["gp_lmargin"], rmargin=geom["gp_rmargin"],
-                                tmargin=geom["gp_tmargin"], bmargin=geom["gp_bmargin"])
+                                lmargin=geom["lmargin"], rmargin=geom["rmargin"],
+                                tmargin=geom["tmargin"], bmargin=geom["bmargin"])
 
         r = subprocess.run([gnuplot_bin, script_path], env=env,
                            capture_output=True, text=True, timeout=30)
@@ -3401,7 +3402,10 @@ class GlassMapDialog(QDialog):
                                  "gnuplot failed:\n" + (r.stderr or r.stdout))
             return
 
-        owner = None
+        # Pass the main window as owner so click reports can be written to
+        # its message log via _owner.append_msg(). The GlassMapWindow itself
+        # is a top-level window (no parent) so it never hides behind others.
+        owner = self.parent()
         win = GlassMapWindow(owner, glasses, geom)
         win.setWindowTitle("Glass Map (n vs v) — %d glasses" % len(glasses))
         pix = QPixmap(png_path)
