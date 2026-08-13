@@ -3261,7 +3261,11 @@ class GlassMapWindow(PlotWindow):
 
     def mousePressEvent(self, event):
         if self._glasses and self._geom:
-            self._report_click(event.position().x(), event.position().y())
+            # Map the click into the label's local coordinate system so the
+            # mapping is correct even if the label is scaled/resized to fit
+            # the window (the raw event position is in window coordinates).
+            lp = self._plot_label.mapFrom(self, event.position().toPoint())
+            self._report_click(lp.x(), lp.y(), self._plot_label.size())
         super().mousePressEvent(event)
 
     def closeEvent(self, event):
@@ -3270,8 +3274,14 @@ class GlassMapWindow(PlotWindow):
             self._owner.glass_map_window = None
         self._owner = None
 
-    def _report_click(self, px, py):
+    def _report_click(self, px, py, label_size):
         g = self._geom
+        # The label may be scaled to fit the window; scale the click back to
+        # the logical 640x480 plot coordinate system.
+        sx = g["width"] / label_size.width() if label_size.width() else 1.0
+        sy = g["height"] / label_size.height() if label_size.height() else 1.0
+        px *= sx
+        py *= sy
         plot_w = g["width"] - g["lmargin"] - g["rmargin"]
         plot_h = g["height"] - g["tmargin"] - g["bmargin"]
         if plot_w <= 0 or plot_h <= 0:
@@ -3392,16 +3402,15 @@ class GlassMapDialog(QDialog):
         pix = QPixmap(png_path)
         win._plot_label.setPixmap(pix)
         win._plot_label.setScaledContents(True)
-        # Pin the label to the PNG's exact pixel size so the 640x480 image is
-        # shown 1:1 (no stretching) and fits the window precisely.
-        win._plot_label.setFixedSize(pix.width(), pix.height())
-        # Remove any layout margin so the label fills the client area.
+        # Do NOT pin the label to a fixed 640x480 size. Instead let it stretch
+        # to fill the window (setScaledContents scales the image to fit) so the
+        # whole map is always visible even if the WM decoration eats into the
+        # client area and the window ends up slightly smaller than 640x480.
         if win.layout() is not None:
             win.layout().setContentsMargins(0, 0, 0, 0)
-        # QMainWindow.resize/setFixedSize take the FRAME size, so the client
-        # area ends up smaller than 640x480 under real WM decorations and the
-        # fixed 640x480 label overflows top/bottom. Add the frame thickness
-        # back so the CLIENT area is exactly the PNG size on every WM.
+        # Size the window to the image plus the WM frame. If the frame
+        # estimate is slightly off the image still scales to fit, so nothing
+        # is clipped.
         win.adjustSize()
         fw = win.frameGeometry().width() - win.geometry().width()
         fh = win.frameGeometry().height() - win.geometry().height()
