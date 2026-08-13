@@ -3323,6 +3323,7 @@ class GlassMapDialog(QDialog):
         self.setWindowTitle("Glass Map (n vs v)")
         self.resize(360, 200)
         self._glasses = []
+        self._glass_map_window = None
 
         vbox = QVBoxLayout(self)
         hdr = QLabel("Glass catalog n–v map")
@@ -3397,37 +3398,26 @@ class GlassMapDialog(QDialog):
                                  "gnuplot failed:\n" + (r.stderr or r.stdout))
             return
 
-        owner = self.parent()
+        owner = None
         win = GlassMapWindow(owner, glasses, geom)
         win.setWindowTitle("Glass Map (n vs v) — %d glasses" % len(glasses))
         pix = QPixmap(png_path)
         win._plot_label.setPixmap(pix)
         win._plot_label.setScaledContents(True)
-        # Do NOT pin the label to a fixed 640x480 size. Instead let it stretch
-        # to fill the window (setScaledContents scales the image to fit) so the
-        # whole map is always visible even if the WM decoration eats into the
-        # client area and the window ends up slightly smaller than 640x480.
         if win.layout() is not None:
             win.layout().setContentsMargins(0, 0, 0, 0)
-        # Size the window to the image plus the WM frame.
-        # IMPORTANT: show() FIRST so WM adds decorations, then process events,
-        # then measure frame and set fixed size so client area = image size.
         win.show()
         QApplication.processEvents()
         fw = win.frameGeometry().width() - win.geometry().width()
         fh = win.frameGeometry().height() - win.geometry().height()
         win.setFixedSize(pix.width() + fw, pix.height() + fh)
-        # Keep the window referenced by the owner so it is not garbage-collected
-        # (and thus immediately closed) when this method returns.
-        if owner is not None and hasattr(owner, "glass_map_window"):
-            owner.glass_map_window = win
-        # Bring the window to the front so the map is immediately visible
-        # above other windows.
+        # Keep reference so it's not GC'd
+        self._glass_map_window = win
         win.raise_()
         win.activateWindow()
-        # Close the catalog picker now that the map is open, so the modal
-        # picker no longer sits in front of the map window.
-        self.accept()
+        # Do NOT call self.accept() here - the catalog picker should stay
+        # alive until the user closes it explicitly. The map window is now
+        # a top-level window with its own lifecycle.
 
 
 def main():
