@@ -945,6 +945,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowTitle("KOKO GUI")
 
         # koko-cli process (run inside a real PTY; see start_koko_cli)
         self._koko_pid = None

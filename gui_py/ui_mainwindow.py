@@ -652,7 +652,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "KODS GUI"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "KOKO GUI"))
         self.label.setText(_translate("MainWindow", "Command >"))
         self.comboRadiusCurvature.setItemText(0, _translate("MainWindow", "Radius"))
         self.comboRadiusCurvature.setItemText(1, _translate("MainWindow", "Curvature"))
