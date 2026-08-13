@@ -3240,25 +3240,32 @@ class GlassMapWindow(PlotWindow):
         # geom: dict with vmin,vmax,nmin,nmax,width,height,lmargin,rmargin,
         #       tmargin,bmargin
         self._geom = geom
-        self._click_label = None
         # Build the plot label up front so _plot in the dialog can set the
         # pixmap directly.
         self._plot_label = QLabel()
         self._plot_label.setScaledContents(True)
         self._plot_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        # Lay the label out directly (PlotWindow is a plain QWidget now, no
-        # central widget), with zero margin so the label fills the
-        # whole client area.
+        # Result bar: shows the glass identified on the last click, directly
+        # inside the map window so the user sees feedback without hunting
+        # through the main message log.
+        self._click_label = QLabel("Click a point on the map to identify the glass")
+        self._click_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._click_label.setStyleSheet(
+            "QLabel { background-color: #eef0f2; border-top: 1px solid #c8ccd0; "
+            "padding: 6px; font-weight: bold; }")
+        self._click_label.setMinimumHeight(28)
+        # Lay the plot (filling) above the result bar.
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.addWidget(self._plot_label)
+        lay.setSpacing(0)
+        lay.addWidget(self._plot_label, 1)
+        lay.addWidget(self._click_label, 0)
         # Keep this window above the main window / catalog picker so the map
         # is always visible in front (the WM would otherwise let it sink
         # behind the main window).
         self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
-        # The window is sized to the rendered PNG in _plot() (adjustSize +
-        # setFixedSize) so the client area exactly matches the 640x480 image
-        # regardless of window-manager decoration thickness.
+        # The window is sized to the rendered PNG in _plot() — the client
+        # area grows by the result-bar height there.
 
     def mousePressEvent(self, event):
         if self._glasses and self._geom:
@@ -3309,8 +3316,15 @@ class GlassMapWindow(PlotWindow):
                    "  n (Nd) = %.5f\n"
                    "  v (Vd) = %.3f" % (best["name"], best["catalog"],
                                        best["nd"], best["vd"]))
-            self._owner.append_msg(">> Glass map click: " + msg.replace("\n", "  "))
-            self.setWindowTitle("Glass Map — " + msg.splitlines()[0])
+            if self._owner is not None and hasattr(self._owner, "append_msg"):
+                self._owner.append_msg(">> Glass map click: " + msg.replace("\n", "  "))
+            self.setWindowTitle("Glass Map — " + best["name"])
+            # Show the result in the window's own result bar so the user
+            # gets immediate, visible feedback on click.
+            if self._click_label is not None:
+                self._click_label.setText(
+                    "Glass: %s  (catalog %s)    n = %.5f    v = %.3f"
+                    % (best["name"], best["catalog"], best["nd"], best["vd"]))
 
 
 class GlassMapDialog(QDialog):
@@ -3417,7 +3431,10 @@ class GlassMapDialog(QDialog):
         QApplication.processEvents()
         fw = win.frameGeometry().width() - win.geometry().width()
         fh = win.frameGeometry().height() - win.geometry().height()
-        win.setFixedSize(pix.width() + fw, pix.height() + fh)
+        # Include the result bar (its current height) so it is not clipped by
+        # the fixed-size window.
+        bar_h = win._click_label.height() if win._click_label is not None else 0
+        win.setFixedSize(pix.width() + fw, pix.height() + bar_h + fh)
         # Keep reference so it's not GC'd
         self._glass_map_window = win
         win.raise_()
