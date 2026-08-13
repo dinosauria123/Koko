@@ -3382,9 +3382,10 @@ class GlassMapWindow(PlotWindow):
                 gfx = (gl["nd"] - g["nmin"]) / (g["nmax"] - g["nmin"]) * plot_w
                 gfy = (gl["vd"] - g["vmin"]) / (g["vmax"] - g["vmin"]) * plot_h
                 best_px = ((x - (x0 + gfx)) ** 2 + (y - (y0 + gfy)) ** 2) ** 0.5
-        # Hit radius in plot pixels: a few dot widths (~ps 1.1 dots are a few
-        # px across). 14 px gives a forgiving but clearly "near a dot" target.
-        HIT_RADIUS_PX = 14.0
+        # Hit radius in plot pixels: dots are ~5px radius (ps 1.1), so a
+        # generous radius keeps clicks that land just off-center from being
+        # rejected as empty space.
+        HIT_RADIUS_PX = 20.0
         if best is not None and best_px is not None and best_px <= HIT_RADIUS_PX:
             msg = ("Glass: %s  (catalog %s)\n"
                    "  n (Nd) = %.5f\n"
@@ -3403,7 +3404,7 @@ class GlassMapWindow(PlotWindow):
             # No dot near the click: clicking empty space -> report none.
             self.setWindowTitle("Glass Map — (no glass here)")
             if self._click_label is not None:
-                self._click_label.setText("該当なし — 近くにガラスがありません")
+                self._click_label.setText("No glass — click nearer to a data point")
 
 
 class GlassMapDialog(QDialog):
