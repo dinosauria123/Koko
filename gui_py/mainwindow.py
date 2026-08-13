@@ -26,7 +26,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QDialogButtonBox, QInputDialog, QMenu, QWidget, QFrame,
     QSizePolicy, QStyledItemDelegate, QCheckBox,
 )
-from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent
+from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent, QPointF
 from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
 
 
@@ -3229,6 +3229,38 @@ class PlotWindow(QWidget):
         super().closeEvent(event)
 
 
+class _WinMouseEvent:
+    """Adapter that wraps a QLabel-originated mouse event and reports its
+    position in the *window* (GlassMapWindow) coordinate system, so the
+    window's mousePressEvent can treat label clicks identically to direct
+    window clicks. The ``_is_adapter`` flag tells the window handler NOT to
+    re-dispatch to QWidget.mousePressEvent (which only accepts real events)."""
+
+    _is_adapter = True
+
+    def __init__(self, window, src_event):
+        self._window = window
+        self._src = src_event
+        # Convert the source (label-local) position into window-global then
+        # window-local coordinates.
+        self._pos = QPointF(window.mapFromGlobal(src_event.globalPosition().toPoint()))
+
+    def position(self):
+        return self._pos
+
+    def globalPosition(self):
+        return self._src.globalPosition()
+
+    def button(self):
+        return self._src.button()
+
+    def buttons(self):
+        return self._src.buttons()
+
+    def modifiers(self):
+        return self._src.modifiers()
+
+
 class GlassMapWindow(PlotWindow):
     """n-v glass-map viewer. Clicking the plot maps the pixel coordinate
     back to (n, v) data space (using the fixed gnuplot margins/ranges the
@@ -3245,6 +3277,13 @@ class GlassMapWindow(PlotWindow):
         self._plot_label = QLabel()
         self._plot_label.setScaledContents(True)
         self._plot_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        # The QLabel does NOT forward mouse events to its parent by default,
+        # so clicks land on the label and never reach this window's
+        # mousePressEvent. Install a small filter that re-routes label clicks
+        # to self.mousePressEvent so clicking anywhere on the plot works.
+        self._plot_label.mousePressEvent = (
+            lambda ev: self.mousePressEvent(
+                _WinMouseEvent(self, ev)))
         # Result bar: shows the glass identified on the last click, directly
         # inside the map window so the user sees feedback without hunting
         # through the main message log.
@@ -3269,11 +3308,17 @@ class GlassMapWindow(PlotWindow):
 
     def mousePressEvent(self, event):
         if self._glasses and self._geom:
-            # Map the click into the label's local coordinate system so the
-            # mapping is correct even if the label is scaled/resized to fit
-            # the window (the raw event position is in window coordinates).
-            lp = self._plot_label.mapFrom(self, event.position().toPoint())
+            # A click may arrive either on this window (event position is in
+            # window coords) or on the child plot QLabel (event position is in
+            # label coords, re-routed through a _WinMouseEvent adapter). Both
+            # are normalized to window coordinates here.
+            wp = event.position().toPoint()
+            lp = self._plot_label.mapFrom(self, wp)
             self._report_click(lp.x(), lp.y(), self._plot_label.size())
+        if getattr(event, "_is_adapter", False):
+            # Already handled; do not re-dispatch to QWidget (it rejects the
+            # adapter as a non-QMouseEvent).
+            return
         super().mousePressEvent(event)
 
     def closeEvent(self, event):
@@ -3439,9 +3484,10 @@ class GlassMapDialog(QDialog):
         self._glass_map_window = win
         win.raise_()
         win.activateWindow()
-        # Do NOT call self.accept() here - the catalog picker should stay
-        # alive until the user closes it explicitly. The map window is now
-        # a top-level window with its own lifecycle.
+        # Close the catalog picker now that the map is on screen. The map
+        # window is a top-level window with its own lifecycle, so it stays
+        # alive for click-to-identify after the picker closes.
+        self.accept()
 
 
 def main():
