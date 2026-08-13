@@ -3165,12 +3165,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # Make the plot window a top-level window (no parent) so it can
         # never be hidden behind the main window.
         if self.plot_window is None:
-            from PyQt6.QtWidgets import QLabel
+            from PyQt6.QtWidgets import QLabel, QVBoxLayout
             self.plot_window = PlotWindow(self)
             self.plot_window.setWindowTitle("Koko Plot")
             self._plot_label = QLabel()
             self._plot_label.setScaledContents(True)
-            self.plot_window.setCentralWidget(self._plot_label)
+            lay = QVBoxLayout(self.plot_window)
+            lay.setContentsMargins(0, 0, 0, 0)
+            lay.addWidget(self._plot_label)
         self._plot_png_path = path
         self._plot_label.setPixmap(pix)
         # Enforce a sensible minimum size so a degenerate pixmap can't
@@ -3200,7 +3202,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.close()
 
 
-class PlotWindow(QMainWindow):
+class PlotWindow(QWidget):
     """Top-level plot viewer window.
 
     On close it notifies its owner (the KokoMainWindow) so the PNG it was
@@ -3210,7 +3212,10 @@ class PlotWindow(QMainWindow):
     """
 
     def __init__(self, owner):
-        super().__init__()
+        # No parent -> real top-level window with normal window decoration
+        # (title bar + close button). A parented QWidget is rendered by the
+        # WM as a frameless child window that cannot be closed.
+        super().__init__(None)
         self._owner = owner
 
     def closeEvent(self, event):
@@ -3240,21 +3245,19 @@ class GlassMapWindow(PlotWindow):
         # pixmap directly.
         self._plot_label = QLabel()
         self._plot_label.setScaledContents(True)
-        self.setCentralWidget(self._plot_label)
-        # Start large (most of the screen) so the n-v map is readable. The
-        # user can still resize freely afterward.
-        self.setMinimumSize(800, 560)
-        screen = self.screen()
-        if screen is not None:
-            sr = screen.geometry()
-            w = int(sr.width() * 0.95)
-            h = int(sr.height() * 0.95)
-            # Keep the plot's ~1.38:1 aspect so labels aren't distorted.
-            if w / h > 1.38:
-                w = int(h * 1.38)
-            else:
-                h = int(w / 1.38)
-            self.resize(w, h)
+        # Lay the label out directly (PlotWindow is a plain QWidget now, no
+        # central widget), with zero margin so the 640x480 label fills the
+        # whole client area.
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(self._plot_label)
+        # Keep this window above the main window / catalog picker so the map
+        # is always visible in front (the WM would otherwise let it sink
+        # behind the main window).
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint, True)
+        # The window is sized to the rendered PNG in _plot() (adjustSize +
+        # setFixedSize) so the client area exactly matches the 640x480 image
+        # regardless of window-manager decoration thickness.
 
     def mousePressEvent(self, event):
         if self._glasses and self._geom:
@@ -3276,16 +3279,17 @@ class GlassMapWindow(PlotWindow):
         # Clamp to plot area.
         x = min(max(px, g["lmargin"]), g["lmargin"] + plot_w)
         y = min(max(py, g["tmargin"]), g["tmargin"] + plot_h)
-        # Map pixel -> data. x axis: v (Abbe); y axis: n (index), top=max.
+        # Map pixel -> data. x axis: n (index, Nd); y axis: v (Abbe, Vd),
+        # top=max.
         frac_x = (x - g["lmargin"]) / plot_w
         frac_y = (y - g["tmargin"]) / plot_h
-        v = g["vmin"] + frac_x * (g["vmax"] - g["vmin"])
-        n = g["nmax"] - frac_y * (g["nmax"] - g["nmin"])
-        # Nearest glass in (v, n) space.
+        n = g["nmin"] + frac_x * (g["nmax"] - g["nmin"])
+        v = g["vmax"] - frac_y * (g["vmax"] - g["vmin"])
+        # Nearest glass in (n, v) space.
         best = None
         best_d = None
         for gl in self._glasses:
-            d = (gl["vd"] - v) ** 2 + (gl["nd"] - n) ** 2
+            d = (gl["nd"] - n) ** 2 + (gl["vd"] - v) ** 2
             if best_d is None or d < best_d:
                 best_d = d
                 best = gl
@@ -3361,8 +3365,8 @@ class GlassMapDialog(QDialog):
 
         vmin, vmax, nmin, nmax = gm.compute_ranges(glasses)
         geom = dict(vmin=vmin, vmax=vmax, nmin=nmin, nmax=nmax,
-                    width=1400, height=1010, lmargin=110, rmargin=40,
-                    tmargin=60, bmargin=75)
+                    width=640, height=480, lmargin=60, rmargin=15,
+                    tmargin=50, bmargin=55)
 
         tmp = tempfile.mkdtemp(prefix="koko_glassmap_")
         data_path = os.path.join(tmp, "glassmap.dat")
@@ -3370,7 +3374,10 @@ class GlassMapDialog(QDialog):
         png_path = os.path.join(tmp, "glassmap.png")
         gm.write_gnuplot_data(glasses, data_path)
         gm.build_gnuplot_script(data_path, script_path, png_path,
-                                "Glass Map (n vs v)", vmin, vmax, nmin, nmax)
+                                "Glass Map (n vs v)", nmin, nmax, vmin, vmax,
+                                width=geom["width"], height=geom["height"],
+                                lmargin=geom["lmargin"], rmargin=geom["rmargin"],
+                                tmargin=geom["tmargin"], bmargin=geom["bmargin"])
 
         r = subprocess.run([gnuplot_bin, script_path], env=env,
                            capture_output=True, text=True, timeout=30)
@@ -3382,15 +3389,35 @@ class GlassMapDialog(QDialog):
         owner = self.parent()
         win = GlassMapWindow(owner, glasses, geom)
         win.setWindowTitle("Glass Map (n vs v) — %d glasses" % len(glasses))
-        win._plot_label.setPixmap(QPixmap(png_path))
+        pix = QPixmap(png_path)
+        win._plot_label.setPixmap(pix)
+        win._plot_label.setScaledContents(True)
+        # Pin the label to the PNG's exact pixel size so the 640x480 image is
+        # shown 1:1 (no stretching) and fits the window precisely.
+        win._plot_label.setFixedSize(pix.width(), pix.height())
+        # Remove any layout margin so the label fills the client area.
+        if win.layout() is not None:
+            win.layout().setContentsMargins(0, 0, 0, 0)
+        # QMainWindow.resize/setFixedSize take the FRAME size, so the client
+        # area ends up smaller than 640x480 under real WM decorations and the
+        # fixed 640x480 label overflows top/bottom. Add the frame thickness
+        # back so the CLIENT area is exactly the PNG size on every WM.
+        win.adjustSize()
+        fw = win.frameGeometry().width() - win.geometry().width()
+        fh = win.frameGeometry().height() - win.geometry().height()
+        win.setFixedSize(pix.width() + fw, pix.height() + fh)
         # Keep the window referenced by the owner so it is not garbage-collected
         # (and thus immediately closed) when this method returns.
         if owner is not None and hasattr(owner, "glass_map_window"):
             owner.glass_map_window = win
-        # Fallback size in case showMaximized is constrained by the WM/decorations;
-        # the resize in __init__ already tried screen.geometry()*0.95.
-        win.resize(1920, 1080)
-        win.showMaximized()
+        # Bring the window to the front so the map is immediately visible
+        # above other windows.
+        win.raise_()
+        win.activateWindow()
+        win.show()
+        # Close the catalog picker now that the map is open, so the modal
+        # picker no longer sits in front of the map window.
+        self.accept()
 
 
 def main():

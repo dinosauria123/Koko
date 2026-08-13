@@ -164,39 +164,49 @@ def list_catalogs():
 
 
 def write_gnuplot_data(glasses, data_path):
-    """Write ``v n name`` rows (space separated) for gnuplot."""
+    """Write ``n v name`` rows (space separated) for gnuplot.
+
+    Column 1 is the refractive index n (Nd), plotted on the x axis; column
+    2 is the Abbe number v (Vd), plotted on the y axis. This matches the
+    conventional glass-map orientation (x = n, y = v).
+    """
     with open(data_path, "w") as fh:
         for g in glasses:
-            fh.write("%r %r %s\n" % (g["vd"], g["nd"], g["name"]))
+            fh.write("%r %r %s\n" % (g["nd"], g["vd"], g["name"]))
 
 
 def build_gnuplot_script(data_path, script_path, png_path, title,
                          xmin, xmax, ymin, ymax,
                          width=1400, height=1010,
-                         lmargin=110, rmargin=40, tmargin=60, bmargin=75):
-    """Write a gnuplot script that renders an n-v scatter plot with glass
-    names printed next to each point.
+                         lmargin=70, rmargin=20, tmargin=50, bmargin=60):
+    """Write a gnuplot script that renders an n-v scatter plot.
 
-    Axis ranges and margins are FIXED (in pixels) so a mouse click on the
-    resulting PNG can be mapped back to (n, v) data space by the caller.
+    Glass-name labels are NOT drawn on the plot (with ~800+ glasses they
+    would overlap into an unreadable mess); clicking a point reports the
+    nearest glass name instead. Axis ranges and margins are FIXED (in
+    pixels) so a mouse click on the resulting PNG can be mapped back to
+    (n, v) data space by the caller.
     """
     script = (
-        "set terminal pngcairo size {w},{h} enhanced font 'DejaVuSans,9'\n"
+        "set terminal pngcairo size {w},{h} enhanced font 'DejaVuSans,10'\n"
         "set output '{png}'\n"
         "set title '{title}'\n"
-        "set xlabel 'Abbe number  v  (Vd)'\n"
-        "set ylabel 'Refractive index  n  (Nd)'\n"
+        "set xlabel 'Refractive index  n  (Nd)'\n"
+        "set ylabel 'Abbe number  v  (Vd)'\n"
         "set grid\n"
         "set key off\n"
+        "set clip points\n"
+        "set ytics 10\n"
+        "set xtics 0.1\n"
+        "set mytics 2\n"
+        "set mxtics 2\n"
         "set lmargin {lm}\n"
         "set rmargin {rm}\n"
         "set tmargin {tm}\n"
         "set bmargin {bm}\n"
         "set xrange [{xmin}:{xmax}]\n"
         "set yrange [{ymin}:{ymax}]\n"
-        "plot '{dat}' using 1:2:(sprintf('%s', stringcolumn(3))) "
-        "with labels offset 0.4,0.4 notitle, "
-        "'{dat}' using 1:2 with points pt 7 ps 0.6 lc rgb '#1f5fa8' notitle\n"
+        "plot '{dat}' using 1:2 with points pt 7 ps 1.1 lc rgb '#1f5fa8' notitle\n"
     ).format(w=width, h=height, png=png_path, title=title,
              lm=lmargin, rm=rmargin, tm=tmargin, bm=bmargin,
              xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dat=data_path)
@@ -204,7 +214,7 @@ def build_gnuplot_script(data_path, script_path, png_path, title,
         fh.write(script)
 
 
-def compute_ranges(glasses, vpad=3.0, npad=0.005):
+def compute_ranges(glasses, vpad=3.0, npad=0.02):
     """Return (vmin, vmax, nmin, nmax) covering all glasses with padding."""
     vs = [g["vd"] for g in glasses]
     ns = [g["nd"] for g in glasses]
