@@ -3245,8 +3245,9 @@ class GlassMapWindow(PlotWindow):
         # pixmap directly.
         self._plot_label = QLabel()
         self._plot_label.setScaledContents(True)
+        self._plot_label.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         # Lay the label out directly (PlotWindow is a plain QWidget now, no
-        # central widget), with zero margin so the 640x480 label fills the
+        # central widget), with zero margin so the label fills the
         # whole client area.
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
@@ -3408,10 +3409,11 @@ class GlassMapDialog(QDialog):
         # client area and the window ends up slightly smaller than 640x480.
         if win.layout() is not None:
             win.layout().setContentsMargins(0, 0, 0, 0)
-        # Size the window to the image plus the WM frame. If the frame
-        # estimate is slightly off the image still scales to fit, so nothing
-        # is clipped.
-        win.adjustSize()
+        # Size the window to the image plus the WM frame.
+        # IMPORTANT: show() FIRST so WM adds decorations, then process events,
+        # then measure frame and set fixed size so client area = image size.
+        win.show()
+        QApplication.processEvents()
         fw = win.frameGeometry().width() - win.geometry().width()
         fh = win.frameGeometry().height() - win.geometry().height()
         win.setFixedSize(pix.width() + fw, pix.height() + fh)
@@ -3423,7 +3425,6 @@ class GlassMapDialog(QDialog):
         # above other windows.
         win.raise_()
         win.activateWindow()
-        win.show()
         # Close the catalog picker now that the map is open, so the modal
         # picker no longer sits in front of the map window.
         self.accept()
