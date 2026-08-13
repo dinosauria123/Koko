@@ -217,6 +217,11 @@ def build_gnuplot_script(data_path, script_path, png_path, title,
         "set xrange [{xmin}:{xmax}]\n"
         "set yrange [{ymin}:{ymax}]\n"
         "plot '{dat}' using 1:2 with points pt 7 ps 1.1 lc rgb '#1f5fa8' notitle\n"
+        # Emit the ACTUAL rendered plot rectangle (in PNG pixel coords) so the
+        # GUI can map a click back to (n, v) exactly, instead of reconstructing
+        # it from margins (which drift a few px from gnuplot's real layout).
+        "print 'KOCO_TERM', GPVAL_TERM_XMIN, GPVAL_TERM_XMAX, "
+        "GPVAL_TERM_YMIN, GPVAL_TERM_YMAX\n"
     ).format(w=width, h=height, png=png_path, title=title,
              lm=lf, rm=rf, tm=tf, bm=bf,
              xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax, dat=data_path)
@@ -235,3 +240,22 @@ def compute_ranges(glasses, vpad=3.0, npad=0.02):
     nmin -= npad
     nmax += npad
     return vmin, vmax, nmin, nmax
+
+
+_TERM_RE = re.compile(
+    r"KOCO_TERM\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)")
+
+
+def parse_plot_rect(gnuplot_stdout):
+    """Extract the rendered plot rectangle from gnuplot stdout.
+
+    Returns (xmin, xmax, ymin, ymax) in PNG pixel coordinates, or None if
+    the ``KOCO_TERM`` marker line was not found (e.g. an old script or a
+    gnuplot error).
+    """
+    for line in (gnuplot_stdout or "").splitlines():
+        m = _TERM_RE.search(line)
+        if m:
+            return (float(m.group(1)), float(m.group(2)),
+                    float(m.group(3)), float(m.group(4)))
+    return None

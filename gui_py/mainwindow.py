@@ -3335,19 +3335,31 @@ class GlassMapWindow(PlotWindow):
         sy = g["height"] / label_size.height() if label_size.height() else 1.0
         px *= sx
         py *= sy
-        plot_w = g["width"] - g["lmargin"] - g["rmargin"]
-        plot_h = g["height"] - g["tmargin"] - g["bmargin"]
+        # Prefer gnuplot's ACTUAL rendered plot rectangle (term_*) so the
+        # click maps exactly to what was drawn. Fall back to the margin-based
+        # rectangle if gnuplot didn't report one.
+        if all(k in g for k in ("term_xmin", "term_xmax",
+                                "term_ymin", "term_ymax")):
+            x0, x1 = g["term_xmin"], g["term_xmax"]
+            y0, y1 = g["term_ymin"], g["term_ymax"]
+        else:
+            x0 = g["lmargin"]
+            x1 = g["width"] - g["rmargin"]
+            y0 = g["tmargin"]
+            y1 = g["height"] - g["bmargin"]
+        plot_w = x1 - x0
+        plot_h = y1 - y0
         if plot_w <= 0 or plot_h <= 0:
             return
         # Clamp to plot area.
-        x = min(max(px, g["lmargin"]), g["lmargin"] + plot_w)
-        y = min(max(py, g["tmargin"]), g["tmargin"] + plot_h)
+        x = min(max(px, x0), x1)
+        y = min(max(py, y0), y1)
         # Map pixel -> data. x axis: n (index, Nd); y axis: v (Abbe, Vd),
-        # top=max.
-        frac_x = (x - g["lmargin"]) / plot_w
-        frac_y = (y - g["tmargin"]) / plot_h
+        # top=max. Note gnuplot's Y origin is the LOWER edge of the PNG.
+        frac_x = (x - x0) / plot_w
+        frac_y = (y - y0) / plot_h
         n = g["nmin"] + frac_x * (g["nmax"] - g["nmin"])
-        v = g["vmax"] - frac_y * (g["vmax"] - g["vmin"])
+        v = g["vmin"] + frac_y * (g["vmax"] - g["vmin"])
         # Nearest glass in (n, v) space.
         best = None
         best_d = None
@@ -3461,6 +3473,13 @@ class GlassMapDialog(QDialog):
                                  "gnuplot failed:\n" + (r.stderr or r.stdout))
             return
 
+        # Capture the ACTUAL rendered plot rectangle (PNG pixel coords) so
+        # click-to-glass mapping matches gnuplot's real layout exactly.
+        # gnuplot's `print` writes to stderr, so read it from there.
+        rect = gm.parse_plot_rect(r.stderr)
+        if rect is not None:
+            geom["term_xmin"], geom["term_xmax"], \
+                geom["term_ymin"], geom["term_ymax"] = rect
         # Pass the main window as owner so click reports can be written to
         # its message log via _owner.append_msg(). The GlassMapWindow itself
         # is a top-level window (no parent) so it never hides behind others.
