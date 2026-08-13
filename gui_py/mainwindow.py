@@ -3364,15 +3364,28 @@ class GlassMapWindow(PlotWindow):
         frac_y = (y - y0) / plot_h
         n = g["nmin"] + frac_x * (g["nmax"] - g["nmin"])
         v = g["vmin"] + frac_y * (g["vmax"] - g["vmin"])
-        # Nearest glass in (n, v) space.
+        # Nearest glass in (n, v) space. We also measure the click-to-glass
+        # distance in PLOT PIXELS so we can reject clicks that landed in empty
+        # space (no dot near the cursor). The plotted dots are ~ps 1.1, so we
+        # accept a hit within a small radius (a few dot-widths) of a point.
         best = None
         best_d = None
+        best_px = None
         for gl in self._glasses:
-            d = (gl["nd"] - n) ** 2 + (gl["vd"] - v) ** 2
+            dn = gl["nd"] - n
+            dv = gl["vd"] - v
+            d = dn * dn + dv * dv
             if best_d is None or d < best_d:
                 best_d = d
                 best = gl
-        if best is not None:
+                # pixel distance from click to this glass' plotted position
+                gfx = (gl["nd"] - g["nmin"]) / (g["nmax"] - g["nmin"]) * plot_w
+                gfy = (gl["vd"] - g["vmin"]) / (g["vmax"] - g["vmin"]) * plot_h
+                best_px = ((x - (x0 + gfx)) ** 2 + (y - (y0 + gfy)) ** 2) ** 0.5
+        # Hit radius in plot pixels: a few dot widths (~ps 1.1 dots are a few
+        # px across). 14 px gives a forgiving but clearly "near a dot" target.
+        HIT_RADIUS_PX = 14.0
+        if best is not None and best_px is not None and best_px <= HIT_RADIUS_PX:
             msg = ("Glass: %s  (catalog %s)\n"
                    "  n (Nd) = %.5f\n"
                    "  v (Vd) = %.3f" % (best["name"], best["catalog"],
@@ -3386,6 +3399,11 @@ class GlassMapWindow(PlotWindow):
                 self._click_label.setText(
                     "Glass: %s  (catalog %s)    n = %.5f    v = %.3f"
                     % (best["name"], best["catalog"], best["nd"], best["vd"]))
+        else:
+            # No dot near the click: clicking empty space -> report none.
+            self.setWindowTitle("Glass Map — (no glass here)")
+            if self._click_label is not None:
+                self._click_label.setText("該当なし — 近くにガラスがありません")
 
 
 class GlassMapDialog(QDialog):
