@@ -190,12 +190,13 @@ C     off-canvas points.
                 USE kokoconfig
                 USE globals
                 USE gplblk_mod
-       
+      
                 INCLUDE 'datmai.inc'
-                CHARACTER(LEN=256) :: file_a, file_b, file_out
-                CHARACTER(LEN=32)  :: gpterm, gpfont
+
+                CHARACTER(LEN=32) :: gpterm, gpfont
                 LOGICAL :: gen_png
                 LOGICAL :: OPEN150
+                CHARACTER*256 :: file_a, file_b, file_out
 
                 ! Reset the per-plot-block clear flag so the NEXT plot
                 ! command starts from a clean body (overprint fix).
@@ -608,9 +609,21 @@ C     on every plot command, so this only drops the stale labels.
           INCLUDE 'datmai.inc'
 
           CHARACTER(LEN=*),INTENT(IN) :: BMPFILE
-          
           CHARACTER(LEN=32) :: gpterm, gpfont
           LOGICAL           :: BMPEXIST
+          LOGICAL           :: has_userhome
+          CHARACTER*256 :: homedir
+
+          CALL user_home_directory(has_userhome, USERHOME)
+          homedir = ''
+          IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
+             CALL dir_path_append(USERHOME, "KODS", homedir)
+          END IF
+          IF (LEN_TRIM(homedir) .GT. 0) THEN
+             IF (homedir(LEN_TRIM(homedir):LEN_TRIM(homedir)) .NE. '/') THEN
+                homedir = TRIM(homedir)//'/'
+             END IF
+          END IF
 
           INQUIRE(file=TRIM(BMPFILE),exist=BMPEXIST)
           IF (.NOT.BMPEXIST) THEN
@@ -625,7 +638,7 @@ C     on every plot command, so this only drops the stale labels.
           CALL CFG_get(koko_cfg, "graphics%terminal", gpterm)
              
           ! create gnuplot script
-          OPEN (113, STATUS='replace', file=TRIM(HOME)//'plotbmp.gpl')
+          OPEN (113, STATUS='replace', file=TRIM(homedir)//'plotbmp.gpl')
           WRITE(113,*) 'set terminal '//TRIM(gpterm)//' font "'//TRIM(gpfont)//'"'
           WRITE(113,*) 'set noborder'
           WRITE(113,*) 'set nokey'
@@ -640,7 +653,7 @@ C     on every plot command, so this only drops the stale labels.
           ! gnuplot window. The GUI will read plotbmp.gpl itself and
           ! render the BMP image in its "Koko Plot" window.
           IF (.NOT. NOLAUNCH_GNUPLOT) THEN
-              CALL shell_command(TRIM(BMPREADR)//' '//TRIM(HOME)//'plotbmp.gpl')
+             CALL shell_command(TRIM(BMPREADR)//' '//TRIM(homedir)//'plotbmp.gpl')
           END IF
 
       END SUBROUTINE plotbmp

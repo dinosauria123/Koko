@@ -1405,7 +1405,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
         try:
             proc = subprocess.Popen(
-                [self.koko_path, '-G'],
+                [self.koko_path, '-G', '-d', os.path.expanduser('~/KODS')],
                 stdin=slave, stdout=slave, stderr=slave,
                 start_new_session=True, close_fds=True,
             )

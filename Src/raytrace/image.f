@@ -38,7 +38,7 @@ C///////////////////////////////////////////////////////////////////////
           CHARACTER WWQW*8
           COMMON/FILEBMP/BMPFILE
           INTEGER NX,NY,ALLOERR,I,J,K,LENBMP,IX,IY,II,JJ,NSTART,NSTOP
-          INTEGER L,M,N,P,KK,SL,SCL,KKK,SKIPX,SKIPY,SKIPIT,irec
+          INTEGER L,M,N,P,KK,SL,SCL,KKK,SKIPX,SKIPY,SKIPIT,irec,ITOTAL
 C
 C       SET THE SKIP THE PSF CALCULATION COUNTER TO 10 FOR IMTRACE3
           SKIPIT = 10
@@ -170,12 +170,20 @@ C
               END DO
 
               SYSSUM=SYSSUM/DBLE(K)
-              irec=1
+              irec=0
+              ITOTAL=NUMCOLORS*OBJNX*OBJNY
               DO K=1,NUMCOLORS
                   WRITE(OUTLYNE,*) 'TRACING RAYS I COLOR # ',K
                   CALL SHOWIT(1)
                   DO J=1,OBJNY
                       DO I=1,OBJNX
+                          irec=irec+1
+                          IF(MOD(irec,MAX(1,ITOTAL/100)).EQ.0.OR.
+     1                        irec.EQ.ITOTAL) THEN
+                              WRITE(OUTLYNE,*)
+     1                        'TRACE POINT ',irec,' OF ',ITOTAL
+                              CALL SHOWIT(1)
+                          END IF
 
                           IF(K.EQ.1) WAVLN=SYSTEM1(7)
                           IF(K.EQ.2) WAVLN=SYSTEM1(11)
@@ -348,11 +356,21 @@ C       XCORR AND YCORR ARE THE LOCATIONS OF THE CENTER OF THE IMAGE PLANE
 C       LEFT HAND BOTTOM CORNER PIXEL
                   XCORR=IIMAGEX2(1,1)
                   YCORR=IIMAGEY2(1,1)
+                  irec=0
+                  ITOTAL=NUMCOLORS*OBJNX*OBJNY
 
                   WRITE(OUTLYNE,*) 'TRACING RAYS AT COLOR # ',K
                   CALL SHOWIT(1)
                   DO J=1,OBJNY
                       DO I=1,OBJNX
+                          irec=irec+1
+                          IF(MOD(irec,MAX(1,ITOTAL/100)).EQ.0.OR.
+     1                        irec.EQ.ITOTAL) THEN
+                              WRITE(OUTLYNE,*)
+     1                        'TRACE POINT ',irec,' OF ',ITOTAL
+                              CALL SHOWIT(1)
+                          END IF
+
                           IF(K.EQ.1) WAVLN=SYSTEM1(7)
                           IF(K.EQ.2) WAVLN=SYSTEM1(11)
                           IF(K.EQ.3) WAVLN=SYSTEM1(8)
@@ -470,6 +488,8 @@ C
                   SYSSUM=SYSSUM+SYSTEM1(30+K)
               END DO
               SYSSUM=SYSSUM/DBLE(K)
+              irec=0
+              ITOTAL=NUMCOLORS*OBJNX*OBJNY
               DO K=1,NUMCOLORS
                   WAVLN=K
                   XCORR=IIMAGEX2(1,1)
@@ -481,6 +501,14 @@ C
                   SKIPX=0
                   DO J=1,OBJNY
                       DO I=1,OBJNX
+                          irec=irec+1
+                          IF(MOD(irec,MAX(1,ITOTAL/100)).EQ.0.OR.
+     1                        irec.EQ.ITOTAL) THEN
+                              WRITE(OUTLYNE,*)
+     1                        'TRACE POINT ',irec,' OF ',ITOTAL
+                              CALL SHOWIT(1)
+                          END IF
+
                           IF(K.EQ.1) WAVLN=SYSTEM1(7)
                           IF(K.EQ.2) WAVLN=SYSTEM1(11)
                           IF(K.EQ.3) WAVLN=SYSTEM1(8)

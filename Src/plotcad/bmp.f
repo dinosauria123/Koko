@@ -229,10 +229,23 @@ C       READ IMAGE
           character header(54)
           REAL*8 PEAKER,TRIMMER
           CHARACTER*80 BMPFILE
-          common iwidth,iheight,header
+          LOGICAL has_userhome
+          common header
           INCLUDE 'datmai.inc'
 
-          BMPFILE=trim(HOME)//'PLOTBMP.BMP'
+          CALL user_home_directory(has_userhome, USERHOME)
+          IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
+             CALL dir_path_append(USERHOME, "KODS", HOME)
+          END IF
+          BMPFILE=trim(HOME)//'/PLOTBMP.BMP'
+
+          IF(I.EQ.1) THEN
+              iwidth=OBJNX
+              iheight=OBJNY
+          ELSE IF(I.EQ.2) THEN
+              iwidth=IMGNX
+              iheight=IMGNY
+          END IF
 
           IF(I.EQ.1) THEN
 C       PLOT OBJECT
@@ -255,7 +268,7 @@ C       PLOT OBJECT
                   END DO
 
                   CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
-                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
               END IF
@@ -282,7 +295,7 @@ C       PLOT OBJECT
                   END DO
 
                   CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
-                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
               END IF
@@ -301,7 +314,7 @@ C       PLOT IMAGE
                   END DO
 
                   CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
-                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
               END IF
@@ -318,7 +331,7 @@ C       PLOT IMAGE
                   END DO
 
                   CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
-                  CALL savebmp(BMPFILE,BMPDATA24)
+                  CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
               END IF
@@ -464,15 +477,73 @@ C       PLOT IMAGE
       END
 
 
-      SUBROUTINE savebmp(BMPFILE,BMPDATA24)
+      SUBROUTINE savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
 
           INCLUDE 'datmai.inc'
-          INTEGER Maxwidth,Maxheight,iheight,iwidth,irec,L,I,J
+          INTEGER Maxwidth,Maxheight,irec,L,I,J,fsz
           PARAMETER(Maxwidth=3220,Maxheight=2415)
           INTEGER BMPDATA24(iwidth*iheight*3)
           CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB
           CHARACTER*80 BMPFILE
-          COMMON iwidth,iheight,header
+          COMMON header
+
+
+          ! Build BMP 54-byte header (BM signature, 24-bit, no compression)
+          fsz = 54 + iwidth*iheight*3
+          header(1)  = 'B'
+          header(2)  = 'M'
+          header(3)  = CHAR(MOD(fsz,256))
+          header(4)  = CHAR(MOD(fsz/256,256))
+          header(5)  = CHAR(MOD(fsz/65536,256))
+          header(6)  = CHAR(MOD(fsz/16777216,256))
+          header(7)  = CHAR(0)
+          header(8)  = CHAR(0)
+          header(9)  = CHAR(0)
+          header(10) = CHAR(0)
+          header(11) = CHAR(54)
+          header(12) = CHAR(0)
+          header(13) = CHAR(0)
+          header(14) = CHAR(0)
+          header(15) = CHAR(40)
+          header(16) = CHAR(0)
+          header(17) = CHAR(0)
+          header(18) = CHAR(0)
+          header(19) = CHAR(MOD(iwidth,256))
+          header(20) = CHAR(MOD(iwidth/256,256))
+          header(21) = CHAR(MOD(iwidth/65536,256))
+          header(22) = CHAR(MOD(iwidth/16777216,256))
+          header(23) = CHAR(MOD(iheight,256))
+          header(24) = CHAR(MOD(iheight/256,256))
+          header(25) = CHAR(MOD(iheight/65536,256))
+          header(26) = CHAR(MOD(iheight/16777216,256))
+          header(27) = CHAR(1)
+          header(28) = CHAR(0)
+          header(29) = CHAR(24)
+          header(30) = CHAR(0)
+          header(31) = CHAR(0)
+          header(32) = CHAR(0)
+          header(33) = CHAR(0)
+          header(34) = CHAR(0)
+          header(35) = CHAR(0)
+          header(36) = CHAR(0)
+          header(37) = CHAR(0)
+          header(38) = CHAR(0)
+          header(39) = CHAR(0)
+          header(40) = CHAR(0)
+          header(41) = CHAR(0)
+          header(42) = CHAR(0)
+          header(43) = CHAR(0)
+          header(44) = CHAR(0)
+          header(45) = CHAR(0)
+          header(46) = CHAR(0)
+          header(47) = CHAR(0)
+          header(48) = CHAR(0)
+          header(49) = CHAR(0)
+          header(50) = CHAR(0)
+          header(51) = CHAR(0)
+          header(52) = CHAR(0)
+          header(53) = CHAR(0)
+          header(54) = CHAR(0)
 
           OPEN(112,file=TRIM(BMPFILE),form='unformatted',
      &    access='direct',recl=1)
