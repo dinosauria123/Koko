@@ -441,15 +441,21 @@ C       PLOT IMAGE
 
       SUBROUTINE loadbmp(BMPFILE,ABMPDATA24)
 
-!     BMP reading routine obtained from
-!     http://www.rhinocerus.net/forum/lang-fortran/93927-read-bmp-into-fortran.html
+!     Reads a 24-bit BMP into ABMPDATA24 in TOP-DOWN order with per-pixel
+!     bytes (B,G,R), matching Winteracter's IGrLoadImageData (which
+!     presents the array with the first pixel at the TOP-left). BMP rows
+!     are stored bottom-up on disk and are 4-byte padded; both are handled
+!     here so that the result matches KDP2's BMP.FOR behaviour.
+!
+!     NOTE: we use LOCAL integers iw/ih (not the COMMON iwidth/iheight,
+!     which is shared with a REAL 'image' member and thus becomes REAL).
 
           INCLUDE 'datmai.inc'
-          INTEGER Maxwidth,Maxheight,irec,iwidth,iheight,i,j,L,ipad
+          INTEGER Maxwidth,Maxheight,irec,iw,ih,j,r,rowbytes,pad
           PARAMETER(Maxwidth=3220,Maxheight=2415)
           CHARACTER header(54),cval1
           CHARACTER*80 BMPFILE
-          INTEGER ABMPDATA24(iwidth*iheight*3)
+          INTEGER ABMPDATA24(Maxwidth*Maxheight*3)
           COMMON iwidth,iheight,header,image
 
           OPEN(114,file=TRIM(BMPFILE),form='unformatted',
@@ -465,21 +471,32 @@ C       PLOT IMAGE
           END IF
 
           ! get image height and width
-          iheight=ICHAR(header(23))+256*(ICHAR(header(24))
+          ih=ICHAR(header(23))+256*(ICHAR(header(24))
      &    +256*(ICHAR(header(25))+256*ICHAR(header(26))))
-          iwidth=ICHAR(header(19))+256*(ICHAR(header(20))
+          iw=ICHAR(header(19))+256*(ICHAR(header(20))
      &    +256*(ICHAR(header(21))+256*ICHAR(header(22))))
 
-          ipad=(Maxwidth-iwidth)*3-((Maxwidth-iwidth)*3/4)*4
-          irec=54
-          L=1
-          DO i=1,iheight*3
-              DO j=1,iwidth
+          rowbytes=iw*3
+          pad=MOD(4-MOD(rowbytes,4),4)
+          irec=55
+          DO r=0,INT(ih)-1
+!           Disk row r is the BOTTOM-up row (r=0 = bottom of image).
+!           Store it at the corresponding TOP-down array row so that the
+!           caller's K=1..OBJNY loop sees K=1 as the top, like KDP2.
+              L=1+((ih-1-r)*iw)*3
+              DO j=1,iw
                   READ(114,rec=irec) cval1
                   ABMPDATA24(L)=ICHAR(cval1)
-                  L=L+1
                   irec=irec+1
+                  READ(114,rec=irec) cval1
+                  ABMPDATA24(L+1)=ICHAR(cval1)
+                  irec=irec+1
+                  READ(114,rec=irec) cval1
+                  ABMPDATA24(L+2)=ICHAR(cval1)
+                  irec=irec+1
+                  L=L+3
               END DO
+              irec=irec+pad
           END DO
 
           CLOSE(114)
@@ -493,14 +510,18 @@ C       PLOT IMAGE
           INCLUDE 'datmai.inc'
           INTEGER Maxwidth,Maxheight,irec,L,I,J,fsz
           PARAMETER(Maxwidth=3220,Maxheight=2415)
-          INTEGER BMPDATA24(iwidth*iheight*3)
+          INTEGER BMPDATA24(Maxwidth*Maxheight*3)
           CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB
           CHARACTER*80 BMPFILE
           COMMON header
+          INTEGER iw,ih,rowbytes,pad
+
+          iw=iwidth
+          ih=iheight
 
 
           ! Build BMP 54-byte header (BM signature, 24-bit, no compression)
-          fsz = 54 + iwidth*iheight*3
+          fsz = 54 + iw*ih*3
           header(1)  = 'B'
           header(2)  = 'M'
           header(3)  = CHAR(MOD(fsz,256))
@@ -519,14 +540,14 @@ C       PLOT IMAGE
           header(16) = CHAR(0)
           header(17) = CHAR(0)
           header(18) = CHAR(0)
-          header(19) = CHAR(MOD(iwidth,256))
-          header(20) = CHAR(MOD(iwidth/256,256))
-          header(21) = CHAR(MOD(iwidth/65536,256))
-          header(22) = CHAR(MOD(iwidth/16777216,256))
-          header(23) = CHAR(MOD(iheight,256))
-          header(24) = CHAR(MOD(iheight/256,256))
-          header(25) = CHAR(MOD(iheight/65536,256))
-          header(26) = CHAR(MOD(iheight/16777216,256))
+          header(19) = CHAR(MOD(iw,256))
+          header(20) = CHAR(MOD(iw/256,256))
+          header(21) = CHAR(MOD(iw/65536,256))
+          header(22) = CHAR(MOD(iw/16777216,256))
+          header(23) = CHAR(MOD(ih,256))
+          header(24) = CHAR(MOD(ih/256,256))
+          header(25) = CHAR(MOD(ih/65536,256))
+          header(26) = CHAR(MOD(ih/16777216,256))
           header(27) = CHAR(1)
           header(28) = CHAR(0)
           header(29) = CHAR(24)
@@ -563,20 +584,28 @@ C       PLOT IMAGE
               WRITE(112,rec=irec) header(irec)
           END DO
 
-          irec=55
+          rowbytes=iw*3
+          pad=MOD(4-MOD(rowbytes,4),4)
           L=1
-
-          DO I=1,iheight*3
-              DO J=1,iwidth
-                  bmpdataG=CHAR(BMPDATA24(L))
-                  WRITE(112,rec=irec) bmpdataG
-                  bmpdataR=CHAR(BMPDATA24(L+1))
-                  WRITE(112,rec=irec+1) bmpdataR
-                  bmpdataB=CHAR(BMPDATA24(L+2))
-                  WRITE(112,rec=irec+2) bmpdataB
+          DO r=0,INT(ih)-1
+!           BMP is stored bottom-up: the last array row (K=ih) is the
+!           first disk row. Write array rows from bottom to top.
+              I=(ih-r)
+              L=1+((I-1)*iw)*3
+              DO J=1,iw
+                  bmpdataB=CHAR(BMPDATA24(L))
+                  WRITE(112,rec=irec) bmpdataB
+                  bmpdataG=CHAR(BMPDATA24(L+1))
+                  WRITE(112,rec=irec+1) bmpdataG
+                  bmpdataR=CHAR(BMPDATA24(L+2))
+                  WRITE(112,rec=irec+2) bmpdataR
                   irec=irec+3
-                  IF (L.GE.iheight*iwidth*3-3) EXIT
                   L=L+3
+              END DO
+!             Write the 1-3 pad bytes so each row is 4-byte aligned.
+              DO J=1,pad
+                  WRITE(112,rec=irec) CHAR(0)
+                  irec=irec+1
               END DO
           END DO
 
@@ -588,7 +617,7 @@ C       PLOT IMAGE
       SUBROUTINE bmpinfo(BMPFILE,info)
 
           INCLUDE 'datmai.inc'
-          INTEGER irec,iwidth,iheight
+          INTEGER irec,iw,ih
           INTEGER info(3)
           CHARACTER header(54)
           CHARACTER*80 BMPFILE
@@ -597,8 +626,8 @@ C       PLOT IMAGE
           OPEN(114,file=TRIM(BMPFILE),form='unformatted',
      &    access='direct',recl=1)
 
-          DO irec=1,54
-              READ(114,rec=irec) header(irec)
+          DO ire = 1,54
+              READ(114,rec=ire) header(ire)
           END DO
 
           IF(ICHAR(header(11)).NE.54.OR.ICHAR(header(29)).ne .
@@ -607,13 +636,13 @@ C       PLOT IMAGE
           END IF
 
           ! get image height and width
-          info(3)=ICHAR(header(23))+256*(ICHAR(header(24))
+          ih=ICHAR(header(23))+256*(ICHAR(header(24))
      &    +256*(ICHAR(header(25))+256*ICHAR(header(26))))
-          info(2)=ICHAR(header(19))+256*(ICHAR(header(20))
+          iw=ICHAR(header(19))+256*(ICHAR(header(20))
      &    +256*(ICHAR(header(21))+256*ICHAR(header(22))))
 
-          iwidth=info(3)
-          iheight=info(2)
+          info(3)=ih
+          info(2)=iw
 
           CLOSE(114)
 
@@ -624,11 +653,11 @@ C       PLOT IMAGE
       SUBROUTINE RGBsplit(ABMPDATA24,L,IR,IB,IG)
 
           INCLUDE 'datmai.inc'
-          INTEGER IR,IB,IG,L,ABMPDATA24
-          DIMENSION ABMPDATA24(iwidth*iheight*3)
+          INTEGER IR,IB,IG,L,iw,ih
+          INTEGER ABMPDATA24(3220*2415*3)
           COMMON iwidth,iheight
 
-          IF (L.GE.iwidth*iheight*3-3) RETURN
+          IF (L.GE.INT(iwidth*iheight*3)-3) RETURN
 
 C     BMP pixel data is stored little-endian as (B, G, R) per pixel.
 C     Map the bytes to (IR=Red, IG=Green, IB=Blue) to match KDP2's
