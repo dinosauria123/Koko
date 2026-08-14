@@ -2526,7 +2526,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_plot, 'PSFWRITE YES',
-             'PSFPLOT YES', 'PSF,1', 'CAPFNOUT'),
+             'PSFPLOT YES', 'PSF', 'CAPFNOUT'),
             ('actionDistortion', self.slot_plot, 'DIST', 'PLTDIST'),
             ('actionField_Curvature', self.slot_plot, 'FLDCV', 'PLTFLDCV'),
             ('actionAstigmatism', self.slot_plot, 'AST', 'PLTAST'),
