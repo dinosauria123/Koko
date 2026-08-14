@@ -1080,13 +1080,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # Cache of raw radius values per row so we can toggle display mode
         # without re-querying koko. row -> radius (float or None).
         self._radius_values = {}
-        # right-click context menu (mirrors the C++ GUI)
-        self.table.setContextMenuPolicy(
-            Qt.ContextMenuPolicy.CustomContextMenu)
-        self.table.customContextMenuRequested.connect(
-            self.slot_show_context_menu)
         # cache of glass catalog names, lazily loaded
         self._glass_catalogs = None
+        # Last material command sent per surface row (e.g. "RADHARD BK7G18").
+        # koko sometimes echoes the RTG ALL line with an EMPTY material field
+        # but valid n/V for certain catalog glasses (e.g. RADHARD); we use this
+        # to repair the Material column after populate_table parses RTG ALL.
+        self._pending_material = {}
 
         # plot image window
         self.plot_window = None
@@ -1573,6 +1573,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             dlg.lineEdit.setText(val)
             if dlg.exec() == QDialog.DialogCode.Accepted:
                 command = dlg.material_command()
+                if command:
+                    self._send_surface_cmd(row, command)
+                    if dlg.material_type() == 'MODEL':
+                        self.send_koko("FINDGLASS %d" % row)
+                    return
         elif col == 7:        # Aperture (CLAP)
             command = "CLAP " + val
         # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
@@ -1794,9 +1799,34 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.table.setRowCount(len(rows))
         if len(rows) > 0:
             self.table.setVerticalHeaderLabels([r[0] for r in rows])
-        
+
         self.table.setUpdatesEnabled(True)
         for i, (surf, stype, radius, thickness, material, index, abbe, ap) in enumerate(rows):
+            # koko emits the RTG ALL line for certain catalog glasses
+            # (e.g. RADHARD) with the MATERIAL column BLANK and the index
+            # value shifted into the material position, because the name was
+            # dropped (model/FINDGLASS conversion). str.split() then yields
+            # material = the index number. Repair the Material column from
+            # the command we last sent for this row whenever the parsed
+            # material is not a known glass/catalog token, and recompute
+            # n/V from the catalog so those columns are also filled.
+            _valid_glasses = ("MODEL", "SCHOTT", "HIKARI", "OHARA", "OHARA-O",
+                              "HOYA", "CHANCE", "CORNIN", "RADHARD", "SCH2000")
+            if not material.startswith(_valid_glasses):
+                pending = self._pending_material.get(i)
+                if pending:
+                    material = pending
+                    # pending is e.g. "RADHARD BK7G18" or "MODEL NAME,n,v"
+                    _pc = pending.split()
+                    if len(_pc) >= 2 and _pc[0] in _valid_glasses:
+                        gi, ga = self._calc_glass_nv(_pc[0], _pc[1])
+                        if gi is not None:
+                            index = gi
+                            abbe = ga
+                        elif len(_pc) >= 3:
+                            # MODEL name,n,v form
+                            index = _pc[1]
+                            abbe = _pc[2] if len(_pc) > 2 else ""
             self._set_cell(i, 0, surf)
             self._set_cell(i, 1, stype)
             self._set_cell(i, 2, radius)
@@ -1997,11 +2027,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             cmd = dlg.material_command()
             if not cmd:
                 return
-            self.send_koko("U L")
-            self.send_koko("CHG %d" % row)
-            self.send_koko(cmd)
-            self.send_koko("EOS")
-            self.send_koko("RTG ALL")
+            self._send_surface_cmd(row, cmd)
+            if dlg.material_type() == 'MODEL':
+                self.send_koko("FINDGLASS %d" % row)
 
     # ----- lens info (row click) ------------------------------------------
 
@@ -2262,12 +2290,22 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             if not cmd:
                 return
             self._send_surface_cmd(row, cmd)
-            # After a model/glass assignment, recompute n,V (mirrors C++)
-            if cmd.startswith("MODEL") or " " in cmd:
+            # After a MODEL assignment, recompute n,V (mirrors C++). For
+            # catalog glasses koko already knows n/V, and sending FINDGLASS
+            # would convert the catalog glass to a MODEL and DROP the
+            # material-name field in the RTG ALL echo (e.g. RADHARD showed
+            # only the index). So only FINDGLASS for explicit MODEL input.
+            if dlg.material_type() == 'MODEL':
                 self.send_koko("FINDGLASS %d" % row)
 
     def _send_surface_cmd(self, row, cmd):
-        """CHG <row> then <cmd> (AIR/REFL/MODEL.../CATALOG name), EOS, RTG."""
+        """CHG <row> then <cmd> (AIR/REFL/MODEL.../CATALOG name), EOS, RTG.
+
+        Remembers the command in _pending_material[row] so populate_table
+        can repair the Material column when koko echoes an empty material
+        field for certain catalog glasses (e.g. RADHARD).
+        """
+        self._pending_material[row] = cmd
         self.send_koko("U L")
         self.send_koko("CHG %d" % row)
         self.send_koko(cmd)
@@ -2713,8 +2751,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             if not cmd:
                 return
             self._send_surface_cmd(row, cmd)
-            # C++ also calls FINDGLASS after setting model/glass
-            self.send_koko("FINDGLASS %d" % row)
+            # FINDGLASS only for explicit MODEL input (see _ctx_material).
+            if dlg.material_type() == 'MODEL':
+                self.send_koko("FINDGLASS %d" % row)
 
     def slot_actionInput_LensIdentifier(self):
         dlg = LIDialog(self)
