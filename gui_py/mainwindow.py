@@ -1197,16 +1197,17 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         # $HOME/<name>.BMP i.e. ~/KODS/<name>.BMP
         home = os.path.join(os.path.expanduser("~"), "KODS")
         os.makedirs(home, exist_ok=True)
-        # Copy into $HOME/KODS/<stem>.BMP so koko can read it by bare name.
-        # When OFROMBMP is used, koko sizes the image-plane array to match the
-        # object-array (the BMP) size. To get a full-frame blur (not a tiny
-        # block on a larger canvas) we must force IIMAGEN/IOBJECTD NX,NY to the
-        # BMP's actual pixel size, overriding the dialog spinners.
-        stem = stem0 = os.path.splitext(os.path.basename(n))[0]
-        dest = os.path.join(home, stem + ".BMP")
+        # Copy the chosen BMP into $HOME/KODS under a distinct temp name so koko
+        # (which writes back to the file it loaded via OFROMBMP/TOIMG) can never
+        # modify the user's original input file. The original is left untouched.
+        # No resizing is applied: koko sizes the image-plane array to the object
+        # (BMP) size, and we override IIMAGEN/IOBJECTD NX,NY to that same size, so
+        # the blurred result fills the whole frame (no tiny block on a big canvas).
+        stem0 = os.path.splitext(os.path.basename(n))[0]
+        objname = "_obj_" + stem0
+        dest = os.path.join(home, objname + ".BMP")
         if os.path.abspath(n) == os.path.abspath(dest):
-            # Source and destination are the same file: leave it untouched
-            # (copying a file onto itself would truncate it to 0 bytes).
+            # Source already is our temp copy: leave it untouched.
             pass
         else:
             try:
@@ -1214,6 +1215,7 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
                     dst.write(src.read())
             except OSError:
                 return None
+        stem = objname
         # Determine the BMP's real pixel size and override NX/NY.
         nx = ny = 0
         try:
@@ -1231,17 +1233,15 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         ch = self.comboChannel.currentIndex() + 1  # 1..4
         trim = self.spinTrim.value()
         cmds = [
+            "COLOR RGB",
             "IIMAGEN %s %s %d %d" % (repr(dx * (nx - 1)), repr(dy * (ny - 1)), nx, ny),
             "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
             "OFROMBMP %s" % stem,
         ]
-        if self.radioFull.isChecked():
-            cmds.append("FULLIMAGING")
-        else:
-            cmds.append("IMTRACE1")
-            cmds.append("PSFPLOT NO")
-            cmds.append("PSF")
-            cmds.append("PSFTOIMG %d" % ch)
+        cmds.append("IMTRACE1")
+        cmds.append("PSFPLOT NO")
+        cmds.append("PSF")
+        cmds.append("PSFTOIMG %d" % ch)
         cmds.append("PLTIMG %d" % trim)
         return cmds
 
@@ -1425,7 +1425,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
 
         try:
             proc = subprocess.Popen(
-                [self.koko_path, '-G', '-d', os.path.expanduser('~/KODS')],
+                [self.koko_path, '-G'],
                 stdin=slave, stdout=slave, stderr=slave,
                 start_new_session=True, close_fds=True,
             )
