@@ -1237,10 +1237,15 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         dy = self.doubleDY.value()
         trim = self.spinTrim.value()
         # KDP2 parity: the GUI always drives RGB imaging.
-        # IIMAGEN takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
-        # IOBJECTD takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
-        # OFROMBMP WRD1 (numeric word #1) is the object extent = pixel_size * (nx-1)
-        # per KDP2 BMP.FOR: ODELX = WRD1 / (NX-1)
+        # Per IMAGE1.FOR (FULLIMAGING):
+        #   IIMAGEN  W1 W2 NX NY  -> W1,W2 = FULL EXTENT (xext,yext);
+        #                                IDELX = W1/(NX-1)
+        #   IOBJECTD W1 W2 NX NY  -> W1,W2 = PIXEL LENGTH (ODELX,ODELY);
+        #                                ODELX = W1  (no division)
+        #   OFROMBMP name W1      -> W1 = object FULL EXTENT = pixel*(NX-1);
+        #                                READIMAGEARRAY: ODELX = W1/(NX-1)
+        # So IIMAGEN's W1/W2 and OFROMBMP's W1 are EXTENT (= dx*(nx-1)),
+        # but IOBJECTD's W1/W2 are the PIXEL LENGTH (dx, dy) directly.
         # If PSF grid spacing (GRIIMG) was measured, use it as pixel size so
         # IDELX = GRI (PSF lands on one image pixel).
         if getattr(self, '_griimg', 0.0) and self._griimg > 0.0:
@@ -1250,8 +1255,10 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         obj_extent_y = dy * (ny - 1)
         cmds = [
             "COLOR RGB",
+            # IIMAGEN takes the FULL EXTENT (xext = dx * (nx-1))
             "IIMAGEN %s %s %d %d" % (repr(obj_extent_x), repr(obj_extent_y), nx, ny),
-            "IOBJECTD %s %s %d %d" % (repr(obj_extent_x), repr(obj_extent_y), nx, ny),
+            # IOBJECTD takes the PIXEL LENGTH (dx, dy) directly (ODELX = W1)
+            "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
             # OFROMBMP WRD1 = object extent (pixel_size * (NX-1)) so that
             # READIMAGEARRAY computes ODELX = WRD1/(NX-1) = pixel_size
             "OFROMBMP %s %s" % (objname, repr(obj_extent_x)),
