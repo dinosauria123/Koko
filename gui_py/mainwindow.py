@@ -866,9 +866,89 @@ class OptimizeRunDialog(QDialog, Ui_OptimizeDialog):
         mw.send_koko("ROBB,%s,%s,%d" % (repr(beta), repr(delta), n))
 
 class NKDialog(QDialog, Ui_nkDialog):
-    def __init__(self, parent=None):
+    """Material dialog.
+
+    Mirrors the C++ nkDialog but folds the right-click context-menu
+    "Model / AIR / REFLECTOR / Glass catalog" choices into one dialog: the
+    user picks a material type (radio buttons) and the relevant inputs
+    appear in a stacked widget. The chosen material is returned as a ready
+    koko command fragment via material_command().
+    """
+
+    def __init__(self, parent=None, catalogs=None):
         super().__init__(parent)
         self.setupUi(self)
+        # catalogs: list of (catalog_name, [glass_names])
+        self._catalogs = catalogs or []
+        self._populate_catalogs()
+        # Radio -> stacked page. Order must match the .ui radio creation.
+        self._radio_pages = {
+            self.radioModel: 0,    # pageModel
+            self.radioAir: 1,      # pageAir
+            self.radioRefl: 2,     # pageRefl
+            self.radioCatalog: 3,  # pageCatalog
+        }
+        for radio, idx in self._radio_pages.items():
+            radio.toggled.connect(
+                lambda _checked, i=idx: self.stackedWidget.setCurrentIndex(i))
+        self.comboCatalog.currentIndexChanged.connect(self._on_catalog_changed)
+        self._on_catalog_changed(0)
+
+    def _populate_catalogs(self):
+        self.comboCatalog.clear()
+        for cat_name, names in self._catalogs:
+            if names:
+                self.comboCatalog.addItem(cat_name)
+
+    def _on_catalog_changed(self, _index):
+        self.comboGlass.clear()
+        cat = self.comboCatalog.currentText()
+        for cat_name, names in self._catalogs:
+            if cat_name == cat:
+                self.comboGlass.addItems(names)
+                break
+
+    def material_type(self):
+        """Return one of 'MODEL', 'AIR', 'REFL', 'CATALOG'."""
+        if self.radioAir.isChecked():
+            return 'AIR'
+        if self.radioRefl.isChecked():
+            return 'REFL'
+        if self.radioCatalog.isChecked():
+            return 'CATALOG'
+        return 'MODEL'
+
+    def material_command(self):
+        """Return the koko command fragment for the chosen material.
+
+        MODEL  -> "MODEL name[,n[,v]]"
+        AIR    -> "AIR"
+        REFL   -> "REFL"
+        CATALOG-> "<catalog> <glass>"
+        """
+        mtype = self.material_type()
+        if mtype == 'AIR':
+            return 'AIR'
+        if mtype == 'REFL':
+            return 'REFL'
+        if mtype == 'CATALOG':
+            cat = self.comboCatalog.currentText().strip()
+            glass = self.comboGlass.currentText().strip()
+            if not cat or not glass:
+                return None
+            return '%s %s' % (cat, glass)
+        # MODEL
+        name = self.lineEdit.text().strip()
+        n = self.lineEdit_2.text().strip()
+        v = self.lineEdit_3.text().strip()
+        if not name:
+            return None
+        cmd = 'MODEL ' + name
+        if n:
+            cmd += ',' + n
+        if v:
+            cmd += ',' + v
+        return cmd
 
     def values(self):
         """Return the entered (name, n, v) without (re)showing the dialog.
@@ -1489,15 +1569,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         elif col == 3:        # Thickness
             command = "TH " + val
         elif col == 4:        # Material -> use the nk dialog
-            dlg = NKDialog(self)
+            dlg = NKDialog(self, catalogs=self._load_glass_catalogs())
             dlg.lineEdit.setText(val)
             if dlg.exec() == QDialog.DialogCode.Accepted:
-                name, n, v = dlg.values()
-                command = "MODEL " + name
-                if n:
-                    command += "," + n
-                if v:
-                    command += "," + v
+                command = dlg.material_command()
         elif col == 7:        # Aperture (CLAP)
             command = "CLAP " + val
         # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
@@ -1907,7 +1982,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             return
         if col not in (4, 5, 6):   # Material / Index n / Abbe V only
             return
-        dlg = NKDialog(self)
+        dlg = NKDialog(self, catalogs=self._load_glass_catalogs())
         # Pre-fill from the current table values where available.
         mat = self.table.item(row, 4)
         idx = self.table.item(row, 5)
@@ -1919,14 +1994,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg.lineEdit_2.setText(n)
         dlg.lineEdit_3.setText(v)
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            name, n, v = dlg.values()
+            cmd = dlg.material_command()
+            if not cmd:
+                return
             self.send_koko("U L")
             self.send_koko("CHG %d" % row)
-            cmd = "MODEL " + name
-            if n:
-                cmd += "," + n
-            if v:
-                cmd += "," + v
             self.send_koko(cmd)
             self.send_koko("EOS")
             self.send_koko("RTG ALL")
@@ -2150,16 +2222,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         a_ins = menu.addAction("Insert Surface")
         a_del = menu.addAction("Delete Surface")
         menu.addSeparator()
-        a_model = menu.addAction("Model")
-        a_air = menu.addAction("AIR")
-        a_refl = menu.addAction("REFLECTOR")
-        for cat_name, names in self._load_glass_catalogs():
-            if not names:
-                continue
-            sub = QMenu(cat_name, menu)
-            for gname in names:
-                sub.addAction(gname)
-            menu.addMenu(sub)
+        a_material = menu.addAction("Material...")
 
         action = menu.exec(self.table.mapToGlobal(pos))
         if action is None:
@@ -2168,16 +2231,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._ctx_insert_surface(row)
         elif action == a_del:
             self._ctx_delete_surface(row)
-        elif action == a_model:
-            self._ctx_model(row)
-        elif action == a_air:
-            self._send_surface_cmd(row, "AIR")
-        elif action == a_refl:
-            self._send_surface_cmd(row, "REFL")
-        else:
-            parent = action.parent()
-            if isinstance(parent, QMenu) and parent.title():
-                self._ctx_glass(row, parent.title(), action.text())
+        elif action == a_material:
+            self._ctx_material(row)
 
     def _ctx_insert_surface(self, row):
         """Mirror C++ slot_actionInsert_surface: INS <row>, update table."""
@@ -2195,19 +2250,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
-    def _ctx_model(self, row):
-        """Mirror C++ slot_actionModeldialog: open nkDialog, set MODEL."""
-        dlg = NKDialog(self)
+    def _ctx_material(self, row):
+        """Open the Material dialog (nkDialog); set the chosen material.
+
+        Folds the former right-click "Model / AIR / REFLECTOR / Glass
+        catalog" choices into the single Material dialog.
+        """
+        dlg = NKDialog(self, catalogs=self._load_glass_catalogs())
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            name, n, v = dlg.values()
-            cmd = "MODEL " + name
-            if n:
-                cmd += "," + n
-            if v:
-                cmd += "," + v
+            cmd = dlg.material_command()
+            if not cmd:
+                return
             self._send_surface_cmd(row, cmd)
-            # After MODEL, also call FINDGLASS to compute n,V (mirrors C++)
-            self.send_koko("FINDGLASS %d" % row)
+            # After a model/glass assignment, recompute n,V (mirrors C++)
+            if cmd.startswith("MODEL") or " " in cmd:
+                self.send_koko("FINDGLASS %d" % row)
 
     def _send_surface_cmd(self, row, cmd):
         """CHG <row> then <cmd> (AIR/REFL/MODEL.../CATALOG name), EOS, RTG."""
@@ -2216,14 +2273,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko(cmd)
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
-
-    def _ctx_glass(self, row, catalog, name):
-        self._send_surface_cmd(row, "%s %s" % (catalog, name))
-        # n and V are now filled by populate_table() once RTG ALL returns
-        # (mirrors C++ ShowContextMenu*, which calls DataRead immediately
-        # after sending the glass command). Calling _read_glass_data here is
-        # redundant and would race with the async RTG ALL reparse, so we let
-        # populate_table handle it.
 
     # ----- finished / error ---------------------------------------------
 
@@ -2650,20 +2699,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             QTimer.singleShot(1000, lambda: self.send_koko("VIE XZ"))
 
     def slot_actionModeldialog(self):
-        """Edit menu: Input Model Glass -- mirrors C++ slot_actionModeldialog."""
+        """Edit menu: Input Model Glass -- mirrors C++ slot_actionModeldialog.
+
+        Now routes through the unified Material dialog so AIR / REFLECTOR /
+        catalog choices are also reachable from the Edit menu.
+        """
         row = self.table.currentRow()
         if row < 0:
             row = 0
-        dlg = NKDialog(self)
+        dlg = NKDialog(self, catalogs=self._load_glass_catalogs())
         if dlg.exec() == QDialog.DialogCode.Accepted:
-            name, n, v = dlg.values()
-            cmd = "MODEL " + name
-            if n:
-                cmd += "," + n
-            if v:
-                cmd += "," + v
+            cmd = dlg.material_command()
+            if not cmd:
+                return
             self._send_surface_cmd(row, cmd)
-            # C++ also calls FINDGLASS after setting model
+            # C++ also calls FINDGLASS after setting model/glass
             self.send_koko("FINDGLASS %d" % row)
 
     def slot_actionInput_LensIdentifier(self):
