@@ -347,11 +347,20 @@ C       PLOT IMAGE
           IMPLICIT NONE
           INTEGER I,J,K,L
           INTEGER LENBMP
+          INTEGER iwidth,iheight
           INTEGER*4 INTERM
           INTEGER*4 BMPDATA24(1:LENBMP)
           REAL*8 PEAKER
           CHARACTER*80 BMPFILE
           INCLUDE 'datmai.inc'
+
+          IF(I.EQ.1) THEN
+              iwidth=OBJNX
+              iheight=OBJNY
+          ELSE IF(I.EQ.2) THEN
+              iwidth=IMGNX
+              iheight=IMGNY
+          END IF
 
           IF(I.EQ.1) THEN
 C       PLOT OBJECT
@@ -394,7 +403,7 @@ C       PLOT OBJECT
                           L=L+3
                       END DO
                   END DO
-                  call savebmp(BMPFILE,BMPDATA24)
+                  call savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
               END IF
 
           END IF
@@ -421,7 +430,7 @@ C       PLOT IMAGE
 
                       END DO
                   END DO
-                  call savebmp(BMPFILE,BMPDATA24)
+                  call savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
               END IF
           END IF
           RETURN
