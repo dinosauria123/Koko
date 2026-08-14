@@ -24,7 +24,8 @@ from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem,
     QDialog, QLabel, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton,
     QComboBox, QDialogButtonBox, QInputDialog, QMenu, QWidget, QFrame,
-    QSizePolicy, QStyledItemDelegate, QCheckBox,
+    QSizePolicy, QStyledItemDelegate, QCheckBox, QListWidget,
+    QListWidgetItem,
 )
 from PyQt6.QtCore import QProcess, Qt, QTimer, QByteArray, QSize, QEvent, QPointF
 from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
@@ -873,6 +874,10 @@ class NKDialog(QDialog, Ui_nkDialog):
     user picks a material type (radio buttons) and the relevant inputs
     appear in a stacked widget. The chosen material is returned as a ready
     koko command fragment via material_command().
+
+    The Model page also carries a FINDGLASS GUI: enter n (and optionally V)
+    and click "Find Glass" to list the 5 nearest real glasses across the
+    catalogs; double-clicking a candidate fills it in as a catalog glass.
     """
 
     def __init__(self, parent=None, catalogs=None):
@@ -893,6 +898,14 @@ class NKDialog(QDialog, Ui_nkDialog):
                 lambda _checked, i=idx: self.stackedWidget.setCurrentIndex(i))
         self.comboCatalog.currentIndexChanged.connect(self._on_catalog_changed)
         self._on_catalog_changed(0)
+        self._build_findglass_ui()
+        # Ensure the Model page (with the FINDGLASS GUI) is the only visible
+        # stacked page. On some Qt builds setCurrentIndex alone leaves the
+        # later-added pages shown, so hide the others explicitly.
+        self.stackedWidget.setCurrentIndex(0)
+        self.pageAir.hide()
+        self.pageRefl.hide()
+        self.pageCatalog.hide()
 
     def _populate_catalogs(self):
         self.comboCatalog.clear()
@@ -949,6 +962,138 @@ class NKDialog(QDialog, Ui_nkDialog):
         if v:
             cmd += ',' + v
         return cmd
+
+    def _build_findglass_ui(self):
+        """Add the FINDGLASS GUI to the Model page (pageModel).
+
+        A horizontal separator + a header band, an n/V input row, a "Find
+        Glass" button, and a 5-row candidate list (QListWidget).
+        Double-clicking a candidate copies it into the catalog combo + glass
+        combo and switches to the Glass catalog page so it becomes the
+        selected material on OK.
+        """
+        # Replace pageModel's existing layout (a QGridLayout holding the n/V
+        # inputs) with a single QVBoxLayout so we can stack the FINDGLASS
+        # controls beneath the inputs. Moving the existing children into the
+        # new layout (instead of nesting layouts) avoids Qt's "already has a
+        # layout/parent" errors.
+        old = self.pageModel.layout()
+        vbox = QVBoxLayout()
+        vbox.setContentsMargins(8, 8, 8, 8)
+        vbox.setSpacing(6)
+        if old is not None:
+            while old.count():
+                item = old.takeAt(0)
+                w = item.widget()
+                l = item.layout()
+                if w is not None:
+                    vbox.addWidget(w)
+                elif l is not None:
+                    vbox.addLayout(l)
+            import PyQt6.sip as sip
+            sip.delete(old)
+        self.pageModel.setLayout(vbox)
+
+        # separator
+        sep = QFrame(self.pageModel)
+        sep.setFrameShape(QFrame.Shape.HLine)
+        sep.setFrameShadow(QFrame.Shadow.Sunken)
+        sep.setLineWidth(1)
+        sep.setStyleSheet(
+            "QFrame { color: #c0c4c8; background-color: #c0c4c8; }")
+        vbox.addWidget(sep)
+
+        # header band
+        hdr = QLabel("FINDGLASS  (find real glasses by n, V)", self.pageModel)
+        hdr.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        hdr.setStyleSheet(
+            "QLabel { background-color: #eef0f2; border: 1px solid #c8ccd0;"
+            " border-radius: 3px; padding: 5px; font-weight: bold; }")
+        vbox.addWidget(hdr)
+
+        # Search row: reads n / V from the Model n/V fields above and lists
+        # the 5 nearest real glasses. Double-click a candidate to use it.
+        inp = QHBoxLayout()
+        self._btn_find = QPushButton("Find Glass", self.pageModel)
+        self._btn_find.setMinimumWidth(110)
+        hint = QLabel("Uses the Index n / Abbe V above to list the 5 "
+                      "nearest catalog glasses.", self.pageModel)
+        hint.setStyleSheet("QLabel { color: #5a6066; font-size: 10px; }")
+        inp.addWidget(self._btn_find)
+        inp.addWidget(hint, 1)
+        vbox.addLayout(inp)
+
+        # candidate list (up to 5)
+        self._fg_list = QListWidget(self.pageModel)
+        self._fg_list.setAlternatingRowColors(True)
+        self._fg_list.setMinimumHeight(130)
+        self._fg_list.setFont(QFont("Noto Mono", 9))
+        vbox.addWidget(self._fg_list)
+
+        note = QLabel("Double-click a candidate to use it as a catalog glass.",
+                      self.pageModel)
+        note.setStyleSheet("QLabel { color: #5a6066; font-size: 10px; }")
+        vbox.addWidget(note)
+
+        self._btn_find.clicked.connect(self._fg_search)
+        self._fg_list.itemDoubleClicked.connect(self._fg_choose)
+
+    def _fg_search(self):
+        """Run the FINDGLASS search over all catalogs and list up to 5.
+
+        Reads the target refractive index (n) and Abbe number (V) from the
+        Model page's Index n / Abbe V fields -- matching the KDP2 FINDGLASS
+        flow, which searches for glasses near the current MODEL glass.
+        """
+        import gui_py.glassmap as gm
+        try:
+            n = float(self.lineEdit_2.text().strip())
+        except ValueError:
+            QMessageBox.information(
+                self, "FINDGLASS",
+                "Enter a numeric refractive index in 'Index n' above.")
+            return
+        vtxt = self.lineEdit_3.text().strip()
+        v = float(vtxt) if vtxt else 50.0
+        glasses = gm.load_all_glasses()
+        if not glasses:
+            QMessageBox.information(self, "FINDGLASS",
+                                    "No glass catalogs found.")
+            return
+        hits = gm.find_nearest_glasses(n, v, glasses=glasses, limit=5)
+        self._fg_list.clear()
+        for h in hits:
+            item = QListWidgetItem(
+                "%-22s %-9s n=%.4f  V=%.2f"
+                % (h["name"], h["catalog"], h["nd"], h["vd"]))
+            item.setData(Qt.ItemDataRole.UserRole, h)
+            self._fg_list.addItem(item)
+        if not hits:
+            self._fg_list.addItem("(no matches)")
+
+    def _fg_choose(self, item):
+        """Double-click a candidate: switch to Glass catalog page with it."""
+        h = item.data(Qt.ItemDataRole.UserRole)
+        if not isinstance(h, dict):
+            return
+        self.radioCatalog.setChecked(True)
+        # make sure the candidate's catalog is present in the combo
+        cat = h["catalog"]
+        idx = self.comboCatalog.findText(cat)
+        if idx < 0:
+            # catalog not in the name-only combo list; add it
+            self.comboCatalog.addItem(cat)
+            # populate its glass names lazily from glassmap
+            import gui_py.glassmap as gm
+            names = [g["name"] for g in gm.load_all_glasses(catalogs=[cat])]
+            self._catalogs.append((cat, names))
+            idx = self.comboCatalog.findText(cat)
+        self.comboCatalog.setCurrentIndex(idx)
+        gidx = self.comboGlass.findText(h["name"])
+        if gidx < 0:
+            self.comboGlass.addItem(h["name"])
+            gidx = self.comboGlass.findText(h["name"])
+        self.comboGlass.setCurrentIndex(gidx)
 
     def values(self):
         """Return the entered (name, n, v) without (re)showing the dialog.

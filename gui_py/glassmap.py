@@ -259,4 +259,49 @@ def parse_plot_rect(gnuplot_stdout):
         if m:
             return (float(m.group(1)), float(m.group(2)),
                     float(m.group(3)), float(m.group(4)))
-    return None
+
+
+def find_nearest_glasses(n, v, glasses=None, limit=5, catalogs=None):
+    """Return the ``limit`` glasses nearest to (n, Vd) in (name, Nd, Vd,
+    catalog) space.
+
+    Mirrors the KDP2 ``FINDGLASS`` command: given a target refractive index
+    ``n`` (and optionally Abbe number ``v``), find the closest real glasses
+    across the catalogs. Distance is the Euclidean norm of the normalized
+    (Nd, Vd) differences so that index and Abbe contribute on comparable
+    scales (Nd ranges ~1.4-1.9, Vd ranges ~15-70).
+
+    ``glasses`` may be a pre-loaded list; if omitted, ``load_all_glasses``
+    is called (optionally restricted to ``catalogs``). Returns a list of
+    dicts with keys name, nd, vd, catalog, dist.
+    """
+    if glasses is None:
+        glasses = load_all_glasses(catalogs=catalogs)
+    if not glasses:
+        return []
+    # Normalization scales so a 0.01 n shift and a ~1.0 Vd shift are
+    # comparable (matches how FINDGLASS weights closeness of n).
+    n_ref = 1.5
+    v_ref = 50.0
+    scored = []
+    for g in glasses:
+        try:
+            gn = float(g["nd"])
+            gv = float(g["vd"])
+        except (TypeError, ValueError):
+            continue
+        dn = (gn - n) / n_ref
+        dv = (gv - v) / v_ref
+        dist = (dn * dn + dv * dv) ** 0.5
+        scored.append((dist, g))
+    scored.sort(key=lambda t: t[0])
+    out = []
+    for dist, g in scored[:limit]:
+        out.append({
+            "name": g["name"],
+            "nd": g["nd"],
+            "vd": g["vd"],
+            "catalog": g["catalog"],
+            "dist": dist,
+        })
+    return out

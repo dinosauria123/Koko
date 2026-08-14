@@ -12,7 +12,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 class Ui_nkDialog(object):
     def setupUi(self, nkDialog):
         nkDialog.setObjectName("nkDialog")
-        nkDialog.resize(420, 320)
+        nkDialog.resize(460, 520)
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(nkDialog)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.groupBox = QtWidgets.QGroupBox(parent=nkDialog)
