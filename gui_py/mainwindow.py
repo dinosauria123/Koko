@@ -37,7 +37,7 @@ from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
 PLOT_TRIGGER_PREFIXES = (
     'VIE', 'SPD', 'CAPFN', 'PSF', 'DIST', 'FLDCV', 'AST', 'CHRSHIFT',
     'FANS', 'DRAW', 'DRAWFAN', 'GRAOUT', 'PLT', 'PLOT ', 'SPOT', 'DOTF',
-    'GOTF', 'FAN', 'RAY', 'PARAX',
+    'GOTF', 'FAN', 'RAY', 'PARAX', 'PLTIMG',
 )
 
 from gui_py.ui_mainwindow import Ui_MainWindow
