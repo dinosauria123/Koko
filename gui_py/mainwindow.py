@@ -34,10 +34,13 @@ from PyQt6.QtGui import QFont, QPixmap, QImage, QPalette, QColor, QBrush
 # Commands that make koko write a plot script (drawcmd.gpl). Any of these,
 # whether launched from the Plot menu or typed in the command line, should
 # trigger an automatic render of the graph in the GUI.
+# NOTE: PLTIMG is intentionally excluded - it writes PLOTBMP.BMP directly
+# via IGrSaveImageData, not via gnuplot. The ImageBlur dialog handles it
+# by polling for PLOTBMP.BMP in _schedule_image_render().
 PLOT_TRIGGER_PREFIXES = (
     'VIE', 'SPD', 'CAPFN', 'PSF', 'DIST', 'FLDCV', 'AST', 'CHRSHIFT',
     'FANS', 'DRAW', 'DRAWFAN', 'GRAOUT', 'PLT', 'PLOT ', 'SPOT', 'DOTF',
-    'GOTF', 'FAN', 'RAY', 'PARAX', 'PLTIMG',
+    'GOTF', 'FAN', 'RAY', 'PARAX',
 )
 
 from gui_py.ui_mainwindow import Ui_MainWindow
