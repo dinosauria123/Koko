@@ -1197,24 +1197,21 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         # $HOME/<name>.BMP i.e. ~/KODS/<name>.BMP
         home = os.path.join(os.path.expanduser("~"), "KODS")
         os.makedirs(home, exist_ok=True)
-        # Copy the chosen BMP into $HOME/KODS under a distinct temp name so koko
-        # (which writes back to the file it loaded via OFROMBMP/TOIMG) can never
-        # modify the user's original input file. The original is left untouched.
-        # No resizing is applied: koko sizes the image-plane array to the object
-        # (BMP) size, and we override IIMAGEN/IOBJECTD NX,NY to that same size, so
-        # the blurred result fills the whole frame (no tiny block on a big canvas).
-        stem0 = os.path.splitext(os.path.basename(n))[0]
-        objname = "_obj_" + stem0
+        # Copy the chosen BMP into $HOME/KODS under a fixed short name ("KOBJ")
+        # so koko (which writes back to the file it loaded via OFROMBMP/TOIMG)
+        # can never modify the user's original input file. The original is left
+        # untouched. A short name is required because koko uppercases and
+        # truncates bare names to 8.3 (e.g. "_obj_PORT" -> "_OBJ_POR"), which
+        # would otherwise mismatch the file we wrote and crash on a stale/empty
+        # copy. We always recopy from the source so any prior 0-byte writeback
+        # from a previous run is overwritten.
+        objname = "KOBJ"
         dest = os.path.join(home, objname + ".BMP")
-        if os.path.abspath(n) == os.path.abspath(dest):
-            # Source already is our temp copy: leave it untouched.
-            pass
-        else:
-            try:
-                with open(n, "rb") as src, open(dest, "wb") as dst:
-                    dst.write(src.read())
-            except OSError:
-                return None
+        try:
+            with open(n, "rb") as src, open(dest, "wb") as dst:
+                dst.write(src.read())
+        except OSError:
+            return None
         stem = objname
         # Determine the BMP's real pixel size and override NX/NY.
         nx = ny = 0
