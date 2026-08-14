@@ -27,11 +27,11 @@ C///////////////////////////////////////////////////////////////////////
 
           USE GLOBALS
           IMPLICIT NONE
-          INTEGER I,J,K,L,INFO(3),NX,NY,II
+          integer I,J,K,L,INFO(3),NX,NY,II
           INTEGER IR,IG,IB
           integer ALLOERR,IERROR
           REAL*8 WRD1
-          INTEGER ABMPDATA24
+          INTEGER*4 ABMPDATA24
           DIMENSION ABMPDATA24(:)
           CHARACTER*80 BMPFILE
           COMMON/FILEBMP/BMPFILE
@@ -343,7 +343,7 @@ C     (R,G,B) order into the little-endian pixel word.
       END
 
 
-      SUBROUTINE WRITEIMAGEARRAY(I,LENBMP)
+      SUBROUTINE WRITEIMAGEARRAY(I,LENBMP,BMPFILE)
 
           USE GLOBALS
           IMPLICIT NONE
@@ -425,9 +425,9 @@ C       PLOT IMAGE
                   L=1
                   DO K=1,IMGNY
                       DO J=1,IMGNX
-                          BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
-                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,1))/PEAKER))
-                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,2))/PEAKER))
+                          BMPDATA24(L)=int(((IIMAGEV(J,K,3,1))/PEAKER))
+                          BMPDATA24(L+1)=int(((IIMAGEV(J,K,1,1))/PEAKER))
+                          BMPDATA24(L+2)=int(((IIMAGEV(J,K,2,1))/PEAKER))
                           L=L+3
 
                       END DO
@@ -455,7 +455,7 @@ C       PLOT IMAGE
           PARAMETER(Maxwidth=3220,Maxheight=2415)
           CHARACTER header(54),cval1
           CHARACTER*80 BMPFILE
-          INTEGER ABMPDATA24(Maxwidth*Maxheight*3)
+          INTEGER*4 ABMPDATA24(Maxwidth*Maxheight*3)
 
           OPEN(114,file=TRIM(BMPFILE),form='unformatted',
      &    access='direct',recl=1)
@@ -509,7 +509,7 @@ C       PLOT IMAGE
           INCLUDE 'datmai.inc'
           INTEGER Maxwidth,Maxheight,irec,L,I,J,fsz
           PARAMETER(Maxwidth=3220,Maxheight=2415)
-          INTEGER BMPDATA24(Maxwidth*Maxheight*3)
+          INTEGER*4 BMPDATA24(Maxwidth*Maxheight*3)
           CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB
           CHARACTER*80 BMPFILE
           INTEGER iw,ih,rowbytes,pad
@@ -651,7 +651,7 @@ C       PLOT IMAGE
 
           INCLUDE 'datmai.inc'
           INTEGER IR,IB,IG,L
-          INTEGER ABMPDATA24(3220*2415*3)
+          INTEGER*4 ABMPDATA24(3220*2415*3)
           INTEGER, PARAMETER :: BMPSIZE = 3220*2415*3
 
           IF (L.GE.BMPSIZE-3) RETURN
