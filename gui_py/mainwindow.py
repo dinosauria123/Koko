@@ -1225,6 +1225,7 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             cmds.append("FULLIMAGING")
         else:
             cmds.append("IMTRACE1")
+            cmds.append("PSFPLOT NO")
             cmds.append("PSF")
             cmds.append("PSFTOIMG %d" % ch)
         cmds.append("PLTIMG %d" % trim)
