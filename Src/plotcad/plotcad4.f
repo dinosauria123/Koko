@@ -4557,6 +4557,7 @@ C
           DO I=1,SPNUM
               IX(I)=INT((((REAL(XX(I))-LLIM)/(ULIM-LLIM))*5000.0)+2000.0)
               IY(I)=INT((((REAL(YY(I))-LFUNC)/(UFUNC-LFUNC))*4200.0)+1400.0)
+      IF(IY(I).LT.1400) IY(I)=1400
           END DO
           CALL MY_PLOTC(IX(1),IY(1),0,LT,2000,7000,1400,5600)
           DO I=2,SPNUM
@@ -4850,6 +4851,7 @@ C
           DO I=1,SPNUM
               IX(I)=INT((((REAL(XX(I))-LLIM)/(ULIM-LLIM))*5000.0)+2000.0)
               IY(I)=INT((((REAL(YY(I))-LFUNC)/(UFUNC-LFUNC))*4200.0)+1400.0)
+      IF(IY(I).LT.1400) IY(I)=1400
 
           END DO
 

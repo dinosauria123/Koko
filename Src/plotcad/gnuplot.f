@@ -109,9 +109,11 @@ C     color->unit mapping: 0=black/130, 1=yellow/115, 2=magenta/116, 3=red/117, 
               if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
                   if ((I4.eq.j).and.(I3.eq.1)) then
                       write(units(j),'(2I5)') I1,I2
+                      FLUSH(units(j))
                   else if ((I4.eq.j).and.(I3.eq.0)) then
                       write(units(j),*)
                       write(units(j),'(2I5)') I1,I2
+                      FLUSH(units(j))
                   end if
               end if
           end do
