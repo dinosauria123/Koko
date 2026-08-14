@@ -1242,13 +1242,19 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             dy = self._griimg
         trim = self.spinTrim.value()
         # KDP2 parity: the GUI always drives RGB imaging.
+        # IIMAGEN takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
+        # IOBJECTD takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
+        # OFROMBMP WRD1 (numeric word #1) is the object extent = pixel_size * (nx-1)
+        # per KDP2 BMP.FOR: ODELX = WRD1 / (NX-1)
+        obj_extent_x = dx * (nx - 1)
+        obj_extent_y = dy * (ny - 1)
         cmds = [
             "COLOR RGB",
-            "IIMAGEN %s %s %d %d" % (repr(dx * (nx - 1)), repr(dy * (ny - 1)), nx, ny),
-            "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
-            # Pass GRIIMG as the OFROMBMP word so the object-plane pixel size
-            # (ODELX) matches the image-plane / PSF pixel size.
-            "OFROMBMP %s %s" % (objname, repr(dx)),
+            "IIMAGEN %s %s %d %d" % (repr(obj_extent_x), repr(obj_extent_y), nx, ny),
+            "IOBJECTD %s %s %d %d" % (repr(obj_extent_x), repr(obj_extent_y), nx, ny),
+            # OFROMBMP WRD1 = object extent (pixel_size * (NX-1)) so that
+            # READIMAGEARRAY computes ODELX = WRD1/(NX-1) = pixel_size
+            "OFROMBMP %s %s" % (objname, repr(obj_extent_x)),
         ]
         if self.radioSimple.isChecked():
             # Single on-axis PSF convolution (KDP2 IMTRACE2).
