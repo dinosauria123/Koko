@@ -2526,7 +2526,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_plot, 'PSFWRITE YES',
-             'PSFLOG 0', 'PSFPLOT YES', 'PSF,1', 'CAPFNOUT'),
+             'PSFPLOT YES', 'PSF,1', 'CAPFNOUT'),
             ('actionDistortion', self.slot_plot, 'DIST', 'PLTDIST'),
             ('actionField_Curvature', self.slot_plot, 'FLDCV', 'PLTFLDCV'),
             ('actionAstigmatism', self.slot_plot, 'AST', 'PLTAST'),
@@ -3309,6 +3309,55 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("RTG ALL")
 
     # ----- plotting -------------------------------------------------------
+    def _synthesize_psf_plot_lines(self, gpl_dir):
+        """Build gnuplot 'plot' lines for a PSF/plot-family figure.
+
+        Some plot families (PSF in particular) rewrite the per-colour data
+        files (black.gpl, red.gpl, ...) but never emit a "plot [...]" command
+        into drawcmd3.gpl (their DRAW pass re-clears the body before
+        drawcmdsave concatenates it, wiping the plot line). Without a plot
+        line the rebuilt drawcmd.gpl shows labels but no curve.
+
+        This reconstructs the plot line(s) from whichever data files koko
+        actually wrote and that contain real (non-empty) point data. Mirrors
+        the colour routing in koko's gnuplot.f (black=130, yellow=115,
+        magenta=116, red=117, cyan=118).
+        """
+        candidates = [
+            ('black.gpl',  'black',      '0.70'),
+            ('yellow.gpl', 'dark-yellow', '0.70'),
+            ('magenta.gpl', 'magenta',   '0.70'),
+            ('red.gpl',    'red',        '0.70'),
+            ('cyan.gpl',   'cyan',       '0.70'),
+        ]
+        lines = []
+        for fname, colour, lw in candidates:
+            path = os.path.join(gpl_dir, fname)
+            if not os.path.isfile(path) or os.path.getsize(path) == 0:
+                continue
+            try:
+                with open(path) as fh:
+                    content = fh.read().strip()
+            except OSError:
+                continue
+            if not content:
+                continue
+            has_point = False
+            for ln in content.splitlines():
+                s = ln.strip()
+                if not s:
+                    continue
+                parts = s.split()
+                if len(parts) >= 2 and parts[0].lstrip('-').isdigit() \
+                        and parts[1].lstrip('-').isdigit():
+                    has_point = True
+                    break
+            if not has_point:
+                continue
+            lines.append(
+                'plot [0:10000] [0:7000] "%s" lc rgb "%s" lw %s w l'
+                % (path, colour, lw))
+        return '\n'.join(lines)
     def render_plots(self, fmt=None):
         """Render koko's plot to a PNG and display it.
 
@@ -3346,6 +3395,57 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 "** %s not found or empty -- did the plot command run? **"
                 % os.path.basename(gpl))
             return
+        # Some plot families (notably PSF, via PLOTPSF -> PLTDEV ->
+        # drawcmd3_clear) rewrite the body file drawcmd3.gpl and the per-
+        # plot colour data files (black/red/yellow.gpl ...), but koko does
+        # NOT call drawcmdsave for them, so the concatenated drawcmd.gpl is
+        # left stale (it still carries the PREVIOUS figure's header/labels).
+        # In that case the labels from the old plot overprint the new one.
+        # Detect the staleness by comparing drawcmd.gpl's mtime against the
+        # body file drawcmd3.gpl; if the body is newer, rebuild drawcmd.gpl
+        # from its header (drawcmd0.gpl) + body (drawcmd3.gpl), exactly the
+        # way koko's drawcmdsave would have.
+        gpl_dir = os.path.dirname(gpl)
+        body = os.path.join(gpl_dir, 'drawcmd3.gpl')
+        header = os.path.join(gpl_dir, 'drawcmd0.gpl')
+        need_rebuild = False
+        if os.path.isfile(body):
+            try:
+                if os.path.getmtime(body) > os.path.getmtime(gpl) + 0.001:
+                    need_rebuild = True
+            except OSError:
+                need_rebuild = False
+        if need_rebuild and os.path.isfile(header) \
+                and os.path.getsize(header) > 0 and os.path.getsize(body) > 0:
+            try:
+                with open(header, 'r') as fh:
+                    htxt = fh.read()
+                with open(body, 'r') as fb:
+                    btxt = fb.read()
+                # The body (drawcmd3.gpl) written by PSF/plot families may
+                # NOT contain a "plot [...] black.gpl ..." line: those
+                # families route the draw through setonecolors -> DRAW, and
+                # the DRAW's own PLTDEV re-clears the body (unit 150) BEFORE
+                # drawcmdsave concatenates it, wiping the plot line. So after
+                # rebuild the figure would show the new labels but no curve.
+                # Synthesize the missing plot line(s) from the data files
+                # koko definitely wrote (black/red/yellow/magenta/cyan.gpl).
+                if 'plot [' not in btxt and 'plot[' not in btxt:
+                    plot_lines = self._synthesize_psf_plot_lines(gpl_dir)
+                    if plot_lines:
+                        btxt = btxt.rstrip('\n') + '\n' + plot_lines + '\n'
+                with open(gpl, 'w') as fg:
+                    fg.write(htxt)
+                    # The body may itself start with an "unset label" line
+                    # generated by PLTDEV; keep it (it clears stale labels).
+                    fg.write(btxt)
+                self.append_msg(
+                    "** rebuilt stale drawcmd.gpl from header+body (PSF/plot "
+                    "family did not call drawcmdsave) **")
+            except OSError as _e:
+                self.append_msg(
+                    "** could not rebuild drawcmd.gpl: %s **" % _e)
+
         # drawcmd.gpl is a concatenation of MULTIPLE independent plot
         # blocks (e.g. X-Z layout, field curvature, spot diagram), each
         # terminated by "pause -1". koko appends every block for the
