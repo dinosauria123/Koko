@@ -1710,7 +1710,7 @@ C
                   RETURN
               END IF
               IF(SST.EQ.0) WS='OBJECTARRAY'
-              BMPFILE=trim(HOME)//TRIM(TRIM(WS)//'.BMP')
+              BMPFILE=trim(HOME)//'/'//TRIM(TRIM(WS)//'.BMP')
               IF(OBJNY.NE.0.AND.OBJNX.NE.0) THEN
                   LENBMP=OBJNX*OBJNY*3
                   CALL WRITEIMAGEARRAY(1,LENBMP,TRIM(BMPFILE))
@@ -1740,7 +1740,7 @@ C
                   RETURN
               END IF
               IF(SST.EQ.0) WS='IMAGEARRAY'
-              BMPFILE=trim(HOME)//TRIM(TRIM(WS)//'.BMP')
+              BMPFILE=trim(HOME)//'/'//TRIM(TRIM(WS)//'.BMP')
               IF(IMGNY.NE.0.AND.IMGNX.NE.0) THEN
                   LENBMP=IMGNX*IMGNY*3
                   CALL WRITEIMAGEARRAY(2,LENBMP,TRIM(BMPFILE))
@@ -1781,9 +1781,9 @@ C       when typed as "OFROMBMP name"). Use whichever is present.
                   RETURN
               END IF
               IF(SST.EQ.1) THEN
-                  BMPFILE=trim(HOME)//TRIM(WS)//'.BMP'
+                  BMPFILE=trim(HOME)//'/'//TRIM(WS)//'.BMP'
               ELSE
-                  BMPFILE=trim(HOME)//TRIM(WQ)//'.BMP'
+                  BMPFILE=trim(HOME)//'/'//TRIM(WQ)//'.BMP'
               END IF
               IF(S1.EQ.1) THEN
                   WRD1=W1
@@ -1818,9 +1818,9 @@ C
                   RETURN
               END IF
               IF(SST.EQ.1) THEN
-                  BMPFILE=trim(HOME)//TRIM(WS)//'.BMP'
+                  BMPFILE=trim(HOME)//'/'//TRIM(WS)//'.BMP'
               ELSE
-                  BMPFILE=trim(HOME)//TRIM(WQ)//'.BMP'
+                  BMPFILE=trim(HOME)//'/'//TRIM(WQ)//'.BMP'
               END IF
               WRD1=0.0D0
 
