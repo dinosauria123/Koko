@@ -1734,29 +1734,34 @@ C
                   CALL SHOWIT(1)
                   RETURN
               END IF
-              IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1.OR.SQ.EQ.1) THEN
+C       Accept a bare filename typed at the CLI. koko's parser can not
+C       pass a free string as WS here, so the filename arrives either as
+C       the string word (WS, macro form) or as the qualifier word (WQ,
+C       when typed as "OFROMBMP name"). Use whichever is present.
+              IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1) THEN
                   WRITE(OUTLYNE,*)
-     1            '"OFROMBMP" TAKES NO QUALIFIER OR NUMERIC WORD #2 TO #5 INPUT'
+     1            '"OFROMBMP" TAKES NO NUMERIC WORD #2 TO #5 INPUT'
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
               END IF
-              IF(S1.EQ.0) THEN
-                  WRITE(OUTLYNE,*)
-     1            '"OFROMBMP" REQUIRES EXPILIT NUMERIC WORD #1 INPUT'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
-              END IF
-              IF(SST.EQ.0) THEN
+              IF(SST.EQ.0.AND.SQ.EQ.0) THEN
                   WRITE(OUTLYNE,*)
      1            '"OFROMBMP" REQUIRES A BMP FILE NAME WITHOUT AN EXTENSION'
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
               END IF
-              BMPFILE=trim(HOME)//TRIM(WS)//'.BMP'
-              WRD1=W1
+              IF(SST.EQ.1) THEN
+                  BMPFILE=trim(HOME)//TRIM(WS)//'.BMP'
+              ELSE
+                  BMPFILE=trim(HOME)//TRIM(WQ)//'.BMP'
+              END IF
+              IF(S1.EQ.1) THEN
+                  WRD1=W1
+              ELSE
+                  WRD1=1.0D0
+              END IF
               CALL READIMAGEARRAY(1,WRD1)
 
           END IF
@@ -1770,29 +1775,25 @@ C
                   CALL SHOWIT(1)
                   RETURN
               END IF
-              IF(SST.EQ.0) THEN
+              IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1) THEN
+                  WRITE(OUTLYNE,*)
+     1            '"IFROMBMP" TAKES NO NUMERIC WORD #2 TO #5 INPUT'
+                  CALL SHOWIT(1)
+                  CALL MACFAL
+                  RETURN
+              END IF
+              IF(SST.EQ.0.AND.SQ.EQ.0) THEN
                   WRITE(OUTLYNE,*)
      1            '"IFROMBMP" REQUIRES A BMP FILE NAME WITHOUT AN EXTENSION'
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
               END IF
-              IF(S2.EQ.1.OR.S3.EQ.1.OR.S4.EQ.1.OR.S5.EQ.1.OR.SQ.EQ.1) THEN
-                  WRITE(OUTLYNE,*)
-     1            '"IFROMBMP" TAKES NO QUALIFIER OR NUMERIC WORD #2 TO #5 INPUT'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
+              IF(SST.EQ.1) THEN
+                  BMPFILE=trim(HOME)//TRIM(WS)//'.BMP'
+              ELSE
+                  BMPFILE=trim(HOME)//TRIM(WQ)//'.BMP'
               END IF
-              IF(S1.EQ.0) THEN
-                  WRITE(OUTLYNE,*)
-     1            '"IFROMBMP" REQUIRES EXPILIT NUMERIC WORD #1 INPUT'
-                  CALL SHOWIT(1)
-                  CALL MACFAL
-                  RETURN
-              END IF
-
-              BMPFILE=trim(HOME)//TRIM(TRIM(WS)//'.BMP')
               WRD1=0.0D0
 
               CALL READIMAGEARRAY(2,WRD1)

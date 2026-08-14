@@ -43,6 +43,7 @@ PLOT_TRIGGER_PREFIXES = (
 from gui_py.ui_mainwindow import Ui_MainWindow
 from gui_py.ui_apoddialog import Ui_ApodDialog
 from gui_py.ui_difsetdialog import Ui_DifsetDialog
+from gui_py.ui_imageblurdialog import Ui_ImageBlurDialog
 from gui_py.ui_lidialog import Ui_LIDialog
 from gui_py.ui_newdialog import Ui_NewDialog
 from gui_py.ui_nkdialog import Ui_nkDialog
@@ -1127,6 +1128,102 @@ class ApodDialog(QDialog, Ui_ApodDialog):
             val = self.doubleApod.value()
             return "APOD GAUSS,%s" % repr(val)
         return "APOD NONE"
+
+
+class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
+    """Image Blur: load a 24-bit BMP, trace it through the lens, convolve
+    with the lens PSF, and show the resulting blurred image.
+
+    Mirrors Koko's OFROMBMP / IOBJECTD / IMTRACE / PSF / PSFTOIMG / PLTIMG
+    command chain. The BMP is copied into $HOME so koko (which reads
+    $HOME/<name>.BMP) can find it.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setupUi(self)
+        self._bmp_path = None
+        self.btnBrowse.clicked.connect(self._browse)
+        self.btnAuto.clicked.connect(self._use_bmp_dims)
+
+    def _browse(self):
+        from PyQt6.QtWidgets import QFileDialog
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Select 24-bit BMP", "",
+            "BMP images (*.bmp *.BMP);;All files (*)")
+        if path:
+            self._bmp_path = path
+            self.lineFile.setText(path)
+            self._probe_dims()
+
+    def _probe_dims(self):
+        """Read BMP header to default the array size to the image size."""
+        try:
+            with open(self._bmp_path, "rb") as fh:
+                data = fh.read(30)
+            # BITMAPINFOHEADER: width @ offset 18 (int32 LE),
+            # height @ offset 22 (int32 LE)
+            import struct
+            w = struct.unpack_from("<i", data, 18)[0]
+            h = struct.unpack_from("<i", data, 22)[0]
+            w = abs(w)
+            h = abs(h)
+            if w > 1 and h > 1:
+                self.spinNX.setValue(min(w, 1024))
+                self.spinNY.setValue(min(h, 1024))
+        except OSError:
+            pass
+
+    def _use_bmp_dims(self):
+        if self._bmp_path:
+            self._probe_dims()
+
+    def get_bmp_path(self):
+        return self._bmp_path
+
+    def commands(self):
+        """Build the koko command sequence for the current settings.
+
+        koko now accepts a bare filename with OFROMBMP/IFROMBMP
+        (e.g. "OFROMBMP port"), so we emit a normal command list.
+        The chosen BMP is copied into $HOME/<stem>.BMP first because
+        koko reads $HOME/<name>.BMP.
+        """
+        n = self._bmp_path
+        if not n:
+            return None
+        import os
+        # koko's HOME (from .kokorc) is ~/KODS/; OFROMBMP reads
+        # $HOME/<name>.BMP i.e. ~/KODS/<name>.BMP
+        home = os.path.join(os.path.expanduser("~"), "KODS")
+        os.makedirs(home, exist_ok=True)
+        # Copy into $HOME/KODS/<stem>.BMP so koko can read it by bare name.
+        stem = os.path.splitext(os.path.basename(n))[0]
+        dest = os.path.join(home, stem + ".BMP")
+        try:
+            with open(n, "rb") as src, open(dest, "wb") as dst:
+                dst.write(src.read())
+        except OSError:
+            return None
+        dx = self.doubleDX.value()
+        dy = self.doubleDY.value()
+        nx = self.spinNX.value()
+        ny = self.spinNY.value()
+        ch = self.comboChannel.currentIndex() + 1  # 1..4
+        trim = self.spinTrim.value()
+        cmds = [
+            "IIMAGEN %s %s %d %d" % (repr(dx * (nx - 1)), repr(dy * (ny - 1)), nx, ny),
+            "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
+            "OFROMBMP %s" % stem,
+        ]
+        if self.radioFull.isChecked():
+            cmds.append("FULLIMAGING")
+        else:
+            cmds.append("IMTRACE1")
+            cmds.append("PSF")
+            cmds.append("PSFTOIMG %d" % ch)
+        cmds.append("PLTIMG %d" % trim)
+        return cmds
 
 
 class DifsetDialog(QDialog, Ui_DifsetDialog):
@@ -2637,6 +2734,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             # Image Evaluation
             ('actionApod_Settings', self.slot_actionApod_Settings),
             ('actionDifset_Settings', self.slot_actionDifset_Settings),
+            ('actionImage_Blur', self.slot_actionImageBlur),
             # Optimize
             ('actionOptimizer', self.slot_actionOptimizer),
         ]
@@ -3247,6 +3345,65 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg = ApodDialog(self)
         if dlg.exec() == QDialog.DialogCode.Accepted:
             self.send_koko(dlg.apply_command())
+
+    def slot_actionImageBlur(self):
+        """Image Evaluation -> Image Blur: load a BMP, blur it with the
+        lens PSF, and display the result."""
+        dlg = ImageBlurDialog(self)
+        if dlg.exec() != QDialog.DialogCode.Accepted:
+            return
+        cmds = dlg.commands()
+        if not cmds:
+            self.append_msg("** Image Blur: no BMP selected or copy failed **")
+            return
+        # The command is a MACRO launch; tracing is slow, so poll longer.
+        for cmd in cmds:
+            self.send_koko(cmd)
+        self._pending_image = os.path.join(
+            os.path.expanduser("~"), "KODS", "PLOTBMP.BMP")
+        self.append_msg("** Image Blur: running (this can take a while) **")
+        self._schedule_image_render()
+
+    def _schedule_image_render(self):
+        """Wait for koko to write ~/PLOTBMP.BMP, then display it."""
+        if getattr(self, '_img_poll_active', False):
+            self._img_pending = True
+            return
+        self._img_poll_active = True
+        self._img_poll_pending = False
+        try:
+            base = os.path.getmtime(self._pending_image)
+        except OSError:
+            base = 0.0
+        self._img_poll = {'base': base, 'tries': 0, 'max': 600}
+        QTimer.singleShot(1000, self._poll_image_render)
+
+    def _poll_image_render(self):
+        self._img_poll['tries'] += 1
+        try:
+            m = os.path.getmtime(self._pending_image)
+        except OSError:
+            m = 0.0
+        done = m > self._img_poll['base']
+        if done or self._img_poll['tries'] >= self._img_poll['max']:
+            self._img_poll_active = False
+            self._show_image_result()
+        else:
+            # Report progress roughly every 10s.
+            if self._img_poll['tries'] % 10 == 0:
+                self.append_msg(
+                    "** Image Blur: tracing... (%d s) **"
+                    % (self._img_poll['tries'] // 10 * 4))
+            QTimer.singleShot(400, self._poll_image_render)
+
+    def _show_image_result(self):
+        path = self._pending_image
+        if not os.path.isfile(path) or os.path.getsize(path) == 0:
+            self.append_msg("** Image Blur: no output BMP produced **")
+            return
+        # Show via the existing plot viewer (handles BMP via QPixmap).
+        self.show_plot(path)
+
 
     def slot_actionDifset_Settings(self):
         """Image Evaluation -> General Diffraction Calculation Settings."""
