@@ -33,7 +33,7 @@ C///////////////////////////////////////////////////////////////////////
           REAL*8 PEAKVAL,A,B,LLIM,PITVAL
           REAL*8 DNX,DNY,XCORR,YCORR
           REAL*8 WAVLN,XCHIEF,YCHIEF,X2,Y2,PSFXCORNER,PSFYCORNER
-          REAL*8 PSFX,PSFY,SYSSUM,IWW3,IWW4,TRIMMER,WRD1,OBJVAL
+          REAL*8 PSFX,PSFY,SYSSUM,IWW3,IWW4,TRIMMER,WRD1,W1OBJ,W2OBJ
           CHARACTER*80 BMPFILE
           CHARACTER WWQW*8
           COMMON/FILEBMP/BMPFILE
@@ -1857,7 +1857,10 @@ C
           END IF
 C
 C     PSFTOIMG
-C
+C     (KDP2 IMAGE1.FOR parity: apply the single current PSF to each
+C      object point, centering the PSF on the chief ray at that point.
+C      NOTE: KDP2 stores R/G/B in the 4th array index (plane), so the
+C      channel selector W1 maps to IIMAGEV(IX,IY,1,INT(W1)).)
           IF(WC.EQ.'PSFTOIMG') THEN
               IF(.NOT.PSFEXT) THEN
                   WRITE(OUTLYNE,*)
@@ -1884,9 +1887,9 @@ C
                   W1=1.0D0
               END IF
               IF(W1.NE.1.0D0.AND.W1.NE.2.0D0.AND.W1.NE.3.0D0
-     1        ) THEN
+     1.AND.W1.NE.4.0D0) THEN
                   WRITE(OUTLYNE,*)
-     1            'NUMERIC WORD ONE MAY BE ONLY "1", "2" OR "3" (RED/GREEN/BLUE)'
+     1            'NUMERIC WORD ONE MAY BE ONLY "1", "2", "3" OR "4"'
                   CALL SHOWIT(1)
                   CALL MACFAL
                   RETURN
@@ -1906,9 +1909,6 @@ C
                   CALL MACFAL
                   RETURN
               END IF
-
-
-
 C       INDEX CREATION
 C       INDEX 1,1 IS LOCATED AT THE -X,-Y LIMIT OF THE
 C       CENTRAL HALF OF THE IMAGE X AND Y ARRAYS
@@ -1928,37 +1928,29 @@ C       NEGATIVE CORNER OF THE PSF IS:
 C       INDEX COUNTERS FOR THE PSF ARE LIMITED BY NSTART AND NSTOP
               NSTART=((MMMIMG-1)/2)-((PGRIMG-1)/2)+1
               NSTOP=((MMMIMG-1)/2)+((PGRIMG-1)/2)+1
-C
-C       APPLY THE STORED PSF TO EACH OBJECT POINT (true convolution)
-C       Mirrors KDP2 IMAGE1.FOR PSFTOIMG: for every object-array point,
-C       spread its intensity through the PSF kernel onto the image plane.
-              DO J=1,OBJNY
-              DO I=1,OBJNX
-                  X2=IOBJECTX(I,J)
-                  Y2=IOBJECTY(I,J)
-                  OBJVAL=IOBJECTV(I,J,INT(W1))
-                  DO L=1,PGRIMG
-                  DO M=1,PGRIMG
-                      PSFX=X2+(PSFXCORNER+((L-1)*GRIIMG))
-                      PSFY=Y2+(PSFYCORNER+((M-1)*GRIIMG))
+C       SET X2 AND Y2 TO THE NEGATIVE LIMITS OF THE PSF
+              Y2=PSFYCORNER-GRIIMG
+              DO J=NSTART,NSTOP,1
+                  Y2=Y2+GRIIMG
+                  X2=PSFXCORNER-GRIIMG
+                  DO I=NSTART,NSTOP,1
+                      X2=X2+GRIIMG
                       IF(XCORR.LT.0.0D0) THEN
-                          IX=NINT((PSFX-XCORR)/IDELX)+1
+                          IX=NINT((X2-XCORR)/IDELX)+1
                       ELSE
-                          IX=-NINT((PSFX-XCORR)/IDELX)+1
+                          IX=-NINT((X2-XCORR)/IDELX)+1
                       END IF
                       IF(YCORR.LT.0.0D0) THEN
-                          IY=NINT((PSFY-YCORR)/IDELY)+1
+                          IY=NINT((Y2-YCORR)/IDELY)+1
                       ELSE
-                          IY=-NINT((PSFY-YCORR)/IDELY)+1
+                          IY=-NINT((Y2-YCORR)/IDELY)+1
                       END IF
                       IF(IX.LE.IMGNX.AND.IY.LE.IMGNY.AND.IX.GE.1.AND.
      1                IY.GE.1) THEN
-                          IIMAGEV(IX,IY,INT(W1),1)=IIMAGEV(IX,IY,INT(W1),1)+
-     1                    FIMG(L,M)*OBJVAL
+                          IIMAGEV(IX,IY,1,INT(W1))=IIMAGEV(IX,IY,1,INT(W1))+
+     1                    FIMG(I,J)
                       END IF
                   END DO
-                  END DO
-              END DO
               END DO
               IIMAGEX(1:IMGNX,1:IMGNY)=IIMAGEX2(1:IMGNX,1:IMGNY)
               IIMAGEY(1:IMGNX,1:IMGNY)=IIMAGEY2(1:IMGNX,1:IMGNY)

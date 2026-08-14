@@ -52,6 +52,7 @@
 | 非シーケンシャル (NSS) | — | `NSSNEW` `NSSUNITS` `NSSWV` `UNIVERSE` `OBJECT` `ONAME` `NSSSAVE` `NSSREST` `NSSTRACE` `NSSLIST` `NSSDEL` | **実装済み**（NssDialog: 新規作成/単位/波長/ユニバース/オブジェクト定義/レイトレース/一覧/保存/復元/削除ボタン。koko が NSSNEW でデータベース作成後、全 NSS コマンドをサポートすることを PTY で確認済み） |
 | 公差 (TOLERANCING) | menuTolerancing | `TEL YES` 等 | **実装済み**（ToperDialog: TVARモードで公差変数(TH/RD_FR/CV_FR/CC/AD/AE/AF/AG/XD/YD/PIVX/Y/Z)定義→TOPERモードでオペランド(FUNCxx)定義→SENSI/MONTE解析。koko が TVAR→tvb>、TOPER→top>、SENSI/MONTE を完全サポートし、TVAR+TOPER+SENSI で感度解析レポートを出力することを PTY で確認済み。TOLNRD でグリッド設定） |
 | ガラスマップ (GLASS MAP) | menuGraphs | — | **実装済み**（GlassMapDialog: カタログ選択(CDGM/Schott/Hoya/Ohara/Hikari/Sumita)→AGF/CSVから Nd,Vd を抽出→gnuplot(pngcairo)で n-v 散布図を PNG 出力→GlassMapWindow で表示。クリックするとピクセル座標を (n,v) に逆変換し、最寄りのガラス名・n・v を msgView に表示。858 ガラスを読み込み、N-BK7 で逆変換精度を確認済み） |
+| イメージボケ (IMAGE BLUR) | — | `COLOR RGB` `IIMAGEN` `IOBJECTD` `OFROMBMP` `IMTRACE2`/`IMTRACE3` `PLTIMG` | **実装済み**（ImageBlurDialog: BMP選択→~/KODS/KOBJ.BMP にコピー→`COLOR RGB`+`IIMAGEN`+`IOBJECTD`+`OFROMBMP KOBJ`+`IMTRACE2`(Single PSF)または`IMTRACE3`(Full PSF per point)+`PLTIMG <trim>` を送信→`~/KODS/PLOTBMP.BMP` をポーリング表示。**計算コアは KDP2 の IMAGE1.FOR(FULLIMAGING) と極力同一コード**（Src/raytrace/image.f は KDP2 IMAGE1.FOR の移植；PSFTOIMG も KDP2 準拠の「保持 PSF を各点に畳み込み」に修正済み）。PTY で IMTRACE2/IMTRACE3 とも `IMTRACE? TRACING DONE` まで到達し PLOTBMP.BMP 生成を確認済み。注：koko の EXIT コマンドは空レンズ環境で LENSTEXT.DAT アクセスクラッシュする既知問題あり（ImageBlur 自体は成功） |
 
 ## C. 実装済み（OK）
 

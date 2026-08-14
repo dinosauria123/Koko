@@ -1184,10 +1184,24 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
     def commands(self):
         """Build the koko command sequence for the current settings.
 
-        koko now accepts a bare filename with OFROMBMP/IFROMBMP
-        (e.g. "OFROMBMP port"), so we emit a normal command list.
-        The chosen BMP is copied into $HOME/<stem>.BMP first because
-        koko reads $HOME/<name>.BMP.
+        Mirrors KDP2's FULLIMAGING command chain (IMAGE1.FOR):
+          - COLOR RGB            : select 24-bit RGB imagery
+          - IIMAGEN xext yext nx ny : define the IMAGE-plane array
+          - IOBJECTD xext yext nx ny : define the OBJECT-plane array
+          - OFROMBMP <name>      : load the 24-bit BMP into the object array
+          - IMTRACE2  (Single PSF)  : one on-axis PSF convolved over every
+                                      object point (KDP2 "Single PSF
+                                      convolution")
+          - IMTRACE3  (Full)         : a fresh PSF is recomputed at every
+                                      object point (KDP2 "PSF per object
+                                      point")
+          - PLTIMG <trim>        : write the blurred image BMP
+
+        KDP2's IMTRACE2/3 build the PSF internally, so no separate PSF /
+        PSFTOIMG step is needed. The chosen BMP is copied into $HOME/KODS/
+        under a fixed short name ("KOBJ") because koko reads $HOME/<name>.BMP
+        and uppercases/truncates bare names to 8.3; a constant name also
+        prevents koko's write-back from ever touching the user's original.
         """
         n = self._bmp_path
         if not n:
@@ -1197,14 +1211,6 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         # $HOME/<name>.BMP i.e. ~/KODS/<name>.BMP
         home = os.path.join(os.path.expanduser("~"), "KODS")
         os.makedirs(home, exist_ok=True)
-        # Copy the chosen BMP into $HOME/KODS under a fixed short name ("KOBJ")
-        # so koko (which writes back to the file it loaded via OFROMBMP/TOIMG)
-        # can never modify the user's original input file. The original is left
-        # untouched. A short name is required because koko uppercases and
-        # truncates bare names to 8.3 (e.g. "_obj_PORT" -> "_OBJ_POR"), which
-        # would otherwise mismatch the file we wrote and crash on a stale/empty
-        # copy. We always recopy from the source so any prior 0-byte writeback
-        # from a previous run is overwritten.
         objname = "KOBJ"
         dest = os.path.join(home, objname + ".BMP")
         try:
@@ -1212,7 +1218,6 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
                 dst.write(src.read())
         except OSError:
             return None
-        stem = objname
         # Determine the BMP's real pixel size and override NX/NY.
         nx = ny = 0
         try:
@@ -1227,18 +1232,20 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             ny = self.spinNY.value()
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
-        ch = self.comboChannel.currentIndex() + 1  # 1..4
         trim = self.spinTrim.value()
+        # KDP2 parity: the GUI always drives RGB imaging.
         cmds = [
             "COLOR RGB",
             "IIMAGEN %s %s %d %d" % (repr(dx * (nx - 1)), repr(dy * (ny - 1)), nx, ny),
             "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
-            "OFROMBMP %s" % stem,
+            "OFROMBMP %s" % objname,
         ]
-        cmds.append("IMTRACE1")
-        cmds.append("PSFPLOT NO")
-        cmds.append("PSF")
-        cmds.append("PSFTOIMG %d" % ch)
+        if self.radioSimple.isChecked():
+            # Single on-axis PSF convolution (KDP2 IMTRACE2).
+            cmds.append("IMTRACE2")
+        else:
+            # PSF recomputed at each object point (KDP2 IMTRACE3).
+            cmds.append("IMTRACE3")
         cmds.append("PLTIMG %d" % trim)
         return cmds
 
