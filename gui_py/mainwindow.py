@@ -1235,14 +1235,6 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             ny = self.spinNY.value()
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
-        # The PSF grid spacing (GRIIMG) must be shared by the object-plane,
-        # image-plane and PSF grids so that one object pixel maps 1:1 onto one
-        # image pixel and the PSF lands on a single image pixel. KDP2's IMAGE
-        # dialog keeps all three grids at the same spacing. We drive that from
-        # the PSF grid spacing read back before tracing.
-        if getattr(self, '_griimg', 0.0) and self._griimg > 0.0:
-            dx = self._griimg
-            dy = self._griimg
         trim = self.spinTrim.value()
         # KDP2 parity: the GUI always drives RGB imaging.
         # IIMAGEN takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
@@ -1267,17 +1259,6 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             cmds.append("IMTRACE3")
         cmds.append("PLTIMG %d" % trim)
         return cmds
-
-    def set_psf_grid_spacing(self, griimg):
-        """Override the image-plane pixel size with the PSF grid spacing.
-
-        Called by the main window after it has run PSF and parsed GRIIMG, so
-        the IIMAGEN grid lines up 1:1 with the PSF grid (KDP2 parity).
-        """
-        try:
-            self._griimg = float(griimg)
-        except (TypeError, ValueError):
-            self._griimg = 0.0
 
 
 class DifsetDialog(QDialog, Ui_DifsetDialog):
@@ -3404,15 +3385,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Image Evaluation -> Image Blur: load a BMP, blur it with the
         lens PSF, and display the result.
 
-        KDP2 parity: the image-plane (IIMAGEN) grid pixel size must match the
-        PSF grid spacing (GRIIMG), otherwise the PSF collapses into a single
-        central pixel. So we first run PSF (koko writes ~/KODS/PSFGRI.DAT
-        with GRIIMG), read it back, size the IIMAGEN grid from it, then trace.
+        KDP2 parity (IMAGE1.FOR FULLIMAGING): the command chain is exactly
+        COLOR RGB -> IIMAGEN -> IOBJECTD -> OFROMBMP -> IMTRACE2/3 -> PLTIMG.
+        IMTRACE2/3 internally create the on-axis PSF (via U L/SCX/SCY/EOS/
+        FOB/RSPH CHIEF/PSF), so no separate pre-PSF step is needed.
+        The IIMAGEN/IOBJECTD extents are set from the BMP pixel dimensions
+        so that one object pixel maps 1:1 to one image pixel and the PSF
+        (GRI) lands on a single image pixel.
         """
         dlg = ImageBlurDialog(self)
         if dlg.exec() != QDialog.DialogCode.Accepted:
             return
-        # Copy the BMP and read its dimensions (mirrors dlg.commands()).
+        # Copy the BMP to ~/KODS/KOBJ.BMP (koko reads $HOME/<name>.BMP)
         n = dlg.get_bmp_path()
         if not n:
             self.append_msg("** Image Blur: no BMP selected **")
@@ -3427,18 +3411,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         except OSError:
             self.append_msg("** Image Blur: BMP copy failed **")
             return
-        # Step 1: generate a PSF (needs FOB first) so koko writes GRIIMG
-        # to PSFGRI.DAT.
-        self.send_koko("FOB")
-        self.send_koko("PSF")
-        gri = self._wait_for_psf_gri(os.path.join(home, "PSFGRI.DAT"))
-        if gri and gri > 0.0:
-            dlg.set_psf_grid_spacing(gri)
-            self.append_msg("** Image Blur: PSF grid spacing = %.3e **" % gri)
-        else:
-            self.append_msg("** Image Blur: could not read PSF grid spacing; "
-                            "using dialog defaults **")
-        # Step 2: build and send the trace commands.
+        # Send the KDP2-equivalent command chain directly.
+        # ImageBlurDialog.commands() builds: COLOR RGB, IIMAGEN, IOBJECTD,
+        # OFROMBMP, IMTRACE2/3, PLTIMG - matching IMAGE1.FOR FULLIMAGING.
         cmds = dlg.commands()
         if not cmds:
             self.append_msg("** Image Blur: command build failed **")
@@ -3449,30 +3424,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             os.path.expanduser("~"), "KODS", "PLOTBMP.BMP")
         self.append_msg("** Image Blur: running (this can take a while) **")
         self._schedule_image_render()
-
-    def _wait_for_psf_gri(self, path, timeout_s=30):
-        """Poll ~/KODS/PSFGRI.DAT until PSF has written GRIIMG, return it."""
-        import time
-        base = 0.0
-        try:
-            base = os.path.getmtime(path)
-        except OSError:
-            base = 0.0
-        deadline = time.time() + timeout_s
-        while time.time() < deadline:
-            try:
-                m = os.path.getmtime(path)
-            except OSError:
-                m = 0.0
-            if m > base:
-                try:
-                    with open(path) as fh:
-                        val = float(fh.read().strip())
-                    return val
-                except (OSError, ValueError):
-                    return 0.0
-            time.sleep(0.3)
-        return 0.0
 
     def _schedule_image_render(self):
         """Wait for koko to write ~/PLOTBMP.BMP, then display it."""
