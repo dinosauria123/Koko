@@ -212,8 +212,17 @@ C     The gnuplot 'plot [0:10000] [0:7000]' range clips off-canvas points.
                 WRITE(213,*) 'set noborder'
                 WRITE(213,*) 'set nokey'
                 WRITE(213,*) 'set notics'
+C     Clear ALL previously-set labels. Koko writes labels with
+C     number-less "set label ..." commands (see gnuplotlabel), which
+C     gnuplot auto-numbers and ACCUMULATES across repeated "load"
+C     calls inside a single (persistent) gnuplot session. Without this
+C     reset, re-drawing a PSF/plot leaves the previous figure's text
+C     overprinted on the new one. "unset label" (no number) removes
+C     every label; drawcmd3.gpl (the body) is re-written from scratch
+C     on every plot command, so this only drops the stale labels.
+                WRITE(213,*) 'unset label'
                 CLOSE(213)
-          
+
           ! script body file
           file_b = TRIM(HOME)
           CALL dir_path_append(file_b, "gnuplot", file_b)
