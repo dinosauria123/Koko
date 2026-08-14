@@ -288,8 +288,8 @@ C       PLOT OBJECT
                   DO K=1,OBJNY
                       DO J=1,OBJNX
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
-                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
-                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,2))/PEAKER))
                           L=L+3
                       END DO
                   END DO
@@ -400,8 +400,8 @@ C       PLOT OBJECT
                   DO K=1,OBJNY
                       DO J=1,OBJNX
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
-                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
-                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,2))/PEAKER))
                           L=L+3
                       END DO
                   END DO
@@ -591,11 +591,11 @@ C       PLOT IMAGE
               I=(ih-r)
               L=1+((I-1)*iw)*3
               DO J=1,iw
-                  bmpdataB=CHAR(BMPDATA24(L))
+                  bmpdataB=CHAR(BMPDATA24(L+2))
                   WRITE(112,rec=irec) bmpdataB
                   bmpdataG=CHAR(BMPDATA24(L+1))
                   WRITE(112,rec=irec+1) bmpdataG
-                  bmpdataR=CHAR(BMPDATA24(L+2))
+                  bmpdataR=CHAR(BMPDATA24(L))
                   WRITE(112,rec=irec+2) bmpdataR
                   irec=irec+3
                   L=L+3
