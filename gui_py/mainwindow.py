@@ -1232,11 +1232,11 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             ny = self.spinNY.value()
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
-        # If the caller supplied the PSF grid spacing (GRIIMG), the image-plane
-        # array pixel size MUST match it, otherwise the PSF (which spans only
-        # +/-GRIIMG*(PGRIMG-1)/2) lands inside a single image pixel and the
-        # result collapses to a central dot. This mirrors KDP2's IMAGE dialog,
-        # which sizes the IIMAGEN grid from the PSF grid.
+        # The PSF grid spacing (GRIIMG) must be shared by the object-plane,
+        # image-plane and PSF grids so that one object pixel maps 1:1 onto one
+        # image pixel and the PSF lands on a single image pixel. KDP2's IMAGE
+        # dialog keeps all three grids at the same spacing. We drive that from
+        # the PSF grid spacing read back before tracing.
         if getattr(self, '_griimg', 0.0) and self._griimg > 0.0:
             dx = self._griimg
             dy = self._griimg
@@ -1246,7 +1246,9 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             "COLOR RGB",
             "IIMAGEN %s %s %d %d" % (repr(dx * (nx - 1)), repr(dy * (ny - 1)), nx, ny),
             "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
-            "OFROMBMP %s" % objname,
+            # Pass GRIIMG as the OFROMBMP word so the object-plane pixel size
+            # (ODELX) matches the image-plane / PSF pixel size.
+            "OFROMBMP %s %s" % (objname, repr(dx)),
         ]
         if self.radioSimple.isChecked():
             # Single on-axis PSF convolution (KDP2 IMTRACE2).

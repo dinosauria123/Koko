@@ -323,9 +323,11 @@ C       PLOT IMAGE
                   L=1
                   DO K=1+INT(TRIMMER),IMGNY-INT(TRIMMER)
                       DO J=1+INT(TRIMMER),IMGNX-INT(TRIMMER)
+C     KDP2 parity: IIMAGEV(.,3,1)=R, (.,1,1)=G, (.,2,1)=B, packed in
+C     (R,G,B) order into the little-endian pixel word.
                           BMPDATA24(L)=int(((IIMAGEV(J,K,3,1))))
-                          BMPDATA24(L+1)=int(((IIMAGEV(J,K,2,1))))
-                          BMPDATA24(L+2)=int(((IIMAGEV(J,K,1,1))))
+                          BMPDATA24(L+1)=int(((IIMAGEV(J,K,1,1))))
+                          BMPDATA24(L+2)=int(((IIMAGEV(J,K,2,1))))
                           L=L+3
                       END DO
                   END DO
@@ -424,8 +426,8 @@ C       PLOT IMAGE
                   DO K=1,IMGNY
                       DO J=1,IMGNX
                           BMPDATA24(L)=int(((IOBJECTV(J,K,3))/PEAKER))
-                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,2))/PEAKER))
-                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+1)=int(((IOBJECTV(J,K,1))/PEAKER))
+                          BMPDATA24(L+2)=int(((IOBJECTV(J,K,2))/PEAKER))
                           L=L+3
 
                       END DO
@@ -628,9 +630,12 @@ C       PLOT IMAGE
 
           IF (L.GE.iwidth*iheight*3-3) RETURN
 
-          IG=INT(ABMPDATA24(L))
-          IR=INT(ABMPDATA24(L+1))
-          IB=INT(ABMPDATA24(L+2))
+C     BMP pixel data is stored little-endian as (B, G, R) per pixel.
+C     Map the bytes to (IR=Red, IG=Green, IB=Blue) to match KDP2's
+C     WINTERACTER WRGBsplit, which returns true red/green/blue.
+          IB=INT(ABMPDATA24(L))
+          IG=INT(ABMPDATA24(L+1))
+          IR=INT(ABMPDATA24(L+2))
 
           RETURN
       END
