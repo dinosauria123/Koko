@@ -1337,9 +1337,29 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # keystroke is drawn, once on enter) even with ECHO OFF. The GUI
         # already prints "> CMD" in send_koko, so drop these echoes here to
         # avoid the command being shown 2-3 times.
-        for c in getattr(self, '_sent_cmds', []):
-            if c:
-                text = text.replace(c, '')
+        #
+        # IMPORTANT: never strip a sent command from an RTG ALL data row.
+        # A data row such as " 2 ... RADHARD BK7G18 ..." (or a marker row like
+        # " 1* ... RADHARD BK7G18 ...") contains the exact string we just sent
+        # ("RADHARD BK7G18"); a blanket replace() would delete the glass name
+        # from the built-in terminal, leaving the index and V-number orphaned.
+        # We therefore keep every RTG surface-data row verbatim (any line that
+        # starts with a surface number, with or without a "*" marker) and only
+        # strip echoes that sit on a koko prompt line (e.g. " 3:uln> RADHARD
+        # BK7G18"), so the glass name stays visible.
+        out_lines = []
+        for line in text.split('\n'):
+            if ((re.match(r'^\s*\d+', line)
+                 and not re.search(r':(?:cmd|uln)>', line))
+                    or 'BASIC LENS DATA' in line
+                    or (line.strip().startswith('SURF') and 'RADIUS' in line)):
+                out_lines.append(line)
+                continue
+            for c in getattr(self, '_sent_cmds', []):
+                if c:
+                    line = line.replace(c, '')
+            out_lines.append(line)
+        text = '\n'.join(out_lines)
         self.append_msg(text)
         # koko echoes a prompt like " 4:cmd> " after each command finishes.
         # Mark it idle here (on the cleaned stream) because the prompt has
