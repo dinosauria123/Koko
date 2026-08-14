@@ -1200,11 +1200,16 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         # Copy into $HOME/KODS/<stem>.BMP so koko can read it by bare name.
         stem = os.path.splitext(os.path.basename(n))[0]
         dest = os.path.join(home, stem + ".BMP")
-        try:
-            with open(n, "rb") as src, open(dest, "wb") as dst:
-                dst.write(src.read())
-        except OSError:
-            return None
+        if os.path.abspath(n) == os.path.abspath(dest):
+            # Source and destination are the same file: no copy needed.
+            # (Copying a file onto itself would truncate it to 0 bytes.)
+            pass
+        else:
+            try:
+                with open(n, "rb") as src, open(dest, "wb") as dst:
+                    dst.write(src.read())
+            except OSError:
+                return None
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
         nx = self.spinNX.value()
