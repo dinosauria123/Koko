@@ -456,7 +456,6 @@ C       PLOT IMAGE
           CHARACTER header(54),cval1
           CHARACTER*80 BMPFILE
           INTEGER ABMPDATA24(Maxwidth*Maxheight*3)
-          COMMON iwidth,iheight,header,image
 
           OPEN(114,file=TRIM(BMPFILE),form='unformatted',
      &    access='direct',recl=1)
@@ -513,7 +512,6 @@ C       PLOT IMAGE
           INTEGER BMPDATA24(Maxwidth*Maxheight*3)
           CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB
           CHARACTER*80 BMPFILE
-          COMMON header
           INTEGER iw,ih,rowbytes,pad
 
           iw=iwidth
@@ -617,11 +615,10 @@ C       PLOT IMAGE
       SUBROUTINE bmpinfo(BMPFILE,info)
 
           INCLUDE 'datmai.inc'
-          INTEGER irec,iw,ih
+          INTEGER irec,ire,iw,ih
           INTEGER info(3)
           CHARACTER header(54)
           CHARACTER*80 BMPFILE
-          COMMON iwidth,iheight,header
 
           OPEN(114,file=TRIM(BMPFILE),form='unformatted',
      &    access='direct',recl=1)
@@ -653,11 +650,11 @@ C       PLOT IMAGE
       SUBROUTINE RGBsplit(ABMPDATA24,L,IR,IB,IG)
 
           INCLUDE 'datmai.inc'
-          INTEGER IR,IB,IG,L,iw,ih
+          INTEGER IR,IB,IG,L
           INTEGER ABMPDATA24(3220*2415*3)
-          COMMON iwidth,iheight
+          INTEGER, PARAMETER :: BMPSIZE = 3220*2415*3
 
-          IF (L.GE.INT(iwidth*iheight*3)-3) RETURN
+          IF (L.GE.BMPSIZE-3) RETURN
 
 C     BMP pixel data is stored little-endian as (B, G, R) per pixel.
 C     Map the bytes to (IR=Red, IG=Green, IB=Blue) to match KDP2's
