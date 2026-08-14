@@ -3126,6 +3126,12 @@ C       A MESSAGE INTENDED FOR THE SCREEN WITHOUT A CARRIAGE CONTROL/LF
           WRITE(unit, '(A)') 'set nokey'
           WRITE(unit, '(A)') 'set notics'
           WRITE(unit, '(A,A,A)') 'set output "', TRIM(png_file), '"'
+C     Clear ALL previously-set labels before loading the figure. Koko
+C     writes labels with number-less "set label ..." commands, which
+C     gnuplot auto-numbers and ACCUMULATES across repeated "load" calls
+C     inside one (persistent) gnuplot session. Dropping stale labels here
+C     stops the previous figure's text overprinting the new one.
+          WRITE(unit, '(A)') 'unset label'
           WRITE(unit, '(A,A,A)') 'load "', TRIM(gpl_file), '"'
           WRITE(unit, '(A)') 'set terminal png size 1000,700 font "Courier,5"'
           WRITE(unit, '(A)') 'replot'

@@ -752,4 +752,18 @@ C       labels on top of the previous figure.
           CALL dir_path_append(TRIM(HOME), "gnuplot", gp)
           CALL dir_path_append(gp, "drawcmd3.gpl", gp)
           OPEN(UNIT=150, STATUS='REPLACE', FILE=TRIM(gp))
+C     Also clear ALL labels at the top of the (now-empty) body file.
+C     Koko writes labels with number-less "set label ..." (see
+C     gnuplotlabel), which gnuplot auto-numbers and ACCUMULATES across
+C     repeated "load" calls inside one (persistent) gnuplot session.
+C     drawcmd.gpl may be split into blocks at "pause -1" lines and only
+C     the LAST block rendered (the embedded GUI does exactly this), so
+C     the header "unset label" in drawcmd0.gpl is NOT always present in
+C     the rendered block. Putting "unset label" here -- at the very top
+C     of the body that every plot command writes into -- guarantees the
+C     stale labels from the previous figure are dropped no matter which
+C     block the renderer loads. drawcmd3.gpl is rewritten from scratch on
+C     each plot, so this only removes the previous figure's labels.
+          WRITE(150,*) 'unset label'
+          FLUSH(UNIT=150)
       END SUBROUTINE drawcmd3_clear
