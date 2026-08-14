@@ -634,6 +634,7 @@ C SUB DOPSF.FOR
 
       SUBROUTINE DOPSF
           USE GLOBALS
+          USE opsys
 C
           IMPLICIT NONE
 C
@@ -642,6 +643,7 @@ C     CALLED BY CMDER FOR COMMAND PSF
 C     THIS DOES DIFFRACTION PSF CALCULATIONS
 C
           CHARACTER*9 UNN,UNN1
+          LOGICAL has_userhome
 C
           REAL*8 VALUE,VALVAL,SHTVALUE,GRNX,GRNY,XRANGE,YRANGE
      1    ,WVNUM,DIAM,OUTGRIDEXTENT,EXEX,EXEY,V1,APEAK,
@@ -1166,6 +1168,18 @@ C     NOW COPY BACK TO F
           MMMIMG=MMM
           GRIIMG=GRI
           PGRIMG=PGR
+          WRITE(OUTLYNE,*)'PSF GRIIMG = ',GRIIMG
+          CALL SHOWIT(0)
+C     Write the PSF grid spacing to a side file so the GUI can size the
+C     IIMAGEN grid to match the PSF grid (KDP2 IMAGE parity). This is a
+C     Koko-only helper; KDP2 derives it inside the IMAGE dialog.
+          CALL user_home_directory(has_userhome, USERHOME)
+          IF (has_userhome .AND. kods_dir_exists(USERHOME)) THEN
+             CALL dir_path_append(USERHOME, "KODS", HOME)
+          END IF
+          OPEN(UNIT=87,FILE=TRIM(HOME)//'/PSFGRI.DAT',STATUS='UNKNOWN')
+          WRITE(87,*) GRIIMG
+          CLOSE(87)
           DEALLOCATE(FHOLDF,STAT=ALLOERR)
 C
 C     F IS THE FULL INTENSITY PSF FILE ON THE TGRxTGR GRID AFTER ALL
