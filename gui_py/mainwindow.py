@@ -1198,11 +1198,15 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         home = os.path.join(os.path.expanduser("~"), "KODS")
         os.makedirs(home, exist_ok=True)
         # Copy into $HOME/KODS/<stem>.BMP so koko can read it by bare name.
-        stem = os.path.splitext(os.path.basename(n))[0]
+        # When OFROMBMP is used, koko sizes the image-plane array to match the
+        # object-array (the BMP) size. To get a full-frame blur (not a tiny
+        # block on a larger canvas) we must force IIMAGEN/IOBJECTD NX,NY to the
+        # BMP's actual pixel size, overriding the dialog spinners.
+        stem = stem0 = os.path.splitext(os.path.basename(n))[0]
         dest = os.path.join(home, stem + ".BMP")
         if os.path.abspath(n) == os.path.abspath(dest):
-            # Source and destination are the same file: no copy needed.
-            # (Copying a file onto itself would truncate it to 0 bytes.)
+            # Source and destination are the same file: leave it untouched
+            # (copying a file onto itself would truncate it to 0 bytes).
             pass
         else:
             try:
@@ -1210,10 +1214,20 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
                     dst.write(src.read())
             except OSError:
                 return None
+        # Determine the BMP's real pixel size and override NX/NY.
+        nx = ny = 0
+        try:
+            from PIL import Image
+            with Image.open(dest) as im:
+                nx, ny = im.size
+        except Exception:
+            nx = self.spinNX.value()
+            ny = self.spinNY.value()
+        if nx <= 0 or ny <= 0:
+            nx = self.spinNX.value()
+            ny = self.spinNY.value()
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
-        nx = self.spinNX.value()
-        ny = self.spinNY.value()
         ch = self.comboChannel.currentIndex() + 1  # 1..4
         trim = self.spinTrim.value()
         cmds = [
