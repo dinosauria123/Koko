@@ -82,41 +82,18 @@ C     unit lookup table for color routing: black=130, yellow=115, magenta=116, r
           INCLUDE 'datmai.inc'
 C     color->unit mapping: 0=black/130, 1=yellow/115, 2=magenta/116, 3=red/117, 4=cyan/118
           INTEGER, PARAMETER :: units(0:4) = (/130,115,116,117,118/)
-          integer :: j
 
-          if ((I1.eq.-1).and.(I2.eq.-1)) then
-              write(130,*)
-              write(115,*)
-              write(116,*)
-              write(117,*) 'END_RED_DATA'
-              write(118,*)
-              flush(117)
-              return
-          end if
-
-          if ((I1.eq.416).or.(I1.eq.3750).or.(I1.eq.7082)) then
-              write(130,*)
-              write(115,*)
-              write(116,*)
-              write(117,*)
-              write(118,*)
-              return
-          end if
-
-          ! Range-gated routing via DO loop over color index
-
-          do j = 0, 4
-              if (((I1.ge.I5).and.(I1.le.I6)).and.((I2.ge.I7).and.(I2.le.I8))) then
-                  if ((I4.eq.j).and.(I3.eq.1)) then
-                      write(units(j),'(2I5)') I1,I2
-                      FLUSH(units(j))
-                  else if ((I4.eq.j).and.(I3.eq.0)) then
-                      write(units(j),*)
-                      write(units(j),'(2I5)') I1,I2
-                      FLUSH(units(j))
-                  end if
-              end if
-          end do
+          IF(I4.LT.0.OR.I4.GT.4) RETURN
+C     Pen state I3: 0 = pen-up (move only, break the line), 1 = pen-down
+C     (draw). Write a blank line on pen-up so gnuplot 'with lines' starts a
+C     new segment instead of connecting from the previous point. We must
+C     write EVERY point unconditionally (no range gating): gating drops
+C     pen-up coordinates at the plot-frame edge, which makes gnuplot draw a
+C     spurious connecting line across the gap ("doesn't bend down" artifact).
+C     The gnuplot 'plot [0:10000] [0:7000]' range clips off-canvas points.
+          IF(I3.EQ.0) WRITE(units(I4),'(A)') ' '
+          WRITE(units(I4),'(2I5)') I1,I2
+          FLUSH(units(I4))
 
           if (I4.eq.2) then
               if (I3.eq.1) then
