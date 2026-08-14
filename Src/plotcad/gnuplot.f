@@ -85,22 +85,30 @@ C     color->unit mapping: 0=black/130, 1=yellow/115, 2=magenta/116, 3=red/117, 
 
           IF(I4.LT.0.OR.I4.GT.4) RETURN
 C     Pen state I3: 0 = pen-up (move only, break the line), 1 = pen-down
-C     (draw). Write a blank line on pen-up so gnuplot 'with lines' starts a
-C     new segment instead of connecting from the previous point. We must
-C     write EVERY point unconditionally (no range gating): gating drops
-C     pen-up coordinates at the plot-frame edge, which makes gnuplot draw a
-C     spurious connecting line across the gap ("doesn't bend down" artifact).
-C     The gnuplot 'plot [0:10000] [0:7000]' range clips off-canvas points.
-          IF(I3.EQ.0) WRITE(units(I4),'(A)') ' '
-          WRITE(units(I4),'(2I5)') I1,I2
+C     (draw). On pen-up we write ONLY a blank line so gnuplot 'with lines'
+C     starts a new segment instead of connecting from the previous point.
+C     We must NOT also write the coordinates on pen-up: callers pass the
+C     invalid marker (-1,-1) for pen-up moves, and writing it as a real
+C     (0,0) point made gnuplot draw a spurious line from the origin to the
+C     first real point of every colour block (the "stray magenta line from
+C     the origin" artifact on fan plots). We still write EVERY pen-DOWN
+C     point unconditionally (no range gating): gating drops pen-up
+C     coordinates at the plot-frame edge, which makes gnuplot draw a
+C     spurious connecting line across the gap ("doesn't bend down"
+C     artifact). The gnuplot 'plot [0:10000] [0:7000]' range clips
+C     off-canvas points.
+          IF(I3.EQ.0) THEN
+              WRITE(units(I4),'(A)') ' '
+          ELSE
+              WRITE(units(I4),'(2I5)') I1,I2
+          END IF
           FLUSH(units(I4))
 
           if (I4.eq.2) then
               if (I3.eq.1) then
                   write(131,'(2I5)') I1,I2    !breakblack
               else
-                  write(131,*)
-                  write(131,'(2I5)') I1,I2
+                  write(131,*)                ! pen-up = blank break
               end if
           end if
 
