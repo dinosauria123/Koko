@@ -1241,6 +1241,11 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         # IOBJECTD takes (xext, yext, nx, ny) where xext = pixel_size * (nx-1)
         # OFROMBMP WRD1 (numeric word #1) is the object extent = pixel_size * (nx-1)
         # per KDP2 BMP.FOR: ODELX = WRD1 / (NX-1)
+        # If PSF grid spacing (GRIIMG) was measured, use it as pixel size so
+        # IDELX = GRI (PSF lands on one image pixel).
+        if getattr(self, '_griimg', 0.0) and self._griimg > 0.0:
+            dx = self._griimg
+            dy = self._griimg
         obj_extent_x = dx * (nx - 1)
         obj_extent_y = dy * (ny - 1)
         cmds = [
@@ -1259,6 +1264,17 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             cmds.append("IMTRACE3")
         cmds.append("PLTIMG %d" % trim)
         return cmds
+
+    def set_psf_grid_spacing(self, griimg):
+        """Override the image-plane pixel size with the PSF grid spacing.
+
+        Called by the main window after it has run PSF and parsed GRIIMG, so
+        the IIMAGEN grid lines up 1:1 with the PSF grid (KDP2 parity).
+        """
+        try:
+            self._griimg = float(griimg)
+        except (TypeError, ValueError):
+            self._griimg = 0.0
 
 
 class DifsetDialog(QDialog, Ui_DifsetDialog):
@@ -3385,13 +3401,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Image Evaluation -> Image Blur: load a BMP, blur it with the
         lens PSF, and display the result.
 
-        KDP2 parity (IMAGE1.FOR FULLIMAGING): the command chain is exactly
-        COLOR RGB -> IIMAGEN -> IOBJECTD -> OFROMBMP -> IMTRACE2/3 -> PLTIMG.
-        IMTRACE2/3 internally create the on-axis PSF (via U L/SCX/SCY/EOS/
-        FOB/RSPH CHIEF/PSF), so no separate pre-PSF step is needed.
-        The IIMAGEN/IOBJECTD extents are set from the BMP pixel dimensions
-        so that one object pixel maps 1:1 to one image pixel and the PSF
-        (GRI) lands on a single image pixel.
+        KDP2 parity (IMAGE1.FOR FULLIMAGING): the PSF grid spacing (GRI)
+        must equal the image-plane pixel size (IDELX) so the PSF lands
+        on a single image pixel. KDP2 requires the user to run PSF first
+        to obtain GRI, then set IIMAGEN/IOBJECTD with IDELX = GRI.
+        We replicate this: run FOB+PSF, read GRIIMG from PSFGRI.DAT,
+        then build IIMAGEN/IOBJECTD extents = GRI * (NX-1).
         """
         dlg = ImageBlurDialog(self)
         if dlg.exec() != QDialog.DialogCode.Accepted:
@@ -3411,7 +3426,18 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         except OSError:
             self.append_msg("** Image Blur: BMP copy failed **")
             return
-        # Send the KDP2-equivalent command chain directly.
+        # Step 1: run PSF so koko writes GRIIMG to PSFGRI.DAT.
+        # This PSF is created on-axis with the current lens (no object/image
+        # planes defined yet). The resulting GRIIMG is the PSF grid spacing.
+        self.send_koko("FOB")
+        self.send_koko("PSF")
+        gri = self._wait_for_psf_gri(os.path.join(home, "PSFGRI.DAT"))
+        if not gri or gri <= 0.0:
+            self.append_msg("** Image Blur: could not read PSF grid spacing **")
+            return
+        dlg.set_psf_grid_spacing(gri)
+        self.append_msg("** Image Blur: PSF grid spacing (GRIIMG) = %.3e **" % gri)
+        # Step 2: send the KDP2-equivalent command chain with IDELX = GRI.
         # ImageBlurDialog.commands() builds: COLOR RGB, IIMAGEN, IOBJECTD,
         # OFROMBMP, IMTRACE2/3, PLTIMG - matching IMAGE1.FOR FULLIMAGING.
         cmds = dlg.commands()
@@ -3424,6 +3450,30 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             os.path.expanduser("~"), "KODS", "PLOTBMP.BMP")
         self.append_msg("** Image Blur: running (this can take a while) **")
         self._schedule_image_render()
+
+    def _wait_for_psf_gri(self, path, timeout_s=30):
+        """Poll ~/KODS/PSFGRI.DAT until PSF has written GRIIMG, return it."""
+        import time
+        base = 0.0
+        try:
+            base = os.path.getmtime(path)
+        except OSError:
+            base = 0.0
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            try:
+                m = os.path.getmtime(path)
+            except OSError:
+                m = 0.0
+            if m > base:
+                try:
+                    with open(path) as fh:
+                        val = float(fh.read().strip())
+                    return val
+                except (OSError, ValueError):
+                    return 0.0
+            time.sleep(0.3)
+        return 0.0
 
     def _schedule_image_render(self):
         """Wait for koko to write ~/PLOTBMP.BMP, then display it."""
