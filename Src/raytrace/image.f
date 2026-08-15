@@ -28,12 +28,17 @@ C///////////////////////////////////////////////////////////////////////
 !        USE WINTERACTER
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
+          REAL*8 WV
+          INTEGER ITYP,ITYPEP
+          COMMON/PRCOM/WV,ITYP
+          COMMON/PTYPER/ITYPEP
           INCLUDE 'datlen.inc'
           INCLUDE 'datspd.inc'
           REAL*8 PEAKVAL,A,B,LLIM,PITVAL
           REAL*8 DNX,DNY,XCORR,YCORR
           REAL*8 WAVLN,XCHIEF,YCHIEF,X2,Y2,PSFXCORNER,PSFYCORNER
           REAL*8 PSFX,PSFY,SYSSUM,IWW3,IWW4,TRIMMER,WRD1,W1OBJ,W2OBJ
+          REAL*8 SAVE_F21,SAVE_F23
           CHARACTER*80 BMPFILE
           CHARACTER WWQW*8
           COMMON/FILEBMP/BMPFILE
@@ -438,6 +443,8 @@ C
 C
 C       IMTRACE3
           IF(WC.EQ.'IMTRACE3') THEN
+              SAVE_F21=SYSTEM1(21)
+              SAVE_F23=SYSTEM1(23)
               IF(SQ.NE.0.OR.SST.NE.0.OR.SN.EQ.1) THEN
                   WRITE(OUTLYNE,*)
      1            WC,' TAKES NO ADDITIONAL INPUT'
@@ -481,8 +488,34 @@ C       OBJECT POSITION
               WRITE(INPUT,*) 'EOS'
               CALL PROCES
               REST_KDP(28)=RESTINPT(28)
+C     ESTABLISH THE PARAXIAL CHIEF-RAY REFERENCE (PXTRAX/PXTRAY) USED BY
+C     SLOWFFOB TO AIM EACH OFF-AXIS REFERENCE RAY. IN THE -G FLOW THIS IS
+C     OTHERWISE ZERO, MAKING EVERY PSF LAND AT THE IMAGE CENTER (GRID
+C     LINES). THIS MIRRORS THE NORMAL FOB COMMAND REFERENCE-RAY SETUP.
+              IF(WC.EQ.'IMTRACE2'.OR.WC.EQ.'IMTRACE3'.OR.
+     1            WC.EQ.'IMTRACE4'.OR.WC.EQ.'IMTRACE5') THEN
+                  SYSTEM1(21)=SAVE_F21
+                  SYSTEM1(23)=SAVE_F23
+                  SYSTEM1(18)=1.0D0
+                  SYSTEM1(19)=1.0D0
+                  SN=1
+                  NEWOBJ=0
+                  NEWREF=INT(SYSTEM1(25))
+                  NEWIMG=INT(SYSTEM1(20))
+                  STI=0
+                  SST=0
+                  SQ=0
+                  WC='FOB'
+                  W1=1.0D0
+                  W2=1.0D0
+                  W3=0.0D0
+                  W4=SYSTEM1(11)
+                  FOBRUN=.TRUE.
+                  REFEXT=.TRUE.
+                  CALL FFOB
+                  WC='IMTRACE3'
+              END IF
               IIMAGEV(1:IMGNX,1:IMGNY,1:3,1:4)=0.0D0
-C
               SYSSUM=0.0D0
               DO K=1,NUMCOLORS
                   SYSSUM=SYSSUM+SYSTEM1(30+K)
@@ -494,7 +527,8 @@ C
                   WAVLN=K
                   XCORR=IIMAGEX2(1,1)
                   YCORR=IIMAGEY2(1,1)
-
+C
+C
                   WRITE(OUTLYNE,*) 'TRACING RAYS AT COLOR # ',K
                   CALL SHOWIT(1)
                   SKIPY=0
@@ -539,6 +573,12 @@ C       DO A NEW PSF
                               CALL SLOWFFOB(IOBJECTV(I,J,K))
                               X2=REFRY(1,INT(SYSTEM1(20)))
                               Y2=REFRY(2,INT(SYSTEM1(20)))
+                              IF(I.EQ.1.AND.J.EQ.1) THEN
+                              END IF
+                              IF(I.EQ.60.AND.J.EQ.40) THEN
+                              END IF
+                              IF(I.EQ.120.AND.J.EQ.80) THEN
+                              END IF
                               SAVE_KDP(26)=SAVEINPT(26)
                               INPUT='OUT NULL'
                               CALL PROCES
