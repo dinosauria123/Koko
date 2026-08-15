@@ -1236,32 +1236,37 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         dx = self.doubleDX.value()
         dy = self.doubleDY.value()
         trim = self.spinTrim.value()
-        # KDP2 parity: the GUI always drives RGB imaging.
-        # Per IMAGE1.FOR (FULLIMAGING):
-        #   IIMAGEN  W1 W2 NX NY  -> W1,W2 = FULL EXTENT (xext,yext);
-        #                                IDELX = W1/(NX-1)
-        #   IOBJECTD W1 W2 NX NY  -> W1,W2 = PIXEL LENGTH (ODELX,ODELY);
-        #                                ODELX = W1  (no division)
-        #   OFROMBMP name W1      -> W1 = object FULL EXTENT = pixel*(NX-1);
-        #                                READIMAGEARRAY: ODELX = W1/(NX-1)
-        # So IIMAGEN's W1/W2 and OFROMBMP's W1 are EXTENT (= dx*(nx-1)),
-        # but IOBJECTD's W1/W2 are the PIXEL LENGTH (dx, dy) directly.
-        # If PSF grid spacing (GRIIMG) was measured, use it as pixel size so
-        # IDELX = GRI (PSF lands on one image pixel).
-        if getattr(self, '_griimg', 0.0) and self._griimg > 0.0:
-            dx = self._griimg
-            dy = self._griimg
+        # This MUST mirror the verified IMTESTx.MAC macro chain, which is the
+        # only sequence koko's IMTRACE2/3 accepts. The macro (which works) is:
+        #   COLOR RGB
+        #   IIMAGEN 0.44794 0.335624 320 240      (image-plane EXTENT, NX, NY)
+        #   OFROMBMP 0.40E+19 PORT                (WRD1=object size, name=PORT)
+        #   PLTOBJ                                 (aim PSF at object points)
+        #   TGR 512 / NRD 64 / PGR 91             (PSF grid)
+        #   IMTRACE2 | IMTRACE3
+        #   PLTIMG <trim>
+        # Key facts from koko's OFROMBMP handler (image.f): the filename arrives
+        # as the STRING word (WS/WQ) and the object size as W1 (WRD1). So the
+        # order is "<size> <name>", NOT "<name> <size>". There is NO IOBJECTD
+        # (OFROMBMP alone defines the object plane) and PLTOBJ + TGR/NRD/PGR
+        # are required for IMTRACE2/3 to aim and size the PSF correctly.
+        # The object size WRD1 is the macro's 0.40E+19 ("object at infinity");
+        # IIMAGEN's extent is the image-plane extent (here dx*(nx-1), dy*(ny-1)).
         obj_extent_x = dx * (nx - 1)
         obj_extent_y = dy * (ny - 1)
         cmds = [
             "COLOR RGB",
-            # IIMAGEN takes the FULL EXTENT (xext = dx * (nx-1))
+            # IIMAGEN image-plane EXTENT (xext, yext) and grid (NX, NY).
             "IIMAGEN %s %s %d %d" % (repr(obj_extent_x), repr(obj_extent_y), nx, ny),
-            # IOBJECTD takes the PIXEL LENGTH (dx, dy) directly (ODELX = W1)
-            "IOBJECTD %s %s %d %d" % (repr(dx), repr(dy), nx, ny),
-            # OFROMBMP WRD1 = object extent (pixel_size * (NX-1)) so that
-            # READIMAGEARRAY computes ODELX = WRD1/(NX-1) = pixel_size
-            "OFROMBMP %s %s" % (objname, repr(obj_extent_x)),
+            # OFROMBMP: WRD1 = object size (macro uses 0.40E+19 = infinity),
+            # then the object BMP name (koko reads $HOME/<name>.BMP).
+            "OFROMBMP 0.40E+19 %s" % objname,
+            # Aim the PSF at each object point (required for IMTRACE2/3).
+            "PLTOBJ",
+            # PSF grid size (matches the verified macro).
+            "TGR 512",
+            "NRD 64",
+            "PGR 91",
         ]
         if self.radioSimple.isChecked():
             # Single on-axis PSF convolution (KDP2 IMTRACE2).
@@ -3433,20 +3438,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         except OSError:
             self.append_msg("** Image Blur: BMP copy failed **")
             return
-        # Step 1: run PSF so koko writes GRIIMG to PSFGRI.DAT.
-        # This PSF is created on-axis with the current lens (no object/image
-        # planes defined yet). The resulting GRIIMG is the PSF grid spacing.
-        self.send_koko("FOB")
-        self.send_koko("PSF")
-        gri = self._wait_for_psf_gri(os.path.join(home, "PSFGRI.DAT"))
-        if not gri or gri <= 0.0:
-            self.append_msg("** Image Blur: could not read PSF grid spacing **")
-            return
-        dlg.set_psf_grid_spacing(gri)
-        self.append_msg("** Image Blur: PSF grid spacing (GRIIMG) = %.3e **" % gri)
-        # Step 2: send the KDP2-equivalent command chain with IDELX = GRI.
-        # ImageBlurDialog.commands() builds: COLOR RGB, IIMAGEN, IOBJECTD,
-        # OFROMBMP, IMTRACE2/3, PLTIMG - matching IMAGE1.FOR FULLIMAGING.
+        # Send the verified macro-equivalent command chain. This mirrors the
+        # working IMTESTx.MAC exactly: COLOR RGB, IIMAGEN, OFROMBMP, PLTOBJ,
+        # TGR/NRD/PGR, IMTRACE2/3, PLTIMG. No separate PSF step is needed
+        # (IMTRACE2/3 build the PSF internally; TGR/NRD/PGR size it).
         cmds = dlg.commands()
         if not cmds:
             self.append_msg("** Image Blur: command build failed **")

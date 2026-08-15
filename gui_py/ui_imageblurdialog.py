@@ -66,7 +66,11 @@ class Ui_ImageBlurDialog(object):
         self.doubleDX.setObjectName("doubleDX")
         self.doubleDX.setDecimals(6)
         self.doubleDX.setRange(1e-9, 1e9)
-        self.doubleDX.setValue(0.01)
+        # Default pixel pitch matches the verified IMTESTx.MAC macro
+        # (image extent 0.44794mm over 319 intervals => ~0.001404 mm/px).
+        # Using this keeps IIMAGEN's extent in lock-step with the object BMP
+        # so the image fills the frame (no black border).
+        self.doubleDX.setValue(0.44794 / 319.0)
         self.formArray.addRow(self.labelDX, self.doubleDX)
 
         self.labelDY = QtWidgets.QLabel(parent=self.groupArray)
@@ -75,7 +79,9 @@ class Ui_ImageBlurDialog(object):
         self.doubleDY.setObjectName("doubleDY")
         self.doubleDY.setDecimals(6)
         self.doubleDY.setRange(1e-9, 1e9)
-        self.doubleDY.setValue(0.01)
+        # Default pixel pitch matches the verified IMTESTx.MAC macro
+        # (image extent 0.335624mm over 239 intervals => ~0.001404 mm/px).
+        self.doubleDY.setValue(0.335624 / 239.0)
         self.formArray.addRow(self.labelDY, self.doubleDY)
 
         self.btnAuto = QtWidgets.QPushButton(parent=self.groupArray)
