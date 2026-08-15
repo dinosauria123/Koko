@@ -488,33 +488,6 @@ C       OBJECT POSITION
               WRITE(INPUT,*) 'EOS'
               CALL PROCES
               REST_KDP(28)=RESTINPT(28)
-C     ESTABLISH THE PARAXIAL CHIEF-RAY REFERENCE (PXTRAX/PXTRAY) USED BY
-C     SLOWFFOB TO AIM EACH OFF-AXIS REFERENCE RAY. IN THE -G FLOW THIS IS
-C     OTHERWISE ZERO, MAKING EVERY PSF LAND AT THE IMAGE CENTER (GRID
-C     LINES). THIS MIRRORS THE NORMAL FOB COMMAND REFERENCE-RAY SETUP.
-              IF(WC.EQ.'IMTRACE2'.OR.WC.EQ.'IMTRACE3'.OR.
-     1            WC.EQ.'IMTRACE4'.OR.WC.EQ.'IMTRACE5') THEN
-                  SYSTEM1(21)=SAVE_F21
-                  SYSTEM1(23)=SAVE_F23
-                  SYSTEM1(18)=1.0D0
-                  SYSTEM1(19)=1.0D0
-                  SN=1
-                  NEWOBJ=0
-                  NEWREF=INT(SYSTEM1(25))
-                  NEWIMG=INT(SYSTEM1(20))
-                  STI=0
-                  SST=0
-                  SQ=0
-                  WC='FOB'
-                  W1=1.0D0
-                  W2=1.0D0
-                  W3=0.0D0
-                  W4=SYSTEM1(11)
-                  FOBRUN=.TRUE.
-                  REFEXT=.TRUE.
-                  CALL FFOB
-                  WC='IMTRACE3'
-              END IF
               IIMAGEV(1:IMGNX,1:IMGNY,1:3,1:4)=0.0D0
               SYSSUM=0.0D0
               DO K=1,NUMCOLORS
@@ -573,12 +546,6 @@ C       DO A NEW PSF
                               CALL SLOWFFOB(IOBJECTV(I,J,K))
                               X2=REFRY(1,INT(SYSTEM1(20)))
                               Y2=REFRY(2,INT(SYSTEM1(20)))
-                              IF(I.EQ.1.AND.J.EQ.1) THEN
-                              END IF
-                              IF(I.EQ.60.AND.J.EQ.40) THEN
-                              END IF
-                              IF(I.EQ.120.AND.J.EQ.80) THEN
-                              END IF
                               SAVE_KDP(26)=SAVEINPT(26)
                               INPUT='OUT NULL'
                               CALL PROCES

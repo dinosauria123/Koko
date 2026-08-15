@@ -420,14 +420,15 @@ C       PLOT IMAGE
                           L=L+1
                       END DO
                   END DO
+                  call savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
               END IF
               IF(NUMCOLORS.EQ.3) THEN
                   L=1
                   DO K=1,IMGNY
                       DO J=1,IMGNX
-                          BMPDATA24(L)=int(((IIMAGEV(J,K,3,1))/PEAKER))
-                          BMPDATA24(L+1)=int(((IIMAGEV(J,K,1,1))/PEAKER))
-                          BMPDATA24(L+2)=int(((IIMAGEV(J,K,2,1))/PEAKER))
+                          BMPDATA24(L)=int(((IIMAGEV(J,K,3,1))))
+                          BMPDATA24(L+1)=int(((IIMAGEV(J,K,1,1))))
+                          BMPDATA24(L+2)=int(((IIMAGEV(J,K,2,1))))
                           L=L+3
 
                       END DO
