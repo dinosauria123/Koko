@@ -1261,8 +1261,12 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
             # OFROMBMP: WRD1 = object size (macro uses 0.40E+19 = infinity),
             # then the object BMP name (koko reads $HOME/<name>.BMP).
             "OFROMBMP 0.40E+19 %s" % objname,
-            # Aim the PSF at each object point (required for IMTRACE2/3).
-            "PLTOBJ",
+            # NOTE: PLTOBJ is intentionally omitted. In koko it is
+            # "PLOT THE OBJECT ARRAY" (image.f -> PLOTIMAGEARRAY), a gnuplot
+            # plot command, NOT an IMTRACE setup step. Sending it makes koko
+            # block on a gnuplot plot and IMTRACE/PLTIMG never completes, so
+            # PLOTBMP.BMP is never written. IMTRACE2/3 build the PSF internally
+            # (they issue PSF themselves), so PLTOBJ is not needed.
             # PSF grid size (matches the verified macro).
             "TGR 512",
             "NRD 64",
