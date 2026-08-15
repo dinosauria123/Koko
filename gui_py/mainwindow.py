@@ -1599,6 +1599,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             if not tok:
                 continue
             first = tok.split()[0]
+            # PLTOBJ is an internal IMTRACE瞄准 command (no plot output) and
+            # PLTIMG writes PLOTBMP.BMP directly (handled by the ImageBlur
+            # dialog's _schedule_image_render, NOT the gnuplot plot renderer).
+            # Exclude both from the auto plot-render trigger so they don't
+            # pop an intermediate/empty plot window mid Image-Blur run.
+            if first in ('PLTOBJ', 'PLTIMG'):
+                continue
             if any(tok.startswith(p) for p in PLOT_TRIGGER_PREFIXES) \
                     or first.startswith('PLT') or first.startswith('VIE') \
                     or first.startswith('FANS'):
