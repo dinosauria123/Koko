@@ -660,18 +660,17 @@ class CapfnDialog(QDialog, Ui_CapfnDialog):
 
 
 class SpotDialog(QDialog, Ui_SpotDialog):
-    """Geometric spot-diagram settings (KDP2 IDD_SPOT / SPOTGUI.FOR).
-    Sets the ray pattern, statistics mode, computes SPD and plots.
-    Dialog stays open."""
+    """Geometric spot-diagram settings (split from KDP2 IDD_SPOT /
+    SPOTGUI.FOR). OK sends the ray-pattern / statistics setup, computes
+    SPD[ ACC][,<wav>] and, if the plot box is ticked, PLTSPD through
+    the main window's slot_plot so the graph renders. The spot-file
+    buttons (SPDSAVE / SPDADD / SPDSTATS) act immediately."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self._ui = Ui_SpotDialog()
         self._ui.setupUi(self)
         ui = self._ui
-        ui.btn_spd.clicked.connect(lambda: self._compute(acc=False))
-        ui.btn_spdacc.clicked.connect(lambda: self._compute(acc=True))
-        ui.btn_plot.clicked.connect(lambda: self._plot("PLTSPD"))
         ui.btn_save.clicked.connect(lambda: self._send("SPDSAVE"))
         ui.btn_add.clicked.connect(lambda: self._send("SPDADD"))
         ui.btn_stats.clicked.connect(lambda: self._send("SPDSTATS"))
@@ -682,13 +681,7 @@ class SpotDialog(QDialog, Ui_SpotDialog):
         if callable(fn):
             fn(cmd)
 
-    def _plot(self, *commands):
-        main = self.parent()
-        fn = getattr(main, "slot_plot", None)
-        if callable(fn):
-            fn(*commands)
-
-    def _setup_cmds(self):
+    def commands(self):
         ui = self._ui
         pidx = ui.combo_pattern.currentIndex()
         n = ui.spin_count.value()
@@ -704,17 +697,14 @@ class SpotDialog(QDialog, Ui_SpotDialog):
             cmds.append("RANNUM,%d" % n)
         cmds.append("STATS FULL" if ui.combo_stats.currentIndex() == 0
                     else "STATS MIN")
-        return cmds
-
-    def _compute(self, acc=False):
-        ui = self._ui
-        for c in self._setup_cmds():
-            self._send(c)
         wav = ui.spin_wav.value()
-        if acc:
-            self._send("SPD ACC,%d" % wav if wav else "SPD ACC")
+        if ui.check_acc.isChecked():
+            cmds.append("SPD ACC,%d" % wav if wav else "SPD ACC")
         else:
-            self._send("SPD,%d" % wav if wav else "SPD")
+            cmds.append("SPD,%d" % wav if wav else "SPD")
+        if ui.check_plot.isChecked():
+            cmds.append("PLTSPD")
+        return cmds
 
 
 class PsfDialog(QDialog, Ui_PsfDialog):
@@ -3520,8 +3510,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionXZ', self.slot_plot, 'VIE XZ'),
             ('actionOrtho', self.slot_plot, 'VIE ORTHO'),
             # Analyze -> spot / wavefront / PSF
-            ('actionSpot_Diagram', self.slot_plot, 'SPOT RING', 'SPD',
-             'PLTSPD'),
+            ('actionSpot_Diagram', self.slot_actionSpot),
             ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_actionPsf),
@@ -3541,7 +3530,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionBb', self.slot_actionBb),
             ('actionRayAux', self.slot_actionRayAux),
             ('actionCapfn', self.slot_actionCapfn),
-            ('actionSpotSettings', self.slot_actionSpotSettings),
             ('actionLensOps', self.slot_actionLensOps),
             ('actionMultiAperture', self.slot_actionMultiAperture),
             ('actionAperture', self.slot_actionAperture),
@@ -4130,11 +4118,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg = CapfnDialog(self)
         dlg.exec()
 
-    def slot_actionSpotSettings(self):
-        """Spot diagram settings (mirrors KDP2 IDD_SPOT / SPOTGUI.FOR).
-        Dialog stays open; SPD / plot buttons act."""
+    def slot_actionSpot(self):
+        """Spot diagram: open the SPD settings dialog, then on OK send
+        the ray-pattern / statistics setup + SPD[ ACC][,<wav>]
+        (+ PLTSPD if ticked) and render."""
         dlg = SpotDialog(self)
-        dlg.exec()
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
 
     def slot_actionPsf(self):
         """PSF: open the PSF settings dialog, then on OK send NRD /

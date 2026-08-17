@@ -16,7 +16,7 @@
 
 | 機能 | オリジナル ダイアログ | オリジナル コマンド | Python GUI 状態 |
 |------|----------------------|---------------------|-----------------|
-| スポット図 | IDD_SPOT / SPOTENERGY / SPOTPLOT / SPOTWRITE | `SPOT RING` `SPOT RAND` `SPOT RECT` `SPD *` `SPDSAVE` | **実装済み** (SPOT RING+SPD+STATS FULL+OUT TP) — koko が gnuplot 出力、GUI 描画確認済み。**SpotDialog 追加**: パターン(RING/RECT/RAND)+本数+統計(FULL/MIN)+波長指定→SPD/SPD ACC+PLTSPD+SPDSAVE/SPDADD/SPDSTATS。KDP2 IDD_SPOT/SPOTGUI.FOR 相当 |
+| スポット図 | IDD_SPOT / SPOTENERGY / SPOTPLOT / SPOTWRITE | `SPOT RING` `SPOT RAND` `SPOT RECT` `SPD *` `SPDSAVE` | **実装済み** (SPOT RING+SPD+STATS FULL+OUT TP) — koko が gnuplot 出力、GUI 描画確認済み。**SpotDialog を設定→描画フローに統一**: Graphs>Spot Diagram (SPD)... が設定ダイアログを開き、OKで パターン(RING/RECT/RAND)+本数+統計(FULL/MIN)+波長+SPD[ ACC][,<wav>]+PLTSPD。SPDSAVE/SPDADD/SPDSTATS はダイアログ内即時ボタン。旧「Spot Diagram Settings...」エントリは廃止（メニュー1本化）。KDP2 IDD_SPOT/SPOTGUI.FOR 相当 |
 | 点列図 (DOTF) | IDD_DOTF | `DOTF` `PLTDOTF` `DIFLEICA NO,n` | **実装済み** (SPACE I/O+FAR+DOTF+PLTDOTF,,1)。**DotfDialog に分割**: Graphs>Optical Transfer Function>Diffraction (DOTF)... が設定ダイアログを開き、OKで SPACE I/O+FAR/NEAR+DOTF+PLTDOTF[ LEICA],,1+DRAW。Leicaはダイアログ内チェックで選択（メニューは1本に統一済み） |
 | 幾何 OTF (GOTF) | IDD_GOTF | `GOTF` `PLTGOTF` `GEOLEICA NO,n` | **実装済み** (SPACE I/O+FAR+GOTF+PLTGOTF,1)。**GotfDialog に分割**: Graphs>Optical Transfer Function>Geometical (GOTF)... が設定ダイアログを開き、OKで SPACE I/O+FAR/NEAR+GOTF+PLTGOTF[ LEICA],1+DRAW。Leicaはダイアログ内チェックで選択（メニューは1本に統一済み） |
 | PSF | IDD_PSF / PSFENERGY / PSFSTREAK / PSFSTREHL | `PSF` `PSFLOG` `PSFWRITE` `PSFROT` `STREAK *` `STREHL` `APSTREHL` | **実装済み** (PSFWRITE YES+PSFLOG+PSFPLOT YES+PSF,1+CAPFNOUT)。**PsfDialog に分割**: Graphs>Point Spread Function (PSF)... が設定ダイアログを開き、OKで NRD+PSFWRITE/PSFPLOT トグル+モード(PSF/PERFECT/PERFNOOB)+波長→PSF,<wav>+CAPFNOUT |
