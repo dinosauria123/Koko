@@ -23,7 +23,7 @@
 | ファン図（横/縦/対角/OPD/CD/LA） | IDD_FAN1 | `FANS XFAN` `FANS YFAN` `FANS XYFAN` `FANS NFAN` `FANS PFAN` (+CD/LA/OPD) | **実装済み** (FANS <qualifier> — KDP2 RIMS サブルーチン経由。PTY/GUI で PNG 生成確認済み) |
 | 単一光線追跡 | IDD_RAY | `RAY` `FOB` `AIMRAY ON` `PRXYZ ALL` `DRAWFAN` | **実装済み** (RayDialog: [Trace]→FOB+RAY+PRXYZ ALL（テキスト）、[Plot Fan]→FANS XFAN（図）。GUI 動作確認済み。koko の RAY 単体は追跡結果をテキスト出力しないため PRXYZ ALL で主光線座標を表示) |
 | 近軸 (PARAXIAL) | IDD_PARAX1/2/3 | `FCHY ALL` `FCHX ALL` `PCD3 ALL` `SCD3 ALL` `PRXYZ ALL` `PRR ALL` | **実装済み** (menuParaxial 配下の各項目 → slot_text で対応コマンド送信。koko がテキスト出力。GUI 動作確認済み) |
-| 表示制御 (VIE) | IDD_VIE | `VIE` `VIE XZ/XY/ORTHO` `VIEVIG ON/OFF` `VIESYM ON/OFF` `VIEOFF` `VIECO` `PLOT VIEW` `PLOT NOTE/PEN/FRAME/AXIS/UPLOT` | **実装済み**（VieDialog: 視点+XZ/XY/ORTHO+スケール+ビネット/対称トグル→VIEVIG/VIESYM+VIE <type>,<factor>。koko 受付確認済み。PLOT NOTE/PEN/FRAME/AXIS/UPLOT 詳細制御は未実装） |
+| 表示制御 (VIE) | IDD_VIE | `VIE` `VIE XZ/XY/ORTHO` `VIEVIG ON/OFF` `VIESYM ON/OFF` `VIEOFF` `VIECO` `PLOT VIEW` `PLOT NOTE/PEN/FRAME/AXIS/UPLOT` | **実装済み**（VieDialog: 視点+XZ/XY/ORTHO+スケール+ビネット/対称トグル→VIEVIG/VIESYM+VIE <type>,<factor>。koko 受付確認済み。PlotDetailDialog: PLOT FRAME(座標指定可/既定0 0 10000 7000)+PLOT AXIS+PNOTE <text>+PLOT NOTE x y+PLOT PEN x y state+PLOT UPLOT xr1 xr2 yr1 yr2 を送信後 DRAW で drawcmd.gpl 再生成+GUI 描画。koko が全コマンドを PTY で受付確認済み） |
 
 ### A 群 実装メモ（2026-08-12 コミット c88725c）
 - SPOT/DOTF/GOTF/PSF は「コマンド列修正のみ」で動作。koko が $HOME/gnuplot/drawcmd.gpl を書き、既存の slot_plot → gnuplot → PNG 描画基盤が its まま機能（KokoMainWindow 経由で drawcmd.gpl 更新を確認済み）。

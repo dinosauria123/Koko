@@ -59,6 +59,7 @@ from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
 from gui_py.ui_viedialog import Ui_VieDialog
+from gui_py.ui_plotdetaildialog import Ui_PlotDetailDialog
 from gui_py.ui_surtypedialog import Ui_SurtypeDialog
 from gui_py.ui_coatingdialog import Ui_CoatingDialog
 from gui_py.ui_pivaxisdialog import Ui_PivaxisDialog
@@ -327,6 +328,50 @@ class VieDialog(QDialog, Ui_VieDialog):
             except ValueError:
                 return None
         return None
+
+
+class PlotDetailDialog(QDialog, Ui_PlotDetailDialog):
+    """Plot overlay control dialog (PLOT FRAME / AXIS / NOTE / PEN / UPLOT).
+
+    These KDP2 PLOTCAD commands modify the current plot buffer; they are
+    sent after a base plot (e.g. VIE XZ) and the slot finishes with DRAW
+    so drawcmd.gpl is regenerated with the overlays included.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_PlotDetailDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() != QDialog.DialogCode.Accepted:
+            return None
+        vals = {}
+        # Frame / Axis tab
+        vals["frame"] = self._ui.check_frame.isChecked()
+        if vals["frame"] and not self._ui.check_use_default_frame.isChecked():
+            vals["frame_coords"] = self._ui.lineEdit_fcoords.text().strip()
+        else:
+            vals["frame_coords"] = None
+        vals["axis"] = self._ui.check_axis.isChecked()
+        # Note tab
+        vals["pnote"] = self._ui.lineEdit_pnote.text().strip()
+        vals["note"] = self._ui.check_note.isChecked()
+        vals["note_x"] = self._ui.spin_note_x.value()
+        vals["note_y"] = self._ui.spin_note_y.value()
+        # Pen tab
+        vals["pen"] = self._ui.check_pen.isChecked()
+        vals["pen_x"] = self._ui.spin_pen_x.value()
+        vals["pen_y"] = self._ui.spin_pen_y.value()
+        vals["pen_state"] = self._ui.combo_pen_state.currentIndex() + 1
+        # User plot tab
+        vals["uplot"] = self._ui.check_uplot.isChecked()
+        vals["uxr1"] = self._ui.spin_uxr1.value()
+        vals["uxr2"] = self._ui.spin_uxr2.value()
+        vals["uyr1"] = self._ui.spin_uyr1.value()
+        vals["uyr2"] = self._ui.spin_uyr2.value()
+        return vals
 
 
 class SurtypeDialog(QDialog, Ui_SurtypeDialog):
@@ -2744,6 +2789,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
             ('actionVie', self.slot_actionVie),
+            ('actionPlotDetail', self.slot_actionPlotDetail),
             ('actionSurtype', self.slot_actionSurtype),
             ('actionCoating', self.slot_actionCoating),
             ('actionPivaxis', self.slot_actionPivaxis),
@@ -3255,6 +3301,48 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.send_koko("VIESYM OFF")
         self.send_koko("VIE %s,%s" % (vals["vtype"], repr(vals["factor"])))
+
+    def slot_actionPlotDetail(self):
+        """Plot overlay controls: send PLOT FRAME / AXIS / NOTE / PEN /
+        UPLOT overlay commands after the current plot, then DRAW so
+        drawcmd.gpl is regenerated with the overlays. Mirrors KDP2
+        PLOTCAD1-5.FOR command handlers."""
+        dlg = PlotDetailDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        cmds = []
+        # Frame / Axis
+        if vals["frame"]:
+            if vals["frame_coords"]:
+                cmds.append("PLOT FRAME " + vals["frame_coords"])
+            else:
+                cmds.append("PLOT FRAME")
+        if vals["axis"]:
+            cmds.append("PLOT AXIS")
+        # Note: PNOTE sets the text, PLOT NOTE x y draws it
+        if vals["pnote"]:
+            cmds.append("PNOTE " + vals["pnote"])
+        if vals["note"]:
+            cmds.append("PLOT NOTE %d %d" % (vals["note_x"], vals["note_y"]))
+        # Pen
+        if vals["pen"]:
+            cmds.append("PLOT PEN %d %d %d"
+                        % (vals["pen_x"], vals["pen_y"], vals["pen_state"]))
+        # User plot
+        if vals["uplot"]:
+            cmds.append("PLOT UPLOT %d %d %d %d"
+                        % (vals["uxr1"], vals["uxr2"],
+                           vals["uyr1"], vals["uyr2"]))
+        if not cmds:
+            self.append_msg("Plot Detail: nothing selected")
+            return
+        for c in cmds:
+            self.send_koko(c)
+        # Regenerate drawcmd.gpl with the overlays and render
+        self.send_koko("DRAW")
+        self._last_plot_cmd = "DRAW"
+        self._schedule_plot_render()
 
     def slot_actionSurtype(self):
         """Surface type: prompt for surface (or all) and send koko's SURTYPE
