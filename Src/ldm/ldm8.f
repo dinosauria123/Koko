@@ -3782,7 +3782,7 @@ C
           END IF
           IF(ALENS(16,SURF).EQ.0.0D0) THEN
               OUTLYNE=
-     1        '"MULTCLAP" REQUIRES A PRE-EXISTING "COBS" TO BE ASSIGNED'
+     1        '"MULTCOBS" REQUIRES A PRE-EXISTING "COBS" TO BE ASSIGNED'
               CALL SHOWIT(1)
               OUTLYNE='RE-ENTER COMMAND'
               CALL SHOWIT(1)

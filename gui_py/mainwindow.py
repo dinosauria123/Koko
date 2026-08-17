@@ -66,6 +66,7 @@ from gui_py.ui_capfndialog import Ui_CapfnDialog
 from gui_py.ui_spotdialog import Ui_SpotDialog
 from gui_py.ui_psfmtfdialog import Ui_PsfMtfDialog
 from gui_py.ui_lensopsdialog import Ui_LensOpsDialog
+from gui_py.ui_multiaperturedialog import Ui_MultiApertureDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -836,6 +837,69 @@ class LensOpsDialog(QDialog, Ui_LensOpsDialog):
         coat = ui.spin_coat.value()
         if coat > 0:
             self._send("COATING,%d" % coat)
+        self._send("EOS")
+        self._send("RTG ALL")
+
+
+class MultiApertureDialog(QDialog, Ui_MultiApertureDialog):
+    """Multiple apertures/obscurations dialog (KDP2 IDD_CLAPS /
+    IDD_MCLAP / IDD_MCOBS). koko commands:
+        MULTCLAP,<n>,<x>,<y>[,<gam>]   add aperture instance
+        MULTCLAP DELETE                remove all on surface
+        MULTCOBS,<n>,<x>,<y>[,<gam>]   add obscuration instance
+        MULTCOBS DELETE                remove all on surface
+    MULTCLAP requires a pre-existing CLAP; MULTCOBS requires COBS.
+    Dialog stays open so several instances can be added."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_MultiApertureDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_clap_add.clicked.connect(lambda: self._add("MULTCLAP"))
+        ui.btn_clap_del.clicked.connect(lambda: self._delete("MULTCLAP"))
+        ui.btn_cobs_add.clicked.connect(lambda: self._add("MULTCOBS"))
+        ui.btn_cobs_del.clicked.connect(lambda: self._delete("MULTCOBS"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        fn = getattr(main, "send_koko", None)
+        if callable(fn):
+            fn(cmd)
+
+    def _add(self, kind):
+        ui = self._ui
+        surf = ui.spin_surf.value()
+        if kind == "MULTCLAP":
+            n = ui.spin_clap_n.value()
+            xs, ys, gs = (ui.lineEdit_clap_x.text().strip(),
+                          ui.lineEdit_clap_y.text().strip(),
+                          ui.lineEdit_clap_gam.text().strip())
+        else:
+            n = ui.spin_cobs_n.value()
+            xs, ys, gs = (ui.lineEdit_cobs_x.text().strip(),
+                          ui.lineEdit_cobs_y.text().strip(),
+                          ui.lineEdit_cobs_gam.text().strip())
+        try:
+            x = float(xs or "0.0")
+            y = float(ys or "0.0")
+        except ValueError:
+            return
+        self._send("U L")
+        self._send("CHG %d" % surf)
+        if gs:
+            self._send("%s,%d,%s,%s,%s" % (kind, n, repr(x), repr(y), gs))
+        else:
+            self._send("%s,%d,%s,%s" % (kind, n, repr(x), repr(y)))
+        self._send("EOS")
+        self._send("RTG ALL")
+
+    def _delete(self, kind):
+        ui = self._ui
+        surf = ui.spin_surf.value()
+        self._send("U L")
+        self._send("CHG %d" % surf)
+        self._send("%s DELETE" % kind)
         self._send("EOS")
         self._send("RTG ALL")
 
@@ -3432,6 +3496,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionImport_Code_V', self.slot_actionImport_CODE_V),
             ('actionExport_Zemax', self.slot_actionExport_Zemax),
             ('actionExport_Code_V', self.slot_actionExport_CODE_V),
+            ('actionExport_Leno_AC', self.slot_actionExport_Leno_AC),
+            ('actionAbout', self.slot_actionAbout),
             # Lens View (plots)
             ('actionXZ', self.slot_plot, 'VIE XZ'),
             ('actionOrtho', self.slot_plot, 'VIE ORTHO'),
@@ -3468,6 +3534,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionSpotSettings', self.slot_actionSpotSettings),
             ('actionPsfMtf', self.slot_actionPsfMtf),
             ('actionLensOps', self.slot_actionLensOps),
+            ('actionMultiAperture', self.slot_actionMultiAperture),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3811,6 +3878,27 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("LENO CV")
             self.send_koko("OUT TP")
 
+    def slot_actionExport_Leno_AC(self):
+        """Export the current lens as a KDP2 ASCII (LENO AC) file
+        (mirrors KDP2 IDD_LENOACC: OUT FILE + LENO AC + OUT TP)."""
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, "Export Lens (LENO AC)", "", "Lens Files (*.PRG *.TXT)")
+        if file_path:
+            self.send_koko("OUT FILE " + file_path)
+            self.send_koko("LENO AC")
+            self.send_koko("OUT TP")
+
+    def slot_actionAbout(self):
+        """About box (mirrors KDP2 IDD_ABOUT)."""
+        QMessageBox.about(
+            self, "About Koko",
+            "Koko Optical Design Software (KODS)\n\n"
+            "Free software — no warranty, not even for\n"
+            "merchantability or fitness for a particular purpose.\n"
+            "See COPYING, LICENSE and AUTHORS in the source\n"
+            "distribution for details.\n\n"
+            "PyQt6 GUI front-end over the koko-cli Fortran core.")
+
     def slot_actionImport_Zemax(self):
         file_path, _ = QFileDialog.getOpenFileName(
             self, "Import Zemax File", os.path.expanduser("~/KODS/LENSES"), "Zemax Files (*.ZMX)")
@@ -4033,6 +4121,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Lens operations (KDP2 item 7): FLIP / SCALE / ZERO / OTHER.
         Dialog stays open; each operation button sends its command."""
         dlg = LensOpsDialog(self)
+        dlg.exec()
+
+    def slot_actionMultiAperture(self):
+        """Multiple apertures/obscurations (KDP2 IDD_CLAPS / IDD_MCLAP /
+        IDD_MCOBS): MULTCLAP / MULTCOBS instances. Dialog stays open."""
+        dlg = MultiApertureDialog(self)
         dlg.exec()
 
     def slot_actionAperture(self):
