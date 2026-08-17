@@ -65,6 +65,7 @@ from gui_py.ui_disastdialog import Ui_DisastDialog
 from gui_py.ui_capfndialog import Ui_CapfnDialog
 from gui_py.ui_spotdialog import Ui_SpotDialog
 from gui_py.ui_psfmtfdialog import Ui_PsfMtfDialog
+from gui_py.ui_lensopsdialog import Ui_LensOpsDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -753,6 +754,90 @@ class PsfMtfDialog(QDialog, Ui_PsfMtfDialog):
             cmds.append("PLTGOTF LEICA,1" if leica else "PLTGOTF,1")
         cmds.append("DRAW")
         self._plot(*cmds)
+
+
+class LensOpsDialog(QDialog, Ui_LensOpsDialog):
+    """Lens operations dialog (KDP2 item 7): FLIP / SCALE / ZERO /
+    OTHER. All are CMD-level commands sent through the main window's
+    send_koko. Dialog stays open so several operations can be run."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_LensOpsDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_flip.clicked.connect(self._do_flip)
+        ui.btn_scale.clicked.connect(self._do_scale)
+        ui.btn_zero.clicked.connect(self._do_zero)
+        ui.btn_other.clicked.connect(self._do_other)
+
+    def _send(self, cmd):
+        main = self.parent()
+        fn = getattr(main, "send_koko", None)
+        if callable(fn):
+            fn(cmd)
+
+    def _do_flip(self):
+        ui = self._ui
+        s = ui.spin_flip_s.value()
+        e = ui.spin_flip_e.value()
+        if s >= e:
+            return
+        self._send("FLIP,%d,%d" % (s, e))
+
+    def _do_scale(self):
+        ui = self._ui
+        tidx = ui.combo_scale_type.currentIndex()
+        try:
+            factor = float(ui.lineEdit_scale_f.text().strip() or "1.0")
+        except ValueError:
+            return
+        if factor == 0.0:
+            return
+        s = ui.spin_scale_s.value()
+        e = ui.spin_scale_e.value()
+        if s >= e:
+            return
+        base = ["SC", "WSC", "SC FY", "WSC FY"][tidx]
+        self._send("%s,%s,%d,%d" % (base, repr(factor), s, e))
+
+    def _do_zero(self):
+        ui = self._ui
+        surf = ui.spin_zero_surf.value()
+        self._send("U L")
+        self._send("CHG %d" % surf)
+        self._send("ZERO")
+        self._send("EOS")
+        self._send("RTG ALL")
+
+    def _do_other(self):
+        ui = self._ui
+        surf = ui.spin_other_surf.value()
+        self._send("U L")
+        self._send("CHG %d" % surf)
+        self._send(ui.combo_other_trace.currentText())
+        self._send("FOOTBLOK %s" % ("YES" if ui.check_footblok.isChecked() else "NO"))
+        self._send("NODUM %s" % ("YES" if ui.check_nodum.isChecked() else "NO"))
+        spgr = ui.lineEdit_spgr.text().strip()
+        if spgr:
+            self._send("SPGR,%s" % spgr)
+        price = ui.lineEdit_price.text().strip()
+        if price:
+            self._send("PRICE,%s" % price)
+        inr = ui.lineEdit_inr.text().strip()
+        if inr:
+            self._send("INR,%s" % inr)
+        rayerr = ui.lineEdit_rayerr.text().strip()
+        if rayerr:
+            self._send("RAYERROR,%s" % rayerr)
+        lbl = ui.lineEdit_lbl.text().strip()
+        if lbl:
+            self._send("LBL,%s" % lbl)
+        coat = ui.spin_coat.value()
+        if coat > 0:
+            self._send("COATING,%d" % coat)
+        self._send("EOS")
+        self._send("RTG ALL")
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -3382,6 +3467,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionCapfn', self.slot_actionCapfn),
             ('actionSpotSettings', self.slot_actionSpotSettings),
             ('actionPsfMtf', self.slot_actionPsfMtf),
+            ('actionLensOps', self.slot_actionLensOps),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3941,6 +4027,12 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """PSF / MTF settings (mirrors KDP2 IDD_PSF / IDD_DOTF /
         IDD_GOTF). Dialog stays open; compute buttons plot."""
         dlg = PsfMtfDialog(self)
+        dlg.exec()
+
+    def slot_actionLensOps(self):
+        """Lens operations (KDP2 item 7): FLIP / SCALE / ZERO / OTHER.
+        Dialog stays open; each operation button sends its command."""
+        dlg = LensOpsDialog(self)
         dlg.exec()
 
     def slot_actionAperture(self):

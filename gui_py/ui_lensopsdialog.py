@@ -1,0 +1,166 @@
+# Form implementation for the lens-operations dialog (KDP2 item 7).
+# Bundles four KDP2 dialogs that koko exposes as CMD-level commands:
+#   IDD_FLIP   -> FLIP,<start>,<end>                 (reverse lens section)
+#   IDD_SCALE  -> SC/WSC[,FY],<factor>,<start>,<end> (scale lens section)
+#   IDD_ZERO   -> U L + CHG <surf> + ZERO + EOS      (zero surface params)
+#   IDD_OTHER  -> U L + CHG <surf> + REAL/PARAX + FOOTBLOK + NODUM
+#                 + THM + SPGR + PRICE + INR/INRD + RAYERROR + LBL
+#                 + COATING + EOS                    (misc surface params)
+# SRADIUS/SCURVATURE/STHICKNESS are already covered by the lens-data
+# table (CV/RD/TH); ROO/CCR have no KDP2 handler, so they are omitted.
+from PyQt6 import QtCore, QtGui, QtWidgets
+
+
+class Ui_LensOpsDialog(object):
+    def setupUi(self, LensOpsDialog):
+        LensOpsDialog.setObjectName("LensOpsDialog")
+        LensOpsDialog.resize(470, 620)
+        self.verticalLayout = QtWidgets.QVBoxLayout(LensOpsDialog)
+        self.verticalLayout.setContentsMargins(12, 12, 12, 12)
+        self.verticalLayout.setSpacing(8)
+
+        # --- FLIP ---
+        self.grp_flip = QtWidgets.QGroupBox(LensOpsDialog)
+        self.grp_flip.setTitle("Flip lens section (FLIP)")
+        flf = QtWidgets.QFormLayout(self.grp_flip)
+        flf.setContentsMargins(10, 10, 10, 10)
+        self.label_flip_s = QtWidgets.QLabel(self.grp_flip)
+        self.label_flip_s.setText("Start surface")
+        self.spin_flip_s = QtWidgets.QSpinBox(self.grp_flip)
+        self.spin_flip_s.setRange(1, 200)
+        self.spin_flip_s.setValue(1)
+        flf.addRow(self.label_flip_s, self.spin_flip_s)
+        self.label_flip_e = QtWidgets.QLabel(self.grp_flip)
+        self.label_flip_e.setText("End surface")
+        self.spin_flip_e = QtWidgets.QSpinBox(self.grp_flip)
+        self.spin_flip_e.setRange(1, 200)
+        self.spin_flip_e.setValue(5)
+        flf.addRow(self.label_flip_e, self.spin_flip_e)
+        self.btn_flip = QtWidgets.QPushButton(self.grp_flip)
+        self.btn_flip.setText("Flip")
+        flf.addRow(self.btn_flip)
+        self.verticalLayout.addWidget(self.grp_flip)
+
+        # --- SCALE ---
+        self.grp_scale = QtWidgets.QGroupBox(LensOpsDialog)
+        self.grp_scale.setTitle("Scale lens section (SC / WSC)")
+        slf = QtWidgets.QFormLayout(self.grp_scale)
+        slf.setContentsMargins(10, 10, 10, 10)
+        self.label_scale_type = QtWidgets.QLabel(self.grp_scale)
+        self.label_scale_type.setText("Type")
+        self.combo_scale_type = QtWidgets.QComboBox(self.grp_scale)
+        self.combo_scale_type.addItems([
+            "SC (scale lens data)",
+            "WSC (working scale)",
+            "SC FY (scale, fix Y)",
+            "WSC FY (working scale, fix Y)",
+        ])
+        slf.addRow(self.label_scale_type, self.combo_scale_type)
+        self.label_scale_f = QtWidgets.QLabel(self.grp_scale)
+        self.label_scale_f.setText("Factor")
+        self.lineEdit_scale_f = QtWidgets.QLineEdit(self.grp_scale)
+        self.lineEdit_scale_f.setText("2.0")
+        slf.addRow(self.label_scale_f, self.lineEdit_scale_f)
+        self.label_scale_s = QtWidgets.QLabel(self.grp_scale)
+        self.label_scale_s.setText("Start surface")
+        self.spin_scale_s = QtWidgets.QSpinBox(self.grp_scale)
+        self.spin_scale_s.setRange(0, 200)
+        self.spin_scale_s.setValue(1)
+        slf.addRow(self.label_scale_s, self.spin_scale_s)
+        self.label_scale_e = QtWidgets.QLabel(self.grp_scale)
+        self.label_scale_e.setText("End surface")
+        self.spin_scale_e = QtWidgets.QSpinBox(self.grp_scale)
+        self.spin_scale_e.setRange(1, 200)
+        self.spin_scale_e.setValue(5)
+        slf.addRow(self.label_scale_e, self.spin_scale_e)
+        self.btn_scale = QtWidgets.QPushButton(self.grp_scale)
+        self.btn_scale.setText("Scale")
+        slf.addRow(self.btn_scale)
+        self.verticalLayout.addWidget(self.grp_scale)
+
+        # --- ZERO ---
+        self.grp_zero = QtWidgets.QGroupBox(LensOpsDialog)
+        self.grp_zero.setTitle("Zero surface parameters (ZERO)")
+        zlf = QtWidgets.QFormLayout(self.grp_zero)
+        zlf.setContentsMargins(10, 10, 10, 10)
+        self.label_zero_surf = QtWidgets.QLabel(self.grp_zero)
+        self.label_zero_surf.setText("Surface")
+        self.spin_zero_surf = QtWidgets.QSpinBox(self.grp_zero)
+        self.spin_zero_surf.setRange(1, 200)
+        self.spin_zero_surf.setValue(2)
+        zlf.addRow(self.label_zero_surf, self.spin_zero_surf)
+        self.btn_zero = QtWidgets.QPushButton(self.grp_zero)
+        self.btn_zero.setText("Zero surface")
+        zlf.addRow(self.btn_zero)
+        self.verticalLayout.addWidget(self.grp_zero)
+
+        # --- OTHER (misc surface params) ---
+        self.grp_other = QtWidgets.QGroupBox(LensOpsDialog)
+        self.grp_other.setTitle("Other surface parameters (OTHER)")
+        olf = QtWidgets.QFormLayout(self.grp_other)
+        olf.setContentsMargins(10, 10, 10, 10)
+        self.label_other_surf = QtWidgets.QLabel(self.grp_other)
+        self.label_other_surf.setText("Surface")
+        self.spin_other_surf = QtWidgets.QSpinBox(self.grp_other)
+        self.spin_other_surf.setRange(1, 200)
+        self.spin_other_surf.setValue(2)
+        olf.addRow(self.label_other_surf, self.spin_other_surf)
+        self.label_other_trace = QtWidgets.QLabel(self.grp_other)
+        self.label_other_trace.setText("Trace type")
+        self.combo_other_trace = QtWidgets.QComboBox(self.grp_other)
+        self.combo_other_trace.addItems(["REAL", "PARAX"])
+        olf.addRow(self.label_other_trace, self.combo_other_trace)
+        self.check_footblok = QtWidgets.QCheckBox(self.grp_other)
+        self.check_footblok.setText("Footprint block (FOOTBLOK YES)")
+        self.check_footblok.setChecked(False)
+        olf.addRow(self.check_footblok)
+        self.check_nodum = QtWidgets.QCheckBox(self.grp_other)
+        self.check_nodum.setText("No dummy (NODUM YES)")
+        self.check_nodum.setChecked(False)
+        olf.addRow(self.check_nodum)
+        self.label_spgr = QtWidgets.QLabel(self.grp_other)
+        self.label_spgr.setText("Specific gravity (SPGR)")
+        self.lineEdit_spgr = QtWidgets.QLineEdit(self.grp_other)
+        olf.addRow(self.label_spgr, self.lineEdit_spgr)
+        self.label_price = QtWidgets.QLabel(self.grp_other)
+        self.label_price.setText("Price (PRICE)")
+        self.lineEdit_price = QtWidgets.QLineEdit(self.grp_other)
+        olf.addRow(self.label_price, self.lineEdit_price)
+        self.label_inr = QtWidgets.QLabel(self.grp_other)
+        self.label_inr.setText("Explicit index (INR, blank=implicit)")
+        self.lineEdit_inr = QtWidgets.QLineEdit(self.grp_other)
+        olf.addRow(self.label_inr, self.lineEdit_inr)
+        self.label_rayerr = QtWidgets.QLabel(self.grp_other)
+        self.label_rayerr.setText("Random ray error (RAYERROR)")
+        self.lineEdit_rayerr = QtWidgets.QLineEdit(self.grp_other)
+        olf.addRow(self.label_rayerr, self.lineEdit_rayerr)
+        self.label_lbl = QtWidgets.QLabel(self.grp_other)
+        self.label_lbl.setText("Label (LBL)")
+        self.lineEdit_lbl = QtWidgets.QLineEdit(self.grp_other)
+        olf.addRow(self.label_lbl, self.lineEdit_lbl)
+        self.label_coat = QtWidgets.QLabel(self.grp_other)
+        self.label_coat.setText("Coating file # (COATING)")
+        self.spin_coat = QtWidgets.QSpinBox(self.grp_other)
+        self.spin_coat.setRange(0, 999)
+        self.spin_coat.setValue(0)
+        olf.addRow(self.label_coat, self.spin_coat)
+        self.btn_other = QtWidgets.QPushButton(self.grp_other)
+        self.btn_other.setText("Apply other parameters")
+        olf.addRow(self.btn_other)
+        self.verticalLayout.addWidget(self.grp_other)
+
+        # --- Close ---
+        self.buttonBox = QtWidgets.QDialogButtonBox(LensOpsDialog)
+        self.buttonBox.setOrientation(QtCore.Qt.Orientation.Horizontal)
+        self.buttonBox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.StandardButton.Close)
+        self.verticalLayout.addWidget(self.buttonBox)
+
+        self.retranslateUi(LensOpsDialog)
+        self.buttonBox.rejected.connect(LensOpsDialog.reject)
+        QtCore.QMetaObject.connectSlotsByName(LensOpsDialog)
+
+    def retranslateUi(self, LensOpsDialog):
+        _translate = QtCore.QCoreApplication.translate
+        LensOpsDialog.setWindowTitle(
+            _translate("LensOpsDialog", "Lens Operations (FLIP / SCALE / ZERO / OTHER)"))
