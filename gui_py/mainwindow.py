@@ -61,7 +61,9 @@ from gui_py.ui_grtarraydialog import Ui_GrtArrayDialog
 from gui_py.ui_spsrfdialog import Ui_SpsrfDialog
 from gui_py.ui_bbdialog import Ui_BbDialog
 from gui_py.ui_rayauxdialog import Ui_RayAuxDialog
-from gui_py.ui_disastdialog import Ui_DisastDialog
+from gui_py.ui_fldcvdialog import Ui_FldcvDialog
+from gui_py.ui_astdialog import Ui_AstDialog
+from gui_py.ui_distdialog import Ui_DistDialog
 from gui_py.ui_capfndialog import Ui_CapfnDialog
 from gui_py.ui_spotdialog import Ui_SpotDialog
 from gui_py.ui_psfmtfdialog import Ui_PsfMtfDialog
@@ -519,57 +521,75 @@ class RayAuxDialog(QDialog, Ui_RayAuxDialog):
             self._send(cmd)
 
 
-class DisastDialog(QDialog, Ui_DisastDialog):
-    """Field curvature / astigmatism / distortion settings (KDP2
-    IDD_DISAST). Each compute button sends the analysis command and,
-    if the plot box is ticked, the matching PLT* command through the
-    main window's slot_plot so the graph renders. The dialog stays
-    open so several analyses can be run in a row."""
+class FldcvDialog(QDialog, Ui_FldcvDialog):
+    """Field curvature settings (split from KDP2 IDD_DISAST). OK sends
+    FLDCV,<orient>,,<n> and, if the plot box is ticked, PLTFLDCV,,1
+    through the main window's slot_plot so the graph renders."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._ui = Ui_DisastDialog()
+        self._ui = Ui_FldcvDialog()
         self._ui.setupUi(self)
-        self._ui.btn_fld.clicked.connect(self._compute_fld)
-        self._ui.btn_ast.clicked.connect(self._compute_ast)
-        self._ui.btn_dist.clicked.connect(self._compute_dist)
-
-    def _plot(self, *commands):
-        main = self.parent()
-        fn = getattr(main, "slot_plot", None)
-        if callable(fn):
-            fn(*commands)
 
     @staticmethod
     def _orient(idx):
         return "0" if idx == 0 else "90"
 
-    def _compute_fld(self):
+    def commands(self):
         ui = self._ui
-        cmds = ["FLDCV,%s,,%d" % (self._orient(ui.combo_fld_orient.currentIndex()),
-                                  ui.spin_fld_n.value())]
-        if ui.check_fld_plot.isChecked():
+        cmds = ["FLDCV,%s,,%d" % (self._orient(ui.combo_orient.currentIndex()),
+                                  ui.spin_n.value())]
+        if ui.check_plot.isChecked():
             cmds.append("PLTFLDCV,,1")
-        self._plot(*cmds)
+        return cmds
 
-    def _compute_ast(self):
+
+class AstDialog(QDialog, Ui_AstDialog):
+    """Astigmatism settings (split from KDP2 IDD_DISAST). OK sends
+    AST,<orient>,,<n> and, if the plot box is ticked, PLTAST,,1."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_AstDialog()
+        self._ui.setupUi(self)
+
+    @staticmethod
+    def _orient(idx):
+        return "0" if idx == 0 else "90"
+
+    def commands(self):
         ui = self._ui
-        cmds = ["AST,%s,,%d" % (self._orient(ui.combo_ast_orient.currentIndex()),
-                                ui.spin_ast_n.value())]
-        if ui.check_ast_plot.isChecked():
+        cmds = ["AST,%s,,%d" % (self._orient(ui.combo_orient.currentIndex()),
+                                ui.spin_n.value())]
+        if ui.check_plot.isChecked():
             cmds.append("PLTAST,,1")
-        self._plot(*cmds)
+        return cmds
 
-    def _compute_dist(self):
+
+class DistDialog(QDialog, Ui_DistDialog):
+    """Distortion settings (split from KDP2 IDD_DISAST). OK sends
+    DIST/FISHDIST,<orient>,,<n> and, if the plot box is ticked,
+    PLTDIST,,1 / PLTFDIST,,1."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_DistDialog()
+        self._ui.setupUi(self)
+
+    @staticmethod
+    def _orient(idx):
+        return "0" if idx == 0 else "90"
+
+    def commands(self):
         ui = self._ui
-        fish = ui.combo_dist_type.currentIndex() == 1
+        fish = ui.combo_type.currentIndex() == 1
         base = "FISHDIST" if fish else "DIST"
         cmds = ["%s,%s,,%d" % (base,
-                               self._orient(ui.combo_dist_orient.currentIndex()),
-                               ui.spin_dist_n.value())]
-        if ui.check_dist_plot.isChecked():
+                               self._orient(ui.combo_orient.currentIndex()),
+                               ui.spin_n.value())]
+        if ui.check_plot.isChecked():
             cmds.append("PLTFDIST,,1" if fish else "PLTDIST,,1")
-        self._plot(*cmds)
+        return cmds
 
 
 class CapfnDialog(QDialog, Ui_CapfnDialog):
@@ -3508,9 +3528,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_plot, 'PSFWRITE YES',
              'PSFPLOT YES', 'PSF', 'CAPFNOUT'),
-            ('actionDistortion', self.slot_plot, 'DIST', 'PLTDIST'),
-            ('actionField_Curvature', self.slot_plot, 'FLDCV', 'PLTFLDCV'),
-            ('actionAstigmatism', self.slot_plot, 'AST', 'PLTAST'),
+            ('actionDistortion', self.slot_actionDist),
+            ('actionField_Curvature', self.slot_actionFldcv),
+            ('actionAstigmatism', self.slot_actionAst),
             ('actionGeometical', self.slot_plot, 'SPACE I', 'SPACE O', 'FAR',
              'GOTF', 'PLTGOTF,1', 'DRAW'),
             ('actionGeometical_Leica', self.slot_plot, 'SPACE I', 'SPACE O',
@@ -3529,7 +3549,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionSpsrf', self.slot_actionSpsrf),
             ('actionBb', self.slot_actionBb),
             ('actionRayAux', self.slot_actionRayAux),
-            ('actionDisast', self.slot_actionDisast),
             ('actionCapfn', self.slot_actionCapfn),
             ('actionSpotSettings', self.slot_actionSpotSettings),
             ('actionPsfMtf', self.slot_actionPsfMtf),
@@ -4093,11 +4112,27 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg = RayAuxDialog(self)
         dlg.exec()
 
-    def slot_actionDisast(self):
-        """Field curvature / astigmatism / distortion settings (mirrors
-        KDP2 IDD_DISAST). Dialog stays open; compute buttons plot."""
-        dlg = DisastDialog(self)
-        dlg.exec()
+    def slot_actionFldcv(self):
+        """Field curvature: open the FLDCV settings dialog, then on OK
+        send FLDCV,<orient>,,<n> (+ PLTFLDCV,,1 if ticked) and render."""
+        dlg = FldcvDialog(self)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
+
+    def slot_actionAst(self):
+        """Astigmatism: open the AST settings dialog, then on OK send
+        AST,<orient>,,<n> (+ PLTAST,,1 if ticked) and render."""
+        dlg = AstDialog(self)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
+
+    def slot_actionDist(self):
+        """Distortion: open the DIST settings dialog, then on OK send
+        DIST/FISHDIST,<orient>,,<n> (+ PLTDIST/PLTFDIST,,1 if ticked)
+        and render."""
+        dlg = DistDialog(self)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
 
     def slot_actionCapfn(self):
         """Complex pupil function settings (mirrors KDP2 IDD_CAPFN).
