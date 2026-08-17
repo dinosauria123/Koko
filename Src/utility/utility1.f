@@ -4383,7 +4383,7 @@ C
                       GO TO 8888
                   END IF
                   WRITE(OUTLYNE,2053) VALV
- 2053             FORMAT('CC,'D23.15)
+ 2053             FORMAT('CC,',D23.15)
                   SAVE_KDP(1)=SAVEINPT(1)
                   INPUT(1:132)=OUTLYNE(1:132)
                   CALL PROCES

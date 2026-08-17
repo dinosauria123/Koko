@@ -509,7 +509,7 @@ C       PLOT IMAGE
       SUBROUTINE savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
 
           INCLUDE 'datmai.inc'
-          INTEGER Maxwidth,Maxheight,irec,L,I,J,fsz
+          INTEGER Maxwidth,Maxheight,irec,L,I,J,fsz,r
           PARAMETER(Maxwidth=3220,Maxheight=2415)
           INTEGER*4 BMPDATA24(Maxwidth*Maxheight*3)
           CHARACTER header(54),bmpdataR,bmpdataG,bmpdataB

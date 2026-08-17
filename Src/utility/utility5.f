@@ -10226,7 +10226,7 @@ C     Y TORIC
 C     YZ PLANE
                               IF(TEMPC(I)(1:1).EQ.'R') THEN
                                   WRITE(OUTLYNE2,2045) VALV
- 2045                             FORMAT('RDTOR,'D23.15)
+ 2045                             FORMAT('RDTOR,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10234,7 +10234,7 @@ C     YZ PLANE
                               END IF
                               IF(TEMPC(I)(1:1).EQ.'C') THEN
                                   WRITE(OUTLYNE2,2046) VALV
- 2046                             FORMAT('CVTOR,'D23.15)
+ 2046                             FORMAT('CVTOR,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10244,7 +10244,7 @@ C     YZ PLANE
 C     XZ PLANE
                               IF(TEMPC(I)(1:1).EQ.'R') THEN
                                   WRITE(OUTLYNE2,2047) VALV
- 2047                             FORMAT('RD,'D23.15)
+ 2047                             FORMAT('RD,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10252,7 +10252,7 @@ C     XZ PLANE
                               END IF
                               IF(TEMPC(I)(1:1).EQ.'C') THEN
                                   WRITE(OUTLYNE2,2048) VALV
- 2048                             FORMAT('CV,'D23.15)
+ 2048                             FORMAT('CV,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10266,7 +10266,7 @@ C     X TORIC
 C     YZ PLANE
                               IF(TEMPC(I)(1:1).EQ.'R') THEN
                                   WRITE(OUTLYNE2,2049) VALV
- 2049                             FORMAT('RD,'D23.15)
+ 2049                             FORMAT('RD,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10274,7 +10274,7 @@ C     YZ PLANE
                               END IF
                               IF(TEMPC(I)(1:1).EQ.'C') THEN
                                   WRITE(OUTLYNE2,2050) VALV
- 2050                             FORMAT('CV,'D23.15)
+ 2050                             FORMAT('CV,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10284,7 +10284,7 @@ C     YZ PLANE
 C     XZ PLANE
                               IF(TEMPC(I)(1:1).EQ.'R') THEN
                                   WRITE(OUTLYNE2,2051) VALV
- 2051                             FORMAT('RDTOR,'D23.15)
+ 2051                             FORMAT('RDTOR,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10292,7 +10292,7 @@ C     XZ PLANE
                               END IF
                               IF(TEMPC(I)(1:1).EQ.'C') THEN
                                   WRITE(OUTLYNE2,2052) VALV
- 2052                             FORMAT('CVTOR,'D23.15)
+ 2052                             FORMAT('CVTOR,',D23.15)
                                   SAVE_KDP(1)=SAVEINPT(1)
                                   INPUT(1:132)=OUTLYNE2(1:132)
                                   IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10331,7 +10331,7 @@ C     PROCEED
                       END IF
                       IF(TEMPC(I)(1:1).EQ.'K') THEN
                           WRITE(OUTLYNE2,2053) VALV
- 2053                     FORMAT('CC,'D23.15)
+ 2053                     FORMAT('CC,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10434,7 +10434,7 @@ C     TORICS
                       END IF
                       IF(TEMPC(I)(1:1).EQ.'K') THEN
                           WRITE(OUTLYNE2,2062) VALV
- 2062                     FORMAT('CCTOR,'D23.15)
+ 2062                     FORMAT('CCTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10442,7 +10442,7 @@ C     TORICS
                       END IF
                       IF(TEMPC(I)(2:2).EQ.'A ') THEN
                           WRITE(OUTLYNE2,2063) VALV
- 2063                     FORMAT('ADTOR,'D23.15)
+ 2063                     FORMAT('ADTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10450,7 +10450,7 @@ C     TORICS
                       END IF
                       IF(TEMPC(I)(2:2).EQ.'B ') THEN
                           WRITE(OUTLYNE2,2064) VALV
- 2064                     FORMAT('AETOR,'D23.15)
+ 2064                     FORMAT('AETOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10458,7 +10458,7 @@ C     TORICS
                       END IF
                       IF(TEMPC(I)(2:2).EQ.'C ') THEN
                           WRITE(OUTLYNE2,2065) VALV
- 2065                     FORMAT('AFTOR,'D23.15)
+ 2065                     FORMAT('AFTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10466,7 +10466,7 @@ C     TORICS
                       END IF
                       IF(TEMPC(I)(2:2).EQ.'D ') THEN
                           WRITE(OUTLYNE2,2066) VALV
- 2066                     FORMAT('AGTOR,'D23.15)
+ 2066                     FORMAT('AGTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10504,7 +10504,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:2).EQ.'KY') THEN
                           WRITE(OUTLYNE2,2067) VALV
- 2067                     FORMAT('CC,'D23.15)
+ 2067                     FORMAT('CC,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10512,7 +10512,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:2).EQ.'KX') THEN
                           WRITE(OUTLYNE2,2068) VALV
- 2068                     FORMAT('CCTOR,'D23.15)
+ 2068                     FORMAT('CCTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10520,7 +10520,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'AR ') THEN
                           WRITE(OUTLYNE2,2069) VALV
- 2069                     FORMAT('AD,'D23.15)
+ 2069                     FORMAT('AD,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10528,7 +10528,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'AP ') THEN
                           WRITE(OUTLYNE2,2070) VALV
- 2070                     FORMAT('ADTOR,'D23.15)
+ 2070                     FORMAT('ADTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10536,7 +10536,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'BR ') THEN
                           WRITE(OUTLYNE2,2071) VALV
- 2071                     FORMAT('AE,'D23.15)
+ 2071                     FORMAT('AE,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10544,7 +10544,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'BP ') THEN
                           WRITE(OUTLYNE2,2072) VALV
- 2072                     FORMAT('AETOR,'D23.15)
+ 2072                     FORMAT('AETOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10552,7 +10552,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'CR ') THEN
                           WRITE(OUTLYNE2,2073) VALV
- 2073                     FORMAT('AF,'D23.15)
+ 2073                     FORMAT('AF,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10560,7 +10560,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'CP ') THEN
                           WRITE(OUTLYNE2,2074) VALV
- 2074                     FORMAT('AFTOR,'D23.15)
+ 2074                     FORMAT('AFTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10568,7 +10568,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'DR ') THEN
                           WRITE(OUTLYNE2,2075) VALV
- 2075                     FORMAT('AG,'D23.15)
+ 2075                     FORMAT('AG,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES
@@ -10576,7 +10576,7 @@ C     ANAMORPHIC ASPHERICS
                       END IF
                       IF(TEMPC(I)(1:3).EQ.'DP ') THEN
                           WRITE(OUTLYNE2,2076) VALV
- 2076                     FORMAT('AGTOR,'D23.15)
+ 2076                     FORMAT('AGTOR,',D23.15)
                           SAVE_KDP(1)=SAVEINPT(1)
                           INPUT(1:132)=OUTLYNE2(1:132)
                           IF(INPUT(1:20).NE.AA) CALL PROCES

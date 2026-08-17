@@ -2733,8 +2733,10 @@ C
                   IF(SPDTYPE.NE.2.AND.TPT.EQ.1.OR.OPSPDTYPE.NE.2.AND.TPT.EQ.2) THEN
 C     SPOT IS RECT OR RANNUM
 C
-                      DO IY=NSTART1,NSTOP1,NDEL1
-                          DO IX=NSTART2,NSTOP2,NDEL2
+                      IY=NSTART1
+                      DO WHILE(IY.LE.NSTOP1)
+                          IX=NSTART2
+                          DO WHILE(IX.LE.NSTOP2)
                               I=I+1
 C       THE CALL TO RAYTRA2 HAS INPUTS:
 C               QUALIFIER
@@ -2899,7 +2901,9 @@ C
 C     LOAD THE DSOPT ARRAY INTO DSPOTT(ID,*)
                               ID=I-1
                               CALL SPOTIT(3)
+                              IX=IX+NDEL2
                           END DO
+                          IY=IY+NDEL1
                       END DO
                   ELSE
 C     SPOT WAS RING
