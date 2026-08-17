@@ -66,7 +66,9 @@ from gui_py.ui_astdialog import Ui_AstDialog
 from gui_py.ui_distdialog import Ui_DistDialog
 from gui_py.ui_capfndialog import Ui_CapfnDialog
 from gui_py.ui_spotdialog import Ui_SpotDialog
-from gui_py.ui_psfmtfdialog import Ui_PsfMtfDialog
+from gui_py.ui_psfdialog import Ui_PsfDialog
+from gui_py.ui_dotfdialog import Ui_DotfDialog
+from gui_py.ui_gotfdialog import Ui_GotfDialog
 from gui_py.ui_lensopsdialog import Ui_LensOpsDialog
 from gui_py.ui_multiaperturedialog import Ui_MultiApertureDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
@@ -715,66 +717,62 @@ class SpotDialog(QDialog, Ui_SpotDialog):
             self._send("SPD,%d" % wav if wav else "SPD")
 
 
-class PsfMtfDialog(QDialog, Ui_PsfMtfDialog):
-    """PSF / diffraction-MTF / geometric-MTF settings (KDP2 IDD_PSF,
-    IDD_DOTF, IDD_GOTF). Compute buttons route through the main
-    window's slot_plot. Dialog stays open."""
+class PsfDialog(QDialog, Ui_PsfDialog):
+    """PSF settings (split from KDP2 IDD_PSF). OK sends NRD,<n>,
+    PSFWRITE/PSFPLOT toggles, then <mode>,<wav> + CAPFNOUT through the
+    main window's slot_plot so the graph renders."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._ui = Ui_PsfMtfDialog()
+        self._ui = Ui_PsfDialog()
         self._ui.setupUi(self)
+
+    def commands(self):
         ui = self._ui
-        ui.btn_psf.clicked.connect(self._compute_psf)
-        ui.btn_dotf.clicked.connect(lambda: self._compute_mtf("DOTF"))
-        ui.btn_gotf.clicked.connect(lambda: self._compute_mtf("GOTF"))
+        cmds = ["NRD,%d" % ui.spin_nrd.value(),
+                "PSFWRITE %s" % ("YES" if ui.check_write.isChecked() else "NO"),
+                "PSFPLOT %s" % ("YES" if ui.check_plot.isChecked() else "NO"),
+                "%s,%d" % (ui.combo_mode.currentText(), ui.spin_wav.value()),
+                "CAPFNOUT"]
+        return cmds
 
-    def _send(self, cmd):
-        main = self.parent()
-        fn = getattr(main, "send_koko", None)
-        if callable(fn):
-            fn(cmd)
 
-    def _plot(self, *commands):
-        main = self.parent()
-        fn = getattr(main, "slot_plot", None)
-        if callable(fn):
-            fn(*commands)
+class DotfDialog(QDialog, Ui_DotfDialog):
+    """Diffraction MTF settings (split from KDP2 IDD_DOTF). OK sends
+    SPACE I/O, FAR/NEAR, DOTF, PLTDOTF[ LEICA],,1, DRAW."""
 
-    def _compute_psf(self):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_DotfDialog()
+        self._ui.setupUi(self)
+
+    def commands(self):
         ui = self._ui
-        self._send("NRD,%d" % ui.spin_nrd.value())
-        if ui.check_write.isChecked():
-            self._send("PSFWRITE YES")
-        else:
-            self._send("PSFWRITE NO")
-        if ui.check_plot.isChecked():
-            self._send("PSFPLOT YES")
-        else:
-            self._send("PSFPLOT NO")
-        mode = ui.combo_mode.currentText()
-        wav = ui.spin_wav.value()
-        self._plot("%s,%d" % (mode, wav), "CAPFNOUT")
+        cmds = ["SPACE I" if ui.combo_space.currentIndex() == 0 else "SPACE O",
+                "FAR" if ui.combo_range.currentIndex() == 0 else "NEAR",
+                "DOTF",
+                "PLTDOTF LEICA,,1" if ui.check_leica.isChecked() else "PLTDOTF,,1",
+                "DRAW"]
+        return cmds
 
-    def _compute_mtf(self, kind):
+
+class GotfDialog(QDialog, Ui_GotfDialog):
+    """Geometric MTF settings (split from KDP2 IDD_GOTF). OK sends
+    SPACE I/O, FAR/NEAR, GOTF, PLTGOTF[ LEICA],1, DRAW."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_GotfDialog()
+        self._ui.setupUi(self)
+
+    def commands(self):
         ui = self._ui
-        if kind == "DOTF":
-            space = ui.combo_dotf_space.currentIndex()
-            rng = ui.combo_dotf_range.currentIndex()
-            leica = ui.check_dotf_leica.isChecked()
-        else:
-            space = ui.combo_gotf_space.currentIndex()
-            rng = ui.combo_gotf_range.currentIndex()
-            leica = ui.check_gotf_leica.isChecked()
-        cmds = ["SPACE I" if space == 0 else "SPACE O",
-                "FAR" if rng == 0 else "NEAR",
-                kind]
-        if kind == "DOTF":
-            cmds.append("PLTDOTF LEICA,,1" if leica else "PLTDOTF,,1")
-        else:
-            cmds.append("PLTGOTF LEICA,1" if leica else "PLTGOTF,1")
-        cmds.append("DRAW")
-        self._plot(*cmds)
+        cmds = ["SPACE I" if ui.combo_space.currentIndex() == 0 else "SPACE O",
+                "FAR" if ui.combo_range.currentIndex() == 0 else "NEAR",
+                "GOTF",
+                "PLTGOTF LEICA,1" if ui.check_leica.isChecked() else "PLTGOTF,1",
+                "DRAW"]
+        return cmds
 
 
 class LensOpsDialog(QDialog, Ui_LensOpsDialog):
@@ -3526,19 +3524,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
              'PLTSPD'),
             ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
             ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
-            ('actionPoint_Spread_Function', self.slot_plot, 'PSFWRITE YES',
-             'PSFPLOT YES', 'PSF', 'CAPFNOUT'),
+            ('actionPoint_Spread_Function', self.slot_actionPsf),
             ('actionDistortion', self.slot_actionDist),
             ('actionField_Curvature', self.slot_actionFldcv),
             ('actionAstigmatism', self.slot_actionAst),
-            ('actionGeometical', self.slot_plot, 'SPACE I', 'SPACE O', 'FAR',
-             'GOTF', 'PLTGOTF,1', 'DRAW'),
-            ('actionGeometical_Leica', self.slot_plot, 'SPACE I', 'SPACE O',
-             'FAR', 'GOTF', 'PLTGOTF LEICA,1', 'DRAW'),
-            ('actionDiffraction', self.slot_plot, 'SPACE I', 'SPACE O', 'FAR',
-             'DOTF', 'PLTDOTF,,1', 'DRAW'),
-            ('actionDiffraction_Leica', self.slot_plot, 'SPACE I', 'SPACE O',
-             'FAR', 'DOTF', 'PLTDOTF LEICA,,1', 'DRAW'),
+            ('actionGeometical', self.slot_actionGotf),
+            ('actionGeometical_Leica', self.slot_actionGotf, True),
+            ('actionDiffraction', self.slot_actionDotf),
+            ('actionDiffraction_Leica', self.slot_actionDotf, True),
             ('actionParaxial_Chromatic_Focus_Shift', self.slot_plot, 'CHRSHIFT', 'PLTCHRSH'),
             # Ray (single ray trace) and Paraxial data displays
             ('actionRay_Single', self.slot_actionRay_single),
@@ -3551,7 +3544,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionRayAux', self.slot_actionRayAux),
             ('actionCapfn', self.slot_actionCapfn),
             ('actionSpotSettings', self.slot_actionSpotSettings),
-            ('actionPsfMtf', self.slot_actionPsfMtf),
             ('actionLensOps', self.slot_actionLensOps),
             ('actionMultiAperture', self.slot_actionMultiAperture),
             ('actionAperture', self.slot_actionAperture),
@@ -4146,11 +4138,32 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         dlg = SpotDialog(self)
         dlg.exec()
 
-    def slot_actionPsfMtf(self):
-        """PSF / MTF settings (mirrors KDP2 IDD_PSF / IDD_DOTF /
-        IDD_GOTF). Dialog stays open; compute buttons plot."""
-        dlg = PsfMtfDialog(self)
-        dlg.exec()
+    def slot_actionPsf(self):
+        """PSF: open the PSF settings dialog, then on OK send NRD /
+        PSFWRITE / PSFPLOT / <mode>,<wav> / CAPFNOUT and render."""
+        dlg = PsfDialog(self)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
+
+    def slot_actionDotf(self, leica=False):
+        """Diffraction MTF: open the DOTF settings dialog (Leica box
+        pre-ticked for the LEICA menu entry), then on OK send
+        SPACE I/O + FAR/NEAR + DOTF + PLTDOTF[ LEICA],,1 + DRAW."""
+        dlg = DotfDialog(self)
+        if leica:
+            dlg._ui.check_leica.setChecked(True)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
+
+    def slot_actionGotf(self, leica=False):
+        """Geometric MTF: open the GOTF settings dialog (Leica box
+        pre-ticked for the LEICA menu entry), then on OK send
+        SPACE I/O + FAR/NEAR + GOTF + PLTGOTF[ LEICA],1 + DRAW."""
+        dlg = GotfDialog(self)
+        if leica:
+            dlg._ui.check_leica.setChecked(True)
+        if dlg.exec():
+            self.slot_plot(*dlg.commands())
 
     def slot_actionLensOps(self):
         """Lens operations (KDP2 item 7): FLIP / SCALE / ZERO / OTHER.
