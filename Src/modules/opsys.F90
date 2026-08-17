@@ -159,24 +159,38 @@ CONTAINS
   SUBROUTINE dir_path_append(partpath, pathitem, fullpath)
 
     CHARACTER(len=*) :: partpath, pathitem, fullpath
-    INTEGER          :: lc
+    INTEGER          :: lc, i
+    CHARACTER(LEN(partpath))   :: ppath
+    CHARACTER(LEN(pathitem))   :: pitem
+
+    ! The config parser may store values as NUL-terminated C strings,
+    ! and gfortran's TRIM() does not strip NUL (ASCII 0). Copy through
+    ! the first NUL (or the full length) for both arguments so a NUL
+    ! block never propagates into the joined path (which would corrupt
+    ! file names such as "/home/.../KODS\0\0.../KOBJ.BMP").
+    i = INDEX(partpath, ACHAR(0))
+    IF (i == 0) i = LEN(partpath) + 1
+    ppath = partpath(1:i-1)
+    i = INDEX(pathitem, ACHAR(0))
+    IF (i == 0) i = LEN(pathitem) + 1
+    pitem = pathitem(1:i-1)
 
     ! last character
-    lc = LEN_TRIM(partpath)
+    lc = LEN_TRIM(ppath)
     
 #if defined( LINUX ) || defined( MACOSX )
-    IF (partpath(lc:lc) == '/') THEN
-       fullpath = TRIM(partpath)//TRIM(pathitem)
+    IF (ppath(lc:lc) == '/') THEN
+       fullpath = TRIM(ppath)//TRIM(pitem)
     ELSE
-       fullpath = TRIM(partpath)//'/'//TRIM(pathitem)
+       fullpath = TRIM(ppath)//'/'//TRIM(pitem)
     END IF
 #endif
 
 #if defined( WINDOWS )
-    IF (partpath(lc:lc) == '\') THEN
-       fullpath = TRIM(partpath)//TRIM(pathitem)
+    IF (ppath(lc:lc) == '\') THEN
+       fullpath = TRIM(ppath)//TRIM(pitem)
     ELSE
-       fullpath = TRIM(partpath)//'\'//TRIM(pathitem)
+       fullpath = TRIM(ppath)//'\'//TRIM(pitem)
     END IF
 #endif
     
