@@ -3529,9 +3529,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionField_Curvature', self.slot_actionFldcv),
             ('actionAstigmatism', self.slot_actionAst),
             ('actionGeometical', self.slot_actionGotf),
-            ('actionGeometical_Leica', self.slot_actionGotf, True),
             ('actionDiffraction', self.slot_actionDotf),
-            ('actionDiffraction_Leica', self.slot_actionDotf, True),
             ('actionParaxial_Chromatic_Focus_Shift', self.slot_plot, 'CHRSHIFT', 'PLTCHRSH'),
             # Ray (single ray trace) and Paraxial data displays
             ('actionRay_Single', self.slot_actionRay_single),
@@ -4145,23 +4143,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         if dlg.exec():
             self.slot_plot(*dlg.commands())
 
-    def slot_actionDotf(self, leica=False):
-        """Diffraction MTF: open the DOTF settings dialog (Leica box
-        pre-ticked for the LEICA menu entry), then on OK send
-        SPACE I/O + FAR/NEAR + DOTF + PLTDOTF[ LEICA],,1 + DRAW."""
+    def slot_actionDotf(self):
+        """Diffraction MTF: open the DOTF settings dialog, then on OK
+        send SPACE I/O + FAR/NEAR + DOTF + PLTDOTF[ LEICA],,1 + DRAW.
+        The Leica variant is selected inside the dialog."""
         dlg = DotfDialog(self)
-        if leica:
-            dlg._ui.check_leica.setChecked(True)
         if dlg.exec():
             self.slot_plot(*dlg.commands())
 
-    def slot_actionGotf(self, leica=False):
-        """Geometric MTF: open the GOTF settings dialog (Leica box
-        pre-ticked for the LEICA menu entry), then on OK send
-        SPACE I/O + FAR/NEAR + GOTF + PLTGOTF[ LEICA],1 + DRAW."""
+    def slot_actionGotf(self):
+        """Geometric MTF: open the GOTF settings dialog, then on OK
+        send SPACE I/O + FAR/NEAR + GOTF + PLTGOTF[ LEICA],1 + DRAW.
+        The Leica variant is selected inside the dialog."""
         dlg = GotfDialog(self)
-        if leica:
-            dlg._ui.check_leica.setChecked(True)
         if dlg.exec():
             self.slot_plot(*dlg.commands())
 
