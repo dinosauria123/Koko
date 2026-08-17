@@ -525,7 +525,7 @@ class RayAuxDialog(QDialog, Ui_RayAuxDialog):
 
 class FldcvDialog(QDialog, Ui_FldcvDialog):
     """Field curvature settings (split from KDP2 IDD_DISAST). OK sends
-    FLDCV,<orient>,,<n> and, if the plot box is ticked, PLTFLDCV,,1
+    FLDCV,<orient>,1,<n> and, if the plot box is ticked, PLTFLDCV
     through the main window's slot_plot so the graph renders."""
 
     def __init__(self, parent=None):
@@ -551,7 +551,7 @@ class FldcvDialog(QDialog, Ui_FldcvDialog):
 
 class AstDialog(QDialog, Ui_AstDialog):
     """Astigmatism settings (split from KDP2 IDD_DISAST). OK sends
-    AST,<orient>,,<n> and, if the plot box is ticked, PLTAST,,1."""
+    AST,<orient>,1,<n> and, if the plot box is ticked, PLTAST."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
