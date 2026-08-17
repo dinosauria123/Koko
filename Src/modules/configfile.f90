@@ -1047,10 +1047,17 @@ contains
     type(CFG_t), intent(inout)    :: cfg
     character(len=*), intent(in)  :: var_name
     character(len=*), intent(out) :: res
-    integer                       :: ix
+    integer                       :: ix, nl
 
     call prepare_get_var(cfg, var_name, CFG_string_type, 1, ix)
-    res = cfg%vars(ix)%char_data(1)
+    ! The stored value may be a NUL-terminated C string (e.g. when read
+    ! from the config file parser). gfortran's TRIM() does not strip NUL,
+    ! so a trailing NUL block would otherwise survive into path joins and
+    ! corrupt file names. Copy only up to the first NUL (or the full
+    ! length if none), then blank-pad the rest.
+    nl = index(cfg%vars(ix)%char_data(1), achar(0))
+    if (nl == 0) nl = len(cfg%vars(ix)%char_data(1))
+    res = cfg%vars(ix)%char_data(1)(1:nl-1)
   end subroutine get_string
 
   !> Get or add a real array of a given name
