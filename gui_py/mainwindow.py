@@ -203,12 +203,21 @@ class ApertureDialog(QDialog, Ui_ApertureDialog):
             shape = self._ui.combo_shape.currentText()
             try:
                 surf = self._ui.spin_surf.value()
+                if shape == "Delete all (CLAPD)":
+                    return dict(shape=shape, surf=surf)
                 xdec = float(self._ui.lineEdit_xdec.text().strip() or "0.0")
                 ydec = float(self._ui.lineEdit_ydec.text().strip() or "0.0")
-                if shape == "Circular":
+                if shape in ("Circular", "Erase region"):
                     rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
                     return dict(shape=shape, surf=surf, rad=rad,
                                 xdec=xdec, ydec=ydec)
+                if shape == "Polygonal":
+                    rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                    nsides = self._ui.spin_nsides.value()
+                    tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, rad=rad,
+                                nsides=nsides, xdec=xdec, ydec=ydec,
+                                tilt=tilt)
                 tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
                 hx = float(self._ui.lineEdit_hx.text().strip() or "0.0")
                 hy = float(self._ui.lineEdit_hy.text().strip() or "0.0")
@@ -247,15 +256,28 @@ class ObscurationDialog(QDialog, Ui_ObscurationDialog):
             shape = self._ui.combo_shape.currentText()
             try:
                 surf = self._ui.spin_surf.value()
+                if shape == "Delete all (COBSD)":
+                    return dict(shape=shape, surf=surf)
                 xdec = float(self._ui.lineEdit_xdec.text().strip() or "0.0")
                 ydec = float(self._ui.lineEdit_ydec.text().strip() or "0.0")
-                if shape == "Circular":
+                if shape in ("Circular", "Erase region"):
                     rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
                     return dict(shape=shape, surf=surf, rad=rad,
                                 xdec=xdec, ydec=ydec)
+                if shape == "Polygonal":
+                    rad = float(self._ui.lineEdit_rad.text().strip() or "0.0")
+                    nsides = self._ui.spin_nsides.value()
+                    tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, rad=rad,
+                                nsides=nsides, xdec=xdec, ydec=ydec,
+                                tilt=tilt)
                 tilt = float(self._ui.lineEdit_tilt.text().strip() or "0.0")
                 hx = float(self._ui.lineEdit_hx.text().strip() or "0.0")
                 hy = float(self._ui.lineEdit_hy.text().strip() or "0.0")
+                if shape == "Rectangular + Frame":
+                    fr = float(self._ui.lineEdit_fr.text().strip() or "0.0")
+                    return dict(shape=shape, surf=surf, hx=hx, hy=hy,
+                                xdec=xdec, ydec=ydec, tilt=tilt, fr=fr)
                 return dict(shape=shape, surf=surf, hx=hx, hy=hy,
                             xdec=xdec, ydec=ydec, tilt=tilt)
             except ValueError:
@@ -3213,6 +3235,16 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 repr(vals["hx"]), repr(vals["hy"]),
                 repr(vals["xdec"]), repr(vals["ydec"]), repr(vals["fr"])))
             self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Polygonal":
+            self.send_koko("CLAP POLY %s %d %s %s" % (
+                repr(vals["rad"]), vals["nsides"],
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("CLAP TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Erase region":
+            self.send_koko("CLAP ERASE %s %s %s" % (
+                repr(vals["rad"]), repr(vals["xdec"]), repr(vals["ydec"])))
+        elif vals["shape"] == "Delete all (CLAPD)":
+            self.send_koko("CLAPD")
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
@@ -3241,6 +3273,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 repr(vals["hx"]), repr(vals["hy"]),
                 repr(vals["xdec"]), repr(vals["ydec"])))
             self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Rectangular + Frame":
+            self.send_koko("COBS RCTK %s %s %s %s %s" % (
+                repr(vals["hx"]), repr(vals["hy"]),
+                repr(vals["xdec"]), repr(vals["ydec"]), repr(vals["fr"])))
+            self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Polygonal":
+            self.send_koko("COBS POLY %s %d %s %s" % (
+                repr(vals["rad"]), vals["nsides"],
+                repr(vals["xdec"]), repr(vals["ydec"])))
+            self.send_koko("COBS TILT %s" % repr(vals["tilt"]))
+        elif vals["shape"] == "Erase region":
+            self.send_koko("COBS ERASE %s %s %s" % (
+                repr(vals["rad"]), repr(vals["xdec"]), repr(vals["ydec"])))
+        elif vals["shape"] == "Delete all (COBSD)":
+            self.send_koko("COBSD")
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 

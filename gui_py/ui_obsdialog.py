@@ -1,11 +1,17 @@
 # Form implementation for the clear-obscuration (COBS) dialog.
-# Mirrors the original IDD_APECIRC2 / IDD_APERECT2 / IDD_APEELIP2
-# (KDP2 GUICODE.FOR) flows:
+# Mirrors the original IDD_APECIRC2 / IDD_APERECT2 / IDD_APEELIP2 /
+# IDD_APEPOLY2 / IDD_APERCTK2 / IDD_APECIRC4 (KDP2 GUICODE.FOR) flows:
 #   circular : U L -> CHG <surf> -> COBS <R> <YDEC> <XDEC> -> EOS
 #   rect     : U L -> CHG <surf> -> COBS RECT <HX> <HY> <XDEC> <YDEC>
 #                              -> COBS TILT <ANG> -> EOS
 #   ellipse  : U L -> CHG <surf> -> COBS ELIP <HX> <HY> <XDEC> <YDEC>
 #                              -> COBS TILT <ANG> -> EOS
+#   rect+frame: U L -> CHG <surf> -> COBS RCTK <HX> <HY> <XDEC> <YDEC> <FR>
+#                              -> COBS TILT <ANG> -> EOS
+#   polygon  : U L -> CHG <surf> -> COBS POLY <R> <NSIDES> <XDEC> <YDEC>
+#                              -> COBS TILT <ANG> -> EOS
+#   erase    : U L -> CHG <surf> -> COBS ERASE <R> <XDEC> <YDEC> -> EOS
+#   delete   : U L -> CHG <surf> -> COBSD -> EOS
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -50,10 +56,11 @@ class Ui_ObscurationDialog(object):
         self.combo_shape = QtWidgets.QComboBox(ObscurationDialog)
         self.combo_shape.setObjectName("combo_shape")
         self.combo_shape.addItems(
-            ["Circular", "Rectangular", "Elliptical"])
+            ["Circular", "Rectangular", "Elliptical", "Rectangular + Frame",
+             "Polygonal", "Erase region", "Delete all (COBSD)"])
         self.formLayout.addRow(self.label_shape, self.combo_shape)
 
-        # Radius (circular only)
+        # Radius (circular / polygonal / erase)
         self.label_rad = QtWidgets.QLabel(ObscurationDialog)
         self.label_rad.setText("Radius")
         self.lineEdit_rad = QtWidgets.QLineEdit(ObscurationDialog)
@@ -61,7 +68,17 @@ class Ui_ObscurationDialog(object):
         self.lineEdit_rad.setText("3.0")
         self.formLayout.addRow(self.label_rad, self.lineEdit_rad)
 
-        # Half-width X / Half-width Y (rect/elip)
+        # Number of sides (polygonal only)
+        self.label_nsides = QtWidgets.QLabel(ObscurationDialog)
+        self.label_nsides.setText("Number of sides")
+        self.spin_nsides = QtWidgets.QSpinBox(ObscurationDialog)
+        self.spin_nsides.setObjectName("spin_nsides")
+        self.spin_nsides.setMinimum(3)
+        self.spin_nsides.setMaximum(100)
+        self.spin_nsides.setValue(6)
+        self.formLayout.addRow(self.label_nsides, self.spin_nsides)
+
+        # Half-width X / Half-width Y (rect/elip/rctk)
         self.label_hx = QtWidgets.QLabel(ObscurationDialog)
         self.label_hx.setText("Half-width X")
         self.lineEdit_hx = QtWidgets.QLineEdit(ObscurationDialog)
@@ -75,6 +92,14 @@ class Ui_ObscurationDialog(object):
         self.lineEdit_hy.setObjectName("lineEdit_hy")
         self.lineEdit_hy.setText("1.0")
         self.formLayout.addRow(self.label_hy, self.lineEdit_hy)
+
+        # Frame width (rctk only)
+        self.label_fr = QtWidgets.QLabel(ObscurationDialog)
+        self.label_fr.setText("Frame width")
+        self.lineEdit_fr = QtWidgets.QLineEdit(ObscurationDialog)
+        self.lineEdit_fr.setObjectName("lineEdit_fr")
+        self.lineEdit_fr.setText("0.5")
+        self.formLayout.addRow(self.label_fr, self.lineEdit_fr)
 
         # X decenter / Y decenter
         self.label_xdec = QtWidgets.QLabel(ObscurationDialog)
@@ -118,14 +143,35 @@ class Ui_ObscurationDialog(object):
 
     def _on_shape_changed(self, text):
         is_circ = (text == "Circular")
-        self.label_rad.setVisible(is_circ)
-        self.lineEdit_rad.setVisible(is_circ)
-        self.label_hx.setVisible(not is_circ)
-        self.lineEdit_hx.setVisible(not is_circ)
-        self.label_hy.setVisible(not is_circ)
-        self.lineEdit_hy.setVisible(not is_circ)
-        self.label_tilt.setVisible(not is_circ)
-        self.lineEdit_tilt.setVisible(not is_circ)
+        is_rctk = (text == "Rectangular + Frame")
+        is_poly = (text == "Polygonal")
+        is_erase = (text == "Erase region")
+        is_delete = (text == "Delete all (COBSD)")
+        # radius: circular / polygonal / erase
+        self.label_rad.setVisible(is_circ or is_poly or is_erase)
+        self.lineEdit_rad.setVisible(is_circ or is_poly or is_erase)
+        # number of sides: polygonal only
+        self.label_nsides.setVisible(is_poly)
+        self.spin_nsides.setVisible(is_poly)
+        # half-widths: rect / elip / rctk
+        show_hw = text in ("Rectangular", "Elliptical", "Rectangular + Frame")
+        self.label_hx.setVisible(show_hw)
+        self.lineEdit_hx.setVisible(show_hw)
+        self.label_hy.setVisible(show_hw)
+        self.lineEdit_hy.setVisible(show_hw)
+        # frame width: rctk only
+        self.label_fr.setVisible(is_rctk)
+        self.lineEdit_fr.setVisible(is_rctk)
+        # decenters: everything except delete-all
+        self.label_xdec.setVisible(not is_delete)
+        self.lineEdit_xdec.setVisible(not is_delete)
+        self.label_ydec.setVisible(not is_delete)
+        self.lineEdit_ydec.setVisible(not is_delete)
+        # tilt: rect / elip / rctk / poly (not circular, erase, delete)
+        show_tilt = text in ("Rectangular", "Elliptical",
+                             "Rectangular + Frame", "Polygonal")
+        self.label_tilt.setVisible(show_tilt)
+        self.lineEdit_tilt.setVisible(show_tilt)
 
     def retranslateUi(self, ObscurationDialog):
         pass

@@ -1,6 +1,6 @@
 # Form implementation for the clear-aperture (CLAP) dialog.
 # Mirrors the original IDD_APECIRC / IDD_APERECT / IDD_APEELIP / IDD_APERCTK
-# (KDP2 GUICODE.FOR) flows:
+# / IDD_APEPOLY / IDD_APECIRC3 (KDP2 GUICODE.FOR) flows:
 #   circular : U L -> CHG <surf> -> CLAP <R> <XDEC> <YDEC> 0 0 -> EOS
 #   rect     : U L -> CHG <surf> -> CLAP RECT <HX> <HY> <XDEC> <YDEC>
 #                              -> CLAP TILT <ANG> -> EOS
@@ -8,6 +8,10 @@
 #                              -> CLAP TILT <ANG> -> EOS
 #   rect+frame: U L -> CHG <surf> -> CLAP RCTK <HX> <HY> <XDEC> <YDEC> <FR>
 #                              -> CLAP TILT <ANG> -> EOS
+#   polygon  : U L -> CHG <surf> -> CLAP POLY <R> <NSIDES> <XDEC> <YDEC>
+#                              -> CLAP TILT <ANG> -> EOS
+#   erase    : U L -> CHG <surf> -> CLAP ERASE <R> <XDEC> <YDEC> -> EOS
+#   delete   : U L -> CHG <surf> -> CLAPD -> EOS
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -52,16 +56,27 @@ class Ui_ApertureDialog(object):
         self.combo_shape = QtWidgets.QComboBox(ApertureDialog)
         self.combo_shape.setObjectName("combo_shape")
         self.combo_shape.addItems(
-            ["Circular", "Rectangular", "Elliptical", "Rectangular + Frame"])
+            ["Circular", "Rectangular", "Elliptical", "Rectangular + Frame",
+             "Polygonal", "Erase region", "Delete all (CLAPD)"])
         self.formLayout.addRow(self.label_shape, self.combo_shape)
 
-        # Radius (circular only)
+        # Radius (circular / polygonal / erase)
         self.label_rad = QtWidgets.QLabel(ApertureDialog)
         self.label_rad.setText("Radius")
         self.lineEdit_rad = QtWidgets.QLineEdit(ApertureDialog)
         self.lineEdit_rad.setObjectName("lineEdit_rad")
         self.lineEdit_rad.setText("5.0")
         self.formLayout.addRow(self.label_rad, self.lineEdit_rad)
+
+        # Number of sides (polygonal only)
+        self.label_nsides = QtWidgets.QLabel(ApertureDialog)
+        self.label_nsides.setText("Number of sides")
+        self.spin_nsides = QtWidgets.QSpinBox(ApertureDialog)
+        self.spin_nsides.setObjectName("spin_nsides")
+        self.spin_nsides.setMinimum(3)
+        self.spin_nsides.setMaximum(100)
+        self.spin_nsides.setValue(6)
+        self.formLayout.addRow(self.label_nsides, self.spin_nsides)
 
         # Half-width X / Half-width Y (rect/elip/rctk)
         self.label_hx = QtWidgets.QLabel(ApertureDialog)
@@ -129,16 +144,34 @@ class Ui_ApertureDialog(object):
     def _on_shape_changed(self, text):
         is_circ = (text == "Circular")
         is_rctk = (text == "Rectangular + Frame")
-        self.label_rad.setVisible(is_circ)
-        self.lineEdit_rad.setVisible(is_circ)
-        self.label_hx.setVisible(not is_circ)
-        self.lineEdit_hx.setVisible(not is_circ)
-        self.label_hy.setVisible(not is_circ)
-        self.lineEdit_hy.setVisible(not is_circ)
+        is_poly = (text == "Polygonal")
+        is_erase = (text == "Erase region")
+        is_delete = (text == "Delete all (CLAPD)")
+        # radius: circular / polygonal / erase
+        self.label_rad.setVisible(is_circ or is_poly or is_erase)
+        self.lineEdit_rad.setVisible(is_circ or is_poly or is_erase)
+        # number of sides: polygonal only
+        self.label_nsides.setVisible(is_poly)
+        self.spin_nsides.setVisible(is_poly)
+        # half-widths: rect / elip / rctk
+        show_hw = text in ("Rectangular", "Elliptical", "Rectangular + Frame")
+        self.label_hx.setVisible(show_hw)
+        self.lineEdit_hx.setVisible(show_hw)
+        self.label_hy.setVisible(show_hw)
+        self.lineEdit_hy.setVisible(show_hw)
+        # frame width: rctk only
         self.label_fr.setVisible(is_rctk)
         self.lineEdit_fr.setVisible(is_rctk)
-        self.label_tilt.setVisible(not is_circ)
-        self.lineEdit_tilt.setVisible(not is_circ)
+        # decenters: everything except delete-all
+        self.label_xdec.setVisible(not is_delete)
+        self.lineEdit_xdec.setVisible(not is_delete)
+        self.label_ydec.setVisible(not is_delete)
+        self.lineEdit_ydec.setVisible(not is_delete)
+        # tilt: rect / elip / rctk / poly (not circular, erase, delete)
+        show_tilt = text in ("Rectangular", "Elliptical",
+                             "Rectangular + Frame", "Polygonal")
+        self.label_tilt.setVisible(show_tilt)
+        self.lineEdit_tilt.setVisible(show_tilt)
 
     def retranslateUi(self, ApertureDialog):
         pass
