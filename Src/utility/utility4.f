@@ -27,6 +27,7 @@ C       FOURTH SET OF UTILTIY ROUTINES GO HERE
 
 C SUB PUTAB.FOR
       SUBROUTINE PUTAB
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -48,15 +49,15 @@ C
           INCLUDE 'datmai.inc'
 C
           OPENCR=.FALSE.
-          INQUIRE(FILE=trim(HOME)//'CARDTEXT.DAT',OPENED=OPENCR)
+          INQUIRE(FILE=trim(clean_path(HOME))//'CARDTEXT.DAT',OPENED=OPENCR)
           IF(.NOT.OPENCR) THEN
 C     OPEN AS SEQUENTIAL, SET APPEND TO TRUE
               APPEND=.TRUE.
               IF(APPEND) OPEN(UNIT=8,ACCESS='APPEND',BLANK='NULL',
-     1        FORM='FORMATTED',FILE=trim(HOME)//'CARDTEXT.DAT',
+     1        FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CARDTEXT.DAT',
      2        STATUS='UNKNOWN')
               IF(.NOT.APPEND) OPEN(UNIT=8,ACCESS='SEQUENTIAL',BLANK='NULL',
-     1        FORM='FORMATTED',FILE=trim(HOME)//'CARDTEXT.DAT',
+     1        FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CARDTEXT.DAT',
      2        STATUS='UNKNOWN')
           ELSE
           END IF
@@ -98,6 +99,7 @@ C                       RETURN
       END
 C SUB AUXSET.FOR
       SUBROUTINE AUXSET
+      USE opsys
 C       THIS IS A MORE SHORT CUT METHOD OF SETTING REGISTER VALUES
 C       THIS SUBROUTINE IS USED TO SET A NAMED REGISTER (A THROUGH H)
 C       THE ACCUMULATOR (NAMED 'BLANK' OR 'ACC' OR 'X')
@@ -237,6 +239,7 @@ C
       END
 C SUB BASOP.FOR
       SUBROUTINE BASOP
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -353,6 +356,7 @@ C       PROCEED
       
 C SUB BESS.FOR
       SUBROUTINE BESS
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -400,6 +404,7 @@ C
       
 C SUB BLANK.FOR
       SUBROUTINE BLANK0
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -510,6 +515,7 @@ C     IN NOT 5, NO PRINTED RESPONSE TO A BLANK LINE
       END
 C SUB ECHO.FOR
       SUBROUTINE ECHO
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -554,6 +560,7 @@ C       SQ NOT 0
       END
 C SUB EJECT.FOR
       SUBROUTINE EJECT
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -578,16 +585,16 @@ C
           END IF
           IF(OUT.EQ.7) THEN
               OPEN7=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'PRINTER.TXT',OPENED=OPEN7)
+              INQUIRE(FILE=trim(clean_path(HOME))//'PRINTER.TXT',OPENED=OPEN7)
               IF(.NOT.OPEN7) THEN
                   OLDOUT=0
                   IF(APPEND)
      1               OPEN(UNIT=7,ACCESS='APPEND',BLANK='NULL'
-     1              ,FORM='FORMATTED',FILE=trim(HOME)//'PRINTER.TXT'
+     1              ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'PRINTER.TXT'
      1              ,STATUS='UNKNOWN')
                   IF(.NOT.APPEND)
      1               OPEN(UNIT=7,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1              ,FORM='FORMATTED',FILE=trim(HOME)//'PRINTER.TXT'
+     1              ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'PRINTER.TXT'
      1              ,STATUS='UNKNOWN')
               ELSE
 C       UNIT 7 WAS OPEN
@@ -606,6 +613,7 @@ C       UNIT NOT 7, DON'T DO ANYTHING, JUST RETURN.
 
 C SUB EXITT.FOR
       SUBROUTINE EXITT(CLSCODE)
+      USE opsys
           USE opsys
           USE commandline
           USE GLOBALS
@@ -668,10 +676,10 @@ C
           EXIS96=.FALSE.
           INQUIRE(FILE=LIBSPO//'SPOTS.DAT',OPENED=OPEN32)
           INQUIRE(FILE=LIBSPO//'SPOTS.DAT',EXIST=EXIS32)
-          INQUIRE(FILE=trim(HOME)//'APMAP.DAT',EXIST=EXIS72)
-          INQUIRE(FILE=trim(HOME)//'OPDMAP.DAT',EXIST=EXIS70)
-          INQUIRE(FILE=trim(HOME)//'FOOT1.DAT',EXIST=EXIS94)
-          INQUIRE(FILE=trim(HOME)//'QUIET.DAT',EXIST=EXIS96)
+          INQUIRE(FILE=trim(clean_path(HOME))//'APMAP.DAT',EXIST=EXIS72)
+          INQUIRE(FILE=trim(clean_path(HOME))//'OPDMAP.DAT',EXIST=EXIS70)
+          INQUIRE(FILE=trim(clean_path(HOME))//'FOOT1.DAT',EXIST=EXIS94)
+          INQUIRE(FILE=trim(clean_path(HOME))//'QUIET.DAT',EXIST=EXIS96)
           CALL CLOSE_FILE(7,1)
           CALL CLOSE_FILE(8,1)
           CALL CLOSE_FILE(9,1)
@@ -681,7 +689,7 @@ C
           CALL CLOSE_FILE(81,1)
           IF(EXIS94) THEN
               OPEN(UNIT=94,ACCESS='DIRECT'
-     1        ,FORM='UNFORMATTED',FILE=trim(HOME)//'FOOT1.DAT',RECL=(80*NRECL)
+     1        ,FORM='UNFORMATTED',FILE=trim(clean_path(HOME))//'FOOT1.DAT',RECL=(80*NRECL)
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(94,0)
           END IF
@@ -696,19 +704,19 @@ C
           END IF
           IF(EXIS72) THEN
               OPEN(UNIT=72,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'APMAP.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'APMAP.DAT'
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(72,0)
           END IF
           IF(EXIS70) THEN
               OPEN(UNIT=70,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'OPDMAP.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'OPDMAP.DAT'
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(70,0)
           END IF
           IF(EXIS96) THEN
               OPEN(UNIT=96,
-     1        FILE=trim(HOME)//'QUIET.DAT'
+     1        FILE=trim(clean_path(HOME))//'QUIET.DAT'
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(96,0)
           END IF
@@ -746,12 +754,12 @@ C       IF SYSP(20) NOT 0.0D0
           IF(SYSP(20).NE.0.0D0) THEN
 C
               OPEN(UNIT=89,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'CURLENS/LENSTEXT.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CURLENS/LENSTEXT.DAT'
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(89,0)
 
               OPEN(UNIT=89,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'CURLENS/LENSTEXT.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CURLENS/LENSTEXT.DAT'
      2        ,STATUS='UNKNOWN')
 C
               OLDOUT=OUT
@@ -776,7 +784,7 @@ C       NO LENS DATA WAS AVAILABLE TO OUTPUT
 C
 C     SAVE RAY AND FIELD DATA
           OPEN(UNIT=16,ACCESS='SEQUENTIAL',
-     1    BLANK='NULL',FORM='FORMATTED',FILE=trim(HOME)//'FIELDS.DAT',
+     1    BLANK='NULL',FORM='FORMATTED',FILE=trim(clean_path(HOME))//'FIELDS.DAT',
      1    STATUS='UNKNOWN')
  100      FORMAT(A4,1X,D15.8,1X,D15.8,1X,D15.8,1X,I2)
           DO I=1,200
@@ -786,7 +794,7 @@ C     SAVE RAY AND FIELD DATA
           END DO
           CALL CLOSE_FILE(16,1)
           OPEN(UNIT=16,ACCESS='SEQUENTIAL',
-     1    BLANK='NULL',FORM='FORMATTED',FILE=trim(HOME)//'RAYS.DAT',
+     1    BLANK='NULL',FORM='FORMATTED',FILE=trim(clean_path(HOME))//'RAYS.DAT',
      1    STATUS='UNKNOWN')
  102      FORMAT(A4,1X,D15.8,1X,D15.8,1X,I2)
           DO I=1,5000
@@ -800,7 +808,7 @@ C     SAVE RAY AND FIELD DATA
           CALL CLOSE_FILE(13,0)
           CALL CLOSE_FILE(27,1)
 C
-          OPEN(UNIT=78,ACCESS='SEQUENTIAL',FILE=trim(HOME)//'FASTLENS.DAT',
+          OPEN(UNIT=78,ACCESS='SEQUENTIAL',FILE=trim(clean_path(HOME))//'FASTLENS.DAT',
      1    FORM='FORMATTED',STATUS='UNKNOWN')
           CALL CLOSE_FILE(78,0)
 C
@@ -841,11 +849,11 @@ C
           INQUIRE(UNIT=28,OPENED=OPEN28)
           IF(OPEN28) CALL CLOSE_FILE(28,0)
           OPEN(UNIT=28
-     1    ,FILE=trim(HOME)//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
+     1    ,FILE=trim(clean_path(HOME))//'NEUTRAL.DAT',FORM='UNFORMATTED',ACCESS='DIRECT'
      2    ,RECL=(NRECL*42),STATUS='UNKNOWN')
           CALL CLOSE_FILE(28,0)
           OPEN(UNIT=27
-     1    ,FILE=trim(HOME)//'NEUTRERP.DAT'
+     1    ,FILE=trim(clean_path(HOME))//'NEUTRERP.DAT'
      2    ,FORM='UNFORMATTED',ACCESS='DIRECT'
      3    ,RECL=(NRECL*42),STATUS='UNKNOWN')
           CALL CLOSE_FILE(27,0)
@@ -862,6 +870,7 @@ C
 
 C SUB HALTER.FOR
       SUBROUTINE HALTER
+      USE opsys
           IMPLICIT NONE
 C
           INCLUDE 'datmai.inc'
@@ -1010,6 +1019,7 @@ C     THIS IS A Resume Typing (PRESSED ENTER ONLY)
 
 
       SUBROUTINE INTER_PROMPT
+      USE opsys
           IMPLICIT NONE
           CHARACTER*57 LINE
           INTEGER N
@@ -1021,6 +1031,7 @@ C     THIS IS A Resume Typing (PRESSED ENTER ONLY)
 
 
       SUBROUTINE INTERFACER(HX)
+      USE opsys
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
           CHARACTER*2 HX
@@ -1031,6 +1042,7 @@ C     THIS IS A Resume Typing (PRESSED ENTER ONLY)
 
 
       SUBROUTINE INTER_RESPON(HX)
+      USE opsys
           IMPLICIT NONE
           CHARACTER*2 HX
           CHARACTER*80 RESPONSE
@@ -1043,6 +1055,7 @@ C     THIS IS A Resume Typing (PRESSED ENTER ONLY)
 
 C SUB HMAT.FOR
       SUBROUTINE HMAT(N,DECIM,AN,INTEG,IB)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -1178,6 +1191,7 @@ C
       END
 C SUB INCR.FOR
       SUBROUTINE INCR
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -1275,6 +1289,7 @@ C
 
 C SUB INPUTT.FOR
       SUBROUTINE INPUTT
+      USE opsys
           USE GLOBALS
 C
           IMPLICIT NONE
@@ -1379,7 +1394,7 @@ C HANDEL PRINTING OF NAME OF CURRENT DEVICE
           END IF
           IF(WQ.EQ.'CR') THEN
               EXIS8=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'CARDTEXT.DAT',EXIST=EXIS8)
+              INQUIRE(FILE=trim(clean_path(HOME))//'CARDTEXT.DAT',EXIST=EXIS8)
               IF(.NOT.EXIS8) THEN
                   OUTLYNE='NO CARDTEXT.DAT FILE EXISTS TO READ'
                   CALL SHOWIT(1)
@@ -1390,14 +1405,14 @@ C HANDEL PRINTING OF NAME OF CURRENT DEVICE
               END IF
               IN=8
               OPEN8=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'CARDTEXT.DAT',
+              INQUIRE(FILE=trim(clean_path(HOME))//'CARDTEXT.DAT',
      1        OPENED=OPEN8)
               IF(.NOT.OPEN8) THEN
                   IF(APPEND) OPEN(UNIT=8,ACCESS='APPEND',BLANK='NULL'
-     1            ,FORM='FORMATTED',FILE=trim(HOME)//'CARDTEXT.DAT'
+     1            ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CARDTEXT.DAT'
      2            ,STATUS='UNKNOWN')
                   IF(.NOT.APPEND) OPEN(UNIT=8,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1            ,FORM='FORMATTED',FILE=trim(HOME)//'CARDTEXT.DAT'
+     1            ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CARDTEXT.DAT'
      2            ,STATUS='UNKNOWN')
               ELSE
               END IF
@@ -1668,7 +1683,7 @@ C
 C
           IF(WQ.EQ.'ED') THEN
               EXIS9=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'EDITTEXT.DAT',EXIST=EXIS9)
+              INQUIRE(FILE=trim(clean_path(HOME))//'EDITTEXT.DAT',EXIST=EXIS9)
               IF(.NOT.EXIS9) THEN
                   OUTLYNE='NO EDITTEXT.DAT FILE EXISTS TO READ'
                   CALL SHOWIT(1)
@@ -1679,13 +1694,13 @@ C
               END IF
               IN=9
               OPEN9=.FALSE.
-              INQUIRE(FILE=trim(HOME)//'EDITTEXT.DAT',OPENED=OPEN9)
+              INQUIRE(FILE=trim(clean_path(HOME))//'EDITTEXT.DAT',OPENED=OPEN9)
               IF(.NOT.OPEN9) THEN
                   IF(APPEND) OPEN(UNIT=9,ACCESS='APPEND',BLANK='NULL'
-     1            ,FORM='FORMATTED',FILE=trim(HOME)//'EDITTEXT.DAT'
+     1            ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'EDITTEXT.DAT'
      2            ,STATUS='UNKNOWN')
                   IF(.NOT.APPEND) OPEN(UNIT=9,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1            ,FORM='FORMATTED',FILE=trim(HOME)//'EDITTEXT.DAT'
+     1            ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'EDITTEXT.DAT'
      2            ,STATUS='UNKNOWN')
               ELSE
               END IF
@@ -1726,6 +1741,7 @@ C     NOT ED
 
 C SUB STOAX.FOR
       SUBROUTINE STOAX
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -1782,6 +1798,7 @@ C
       END
 C SUB MACATON.FOR
       SUBROUTINE MACATON
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -1816,6 +1833,7 @@ C
       END
 C SUB PREAD.FOR
       SUBROUTINE PREAD
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -1879,6 +1897,7 @@ C
       END
 C SUB INTER.FOR
       SUBROUTINE INTER
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -2035,6 +2054,7 @@ C       INTERPOLATE IN THIS SPACE
       END
 C SUB INTRPP.FOR
       SUBROUTINE INTRPP
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -2466,6 +2486,7 @@ C
 
 C SUB CWRITE.FOR
       SUBROUTINE CWRITE
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -2773,6 +2794,7 @@ C                       QUALIFIER NOT QBLANK
       END
 C SUB COORD.FOR
       SUBROUTINE COORD
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3119,6 +3141,7 @@ C       THIS CONVERTS M TO IN
       END
 C SUB GCONVERT
       SUBROUTINE GCONVERT
+      USE opsys
           INCLUDE 'datmai.inc'
           INCLUDE 'datlen.inc'
           REAL*8 LOCAL_XVERT,LOCAL_YVERT,LOCAL_ZVERT
@@ -3441,6 +3464,7 @@ C
       END
 C SUB CONVR1.FOR
       SUBROUTINE CONVR1(AVAL,IVAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3470,6 +3494,7 @@ C
       END
 C SUB CONVR2.FOR
       SUBROUTINE CONVR2(AVAL,IVAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3499,6 +3524,7 @@ C
       END
 C SUB CONVR3.FOR
       SUBROUTINE CONVR3(AVAL,VAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3518,6 +3544,7 @@ C
       END
 C SUB CONVR4.FOR
       SUBROUTINE CONVR4(AVAL,VAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3538,6 +3565,7 @@ C
       END
 C SUB ATODCV.FOR
       SUBROUTINE ATODCV
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3568,6 +3596,7 @@ C
       END
 C SUB DTOACV.FOR
       SUBROUTINE DTOACV
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3589,6 +3618,7 @@ C
       END
 C SUB DTOA.FOR
       SUBROUTINE DTOA(VAL,AVAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3609,6 +3639,7 @@ C
       END
 C SUB DTOA23.FOR
       SUBROUTINE DTOA23(VAL,AVAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3629,6 +3660,7 @@ C
       END
 C SUB ATODMC.FOR
       SUBROUTINE ATODMC(AVL,VL,ERROR)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3695,6 +3727,7 @@ C
 
 C SUB NTOA3.FOR
       SUBROUTINE NTOA3
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3718,6 +3751,7 @@ C
 
 C SUB NTOAN1.FOR
       SUBROUTINE NTOAN1(IVAL,AIVAL)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3739,6 +3773,7 @@ C
 
 C SUB NTOAN2.FOR
       SUBROUTINE NTOAN2(DVAL,AVAL10)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3758,6 +3793,7 @@ C
       END
 C SUB ATON3.FOR
       SUBROUTINE ATON3
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3781,6 +3817,7 @@ C
       END
 C SUB NTA.FOR
       SUBROUTINE NTA(N1,N2,N3,N4,N5,AN1,AN2,AN3,AN4,AN5)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3816,6 +3853,7 @@ C
       END
 C SUB NTA12.FOR
       SUBROUTINE NTA12(N,AN)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3838,6 +3876,7 @@ C
       END
 C SUB AUXATN.FOR
       SUBROUTINE AUXATN
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3860,6 +3899,7 @@ C
       END
 C SUB AUXNTA.FOR
       SUBROUTINE AUXNTA
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3881,6 +3921,7 @@ C
       END
 C SUB ITOA.FOR
       SUBROUTINE ITOA(I,AI)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3896,6 +3937,7 @@ C
       END
 C SUB ITOA6.FOR
       SUBROUTINE ITOA6(I,AI)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3911,6 +3953,7 @@ C
       END
 C SUB ITOAA.FOR
       SUBROUTINE ITOAA(I,AI3)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3946,6 +3989,7 @@ C
       END
 C SUB ITOA2.FOR
       SUBROUTINE ITOA2(I,AI2)
+      USE opsys
 C       0 TO 99 CONVERTED TO STRING '00' TO STRING '99'
 C
           IMPLICIT NONE
@@ -3973,6 +4017,7 @@ C
       END
 C SUB ATOII.FOR
       SUBROUTINE ATOII(AI3,I)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -3988,6 +4033,7 @@ C
       END
 C SUB ATOI4.FOR
       SUBROUTINE ATOI4(AI4,I)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4003,6 +4049,7 @@ C
       END
 C SUB ITOA4.FOR
       SUBROUTINE ITOA4(AI4,I)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4047,6 +4094,7 @@ C
       END
 C SUB ITOAAAAAA.FOR
       SUBROUTINE ITOAAAAAA(I,AI6)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4107,6 +4155,7 @@ C
       END
 C SUB ITOAAA.FOR
       SUBROUTINE ITOAAA(I,AI4)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4152,6 +4201,7 @@ C
       END
 C SUB I3TOA3.FOR
       SUBROUTINE I3TOA3(I,AI3)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4187,6 +4237,7 @@ C
       END
 C SUB ATODCODEV.FOR
       SUBROUTINE ATODCODEV(AVL,VL,CVERROR)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4223,6 +4274,7 @@ C
       END
 C SUB ATOICODEV.FOR
       SUBROUTINE ATOICODEV(AVL,IVL,CVERROR)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4248,6 +4300,7 @@ C
       END
 C SUB ATODZMX.FOR
       SUBROUTINE ATODZMX(AVL,VL,ZMXERROR)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4281,6 +4334,7 @@ C
       END
 C SUB ATOIZMX.FOR
       SUBROUTINE ATOIZMX(AVL,IVL,ZMXERROR)
+      USE opsys
 C
           IMPLICIT NONE
 C
@@ -4313,6 +4367,7 @@ C
 C SUB GGPREG_SAVE.FOR
 C
       SUBROUTINE GGPREG_SAVE
+      USE opsys
           IMPLICIT NONE
 
 C       THIS SUBROUTINE IS USED FOR OUTPUTING OF GENERAL REGISTER VALUES
@@ -4392,6 +4447,7 @@ C
 C SUB GGPREG.FOR
 C
       SUBROUTINE GGPREG
+      USE opsys
           IMPLICIT NONE
 
 C       THIS SUBROUTINE IS USED FOR GENERAL REGISTERS
@@ -4776,6 +4832,7 @@ C
           RETURN
       END
       SUBROUTINE REGVAR_FIX
+      USE opsys
           IMPLICIT NONE
           INTEGER I
           INCLUDE 'datmai.inc'
@@ -4790,6 +4847,7 @@ C
           RETURN
       END
       SUBROUTINE FIXCURLENS
+      USE opsys
           IMPLICIT NONE
           INCLUDE 'datlen.inc'
           INCLUDE 'datcfg.inc'
@@ -4803,11 +4861,11 @@ C       IF SYSP(20) NOT 0.0D0
           IF(SYSP(20).NE.0.0D0) THEN
 C
               OPEN(UNIT=89,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'CURLENS/LENSTEXT.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CURLENS/LENSTEXT.DAT'
      2        ,STATUS='UNKNOWN')
               CALL CLOSE_FILE(89,0)
               OPEN(UNIT=89,ACCESS='SEQUENTIAL',BLANK='NULL'
-     1        ,FORM='FORMATTED',FILE=trim(HOME)//'CURLENS/LENSTEXT.DAT'
+     1        ,FORM='FORMATTED',FILE=trim(clean_path(HOME))//'CURLENS/LENSTEXT.DAT'
      2        ,STATUS='UNKNOWN')
 C
               OLDOUT=OUT

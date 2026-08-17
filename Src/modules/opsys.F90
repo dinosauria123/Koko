@@ -239,6 +239,36 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! Return a clean copy of a path string. gfortran's TRIM() does
+  ! not stop at NUL (ASCII 0) and HOME is a fixed-length COMMON
+  ! field whose tail can hold stale garbage (e.g. a previously
+  ! built "/home/.../KODS/KOBJ.BMP"). TRIM() would otherwise drag
+  ! that tail into path joins and produce unopenable filenames
+  ! (symptom: "Cannot open file '/home/dino/KODS<sp>...'").
+  !
+  ! Truncate at the first NUL or space (a KODS directory path
+  ! contains neither) and strip a trailing separator/blank.
+  !
+  FUNCTION clean_path(p) RESULT(res)
+    CHARACTER(len=*), INTENT(IN) :: p
+    CHARACTER(LEN(p))            :: res
+    INTEGER                      :: i, lc
+    res = p
+    i = INDEX(res, ACHAR(0))
+    IF (i > 1) res = res(1:i-1)
+    i = INDEX(res, ' ')
+    IF (i > 1) res = res(1:i-1)
+    lc = LEN_TRIM(res)
+    DO WHILE (lc > 0)
+       IF (res(lc:lc) == '/' .OR. res(lc:lc) == '\' &
+            .OR. res(lc:lc) == ' ') THEN
+          res(lc:lc) = ' '
+          lc = lc - 1
+       ELSE
+          EXIT
+       END IF
+    END DO
+  END FUNCTION clean_path
   ! Returns a directory for storing temporary files. The
   ! subroutine first reads the contents of the environment
   ! variable TEMP. If it is empty, a default value is returned.

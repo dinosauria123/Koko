@@ -238,7 +238,7 @@ C       READ IMAGE
              CALL dir_path_append(USERHOME, "KODS", HOME)
           END IF
           CALL strip_trailing_sep(HOME)
-          BMPFILE=trim(HOME)//'/PLOTBMP.BMP'
+          BMPFILE=trim(clean_path(HOME))//'/PLOTBMP.BMP'
 
           IF(I.EQ.1) THEN
               iwidth=OBJNX
@@ -268,7 +268,7 @@ C       PLOT OBJECT
                       END DO
                   END DO
 
-                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL os_delete(trim(clean_path(HOME))//'PLOTBMP.BMP')
                   CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
@@ -295,7 +295,7 @@ C       PLOT OBJECT
                       END DO
                   END DO
 
-                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL os_delete(trim(clean_path(HOME))//'PLOTBMP.BMP')
                   CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
@@ -314,7 +314,7 @@ C       PLOT IMAGE
                       END DO
                   END DO
 
-                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL os_delete(trim(clean_path(HOME))//'PLOTBMP.BMP')
                   CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
@@ -333,7 +333,7 @@ C     (R,G,B) order into the little-endian pixel word.
                       END DO
                   END DO
 
-                  CALL os_delete(trim(HOME)//'PLOTBMP.BMP')
+                  CALL os_delete(trim(clean_path(HOME))//'PLOTBMP.BMP')
                   CALL savebmp(BMPFILE,BMPDATA24,iwidth,iheight)
                   CALL plotbmp(BMPFILE)
 
