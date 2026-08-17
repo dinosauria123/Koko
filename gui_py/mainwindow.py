@@ -1354,6 +1354,21 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._koko_notifier = None
         self.koko_path = self.find_koko_cli()
 
+        # Log which koko-cli binary the GUI will actually launch, so a
+        # stale build (e.g. before the Image-Blur HOME-normalization fix)
+        # is obvious instead of silently crashing on the 2nd run.
+        if self.koko_path:
+            try:
+                import datetime
+                _ts = os.path.getmtime(self.koko_path)
+                _age = datetime.datetime.now() - datetime.datetime.fromtimestamp(_ts)
+                self.append_msg("** koko-cli: %s (built %s ago) **"
+                                % (self.koko_path, _age))
+            except OSError:
+                self.append_msg("** koko-cli: %s **" % self.koko_path)
+        else:
+            self.append_msg("** koko-cli not found **")
+
         # directories
         self.HOME = os.path.expanduser('~/KODS')
         self.TMPDIR = '/tmp'
