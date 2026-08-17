@@ -159,6 +159,7 @@
 #if defined(LINUX)
           IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
              CALL dir_path_append(USERHOME, "KODS", HOME)
+             CALL strip_trailing_sep(HOME)
           END IF
 #endif
 

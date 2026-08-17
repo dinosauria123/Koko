@@ -237,6 +237,7 @@ C       READ IMAGE
           IF ( has_userhome .AND. kods_dir_exists(USERHOME) ) THEN
              CALL dir_path_append(USERHOME, "KODS", HOME)
           END IF
+          CALL strip_trailing_sep(HOME)
           BMPFILE=trim(HOME)//'/PLOTBMP.BMP'
 
           IF(I.EQ.1) THEN
