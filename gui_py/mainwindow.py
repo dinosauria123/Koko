@@ -1148,11 +1148,23 @@ class ImageBlurDialog(QDialog, Ui_ImageBlurDialog):
         self._bmp_path = None
         self.btnBrowse.clicked.connect(self._browse)
         self.btnAuto.clicked.connect(self._use_bmp_dims)
+        # Default the source 24-bit BMP to ~/KODS/PORT.BMP (shipped via
+        # `make install-data`, which copies ./Libs into ~/KODS). The user can
+        # still override it with the Browse button.
+        import os
+        default_bmp = os.path.join(os.path.expanduser("~"), "KODS", "PORT.BMP")
+        if os.path.exists(default_bmp):
+            self._bmp_path = default_bmp
+            self.lineFile.setText(default_bmp)
+            self._probe_dims()
 
     def _browse(self):
         from PyQt6.QtWidgets import QFileDialog
+        import os
+        start = os.path.dirname(self._bmp_path) if self._bmp_path \
+            else os.path.join(os.path.expanduser("~"), "KODS")
         path, _ = QFileDialog.getOpenFileName(
-            self, "Select 24-bit BMP", "",
+            self, "Select 24-bit BMP", start,
             "BMP images (*.bmp *.BMP);;All files (*)")
         if path:
             self._bmp_path = path
