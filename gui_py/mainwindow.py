@@ -539,10 +539,13 @@ class FldcvDialog(QDialog, Ui_FldcvDialog):
 
     def commands(self):
         ui = self._ui
-        cmds = ["FLDCV,%s,,%d" % (self._orient(ui.combo_orient.currentIndex()),
-                                  ui.spin_n.value())]
+        # word #2 is the field factor; send it explicitly (1.0) because an
+        # empty word parses as 0.0, not the 1.0 default, and a 0 factor
+        # yields a degenerate plot with no labels.
+        cmds = ["FLDCV,%s,1,%d" % (self._orient(ui.combo_orient.currentIndex()),
+                                   ui.spin_n.value())]
         if ui.check_plot.isChecked():
-            cmds.append("PLTFLDCV,,1")
+            cmds.append("PLTFLDCV")
         return cmds
 
 
@@ -561,10 +564,12 @@ class AstDialog(QDialog, Ui_AstDialog):
 
     def commands(self):
         ui = self._ui
-        cmds = ["AST,%s,,%d" % (self._orient(ui.combo_orient.currentIndex()),
-                                ui.spin_n.value())]
+        # word #2 is the field factor; send it explicitly (1.0) -- see
+        # FldcvDialog.commands for why the empty word is unsafe.
+        cmds = ["AST,%s,1,%d" % (self._orient(ui.combo_orient.currentIndex()),
+                                 ui.spin_n.value())]
         if ui.check_plot.isChecked():
-            cmds.append("PLTAST,,1")
+            cmds.append("PLTAST")
         return cmds
 
 
@@ -586,11 +591,13 @@ class DistDialog(QDialog, Ui_DistDialog):
         ui = self._ui
         fish = ui.combo_type.currentIndex() == 1
         base = "FISHDIST" if fish else "DIST"
-        cmds = ["%s,%s,,%d" % (base,
-                               self._orient(ui.combo_orient.currentIndex()),
-                               ui.spin_n.value())]
+        # word #2 is the field factor; send it explicitly (1.0) -- an
+        # empty word parses as 0.0 and DIST then plots with no labels.
+        cmds = ["%s,%s,1,%d" % (base,
+                                self._orient(ui.combo_orient.currentIndex()),
+                                ui.spin_n.value())]
         if ui.check_plot.isChecked():
-            cmds.append("PLTFDIST,,1" if fish else "PLTDIST,,1")
+            cmds.append("PLTFDIST" if fish else "PLTDIST")
         return cmds
 
 
