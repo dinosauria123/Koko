@@ -60,6 +60,7 @@ from gui_py.ui_asphdialog import Ui_AsphDialog, ASPH_COEFFS
 from gui_py.ui_grtarraydialog import Ui_GrtArrayDialog
 from gui_py.ui_spsrfdialog import Ui_SpsrfDialog
 from gui_py.ui_bbdialog import Ui_BbDialog
+from gui_py.ui_rayauxdialog import Ui_RayAuxDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -413,6 +414,103 @@ class BbDialog(QDialog, Ui_BbDialog):
             return
         self._send(self._units_cmd())
         self._send("PLANK P,%s,%s" % (repr(t), repr(lam)))
+
+
+class RayAuxDialog(QDialog, Ui_RayAuxDialog):
+    """Ray-settings / analysis-aux dialog.
+
+    Bundles four KDP2 dialogs that koko exposes as CMD-level text
+    commands; results print in the message view and the dialog stays
+    open for repeat runs.
+
+      RAYSETTINGS : SURTOL / AIMTOL / CAIMTOL / NRAITR  (PM get/set)
+      FIRD        : FIRD,NW1,NW2                        (paraxial EFL/BFL/FFL)
+      ISTAT       : FOB -> SPD ISTAT|IPSTAT,<J>,<start>,<end>,<del>
+      FAIL        : FOB -> SPD <grid> -> FAIL|FAILACC,<s1>,<s2>
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_RayAuxDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_rayset.clicked.connect(self._apply_rayset)
+        ui.btn_fird.clicked.connect(self._compute_fird)
+        ui.btn_istat.clicked.connect(self._compute_istat)
+        ui.btn_fail.clicked.connect(self._compute_fail)
+
+    def _send(self, cmd):
+        main = self.parent()
+        send = getattr(main, "send_koko", None)
+        if callable(send):
+            send(cmd)
+
+    def _apply_rayset(self):
+        ui = self._ui
+        pairs = (
+            ("SURTOL", ui.lineEdit_surtol.text().strip()),
+            ("AIMTOL", ui.lineEdit_aimtol.text().strip()),
+            ("CAIMTOL", ui.lineEdit_caimtol.text().strip()),
+            ("NRAITR", ui.lineEdit_nraitr.text().strip()),
+        )
+        sent = False
+        for name, val in pairs:
+            if val:
+                try:
+                    float(val)
+                except ValueError:
+                    continue
+                self._send("%s %s" % (name, val))
+                sent = True
+            else:
+                # blank -> print current value
+                self._send(name)
+                sent = True
+        if not sent:
+            for name, _ in pairs:
+                self._send(name)
+
+    def _compute_fird(self):
+        ui = self._ui
+        s1 = ui.lineEdit_fird_s1.text().strip()
+        s2 = ui.lineEdit_fird_s2.text().strip()
+        if s1 and s2:
+            self._send("FIRD,%s,%s" % (s1, s2))
+        elif s1:
+            self._send("FIRD,%s" % s1)
+        else:
+            self._send("FIRD")
+
+    def _compute_istat(self):
+        ui = self._ui
+        try:
+            start = float(ui.lineEdit_istat_start.text().strip() or "0.0")
+            end = float(ui.lineEdit_istat_end.text().strip() or "90.0")
+            step = float(ui.lineEdit_istat_step.text().strip() or "10.0")
+        except ValueError:
+            return
+        if step <= 0.0 or end <= start:
+            return
+        j = 1 if ui.combo_istat_type.currentIndex() == 0 else 2
+        qual = "ISTAT" if j == 1 else "IPSTAT"
+        self._send("FOB")
+        self._send("SPD %s,%d,%s,%s,%s" % (
+            qual, j, repr(start), repr(end), repr(step)))
+
+    def _compute_fail(self):
+        ui = self._ui
+        s1 = ui.lineEdit_fail_s1.text().strip()
+        s2 = ui.lineEdit_fail_s2.text().strip()
+        cmd = "FAILACC" if ui.check_failacc.isChecked() else "FAIL"
+        self._send("FOB")
+        self._send("SPOT RING")
+        self._send("SPD")
+        if s1 and s2:
+            self._send("%s,%s,%s" % (cmd, s1, s2))
+        elif s1:
+            self._send("%s,%s" % (cmd, s1))
+        else:
+            self._send(cmd)
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -3037,6 +3135,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionGrtArray', self.slot_actionGrtArray),
             ('actionSpsrf', self.slot_actionSpsrf),
             ('actionBb', self.slot_actionBb),
+            ('actionRayAux', self.slot_actionRayAux),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3565,6 +3664,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         WIEN / STEFBOLT / PLANK are CMD-level commands; koko prints the
         result as text in the message view. Dialog stays open."""
         dlg = BbDialog(self)
+        dlg.exec()
+
+    def slot_actionRayAux(self):
+        """Ray settings / analysis aux: open the dialog bundling KDP2
+        IDD_RAYSETTINGS / IDD_FIRD / IDD_ISTAT / IDD_FAIL. All are
+        CMD-level text commands; results print in the message view."""
+        dlg = RayAuxDialog(self)
         dlg.exec()
 
     def slot_actionAperture(self):
