@@ -59,6 +59,7 @@ from gui_py.ui_solvedialog import Ui_SolveDialog, SOLVE_TYPES
 from gui_py.ui_asphdialog import Ui_AsphDialog, ASPH_COEFFS
 from gui_py.ui_grtarraydialog import Ui_GrtArrayDialog
 from gui_py.ui_spsrfdialog import Ui_SpsrfDialog
+from gui_py.ui_bbdialog import Ui_BbDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -343,6 +344,75 @@ class SpsrfDialog(QDialog, Ui_SpsrfDialog):
         if self.exec() == QDialog.DialogCode.Accepted:
             return (self._ui.spin_surf.value(), self._ui.spin_type.value())
         return None
+
+
+class BbDialog(QDialog, Ui_BbDialog):
+    """Blackbody radiation dialog (mirrors KDP2 IDD_BB / GUICODE.FOR).
+
+    Three independent computations share a units radio (WATTS/PHOTONS).
+    Each Compute button first sends RADUNITS <unit>, then the matching
+    CMD-level command; koko prints the result as text in the message
+    view. The dialog stays open so several computations can be run.
+
+      Wien             : RADUNITS <u> -> WIEN P,<T>
+      Stefan-Boltzmann : RADUNITS <u> -> STEFBOLT P,<T>,<lam_up>,<lam_lo>
+      Planck           : RADUNITS <u> -> PLANK P,<T>,<lambda>
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_BbDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_wien.clicked.connect(self._compute_wien)
+        ui.btn_stef.clicked.connect(self._compute_stef)
+        ui.btn_plank.clicked.connect(self._compute_plank)
+
+    def _send(self, cmd):
+        main = self.parent()
+        send = getattr(main, "send_koko", None)
+        if callable(send):
+            send(cmd)
+
+    def _units_cmd(self):
+        return ("RADUNITS WATTS" if self._ui.radio_watts.isChecked()
+                else "RADUNITS PHOTONS")
+
+    def _compute_wien(self):
+        ui = self._ui
+        try:
+            t = float(ui.lineEdit_wien_t.text().strip() or "0.0")
+        except ValueError:
+            return
+        if t <= 0.0:
+            return
+        self._send(self._units_cmd())
+        self._send("WIEN P,%s" % repr(t))
+
+    def _compute_stef(self):
+        ui = self._ui
+        try:
+            t = float(ui.lineEdit_stef_t.text().strip() or "0.0")
+            lu = float(ui.lineEdit_stef_lu.text().strip() or "0.0")
+            ll = float(ui.lineEdit_stef_ll.text().strip() or "0.0")
+        except ValueError:
+            return
+        if t <= 0.0 or lu <= 0.0 or ll < 0.0 or ll >= lu:
+            return
+        self._send(self._units_cmd())
+        self._send("STEFBOLT P,%s,%s,%s" % (repr(t), repr(lu), repr(ll)))
+
+    def _compute_plank(self):
+        ui = self._ui
+        try:
+            t = float(ui.lineEdit_plank_t.text().strip() or "0.0")
+            lam = float(ui.lineEdit_plank_l.text().strip() or "0.0")
+        except ValueError:
+            return
+        if t <= 0.0 or lam <= 0.0:
+            return
+        self._send(self._units_cmd())
+        self._send("PLANK P,%s,%s" % (repr(t), repr(lam)))
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -2966,6 +3036,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionAsph', self.slot_actionAsph),
             ('actionGrtArray', self.slot_actionGrtArray),
             ('actionSpsrf', self.slot_actionSpsrf),
+            ('actionBb', self.slot_actionBb),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3488,6 +3559,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.send_koko("SPECIAL,%d,%d" % (surf, stype))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
+
+    def slot_actionBb(self):
+        """Blackbody radiation: open the BB dialog (mirrors KDP2 IDD_BB).
+        WIEN / STEFBOLT / PLANK are CMD-level commands; koko prints the
+        result as text in the message view. Dialog stays open."""
+        dlg = BbDialog(self)
+        dlg.exec()
 
     def slot_actionAperture(self):
         """Clear-aperture (CLAP): prompt for shape/params and send koko's CLAP
