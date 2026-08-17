@@ -56,6 +56,9 @@ from gui_py.ui_optimdialog import Ui_OptimizeDialog
 from gui_py.ui_raydialog import Ui_RayDialog
 from gui_py.ui_pikupdialog import Ui_PikupDialog
 from gui_py.ui_solvedialog import Ui_SolveDialog, SOLVE_TYPES
+from gui_py.ui_asphdialog import Ui_AsphDialog, ASPH_COEFFS
+from gui_py.ui_grtarraydialog import Ui_GrtArrayDialog
+from gui_py.ui_spsrfdialog import Ui_SpsrfDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -228,6 +231,118 @@ class SolveDialog(QDialog, Ui_SolveDialog):
         except ValueError:
             return None
         return dict(action="solve", surf=surf, cmd=cmd, val=val)
+
+
+class AsphDialog(QDialog, Ui_AsphDialog):
+    """Aspheric / toric dialog (mirrors KDP2 IDD_ASPH / ASPH.INC).
+
+    Aspheric mode sends, inside UPDATE LENS mode:
+        U L -> CHG <surf> -> ASPH -> CHG <surf>
+            -> CC <conic> -> AC/AD/AE/AF/AG/AH/AI/AJ/AK/AL <coeff> -> EOS
+    Toric mode sends:
+        U L -> CHG <surf> -> YTORIC|XTORIC -> RDTOR|CVTOR <val> -> EOS
+        (plus CCTOR when the toric conic is non-zero)
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_AsphDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self) -> dict | None:
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() != QDialog.DialogCode.Accepted:
+            return None
+        surf = self._ui.spin_surf.value()
+        mode = self._ui.combo_mode.currentIndex()
+        try:
+            if mode == 0:
+                cc = float(self._ui.lineEdit_cc.text().strip() or "0.0")
+                coeffs: dict = {}
+                for cmd, (lab, edit) in self._ui.coeff_edits.items():
+                    coeffs[cmd] = float(edit.text().strip() or "0.0")
+                return dict(mode="asph", surf=surf, cc=cc, coeffs=coeffs)
+            torval = float(self._ui.lineEdit_torval.text().strip() or "0.0")
+            cctor = float(self._ui.lineEdit_cctor.text().strip() or "0.0")
+            return dict(mode="toric", surf=surf,
+                        toric="YTORIC" if mode == 1 else "XTORIC",
+                        tormode="RDTOR"
+                        if self._ui.combo_tormode.currentIndex() == 0
+                        else "CVTOR",
+                        torval=torval, cctor=cctor)
+        except ValueError:
+            return None
+        return None
+
+
+class GrtArrayDialog(QDialog, Ui_GrtArrayDialog):
+    """Grating / array-lens dialog (mirrors KDP2 IDD_GRTARRAY / ARRAYGRT.INC).
+
+    Grating assign sends:
+        U L -> CHG <surf> -> GRT -> GRO,<v> -> GRS,<v> -> GRX,<v>
+            -> GRY,<v> -> GRZ,<v> -> EOS
+    Grating delete sends: U L -> CHG <surf> -> GRTD -> EOS
+    Array assign sends: U L -> CHG <surf> -> ARRAY ODD|EVEN,<dx>,<dy> -> EOS
+    Array delete sends: U L -> CHG <surf> -> ARRAYD -> EOS
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_GrtArrayDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return dict of values on OK, or None."""
+        if self.exec() != QDialog.DialogCode.Accepted:
+            return None
+        surf = self._ui.spin_surf.value()
+        gidx = self._ui.combo_grating.currentIndex()
+        aidx = self._ui.combo_array.currentIndex()
+        try:
+            vals = {}
+            vals["surf"] = surf
+            if gidx == 1:
+                vals["grating"] = "assign"
+                vals["gro"] = float(self._ui.lineEdit_gro.text().strip() or "0.0")
+                vals["grs"] = float(self._ui.lineEdit_grs.text().strip() or "0.0")
+                vals["grx"] = float(self._ui.lineEdit_grx.text().strip() or "0.0")
+                vals["gry"] = float(self._ui.lineEdit_gry.text().strip() or "0.0")
+                vals["grz"] = float(self._ui.lineEdit_grz.text().strip() or "0.0")
+            elif gidx == 2:
+                vals["grating"] = "delete"
+            else:
+                vals["grating"] = None
+            if aidx == 1:
+                vals["array"] = "assign"
+                vals["arraytype"] = self._ui.combo_arraytype.currentText()
+                vals["dx"] = float(self._ui.lineEdit_dx.text().strip() or "0.0")
+                vals["dy"] = float(self._ui.lineEdit_dy.text().strip() or "0.0")
+            elif aidx == 2:
+                vals["array"] = "delete"
+            else:
+                vals["array"] = None
+            return vals
+        except ValueError:
+            return None
+
+
+class SpsrfDialog(QDialog, Ui_SpsrfDialog):
+    """Special-surface dialog (mirrors KDP2 IDD_SPSRF / SPSRF.INC).
+
+    Sends: U SP -> SPECIAL,<surface>,<type> -> EOS
+    koko supports special surface types 1 through 24.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_SpsrfDialog()
+        self._ui.setupUi(self)
+
+    def get_values(self):
+        """Show dialog; return (surface, type) on OK, or None."""
+        if self.exec() == QDialog.DialogCode.Accepted:
+            return (self._ui.spin_surf.value(), self._ui.spin_type.value())
+        return None
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -2848,6 +2963,9 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionRay_Single', self.slot_actionRay_single),
             ('actionPikup', self.slot_actionPikup),
             ('actionSolve', self.slot_actionSolve),
+            ('actionAsph', self.slot_actionAsph),
+            ('actionGrtArray', self.slot_actionGrtArray),
+            ('actionSpsrf', self.slot_actionSpsrf),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3278,6 +3396,96 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("PIKD")
         else:
             self.send_koko("%s %s" % (vals["cmd"], repr(vals["val"])))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionAsph(self):
+        """Aspheric / toric: prompt for coefficients and send koko's ASPH
+        command sequence inside UPDATE LENS mode. Mirrors KDP2 IDD_ASPH."""
+        dlg = AsphDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        if vals["mode"] == "asph":
+            coeffs: dict = vals["coeffs"]
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("ASPH")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("CC %s" % repr(vals["cc"]))
+            for cmd in ("AC", "AD", "AE", "AF", "AG",
+                        "AH", "AI", "AJ", "AK", "AL"):
+                self.send_koko("%s %s" % (cmd, repr(coeffs[cmd])))
+            self.send_koko("EOS")
+        else:
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko(vals["toric"])
+            self.send_koko("%s %s" % (vals["tormode"], repr(vals["torval"])))
+            self.send_koko("EOS")
+            if vals["cctor"] != 0.0:
+                self.send_koko("U L")
+                self.send_koko("CHG %d" % surf)
+                self.send_koko("CCTOR %s" % repr(vals["cctor"]))
+                self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionGrtArray(self):
+        """Grating / array lens: prompt for grating/array params and send
+        koko's GRT/ARRAY commands inside UPDATE LENS mode. Mirrors KDP2
+        IDD_GRTARRAY."""
+        dlg = GrtArrayDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf = vals["surf"]
+        sent = False
+        if vals["grating"] == "assign":
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("GRT")
+            self.send_koko("GRO,%s" % repr(vals["gro"]))
+            self.send_koko("GRS,%s" % repr(vals["grs"]))
+            self.send_koko("GRX,%s" % repr(vals["grx"]))
+            self.send_koko("GRY,%s" % repr(vals["gry"]))
+            self.send_koko("GRZ,%s" % repr(vals["grz"]))
+            self.send_koko("EOS")
+            sent = True
+        elif vals["grating"] == "delete":
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("GRTD")
+            self.send_koko("EOS")
+            sent = True
+        if vals["array"] == "assign":
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("ARRAY %s,%s,%s" % (
+                vals["arraytype"], repr(vals["dx"]), repr(vals["dy"])))
+            self.send_koko("EOS")
+            sent = True
+        elif vals["array"] == "delete":
+            self.send_koko("U L")
+            self.send_koko("CHG %d" % surf)
+            self.send_koko("ARRAYD")
+            self.send_koko("EOS")
+            sent = True
+        if sent:
+            self.send_koko("RTG ALL")
+        else:
+            self.append_msg("Grating/Array: nothing selected")
+
+    def slot_actionSpsrf(self):
+        """Special surface: prompt for surface/type and send koko's SPECIAL
+        command inside UPDATE SPSRF mode. Mirrors KDP2 IDD_SPSRF."""
+        dlg = SpsrfDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        surf, stype = vals
+        self.send_koko("U SP")
+        self.send_koko("SPECIAL,%d,%d" % (surf, stype))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
