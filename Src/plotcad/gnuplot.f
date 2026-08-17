@@ -99,6 +99,9 @@ C     artifact). The gnuplot 'plot [0:10000] [0:7000]' range clips
 C     off-canvas points.
           IF(I3.EQ.0) THEN
               WRITE(units(I4),'(A)') ' '
+              IF(.NOT.(I1.EQ.-1.AND.I2.EQ.-1)) THEN
+                  WRITE(units(I4),'(2I5)') I1,I2
+              END IF
           ELSE
               WRITE(units(I4),'(2I5)') I1,I2
           END IF
@@ -109,6 +112,9 @@ C     off-canvas points.
                   write(131,'(2I5)') I1,I2    !breakblack
               else
                   write(131,*)                ! pen-up = blank break
+                  if (.not.(I1.eq.-1.and.I2.eq.-1)) then
+                      write(131,'(2I5)') I1,I2
+                  end if
               end if
           end if
 
