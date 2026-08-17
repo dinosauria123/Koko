@@ -16,10 +16,12 @@
 
 | 機能 | オリジナル ダイアログ | オリジナル コマンド | Python GUI 状態 |
 |------|----------------------|---------------------|-----------------|
-| スポット図 | IDD_SPOT / SPOTENERGY / SPOTPLOT / SPOTWRITE | `SPOT RING` `SPOT RAND` `SPOT RECT` `SPD *` `SPDSAVE` | **実装済み** (SPOT RING+SPD+STATS FULL+OUT TP) — koko が gnuplot 出力、GUI 描画確認済み |
-| 点列図 (DOTF) | IDD_DOTF | `DOTF` `PLTDOTF` `DIFLEICA NO,n` | **実装済み** (SPACE I/O+FAR+DOTF+PLTDOTF,,1) |
-| 幾何 OTF (GOTF) | IDD_GOTF | `GOTF` `PLTGOTF` `GEOLEICA NO,n` | **実装済み** (SPACE I/O+FAR+GOTF+PLTGOTF,1) |
-| PSF | IDD_PSF / PSFENERGY / PSFSTREAK / PSFSTREHL | `PSF` `PSFLOG` `PSFWRITE` `PSFROT` `STREAK *` `STREHL` `APSTREHL` | **実装済み** (PSFWRITE YES+PSFLOG+PSFPLOT YES+PSF,1+CAPFNOUT) |
+| スポット図 | IDD_SPOT / SPOTENERGY / SPOTPLOT / SPOTWRITE | `SPOT RING` `SPOT RAND` `SPOT RECT` `SPD *` `SPDSAVE` | **実装済み** (SPOT RING+SPD+STATS FULL+OUT TP) — koko が gnuplot 出力、GUI 描画確認済み。**SpotDialog 追加**: パターン(RING/RECT/RAND)+本数+統計(FULL/MIN)+波長指定→SPD/SPD ACC+PLTSPD+SPDSAVE/SPDADD/SPDSTATS。KDP2 IDD_SPOT/SPOTGUI.FOR 相当 |
+| 点列図 (DOTF) | IDD_DOTF | `DOTF` `PLTDOTF` `DIFLEICA NO,n` | **実装済み** (SPACE I/O+FAR+DOTF+PLTDOTF,,1)。**PsfMtfDialog に統合**: SPACE I/O+FAR/NEAR+DOTF+PLTDOTF[ LEICA],,1+DRAW |
+| 幾何 OTF (GOTF) | IDD_GOTF | `GOTF` `PLTGOTF` `GEOLEICA NO,n` | **実装済み** (SPACE I/O+FAR+GOTF+PLTGOTF,1)。**PsfMtfDialog に統合**: SPACE I/O+FAR/NEAR+GOTF+PLTGOTF[ LEICA],1+DRAW |
+| PSF | IDD_PSF / PSFENERGY / PSFSTREAK / PSFSTREHL | `PSF` `PSFLOG` `PSFWRITE` `PSFROT` `STREAK *` `STREHL` `APSTREHL` | **実装済み** (PSFWRITE YES+PSFLOG+PSFPLOT YES+PSF,1+CAPFNOUT)。**PsfMtfDialog に統合**: NRD+モード(PSF/PERFECT/PERFNOOB)+波長+PSFWRITE/PSFPLOT トグル→PSF,<wav>+CAPFNOUT |
+| 複素瞳関数 (CAPFN) | IDD_CAPFN | `CAPFNNRD` `CAPFN` `CAPGRID` `WAMAP` `AMAP` `FITZERN` `LISTOPD` `LISTZERN` `LISTREPT` `CAPFNROT` `PLOT CAPFNOPD/CAPFNAPD` `CAPFNOUT/IN/ADD/CLR` | **実装済み**（CapfnDialog: NRD(偶数強制)+モード(CAPFN/PERFECT/SILENT)+波長解析(CAPGRID/WAMAP/AMAP/FITZERN)+一覧(LISTOPD/LISTZERN/LISTREPT)+OPD/振幅プロット(CAPFNROT+PLOT CAPFNOPD/CAPFNAPD[,min,max])+瞳ファイル操作(CAPFNOUT/IN/ADD/CLR)。KDP2 IDD_CAPFN/RAYS.INC 相当） |
+| 歪曲/非点/像面湾曲 (DISAST) | IDD_DISAST | `FLDCV,<orient>,,<n>` `AST,<orient>,,<n>` `DIST,<orient>,,<n>` `FISHDIST,<orient>,,<n>` `PLTFLDCV` `PLTAST` `PLTDIST` `PLTFDIST` | **実装済み**（DisastDialog: 各解析に方位(0/90度)+フィールド点数(10-50)+プロットチェック→FLDCV/AST/DIST/FISHDIST+PLT*。KDP2 IDD_DISAST/RAYS.INC 相当） |
 | ファン図（横/縦/対角/OPD/CD/LA） | IDD_FAN1 | `FANS XFAN` `FANS YFAN` `FANS XYFAN` `FANS NFAN` `FANS PFAN` (+CD/LA/OPD) | **実装済み** (FANS <qualifier> — KDP2 RIMS サブルーチン経由。PTY/GUI で PNG 生成確認済み) |
 | 単一光線追跡 | IDD_RAY | `RAY` `FOB` `AIMRAY ON` `PRXYZ ALL` `DRAWFAN` | **実装済み** (RayDialog: [Trace]→FOB+RAY+PRXYZ ALL（テキスト）、[Plot Fan]→FANS XFAN（図）。GUI 動作確認済み。koko の RAY 単体は追跡結果をテキスト出力しないため PRXYZ ALL で主光線座標を表示) |
 | 近軸 (PARAXIAL) | IDD_PARAX1/2/3 | `FCHY ALL` `FCHX ALL` `PCD3 ALL` `SCD3 ALL` `PRXYZ ALL` `PRR ALL` | **実装済み** (menuParaxial 配下の各項目 → slot_text で対応コマンド送信。koko がテキスト出力。GUI 動作確認済み) |

@@ -61,6 +61,10 @@ from gui_py.ui_grtarraydialog import Ui_GrtArrayDialog
 from gui_py.ui_spsrfdialog import Ui_SpsrfDialog
 from gui_py.ui_bbdialog import Ui_BbDialog
 from gui_py.ui_rayauxdialog import Ui_RayAuxDialog
+from gui_py.ui_disastdialog import Ui_DisastDialog
+from gui_py.ui_capfndialog import Ui_CapfnDialog
+from gui_py.ui_spotdialog import Ui_SpotDialog
+from gui_py.ui_psfmtfdialog import Ui_PsfMtfDialog
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -511,6 +515,244 @@ class RayAuxDialog(QDialog, Ui_RayAuxDialog):
             self._send("%s,%s" % (cmd, s1))
         else:
             self._send(cmd)
+
+
+class DisastDialog(QDialog, Ui_DisastDialog):
+    """Field curvature / astigmatism / distortion settings (KDP2
+    IDD_DISAST). Each compute button sends the analysis command and,
+    if the plot box is ticked, the matching PLT* command through the
+    main window's slot_plot so the graph renders. The dialog stays
+    open so several analyses can be run in a row."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_DisastDialog()
+        self._ui.setupUi(self)
+        self._ui.btn_fld.clicked.connect(self._compute_fld)
+        self._ui.btn_ast.clicked.connect(self._compute_ast)
+        self._ui.btn_dist.clicked.connect(self._compute_dist)
+
+    def _plot(self, *commands):
+        main = self.parent()
+        fn = getattr(main, "slot_plot", None)
+        if callable(fn):
+            fn(*commands)
+
+    @staticmethod
+    def _orient(idx):
+        return "0" if idx == 0 else "90"
+
+    def _compute_fld(self):
+        ui = self._ui
+        cmds = ["FLDCV,%s,,%d" % (self._orient(ui.combo_fld_orient.currentIndex()),
+                                  ui.spin_fld_n.value())]
+        if ui.check_fld_plot.isChecked():
+            cmds.append("PLTFLDCV,,1")
+        self._plot(*cmds)
+
+    def _compute_ast(self):
+        ui = self._ui
+        cmds = ["AST,%s,,%d" % (self._orient(ui.combo_ast_orient.currentIndex()),
+                                ui.spin_ast_n.value())]
+        if ui.check_ast_plot.isChecked():
+            cmds.append("PLTAST,,1")
+        self._plot(*cmds)
+
+    def _compute_dist(self):
+        ui = self._ui
+        fish = ui.combo_dist_type.currentIndex() == 1
+        base = "FISHDIST" if fish else "DIST"
+        cmds = ["%s,%s,,%d" % (base,
+                               self._orient(ui.combo_dist_orient.currentIndex()),
+                               ui.spin_dist_n.value())]
+        if ui.check_dist_plot.isChecked():
+            cmds.append("PLTFDIST,,1" if fish else "PLTDIST,,1")
+        self._plot(*cmds)
+
+
+class CapfnDialog(QDialog, Ui_CapfnDialog):
+    """Complex pupil function settings (KDP2 IDD_CAPFN). Compute /
+    analysis / plot buttons route through the main window's slot_plot
+    (text listings go to the message view). Dialog stays open."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_CapfnDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_compute.clicked.connect(self._compute)
+        ui.btn_capgrid.clicked.connect(lambda: self._wav_cmd("CAPGRID"))
+        ui.btn_wamap.clicked.connect(lambda: self._wav_cmd("WAMAP"))
+        ui.btn_amap.clicked.connect(lambda: self._wav_cmd("AMAP"))
+        ui.btn_fitzern.clicked.connect(lambda: self._wav_cmd("FITZERN"))
+        ui.btn_listopd.clicked.connect(lambda: self._send("LISTOPD"))
+        ui.btn_listzern.clicked.connect(lambda: self._send("LISTZERN"))
+        ui.btn_listrept.clicked.connect(lambda: self._send("LISTREPT"))
+        ui.btn_plotopd.clicked.connect(lambda: self._plot_capfn("CAPFNOPD"))
+        ui.btn_plotapd.clicked.connect(lambda: self._plot_capfn("CAPFNAPD"))
+        ui.btn_out.clicked.connect(lambda: self._send("CAPFNOUT"))
+        ui.btn_in.clicked.connect(lambda: self._send("CAPFNIN"))
+        ui.btn_add.clicked.connect(lambda: self._send("CAPFNADD"))
+        ui.btn_clr.clicked.connect(lambda: self._send("CAPFNCLR"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        fn = getattr(main, "send_koko", None)
+        if callable(fn):
+            fn(cmd)
+
+    def _plot(self, *commands):
+        main = self.parent()
+        fn = getattr(main, "slot_plot", None)
+        if callable(fn):
+            fn(*commands)
+
+    def _mode_cmd(self):
+        return self._ui.combo_mode.currentText()
+
+    def _compute(self):
+        ui = self._ui
+        nrd = ui.spin_nrd.value()
+        if nrd % 2:
+            nrd += 1
+        self._send("CAPFNNRD,%d" % nrd)
+        self._send(self._mode_cmd())
+
+    def _wav_cmd(self, base):
+        self._compute()
+        self._send("%s,%d" % (base, self._ui.spin_wav.value()))
+
+    def _plot_capfn(self, kind):
+        ui = self._ui
+        self._compute()
+        self._send("CAPFNROT %s" % ("YES" if ui.check_rot.isChecked() else "NO"))
+        wav = ui.spin_pltwav.value()
+        lo = ui.lineEdit_min.text().strip()
+        hi = ui.lineEdit_max.text().strip()
+        if lo and hi:
+            self._plot("PLOT %s,%d,1,%s,%s" % (kind, wav, lo, hi))
+        else:
+            self._plot("PLOT %s,%d,1" % (kind, wav))
+
+
+class SpotDialog(QDialog, Ui_SpotDialog):
+    """Geometric spot-diagram settings (KDP2 IDD_SPOT / SPOTGUI.FOR).
+    Sets the ray pattern, statistics mode, computes SPD and plots.
+    Dialog stays open."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_SpotDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_spd.clicked.connect(lambda: self._compute(acc=False))
+        ui.btn_spdacc.clicked.connect(lambda: self._compute(acc=True))
+        ui.btn_plot.clicked.connect(lambda: self._plot("PLTSPD"))
+        ui.btn_save.clicked.connect(lambda: self._send("SPDSAVE"))
+        ui.btn_add.clicked.connect(lambda: self._send("SPDADD"))
+        ui.btn_stats.clicked.connect(lambda: self._send("SPDSTATS"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        fn = getattr(main, "send_koko", None)
+        if callable(fn):
+            fn(cmd)
+
+    def _plot(self, *commands):
+        main = self.parent()
+        fn = getattr(main, "slot_plot", None)
+        if callable(fn):
+            fn(*commands)
+
+    def _setup_cmds(self):
+        ui = self._ui
+        pidx = ui.combo_pattern.currentIndex()
+        n = ui.spin_count.value()
+        cmds = []
+        if pidx == 0:
+            cmds.append("SPOT RING")
+            cmds.append("RINGS,%d" % n)
+        elif pidx == 1:
+            cmds.append("SPOT RECT")
+            cmds.append("RECT,%d" % n)
+        else:
+            cmds.append("SPOT RAND")
+            cmds.append("RANNUM,%d" % n)
+        cmds.append("STATS FULL" if ui.combo_stats.currentIndex() == 0
+                    else "STATS MIN")
+        return cmds
+
+    def _compute(self, acc=False):
+        ui = self._ui
+        for c in self._setup_cmds():
+            self._send(c)
+        wav = ui.spin_wav.value()
+        if acc:
+            self._send("SPD ACC,%d" % wav if wav else "SPD ACC")
+        else:
+            self._send("SPD,%d" % wav if wav else "SPD")
+
+
+class PsfMtfDialog(QDialog, Ui_PsfMtfDialog):
+    """PSF / diffraction-MTF / geometric-MTF settings (KDP2 IDD_PSF,
+    IDD_DOTF, IDD_GOTF). Compute buttons route through the main
+    window's slot_plot. Dialog stays open."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_PsfMtfDialog()
+        self._ui.setupUi(self)
+        ui = self._ui
+        ui.btn_psf.clicked.connect(self._compute_psf)
+        ui.btn_dotf.clicked.connect(lambda: self._compute_mtf("DOTF"))
+        ui.btn_gotf.clicked.connect(lambda: self._compute_mtf("GOTF"))
+
+    def _send(self, cmd):
+        main = self.parent()
+        fn = getattr(main, "send_koko", None)
+        if callable(fn):
+            fn(cmd)
+
+    def _plot(self, *commands):
+        main = self.parent()
+        fn = getattr(main, "slot_plot", None)
+        if callable(fn):
+            fn(*commands)
+
+    def _compute_psf(self):
+        ui = self._ui
+        self._send("NRD,%d" % ui.spin_nrd.value())
+        if ui.check_write.isChecked():
+            self._send("PSFWRITE YES")
+        else:
+            self._send("PSFWRITE NO")
+        if ui.check_plot.isChecked():
+            self._send("PSFPLOT YES")
+        else:
+            self._send("PSFPLOT NO")
+        mode = ui.combo_mode.currentText()
+        wav = ui.spin_wav.value()
+        self._plot("%s,%d" % (mode, wav), "CAPFNOUT")
+
+    def _compute_mtf(self, kind):
+        ui = self._ui
+        if kind == "DOTF":
+            space = ui.combo_dotf_space.currentIndex()
+            rng = ui.combo_dotf_range.currentIndex()
+            leica = ui.check_dotf_leica.isChecked()
+        else:
+            space = ui.combo_gotf_space.currentIndex()
+            rng = ui.combo_gotf_range.currentIndex()
+            leica = ui.check_gotf_leica.isChecked()
+        cmds = ["SPACE I" if space == 0 else "SPACE O",
+                "FAR" if rng == 0 else "NEAR",
+                kind]
+        if kind == "DOTF":
+            cmds.append("PLTDOTF LEICA,,1" if leica else "PLTDOTF,,1")
+        else:
+            cmds.append("PLTGOTF LEICA,1" if leica else "PLTGOTF,1")
+        cmds.append("DRAW")
+        self._plot(*cmds)
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -3136,6 +3378,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionSpsrf', self.slot_actionSpsrf),
             ('actionBb', self.slot_actionBb),
             ('actionRayAux', self.slot_actionRayAux),
+            ('actionDisast', self.slot_actionDisast),
+            ('actionCapfn', self.slot_actionCapfn),
+            ('actionSpotSettings', self.slot_actionSpotSettings),
+            ('actionPsfMtf', self.slot_actionPsfMtf),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3671,6 +3917,30 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         IDD_RAYSETTINGS / IDD_FIRD / IDD_ISTAT / IDD_FAIL. All are
         CMD-level text commands; results print in the message view."""
         dlg = RayAuxDialog(self)
+        dlg.exec()
+
+    def slot_actionDisast(self):
+        """Field curvature / astigmatism / distortion settings (mirrors
+        KDP2 IDD_DISAST). Dialog stays open; compute buttons plot."""
+        dlg = DisastDialog(self)
+        dlg.exec()
+
+    def slot_actionCapfn(self):
+        """Complex pupil function settings (mirrors KDP2 IDD_CAPFN).
+        Dialog stays open; compute / analysis / plot buttons act."""
+        dlg = CapfnDialog(self)
+        dlg.exec()
+
+    def slot_actionSpotSettings(self):
+        """Spot diagram settings (mirrors KDP2 IDD_SPOT / SPOTGUI.FOR).
+        Dialog stays open; SPD / plot buttons act."""
+        dlg = SpotDialog(self)
+        dlg.exec()
+
+    def slot_actionPsfMtf(self):
+        """PSF / MTF settings (mirrors KDP2 IDD_PSF / IDD_DOTF /
+        IDD_GOTF). Dialog stays open; compute buttons plot."""
+        dlg = PsfMtfDialog(self)
         dlg.exec()
 
     def slot_actionAperture(self):
