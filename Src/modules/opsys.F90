@@ -182,6 +182,44 @@ CONTAINS
     
   END SUBROUTINE dir_path_append
 
+  !----------------------------------------------------------
+  ! Strip any trailing directory separator ('/' or '\') and
+  ! trailing blanks from a path string in place. Prevents
+  ! downstream path joins like TRIM(path)//'/'//name from
+  ! producing a double separator (e.g. "//name") when the
+  ! config parser leaves a trailing '/' on a directory value.
+  !
+  ! INPUT/OUTPUT
+  ! path :  the path string to normalize (modified in place)
+  !
+  SUBROUTINE strip_trailing_sep(path)
+
+    CHARACTER(len=*) :: path
+    INTEGER          :: lc, i
+
+    ! CFG_get may return the value as a NUL-terminated C string padded
+    ! out to the full CHARACTER*N length. gfortran's TRIM() only strips
+    ! ASCII blanks, not NUL (ASCII 0), so a trailing NUL block would
+    ! otherwise survive into path joins and corrupt file names (e.g.
+    ! "/home/.../KODS\0\0.../KOBJ.BMP"). Replace any embedded NUL with a
+    ! blank first, then strip trailing separators and blanks.
+    DO i = 1, LEN(path)
+       IF (ICHAR(path(i:i)) == 0) path(i:i) = ' '
+    END DO
+
+    lc = LEN_TRIM(path)
+    DO WHILE (lc > 0)
+       IF (path(lc:lc) == '/' .OR. path(lc:lc) == '\' &
+            .OR. path(lc:lc) == ' ') THEN
+          path(lc:lc) = ' '
+          lc = lc - 1
+       ELSE
+          EXIT
+       END IF
+    END DO
+
+  END SUBROUTINE strip_trailing_sep
+
 
   !----------------------------------------------------------
   ! Returns a directory for storing temporary files. The

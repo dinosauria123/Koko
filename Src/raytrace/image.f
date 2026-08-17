@@ -25,6 +25,7 @@ C///////////////////////////////////////////////////////////////////////
 
       SUBROUTINE FULLIMAGING
           USE GLOBALS
+          USE opsys
 !        USE WINTERACTER
           IMPLICIT NONE
           INCLUDE 'datmai.inc'
@@ -48,6 +49,13 @@ C
 C       SET THE SKIP THE PSF CALCULATION COUNTER TO 10 FOR IMTRACE3
           SKIPIT = 10
 C
+C       Normalize HOME: the config parser (CFG_get) may leave a trailing
+C       '/' and the COMMON HOME field can also be re-derived via
+C       dir_path_append(USERHOME,"KODS",HOME) inside bmp.f with a trailing
+C       separator. Strip it so downstream path joins (TRIM(HOME)//'/'//name)
+C       never produce a double separator ("//name"), which broke the second
+C       Image-Blur run (OFROMBMP could not open the object BMP).
+          CALL strip_trailing_sep(HOME)
 C       COLOR
 C       G=1 CONTROL WAVELENGTH, SYSTEM1(11)
 C       B=2 FIRST COLOR, SWCONDARY CHROMATIC PAIR, SYSTEM1(9)

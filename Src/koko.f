@@ -196,6 +196,16 @@
           CALL CFG_get(koko_cfg, "directories%home", HOME)
           CALL CFG_get(koko_cfg, "directories%temp", TMPDIR)
 
+C         Normalize HOME/TMPDIR: strip any trailing slash or blanks.
+C         Some config parsers leave a trailing '/' on directory values,
+C         which makes downstream path joins (e.g. TRIM(HOME)//'/'//name)
+C         produce a double slash ('//name') or, combined with a blank-
+C         padded COMMON field, a malformed path. OFROMBMP/IFROMBMP and
+C         PLTIMG build BMP paths this way and would then fail to open the
+C         file on the second Image-Blur run.
+          CALL strip_trailing_sep(HOME)
+          CALL strip_trailing_sep(TMPDIR)
+
           ! set graphics program
           CALL CFG_get(koko_cfg, "graphics%viewer", BMPREADR)          
           
