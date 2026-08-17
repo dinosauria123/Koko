@@ -55,6 +55,7 @@ from gui_py.ui_optimize import Ui_Optimize
 from gui_py.ui_optimdialog import Ui_OptimizeDialog
 from gui_py.ui_raydialog import Ui_RayDialog
 from gui_py.ui_pikupdialog import Ui_PikupDialog
+from gui_py.ui_solvedialog import Ui_SolveDialog, SOLVE_TYPES
 from gui_py.ui_aperturedialog import Ui_ApertureDialog
 from gui_py.ui_obsdialog import Ui_ObscurationDialog
 from gui_py.ui_tiltdialog import Ui_TiltDialog
@@ -176,6 +177,57 @@ class PikupDialog(QDialog, Ui_PikupDialog):
                 return None
             return (surf, ptype, val)
         return None
+
+
+class SolveDialog(QDialog, Ui_SolveDialog):
+    """Solve editor dialog (mirrors KDP2 IDD_SLVED).
+
+    The user picks a surface, a solve family (PY/PX, PCY/PCX, ...), a
+    plane (Y/X) and a target value; on accept we send, inside UPDATE
+    LENS mode:
+        U L
+        CHG <surface>
+        <SOLVE> <target>
+        EOS
+    The two utility buttons act immediately:
+        PIKD    -> delete all pickups on the surface
+        SLV ALL -> list all solves (text output)
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._ui = Ui_SolveDialog()
+        self._ui.setupUi(self)
+        self._action = None
+        self._ui.btn_pikd.clicked.connect(self._on_pikd)
+        self._ui.btn_slvall.clicked.connect(self._on_slvall)
+
+    def _on_pikd(self):
+        self._action = "pikd"
+        self.accept()
+
+    def _on_slvall(self):
+        self._action = "slvall"
+        self.accept()
+
+    def get_values(self):
+        """Show dialog; return dict describing the action, or None."""
+        if self.exec() != QDialog.DialogCode.Accepted:
+            return None
+        surf = self._ui.spin_surf.value()
+        if self._action == "pikd":
+            return dict(action="pikd", surf=surf)
+        if self._action == "slvall":
+            return dict(action="slvall")
+        idx = self._ui.combo_type.currentIndex()
+        label, ycmd, xcmd = SOLVE_TYPES[idx]
+        plane_y = self._ui.radio_y.isChecked()
+        cmd = ycmd if plane_y else xcmd
+        try:
+            val = float(self._ui.lineEdit_val.text().strip() or "0.0")
+        except ValueError:
+            return None
+        return dict(action="solve", surf=surf, cmd=cmd, val=val)
 
 
 class ApertureDialog(QDialog, Ui_ApertureDialog):
@@ -2795,6 +2847,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             # Ray (single ray trace) and Paraxial data displays
             ('actionRay_Single', self.slot_actionRay_single),
             ('actionPikup', self.slot_actionPikup),
+            ('actionSolve', self.slot_actionSolve),
             ('actionAperture', self.slot_actionAperture),
             ('actionObscuration', self.slot_actionObscuration),
             ('actionTilt', self.slot_actionTilt),
@@ -3203,6 +3256,28 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         surf, ptype, val = vals
         self.send_koko("U L")
         self.send_koko("PIKUP %s,%d,%s" % (ptype, surf, repr(val)))
+        self.send_koko("EOS")
+        self.send_koko("RTG ALL")
+
+    def slot_actionSolve(self):
+        """Solve editor: prompt for surface/solve family/plane/target and
+        send koko's solve command inside UPDATE LENS mode. Mirrors KDP2
+        IDD_SLVED. Utility buttons: PIKD (delete all pickups on the
+        surface) and SLV ALL (list all solves)."""
+        dlg = SolveDialog(self)
+        vals = dlg.get_values()
+        if not vals:
+            return
+        if vals["action"] == "slvall":
+            self.send_koko("SLV ALL")
+            return
+        surf = vals["surf"]
+        self.send_koko("U L")
+        self.send_koko("CHG %d" % surf)
+        if vals["action"] == "pikd":
+            self.send_koko("PIKD")
+        else:
+            self.send_koko("%s %s" % (vals["cmd"], repr(vals["val"])))
         self.send_koko("EOS")
         self.send_koko("RTG ALL")
 
