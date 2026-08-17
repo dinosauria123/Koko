@@ -4,8 +4,13 @@
 #   NRD,<n>              radial samples
 #   PSFWRITE YES/NO      write PSF data file
 #   PSFPLOT YES/NO       plot the PSF
-#   PSF,<wav> / PSF PERFECT,<wav> / PSF PERFNOOB,<wav>   compute
+#   PSF / PSF PERFECT / PSF PERFNOOB   compute (bare mode, no qualifier)
 #   CAPFNOUT             write pupil file
+#
+# NOTE: no wavelength selector. KDP2's IDD_PSF has none either (it sends
+# a bare mode command). A ",<wav>" qualifier lands in the dflag slot of
+# "PSF , dflag , λ#" and makes DFLAG=1, which skips PLOTPSF's internal
+# DRAW so drawcmd.gpl (and all its labels) is never written.
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
@@ -45,12 +50,6 @@ class Ui_PsfDialog(object):
         self.combo_mode = QtWidgets.QComboBox(self.body)
         self.combo_mode.addItems(["PSF", "PSF PERFECT", "PSF PERFNOOB"])
         plf.addRow(self.label_mode, self.combo_mode)
-        self.label_wav = QtWidgets.QLabel(self.body)
-        self.label_wav.setText("Wavelength #")
-        self.spin_wav = QtWidgets.QSpinBox(self.body)
-        self.spin_wav.setRange(1, 20)
-        self.spin_wav.setValue(1)
-        plf.addRow(self.label_wav, self.spin_wav)
         self.check_write = QtWidgets.QCheckBox(self.body)
         self.check_write.setText("Write data file (PSFWRITE YES)")
         self.check_write.setChecked(True)

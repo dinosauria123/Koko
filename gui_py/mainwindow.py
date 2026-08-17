@@ -716,8 +716,10 @@ class SpotDialog(QDialog, Ui_SpotDialog):
 
 class PsfDialog(QDialog, Ui_PsfDialog):
     """PSF settings (split from KDP2 IDD_PSF). OK sends NRD,<n>,
-    PSFWRITE/PSFPLOT toggles, then <mode>,<wav> + CAPFNOUT through the
-    main window's slot_plot so the graph renders."""
+    PSFWRITE/PSFPLOT toggles, then the bare mode command (PSF /
+    PSF PERFECT / PSF PERFNOOB) + CAPFNOUT through the main window's
+    slot_plot so the graph renders. No wavelength qualifier: it would
+    land in the dflag slot and suppress the internal DRAW (no labels)."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -729,7 +731,7 @@ class PsfDialog(QDialog, Ui_PsfDialog):
         cmds = ["NRD,%d" % ui.spin_nrd.value(),
                 "PSFWRITE %s" % ("YES" if ui.check_write.isChecked() else "NO"),
                 "PSFPLOT %s" % ("YES" if ui.check_plot.isChecked() else "NO"),
-                "%s,%d" % (ui.combo_mode.currentText(), ui.spin_wav.value()),
+                ui.combo_mode.currentText(),
                 "CAPFNOUT"]
         return cmds
 
