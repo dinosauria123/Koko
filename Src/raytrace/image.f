@@ -1796,8 +1796,10 @@ C       when typed as "OFROMBMP name"). Use whichever is present.
                   RETURN
               END IF
               IF(SST.EQ.1) THEN
+                  CALL strip_trailing_sep(HOME)
                   BMPFILE=trim(HOME)//'/'//TRIM(WS)//'.BMP'
               ELSE
+                  CALL strip_trailing_sep(HOME)
                   BMPFILE=trim(HOME)//'/'//TRIM(WQ)//'.BMP'
               END IF
               IF(S1.EQ.1) THEN
@@ -1833,8 +1835,10 @@ C
                   RETURN
               END IF
               IF(SST.EQ.1) THEN
+                  CALL strip_trailing_sep(HOME)
                   BMPFILE=trim(HOME)//'/'//TRIM(WS)//'.BMP'
               ELSE
+                  CALL strip_trailing_sep(HOME)
                   BMPFILE=trim(HOME)//'/'//TRIM(WQ)//'.BMP'
               END IF
               WRD1=0.0D0
