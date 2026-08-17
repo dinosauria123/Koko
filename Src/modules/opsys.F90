@@ -169,10 +169,10 @@ CONTAINS
     ! block never propagates into the joined path (which would corrupt
     ! file names such as "/home/.../KODS\0\0.../KOBJ.BMP").
     i = INDEX(partpath, ACHAR(0))
-    IF (i == 0) i = LEN(partpath) + 1
+    IF (i <= 1) i = LEN(partpath) + 1
     ppath = partpath(1:i-1)
     i = INDEX(pathitem, ACHAR(0))
-    IF (i == 0) i = LEN(pathitem) + 1
+    IF (i <= 1) i = LEN(pathitem) + 1
     pitem = pathitem(1:i-1)
 
     ! last character
