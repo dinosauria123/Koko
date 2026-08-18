@@ -520,6 +520,7 @@ c     Draw 2D OPD CONTOUR PLOT
 c
           USE opsys
           USE GLOBALS
+          USE gplblk_mod
 c
           IMPLICIT NONE
 
@@ -537,6 +538,7 @@ c
           INTEGER         , DIMENSION(2)           :: NVAL
           INTEGER                                  :: IX,IY,IC
           CHARACTER(LEN=256)                       :: plotcommand
+          CHARACTER(LEN=256)                       :: datapath
           
 c  generate some data
           ZSTEP=INT(5000.0/REAL(NZSTEP))
@@ -551,6 +553,37 @@ c  generate some data
 
               END DO
           END DO
+          FLUSH(119)
+c
+c  Mark this plot block as a contour plot so drawcmdsave appends
+c  plotcont.gpl (the splot/contour commands) after the labels.
+          IS_CONTOUR_PLOT = .TRUE.
+c
+c  Generate plotcont.gpl -- the contour splot script that drawcmdsave2
+c  appends after the labels.  This file was part of the original KODS
+c  distribution (Libs/plotdata/plotcont.txt) but was lost during the
+c  Libs/plotdata -> Libs/gnuplot rename.  Generate it dynamically so
+c  the contour plot works without any external template file.
+          datapath = TRIM(HOME)
+          CALL dir_path_append(datapath, "gnuplot", datapath)
+          CALL dir_path_append(datapath, "contdata.gpl", datapath)
+          plotcommand = TRIM(HOME)
+          CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
+          CALL dir_path_append(plotcommand, "plotcont.gpl", plotcommand)
+          OPEN(UNIT=214, STATUS='replace', FILE=TRIM(plotcommand))
+          WRITE(214,'(A)') 'set view map'
+          WRITE(214,'(A)') 'unset surface'
+          WRITE(214,'(A)') 'set size ratio -1'
+          WRITE(214,'(A,I0,A,I0,A)')
+     1        'set dgrid3d ',NX,',',NY,' gauss'
+          WRITE(214,'(A)') 'set contour'
+          WRITE(214,'(A,I0)') 'set cntrparam levels ',ZSTEP
+          WRITE(214,'(A)') 'set key box outside notitle'
+          WRITE(214,'(A)') 'unset tics'
+          WRITE(214,'(A,A,A)')
+     1        'splot "',TRIM(datapath),'" title "" w l'
+          WRITE(214,'(A)') 'pause -1'
+          CLOSE(214)
 c
 c
           DO IC = 1,ZSTEP
@@ -591,7 +624,6 @@ C
               STEP_VAL=STEP_VAL+RSTEP
 
               CALL contlabel(26.0,real(10.0+IC),KEYSTR(IC))
-              CALL drawcmdsave2
 
           END DO
 c
@@ -617,6 +649,7 @@ c     Draw 2D APD CONTOUR CONTOUR
 c
           USE opsys
           USE GLOBALS
+          USE gplblk_mod
 c
           IMPLICIT NONE
 
@@ -633,6 +666,7 @@ c
           INTEGER         , DIMENSION(2)           :: NVAL
           INTEGER                                  :: IX,IY,IC
           CHARACTER(LEN=256)                       :: plotcommand
+          CHARACTER(LEN=256)                       :: datapath
 
           ZSTEP=11
 
@@ -647,6 +681,35 @@ c  generate some data
 
               END DO
           END DO
+          FLUSH(119)
+c
+c  Mark this plot block as a contour plot so drawcmdsave appends
+c  plotcont.gpl (the splot/contour commands) after the labels.
+          IS_CONTOUR_PLOT = .TRUE.
+c
+c  Generate plotcont.gpl -- the contour splot script that drawcmdsave2
+c  appends after the labels (see DrawContour_OPD for details; the
+c  original template file was lost in the Libs rename).
+          datapath = TRIM(HOME)
+          CALL dir_path_append(datapath, "gnuplot", datapath)
+          CALL dir_path_append(datapath, "contdata.gpl", datapath)
+          plotcommand = TRIM(HOME)
+          CALL dir_path_append(plotcommand, "gnuplot", plotcommand)
+          CALL dir_path_append(plotcommand, "plotcont.gpl", plotcommand)
+          OPEN(UNIT=214, STATUS='replace', FILE=TRIM(plotcommand))
+          WRITE(214,'(A)') 'set view map'
+          WRITE(214,'(A)') 'unset surface'
+          WRITE(214,'(A)') 'set size ratio -1'
+          WRITE(214,'(A,I0,A,I0,A)')
+     1        'set dgrid3d ',NX,',',NY,' gauss'
+          WRITE(214,'(A)') 'set contour'
+          WRITE(214,'(A,I0)') 'set cntrparam levels ',ZSTEP
+          WRITE(214,'(A)') 'set key box outside notitle'
+          WRITE(214,'(A)') 'unset tics'
+          WRITE(214,'(A,A,A)')
+     1        'splot "',TRIM(datapath),'" title "" w l'
+          WRITE(214,'(A)') 'pause -1'
+          CLOSE(214)
 c
           DO IC = 1,ZSTEP
               ZCONT(IC) = REAL(IC)
@@ -672,7 +735,6 @@ c     1(ICC*16).GE.208.AND.(ICC*16).LE.223) ICC=ICC+1
  100          FORMAT('I = ',F3.1)
 
               CALL contlabel(26.0,real(9.0+IC),KEYSTR(IC))
-              CALL drawcmdsave2
 
           END DO
 c

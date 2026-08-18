@@ -391,6 +391,33 @@ CONTAINS
 
 
   !----------------------------------------------------------
+  ! Appends one file to another IN PLACE (file_out may already
+  ! exist and must not be truncated first).
+  !
+  ! Unix:    cat file_b >> file_out
+  ! Windows: type file_b >> file_out
+  !
+  ! NOTE: append_files(a, b, out) with out == a is BROKEN: the
+  ! shell truncates the redirect target before cat reads it.
+  !
+  SUBROUTINE append_file_to( file_b, file_out )
+
+    CHARACTER(len=*), INTENT(IN) :: file_b, file_out
+    CHARACTER(len=8)             :: cmd
+
+#if defined( LINUX ) || defined( MACOSX )
+    cmd = "cat"
+#endif
+#if defined( WINDOWS )
+    cmd = "type"
+#endif
+
+    CALL shell_command(TRIM(cmd)//" "//TRIM(file_b)//" >> "//TRIM(file_out))
+
+  END SUBROUTINE append_file_to
+
+
+  !----------------------------------------------------------
   ! Creates a new directory
   !
   SUBROUTINE os_newdir( dir_name )

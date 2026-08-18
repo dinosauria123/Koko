@@ -255,6 +255,19 @@ C     on every plot command, so this only drops the stale labels.
           ! create full gnuplot script
           CALL append_files(file_a, file_b, file_out)
 
+C     Contour plots (PLOTCON CAPFNOPD/CAPFNAPD): the figure itself is
+C     drawn by an "splot ... set contour" block kept in plotcont.gpl,
+C     which must be appended AFTER the header+body (labels). The old
+C     static template file was lost in the Libs rename; DrawContour_*
+C     now regenerates it on every contour plot and sets
+C     IS_CONTOUR_PLOT (cleared again by PLTDEV/PLTDEV1).
+          IF (IS_CONTOUR_PLOT) THEN
+              file_b = TRIM(HOME)
+              CALL dir_path_append(file_b, "gnuplot", file_b)
+              CALL dir_path_append(file_b, "plotcont.gpl", file_b)
+              CALL append_file_to(file_b, file_out)
+          END IF
+
       END SUBROUTINE drawcmdsave
 
 

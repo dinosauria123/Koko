@@ -621,6 +621,8 @@ class CapfnDialog(QDialog, Ui_CapfnDialog):
         ui.btn_listrept.clicked.connect(lambda: self._send("LISTREPT"))
         ui.btn_plotopd.clicked.connect(lambda: self._plot_capfn("CAPFNOPD"))
         ui.btn_plotapd.clicked.connect(lambda: self._plot_capfn("CAPFNAPD"))
+        ui.btn_contopd.clicked.connect(lambda: self._plot_con_capfn("CAPFNOPD"))
+        ui.btn_contapd.clicked.connect(lambda: self._plot_con_capfn("CAPFNAPD"))
         ui.btn_out.clicked.connect(lambda: self._send("CAPFNOUT"))
         ui.btn_in.clicked.connect(lambda: self._send("CAPFNIN"))
         ui.btn_add.clicked.connect(lambda: self._send("CAPFNADD"))
@@ -664,6 +666,22 @@ class CapfnDialog(QDialog, Ui_CapfnDialog):
             self._plot("PLOT %s,%d,1,%s,%s" % (kind, wav, lo, hi))
         else:
             self._plot("PLOT %s,%d,1" % (kind, wav))
+
+    def _plot_con_capfn(self, kind):
+        """Contour plot (PLOTCON CAPFNOPD/CAPFNAPD). KDP2 parity: PLOTCON
+        takes no min/max (auto z-scale), only an optional numeric word #1
+        = wavelength for the OPD variant. Sequence mirrors the CLI:
+        compute -> PLOT NEW (plot mode) -> PLOTCON <kind>[,<wav>] -- the
+        DRAW that PLTCAPCO queues is replayed by koko's command loop and
+        writes drawcmd.gpl, which the main window polls and renders."""
+        ui = self._ui
+        self._compute()
+        self._send("CAPFNROT %s" % ("YES" if ui.check_rot.isChecked() else "NO"))
+        wav = ui.spin_pltwav.value()
+        if kind == "CAPFNOPD":
+            self._plot("PLOT NEW", "PLOTCON %s,%d" % (kind, wav))
+        else:
+            self._plot("PLOT NEW", "PLOTCON %s" % kind)
 
 
 class SpotDialog(QDialog, Ui_SpotDialog):

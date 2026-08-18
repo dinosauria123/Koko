@@ -9,6 +9,8 @@
 #   CAPFNROT YES/NO       rotation flag
 #   PLOT CAPFNOPD,<wav>,1[,min,max]   OPD plot
 #   PLOT CAPFNAPD,<wav>,1[,min,max]   amplitude plot
+#   PLOT NEW + PLOTCON CAPFNOPD,<wav>  OPD contour plot (gnuplot contour)
+#   PLOT NEW + PLOTCON CAPFNAPD        intensity contour plot
 #   CAPFNOUT / CAPFNIN / CAPFNADD / CAPFNCLR   pupil file ops
 from PyQt6 import QtCore, QtGui, QtWidgets
 
@@ -107,14 +109,21 @@ class Ui_CapfnDialog(object):
         self.label_max.setText("Max (blank=auto)")
         self.lineEdit_max = QtWidgets.QLineEdit(self.grp_plot)
         plf.addRow(self.label_max, self.lineEdit_max)
-        hbtn = QtWidgets.QHBoxLayout()
+        grid = QtWidgets.QGridLayout()
+        grid.setSpacing(8)
         self.btn_plotopd = QtWidgets.QPushButton(self.grp_plot)
         self.btn_plotopd.setText("Plot OPD")
-        hbtn.addWidget(self.btn_plotopd)
+        grid.addWidget(self.btn_plotopd, 0, 0)
         self.btn_plotapd = QtWidgets.QPushButton(self.grp_plot)
         self.btn_plotapd.setText("Plot amplitude")
-        hbtn.addWidget(self.btn_plotapd)
-        plf.addRow(hbtn)
+        grid.addWidget(self.btn_plotapd, 0, 1)
+        self.btn_contopd = QtWidgets.QPushButton(self.grp_plot)
+        self.btn_contopd.setText("Contour OPD")
+        grid.addWidget(self.btn_contopd, 1, 0)
+        self.btn_contapd = QtWidgets.QPushButton(self.grp_plot)
+        self.btn_contapd.setText("Contour intensity")
+        grid.addWidget(self.btn_contapd, 1, 1)
+        plf.addRow(grid)
         self.verticalLayout.addWidget(self.grp_plot)
 
         # --- Pupil file ops ---

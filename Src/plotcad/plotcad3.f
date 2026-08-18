@@ -3817,6 +3817,7 @@ C
 C       THIS ROUTINE SETS GRASET AND DEVTYP
           GLOBE=.FALSE.
           GPL_BLK_START = .TRUE.
+          IS_CONTOUR_PLOT = .FALSE.
           CALL gpl_trace_clear
           CALL drawcmd3_clear
           CALL PLTRST
@@ -4255,6 +4256,7 @@ C
 C       THIS ROUTINE SETS GRASET AND DEVTYP
           GLOBE=.FALSE.
           GPL_BLK_START = .TRUE.
+          IS_CONTOUR_PLOT = .FALSE.
           CALL gpl_trace_clear
           CALL drawcmd3_clear
           CALL PLTRST1

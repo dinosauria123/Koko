@@ -7,7 +7,7 @@
 IFLAGS = -I../include
 
 # module sources
-fSRC   = globals.f nssmod.f
+fSRC   = globals.f nssmod.f gplblk.f
 f90SRC = configfile.f90 kokoconfig.f90 getoptions.f90 commandline.f90 strings.f90 \
          rgb.f90 posix_regex.f90
 F90SRC = opsys.F90 treap.F90 dictionary.F90
