@@ -123,9 +123,16 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs )
    // prompt the user and return the answer
    ln_response = linenoise(ln_prompt);
 
-   // copy response to calling subroutine
+   // copy response to calling subroutine.
+   // EOF (Ctrl+D at a terminal, or the GUI died and closed our PTY
+   // master) makes linenoise() return NULL. Return "EXIT" in that case
+   // so the Fortran main loop dispatches EXITT(0) and terminates
+   // cleanly. Returning an empty string here used to make the main
+   // loop re-prompt forever at 100% CPU, leaving orphaned koko-cli
+   // zombies behind a crashed/killed GUI.
    if ( ln_response == NULL ) {
-      nc = 0;
+      strncpy(response, "EXIT", 4);
+      nc = 4;
    } else {
       nc = strlen(ln_response);
       strncpy(response, ln_response, nc);
@@ -134,7 +141,7 @@ nextline( const char* prompt, const int ncprs, char *response, int lenrs )
       memset(response+nc, ' ', lenrs-nc);
    }
 
-   if ( nc > 0 ) {
+   if ( nc > 0 && ln_response != NULL ) {
       linenoiseHistoryAdd(ln_response);
    }
 
