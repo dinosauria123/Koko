@@ -581,6 +581,55 @@ C     on every plot command, so this only drops the stale labels.
 
       END SUBROUTINE setfourcolors
 
+
+      SUBROUTINE setspotcolors
+
+          USE opsys
+          USE gplblk_mod
+
+          INCLUDE 'datmai.inc'
+
+          CHARACTER(LEN=256) :: script1, script2, script3, script4,
+     &script5
+          CHARACTER(LEN=16)  :: lwstr
+
+
+          CALL retrieve_linewidth(lwstr)
+
+          ! names of the five per-wavelength spot trace files
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script1)
+          CALL dir_path_append(script1, "black.gpl", script1)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script2)
+          CALL dir_path_append(script2, "yellow.gpl", script2)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script3)
+          CALL dir_path_append(script3, "magenta.gpl", script3)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script4)
+          CALL dir_path_append(script4, "red.gpl", script4)
+
+          CALL dir_path_append(TRIM(HOME), "gnuplot", script5)
+          CALL dir_path_append(script5, "cyan.gpl", script5)
+
+#if defined(WINDOWS)
+          call replace_slash(script1)
+          call replace_slash(script2)
+          call replace_slash(script3)
+          call replace_slash(script4)
+          call replace_slash(script5)
+#endif
+
+          WRITE(150,*) 'plot [0:10000] [0:7000] "'//
+     &TRIM(script1)//'" lc rgb "black" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script2)//'" lc rgb "dark-yellow" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script3)//'" lc rgb "magenta" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script4)//'" lc rgb "red" lw '//TRIM(lwstr)//' w l,"'//
+     &TRIM(script5)//'" lc rgb "cyan" lw '//TRIM(lwstr)//' w l'
+          WRITE(150,*) 'pause -1'
+
+      END SUBROUTINE setspotcolors
+
       
       SUBROUTINE MAC_EDITOR
         

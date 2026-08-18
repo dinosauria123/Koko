@@ -1500,7 +1500,7 @@ C     DO A PLOT NEW
           CALL PLTDEV
           GRASET=.TRUE.
           CALL PLOTSPD
-          call setonecolors
+          call setspotcolors
 
           IF(DFLAG.EQ.0) THEN
               SAVE_KDP(1)=SAVEINPT(1)
