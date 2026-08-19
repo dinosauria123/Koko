@@ -2685,6 +2685,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     self._hist_cur = len(self._history)
 
         if obj is self.table:
+            if event.type() == QEvent.Type.Resize:
+                # Window resize / scrollbar appear-disappear changes the
+                # table's width or viewport; re-align the custom header row.
+                self._sync_header_geometry()
             if event.type() == QEvent.Type.KeyPress:
                 if event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
                     # Let the default handler commit the edit; cellChanged
@@ -3073,13 +3077,19 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # is hidden; this replaces it).
         self._header_widget = QWidget(self.centralWidget)
         self._header_widget.setAutoFillBackground(True)
+        # No layout manager positions the children (see _sync_header_geometry),
+        # so the widget has no implicit sizeHint -- give the band a fixed
+        # height matching a normal header row.
+        self._header_widget.setFixedHeight(26)
         hp = self._header_widget.palette()
         hp.setColor(QPalette.ColorRole.Window, QColor('#eef0f2'))
         self._header_widget.setPalette(hp)
 
-        hbox = QHBoxLayout(self._header_widget)
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.setSpacing(0)
+        # Children are positioned manually in _sync_header_geometry (no
+        # layout manager): a QHBoxLayout would compress or overflow the
+        # children whenever the table's total column width differs from the
+        # available width, which is exactly what misaligns the separators.
+        self._header_children = []
 
         headers = ['Surf', 'Surface Type', 'Radius', 'Thickness',
                    'Glass', 'Index n', 'Abbe V', 'Aperture']
@@ -3088,11 +3098,11 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 # Radius column: the combo box IS the header label
                 # ("Radius" / "Curvature"). Style it to sit inside the
                 # header band rather than as a detached floating widget.
-                self.comboRadiusCurvature.setFixedWidth(110)
                 # Center the displayed text without making the box editable
                 # (an editable+read-only box stops the drop-down from opening
                 # on mouse click). A center-aligning delegate handles both the
                 # current item and the popup items.
+                self.comboRadiusCurvature.setParent(self._header_widget)
                 self.comboRadiusCurvature.setItemDelegate(
                     CenterComboDelegate(self.comboRadiusCurvature))
                 self.comboRadiusCurvature.setStyleSheet(
@@ -3110,13 +3120,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     "}"
                 )
                 self.comboRadiusCurvature.setCurrentIndex(0)
-                hbox.addWidget(self.comboRadiusCurvature)
+                self._header_children.append(self.comboRadiusCurvature)
             else:
                 lbl = QLabel(h, parent=self._header_widget)
                 lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                lbl.setSizePolicy(
-                    QSizePolicy.Policy.Expanding,
-                    QSizePolicy.Policy.Preferred)
                 lbl.setFont(QFont("Noto Sans", 9, QFont.Weight.Bold))
                 lbl.setStyleSheet(
                     "QLabel {"
@@ -3126,7 +3133,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     "  border-right: 1px solid #d8dadc;"
                     "}"
                 )
-                hbox.addWidget(lbl)
+                self._header_children.append(lbl)
 
         # ---- bottom separator line (table-like header rule) ----
         self._header_line = QFrame(self.centralWidget)
@@ -3141,45 +3148,52 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self.verticalLayout_2.insertWidget(0, self._header_widget)
         self.verticalLayout_2.insertWidget(1, self._header_line)
 
-        # Keep the custom header column widths in sync with the table.
+        # Keep the custom header row aligned with the table's column grid.
+        # The table's columns start frameWidth + verticalHeader-width pixels
+        # right of the table's left edge, so a plain 0-margin row above it
+        # is always misaligned; _sync_header_geometry mirrors the table's
+        # exact geometry (including the horizontal scroll offset) onto the
+        # header row whenever anything about it changes.
         self.table.horizontalHeader().sectionResized.connect(
-            self._sync_header_widths)
-        # First sync after the layout/layout-pass settles.
-        QTimer.singleShot(0, self._sync_initial_header_widths)
+            self._sync_header_geometry)
+        self.table.verticalHeader().geometriesChanged.connect(
+            self._sync_header_geometry)
+        self.table.horizontalScrollBar().valueChanged.connect(
+            self._sync_header_geometry)
+        # Table resizes (window resize, scrollbar appear/disappear) arrive
+        # as Resize events via the event filter installed here.
+        self.table.installEventFilter(self)
+        # First sync after the layout pass settles.
+        QTimer.singleShot(0, self._sync_header_geometry)
 
-    def _sync_initial_header_widths(self):
-        """Initial column-width sync once the table has settled on its
-        default sizes (e.g. AdjustToContents has run)."""
+    def _sync_header_geometry(self, *args):
+        """Align the custom header row exactly with the table's column grid.
+
+        Mirrors the table's own geometry: its columns begin at
+        frameWidth + verticalHeader().width() from the table's left edge,
+        each header child is moved/resized to its column's exact x/width,
+        shifted by the horizontal scroll offset -- so the title separators
+        always sit on the table's vertical grid lines. Children are placed
+        manually (no layout manager) so nothing can compress or reflow them.
+        """
         if not hasattr(self, '_header_widget'):
             return
-        hbox = self._header_widget.layout()
-        for i in range(self.table.columnCount()):
-            if i >= hbox.count():
+        t = self.table
+        vh = t.verticalHeader()
+        left = t.frameWidth() + (vh.width() if vh.isVisible() else 0)
+        left -= t.horizontalScrollBar().value()
+        hh = self._header_widget.height()
+        x = left
+        for i, wgt in enumerate(self._header_children):
+            if i >= t.columnCount():
                 break
-            item = hbox.itemAt(i)
-            if item is None or item.widget() is None:
-                continue
-            w = max(40, self.table.columnWidth(i))
-            if i == 2:      # combo box: fixed width, don't overwrite
-                continue
-            item.widget().setMinimumWidth(w)
-            item.widget().setMaximumWidth(16777215)
-
-    def _sync_header_widths(self, logicalIndex, oldSize, newSize):
-        """Mirror table column width changes onto the custom header row."""
-        if not hasattr(self, '_header_widget'):
-            return
-        hbox = self._header_widget.layout()
-        if logicalIndex < 0 or logicalIndex >= hbox.count():
-            return
-        item = hbox.itemAt(logicalIndex)
-        if item is None or item.widget() is None:
-            return
-        if logicalIndex == 2:     # combo box: fixed width
-            return
-        w = max(40, newSize)
-        item.widget().setMinimumWidth(w)
-        item.widget().setMaximumWidth(16777215)
+            w = t.columnWidth(i)
+            wgt.setGeometry(x, 0, w, hh)
+            x += w
+        # Header band and separator line span exactly the table's width so
+        # the rule under the titles meets the table frame on both sides.
+        self._header_widget.setFixedWidth(t.width())
+        self._header_line.setFixedWidth(t.width())
 
     # ----- material cell double-click -------------------------------------
 
