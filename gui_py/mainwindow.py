@@ -2206,6 +2206,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ['Surf', 'Surface Type', 'Radius', 'Thickness',
              'Glass', 'Index n', 'Abbe V'])
         self.table.verticalHeader().setVisible(True)
+        # Let the last column stretch to fill the table's content area so no
+        # grey gap is left on the right of the grid (and the header band /
+        # separator below the titles end exactly on the last column).
+        self.table.horizontalHeader().setStretchLastSection(True)
         # Build a custom header row so the Radius/Curvature combo box is
         # embedded in the Radius column title (mirrors original RDM GUI).
         self._build_header_row()
@@ -3175,10 +3179,13 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             w = t.columnWidth(i)
             wgt.setGeometry(x, 0, w, hh)
             x += w
-        # Header band and separator line span exactly the table's width so
-        # the rule under the titles meets the table frame on both sides.
-        self._header_widget.setFixedWidth(t.width())
-        self._header_line.setFixedWidth(t.width())
+        # The columns end at x (left + sum of column widths); the header
+        # band and the separator under the titles must match that right edge
+        # exactly, not the full table frame width. Sizing them to t.width()
+        # left a grey gap beyond the last column whenever the columns did not
+        # fill the table width.
+        self._header_widget.setFixedWidth(x)
+        self._header_line.setFixedWidth(x)
 
     # ----- material cell double-click -------------------------------------
 
