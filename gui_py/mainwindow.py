@@ -2204,7 +2204,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # table headers (matching the C++ GUI columns)
         self.table.setHorizontalHeaderLabels(
             ['Surf', 'Surface Type', 'Radius', 'Thickness',
-             'Glass', 'Index n', 'Abbe V', 'Aperture'])
+             'Glass', 'Index n', 'Abbe V'])
         self.table.verticalHeader().setVisible(True)
         # Build a custom header row so the Radius/Curvature combo box is
         # embedded in the Radius column title (mirrors original RDM GUI).
@@ -2639,17 +2639,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                             break
                     break
             
-            m_clap = re.match(r'(?i)^CLAP\s+([\d.eE+-]+)', stripped)
-            if m_clap:
-                try:
-                    ap_val = float(m_clap.group(1))
-                    for r in range(self.table.rowCount()):
-                        itm = self.table.item(r, 7)
-                        if itm is None or not itm.text().strip():
-                            self._set_cell(r, 7, str(ap_val))
-                            break
-                except ValueError:
-                    pass
 
     def _on_rtg_complete(self, buf):
         """Dispatch populated buffer to table and schedule plot render."""
@@ -2703,14 +2692,14 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Forward a committed cell edit to koko (mirrors C++ slot_action_
         value_entered). Fires on Enter and on focus-loss commit. Guarded by
         self._table_updating so populate_table's own writes are ignored.
-        Only Radius/Curvature (2), Thickness (3) and Aperture (7) are
+        Only Radius/Curvature (2) and Thickness (3) are
         directly editable; other columns are read-only and never reach here.
         """
         if self._table_updating:
             return
         if row == 0:          # OBJ row is never edited
             return
-        if col not in (2, 3, 7):
+        if col not in (2, 3):
             return
         self._send_table_current_cell()
 
@@ -2761,8 +2750,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     if dlg.material_type() == 'MODEL':
                         self.send_koko("FINDGLASS %d" % row)
                     return
-        elif col == 7:        # Aperture (CLAP)
-            command = "CLAP " + val
         # col 1 (Surface Type), col 5 (Index n) and col 6 (Abbe V) are not
         # directly editable in koko (matches C++ case 0/4/5 which do nothing).
         if command:
@@ -2862,7 +2849,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                 if rows and rows[-1][4].startswith(("MODEL", "SCHOTT")):
                     prev = rows[-1]
                     rows[-1] = (prev[0], prev[1], prev[2], prev[3], prev[4],
-                                prev[5] or mi, prev[6] or ma, prev[7])
+                                prev[5] or mi, prev[6] or ma)
                 else:
                     nxt_index = mi
                     nxt_abbe = ma
@@ -2881,7 +2868,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     if rows:
                         rows[-1] = (rows[-1][0], (rows[-1][1] + " " + marker).strip(),
                                     rows[-1][2], rows[-1][3], rows[-1][4],
-                                    rows[-1][5], rows[-1][6], rows[-1][7])
+                                    rows[-1][5], rows[-1][6])
                     surf_m = re.match(r"(\d+)\*", stripped)
                     surf_num = int(surf_m.group(1)) if surf_m else None
                     for pd in marker.split(","):
@@ -2951,7 +2938,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             nxt_abbe = ""
             
             row = (surf, self._surface_type_str(int(surf)), radius,
-                   thickness, material, index, abbe, "")
+                   thickness, material, index, abbe)
             rows.append(row)
             
             if is_glass and not material.startswith("MODEL"):
@@ -2960,8 +2947,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
                     gi, ga = self._calc_glass_nv(gcat, gname)
                     if gi is not None:
                         rows[-1] = (rows[-1][0], rows[-1][1], rows[-1][2],
-                                    rows[-1][3], rows[-1][4], gi, ga,
-                                    rows[-1][7])
+                                    rows[-1][3], rows[-1][4], gi, ga)
         
         return rows
 
@@ -2984,7 +2970,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.table.setVerticalHeaderLabels([r[0] for r in rows])
 
         self.table.setUpdatesEnabled(True)
-        for i, (surf, stype, radius, thickness, material, index, abbe, ap) in enumerate(rows):
+        for i, (surf, stype, radius, thickness, material, index, abbe) in enumerate(rows):
             # koko emits the RTG ALL line for certain catalog glasses
             # (e.g. RADHARD) with the MATERIAL column BLANK and the index
             # value shifted into the material position, because the name was
@@ -3017,7 +3003,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self._set_cell(i, 4, material)
             self._set_cell(i, 5, index)
             self._set_cell(i, 6, abbe)
-            self._set_cell(i, 7, ap)
             # Cache raw radius (col 2 in _build_rtg_rows output) so the
             # Radius/Curvature display toggle can update without koko.
             try:
@@ -3092,7 +3077,7 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         self._header_children = []
 
         headers = ['Surf', 'Surface Type', 'Radius', 'Thickness',
-                   'Glass', 'Index n', 'Abbe V', 'Aperture']
+                   'Glass', 'Index n', 'Abbe V']
         for i, h in enumerate(headers):
             if i == 2:
                 # Radius column: the combo box IS the header label
