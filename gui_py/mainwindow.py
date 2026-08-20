@@ -3169,8 +3169,22 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             return
         t = self.table
         vh = t.verticalHeader()
-        left = t.frameWidth() + (vh.width() if vh.isVisible() else 0)
-        left -= t.horizontalScrollBar().value()
+        # All columns share one fixed width so the grid (e.g. Index n / Abbe
+        # V / Radius) reads as evenly spaced. Compute the width from the
+        # current content area and hand the leftover 1px rows to the leading
+        # columns so sum(columnWidths) equals the content width exactly --
+        # leaving no grey gap on the right of the grid or the header band.
+        n = t.columnCount()
+        if n:
+            left = t.frameWidth() + (vh.width() if vh.isVisible() else 0)
+            target = (t.width() - (left + t.horizontalScrollBar().value())) // n
+            target = max(target, t.horizontalHeader().minimumSectionSize())
+            rem = (t.width() - (left + t.horizontalScrollBar().value())) - target * n
+            t.horizontalHeader().setStretchLastSection(False)
+            for c in range(n):
+                t.setColumnWidth(c, target + (1 if c < rem else 0))
+            left = t.frameWidth() + (vh.width() if vh.isVisible() else 0)
+            left -= t.horizontalScrollBar().value()
         hh = self._header_widget.height()
         x = left
         for i, wgt in enumerate(self._header_children):
