@@ -19,6 +19,7 @@ import re
 import math
 import subprocess
 import struct
+import sys
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QMessageBox, QFileDialog, QTableWidgetItem,
@@ -2284,6 +2285,10 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         # start koko-cli (no lens yet)
         self.start_koko_cli()
 
+        # Launch the banner window only after the message view + koko
+        # process are up, so banner.set_content() can safely touch them.
+        QTimer.singleShot(100, self.show_startup_banner)
+
     # ----- process management --------------------------------------------
 
     def find_koko_cli(self):
@@ -3932,6 +3937,55 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             self.send_koko("LENO AC")
             self.send_koko("OUT TP")
 
+    def _read_buildstr(self):
+        """Read the Fortran core's build string (see Src/buildinfo.inc).
+
+        Returns something like "[GCC 15.2.0][build date: 2026-08-18]
+        [git commit: 375]" or "" if it can't be found, so the banner
+        stays usable even before a fresh build.
+        """
+        src_inc = os.path.join(
+            os.path.expanduser("~/Koko"), "Src", "buildinfo.inc")
+        try:
+            with open(src_inc, "r", encoding="utf-8", errors="ignore") as fh:
+                text = fh.read()
+        except OSError:
+            return ""
+        m = re.search(r'buildstr\s*=\s*[\'"](.*?)[\'"]', text, re.S)
+        if not m:
+            return ""
+        return m.group(1).strip()
+
+    def show_startup_banner(self):
+        """Show a branded startup banner in its own top-level window for a
+        few seconds after launch (then it auto-closes), mirroring the
+        koko-cli greeting without cluttering the message view.
+        """
+        if getattr(self, "_banner_shown", False):
+            return
+        self._banner_shown = True
+
+        version = self._read_buildstr()
+        win = BannerWindow()
+        win.set_content("Koko Optical Design Software (KODS)", version)
+        win.show()
+        win.raise_()
+        win.activateWindow()
+        QApplication.processEvents()
+        # keep a reference so the window is not GC'd before it can close
+        self._banner_window = win
+        # Auto-dismiss after a short delay.
+        QTimer.singleShot(3000, win.close)
+        # Center on the main window.
+        self._center_banner(win)
+
+    def _center_banner(self, win):
+        """Center ``win`` on the client area of the main window (also works
+        before the main window is fully shown)."""
+        center = self.geometry().center()
+        win.move(center.x() - win.width() // 2,
+                 center.y() - win.height() // 2)
+
     def slot_actionAbout(self):
         """About box (mirrors KDP2 IDD_ABOUT)."""
         QMessageBox.about(
@@ -4988,6 +5042,100 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
     def slot_quit2(self):
         self._kill_koko()
         self.close()
+
+
+class BannerWindow(QWidget):
+    """Branded startup banner shown in its own top-level window for a
+    few seconds after launch, mirroring the koko-cli greeting without
+    cluttering the message view. Auto-closes on its own.
+
+    Follow the existing KOKO palette: light-grey (#eef0f2) header band,
+    1px separators, centered alignment, native-looking widgets.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Koko")
+        # A normal, decorated top-level window, raised above the main
+        # window so the startup banner is actually visible (not hidden
+        # behind the main window, which shares the same top-left corner).
+        self.setWindowFlags(
+            self.windowFlags()
+            | Qt.WindowType.WindowStaysOnTopHint
+            | Qt.WindowType.FramelessWindowHint)
+        self.resize(640, 360)
+
+        vbox = QVBoxLayout(self)
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(0)
+
+        # Header band
+        self.header = QLabel()
+        self.header.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.header.setText("KOKO")
+        self.header.setStyleSheet(
+            "QLabel { "
+            "background-color: #2f6f4f; "
+            "color: #ffffff; "
+            "padding: 12px; "
+            "font-size: 24px; "
+            "font-weight: bold; "
+            "letter-spacing: 4px; }")
+        self.header.setMinimumHeight(56)
+        vbox.addWidget(self.header)
+
+        # Mascot image
+        art_dir = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "Artwork")
+        mascot_path = os.path.join(art_dir, "koko_mascot.png")
+        if os.path.exists(mascot_path):
+            self.mascot = QLabel()
+            self.mascot.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.mascot.setStyleSheet("QLabel { background-color: #f7f8f9; }")
+            pix = QPixmap(mascot_path)
+            if not pix.isNull():
+                scaled = pix.scaled(
+                    320, 240, Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation)
+                self.mascot.setPixmap(scaled)
+                self.mascot.setMinimumHeight(scaled.height())
+                vbox.addWidget(self.mascot)
+
+        # Separator
+        sep = QFrame()
+        sep.setFrameShape(QFrame.Shape.HLine)
+        sep.setFrameShadow(QFrame.Shadow.Sunken)
+        sep.setStyleSheet("QFrame { background-color: #c8ccd0; "
+                          "border: none; }")
+        sep.setMaximumHeight(2)
+        vbox.addWidget(sep)
+
+        # Body
+        self.body = QLabel()
+        self.body.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.body.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.body.setStyleSheet("QLabel { background-color: #f7f8f9; color: #333333; }")
+        self.body.setMinimumHeight(180)
+        vbox.addWidget(self.body)
+
+    def set_content(self, brand, version):
+        lines = []
+        lines.append("")
+        lines.append("%s" % brand)
+        lines.append("")
+        lines.append("Optical Design Software (KODS)")
+        lines.append("")
+        lines.append("Free software -- no warranty.")
+        lines.append("See COPYING, LICENSE and AUTHORS in the source.")
+        if version:
+            lines.append("")
+            lines.append(version)
+        self.body.setText("\n".join(lines))
+
+    def showEvent(self, event):
+        super().showEvent(event)
 
 
 class PlotWindow(QWidget):
