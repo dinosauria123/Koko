@@ -607,16 +607,8 @@ class CapfnDialog(QDialog, Ui_CapfnDialog):
     analysis / plot buttons route through the main window's slot_plot
     (text listings go to the message view). Dialog stays open."""
 
-    def __init__(self, parent=None, plot_kind=None):
-        """plot_kind (``"CAPFNOPD"`` / ``"CAPFNAPD"`` / None) pre-selects
-        which wavefront map to plot when the added OK button is pressed.
-        When None (menu's "Complex Pupil Function" entry) only the
-        Compute button is available; when set, an OK button is added that
-        applies the chosen capfn setting then plots the selected map,
-        i.e. the capfn setting is applied *after* the phase/intensity
-        choice is made."""
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self._plot_kind = plot_kind
         self._ui = Ui_CapfnDialog()
         self._ui.setupUi(self)
         ui = self._ui
@@ -636,20 +628,6 @@ class CapfnDialog(QDialog, Ui_CapfnDialog):
         ui.btn_in.clicked.connect(lambda: self._send("CAPFNIN"))
         ui.btn_add.clicked.connect(lambda: self._send("CAPFNADD"))
         ui.btn_clr.clicked.connect(lambda: self._send("CAPFNCLR"))
-        # When launched from a wavefront phase/intensity entry, add an
-        # OK button that applies the capfn setting then plots the map.
-        if plot_kind is not None:
-            ok_button = self._ui.buttonBox.addButton(
-                "OK", QDialogButtonBox.ButtonRole.AcceptRole)
-            assert ok_button is not None
-            ok_button.clicked.connect(self._apply_and_plot)
-
-    def _apply_and_plot(self):
-        """Apply the chosen capfn setting, then plot the pre-selected
-        wavefront map (phase or intensity) that triggered the dialog."""
-        self._compute()
-        if self._plot_kind:
-            self._plot_capfn(self._plot_kind)
 
     def _send(self, cmd):
         main = self.parent()
@@ -3585,8 +3563,8 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
             ('actionOrtho', self.slot_plot, 'VIE ORTHO'),
             # Analyze -> spot / wavefront / PSF
             ('actionSpot_Diagram', self.slot_actionSpot),
-            ('actionWavefront_Phase', self._action_wavefront, 'CAPFNOPD'),
-            ('actionWavefront_Intensity', self._action_wavefront, 'CAPFNAPD'),
+            ('actionWavefront_Phase', self.slot_plot, 'CAPFN', 'PLOT CAPFNOPD'),
+            ('actionWavefront_Intensity', self.slot_plot, 'CAPFN', 'PLOT CAPFNAPD'),
             ('actionPoint_Spread_Function', self.slot_actionPsf),
             ('actionDistortion', self.slot_actionDist),
             ('actionField_Curvature', self.slot_actionFldcv),
@@ -4239,13 +4217,6 @@ class KokoMainWindow(QMainWindow, Ui_MainWindow):
         """Complex pupil function settings (mirrors KDP2 IDD_CAPFN).
         Dialog stays open; compute / analysis / plot buttons act."""
         dlg = CapfnDialog(self)
-        dlg.exec()
-
-    def _action_wavefront(self, kind):
-        """Wavefront Phase / Intensity menu: open the capfn dialog with the
-        plot kind pre-selected, apply the chosen capfn setting, then plot the
-        selected map (CAPFNOPD = phase / CAPFNAPD = intensity)."""
-        dlg = CapfnDialog(self, plot_kind=kind)
         dlg.exec()
 
     def slot_actionSpot(self):
