@@ -17,6 +17,12 @@ MODS = $(fSRC:.f=.mod) $(f90SRC:.f90=.mod) $(F90SRC:.F90=.mod)
 FOBJ = $(fSRC:.f=.o) $(f90SRC:.f90=.o) $(F90SRC:.F90=.o)
 COBJ = $(CSRC:.c=.o)
 
+# Module compilation must run serially: several .f90 sources `USE` the module
+# produced by a *sibling* .f90 file (e.g. kokoconfig.f90 USEs configfile), so
+# under `make -j` make has no ordering guarantee between independent `%.mod`
+# rules. Serialize here so each .mod is fully written before the next runs.
+.NOTPARALLEL:
+
 # targets
 all: regex_f90.inc libkmod
 
